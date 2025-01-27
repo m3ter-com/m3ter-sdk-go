@@ -33,7 +33,7 @@ func TestCompoundAggregationNewWithOptionalParams(t *testing.T) {
 		m3ter.CompoundAggregationNewParams{
 			Calculation:     m3ter.F("x"),
 			Name:            m3ter.F("x"),
-			QuantityPerUnit: m3ter.F(0.000000),
+			QuantityPerUnit: m3ter.F(1.000000),
 			Rounding:        m3ter.F(m3ter.CompoundAggregationNewParamsRoundingUp),
 			Unit:            m3ter.F("x"),
 			Code:            m3ter.F("{1{}}_"),
@@ -103,7 +103,7 @@ func TestCompoundAggregationUpdateWithOptionalParams(t *testing.T) {
 		m3ter.CompoundAggregationUpdateParams{
 			Calculation:     m3ter.F("x"),
 			Name:            m3ter.F("x"),
-			QuantityPerUnit: m3ter.F(0.000000),
+			QuantityPerUnit: m3ter.F(1.000000),
 			Rounding:        m3ter.F(m3ter.CompoundAggregationUpdateParamsRoundingUp),
 			Unit:            m3ter.F("x"),
 			Code:            m3ter.F("{1{}}_"),
