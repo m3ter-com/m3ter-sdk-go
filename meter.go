@@ -276,6 +276,10 @@ func (r MeterDataFieldsCategory) IsKnown() bool {
 }
 
 type MeterDerivedField struct {
+	// The calculation used to transform the value of submitted `dataFields` in usage
+	// data. Calculation can reference `dataFields`, `customFields`, or system
+	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
+	Calculation string `json:"calculation,required"`
 	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
 	Category MeterDerivedFieldsCategory `json:"category,required"`
 	// Short code to identify the field
@@ -295,6 +299,7 @@ type MeterDerivedField struct {
 // meterDerivedFieldJSON contains the JSON metadata for the struct
 // [MeterDerivedField]
 type meterDerivedFieldJSON struct {
+	Calculation apijson.Field
 	Category    apijson.Field
 	Code        apijson.Field
 	Name        apijson.Field
@@ -428,6 +433,10 @@ func (r MeterNewParamsDataFieldsCategory) IsKnown() bool {
 }
 
 type MeterNewParamsDerivedField struct {
+	// The calculation used to transform the value of submitted `dataFields` in usage
+	// data. Calculation can reference `dataFields`, `customFields`, or system
+	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
+	Calculation param.Field[string] `json:"calculation,required"`
 	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
 	Category param.Field[MeterNewParamsDerivedFieldsCategory] `json:"category,required"`
 	// Short code to identify the field
@@ -564,6 +573,10 @@ func (r MeterUpdateParamsDataFieldsCategory) IsKnown() bool {
 }
 
 type MeterUpdateParamsDerivedField struct {
+	// The calculation used to transform the value of submitted `dataFields` in usage
+	// data. Calculation can reference `dataFields`, `customFields`, or system
+	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
+	Calculation param.Field[string] `json:"calculation,required"`
 	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
 	Category param.Field[MeterUpdateParamsDerivedFieldsCategory] `json:"category,required"`
 	// Short code to identify the field
