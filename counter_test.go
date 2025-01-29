@@ -31,7 +31,11 @@ func TestCounterNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"orgId",
 		m3ter.CounterNewParams{
-			Version: m3ter.F(int64(0)),
+			Name:      m3ter.F("x"),
+			Unit:      m3ter.F("x"),
+			Code:      m3ter.F("JS!?Q0]r] ]$]"),
+			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			Version:   m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -90,7 +94,11 @@ func TestCounterUpdateWithOptionalParams(t *testing.T) {
 		"orgId",
 		"id",
 		m3ter.CounterUpdateParams{
-			Version: m3ter.F(int64(0)),
+			Name:      m3ter.F("x"),
+			Unit:      m3ter.F("x"),
+			Code:      m3ter.F("JS!?Q0]r] ]$]"),
+			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			Version:   m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {

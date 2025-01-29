@@ -167,6 +167,17 @@ func (r counterJSON) RawJSON() string {
 }
 
 type CounterNewParams struct {
+	// Descriptive name for the Counter.
+	Name param.Field[string] `json:"name,required"`
+	// User defined label for units shown on Bill line items, and indicating to your
+	// customers what they are being charged for.
+	Unit param.Field[string] `json:"unit,required"`
+	// Code for the Counter. A unique short code to identify the Counter.
+	Code param.Field[string] `json:"code"`
+	// UUID of the product the Counter belongs to. _(Optional)_ - if left blank, the
+	// Counter is Global. A Global Counter can be used to price Plans or Plan Templates
+	// belonging to any Product.
+	ProductID param.Field[string] `json:"productId"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -183,6 +194,17 @@ func (r CounterNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterUpdateParams struct {
+	// Descriptive name for the Counter.
+	Name param.Field[string] `json:"name,required"`
+	// User defined label for units shown on Bill line items, and indicating to your
+	// customers what they are being charged for.
+	Unit param.Field[string] `json:"unit,required"`
+	// Code for the Counter. A unique short code to identify the Counter.
+	Code param.Field[string] `json:"code"`
+	// UUID of the product the Counter belongs to. _(Optional)_ - if left blank, the
+	// Counter is Global. A Global Counter can be used to price Plans or Plan Templates
+	// belonging to any Product.
+	ProductID param.Field[string] `json:"productId"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
