@@ -164,7 +164,7 @@ func TestMeterListWithOptionalParams(t *testing.T) {
 			IDs:       m3ter.F([]string{"string"}),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
-			ProductID: m3ter.F([]interface{}{map[string]interface{}{}}),
+			ProductID: m3ter.F([]string{"string"}),
 		},
 	)
 	if err != nil {
