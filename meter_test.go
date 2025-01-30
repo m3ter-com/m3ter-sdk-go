@@ -39,10 +39,11 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 				Unit:     m3ter.F("x"),
 			}}),
 			DerivedFields: m3ter.F([]m3ter.MeterNewParamsDerivedField{{
-				Category: m3ter.F(m3ter.MeterNewParamsDerivedFieldsCategoryWho),
-				Code:     m3ter.F("{1{}}_"),
-				Name:     m3ter.F("x"),
-				Unit:     m3ter.F("x"),
+				Calculation: m3ter.F("x"),
+				Category:    m3ter.F(m3ter.MeterNewParamsDerivedFieldsCategoryWho),
+				Code:        m3ter.F("{1{}}_"),
+				Name:        m3ter.F("x"),
+				Unit:        m3ter.F("x"),
 			}}),
 			Name: m3ter.F("x"),
 			CustomFields: m3ter.F(map[string]interface{}{
@@ -117,10 +118,11 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 				Unit:     m3ter.F("x"),
 			}}),
 			DerivedFields: m3ter.F([]m3ter.MeterUpdateParamsDerivedField{{
-				Category: m3ter.F(m3ter.MeterUpdateParamsDerivedFieldsCategoryWho),
-				Code:     m3ter.F("{1{}}_"),
-				Name:     m3ter.F("x"),
-				Unit:     m3ter.F("x"),
+				Calculation: m3ter.F("x"),
+				Category:    m3ter.F(m3ter.MeterUpdateParamsDerivedFieldsCategoryWho),
+				Code:        m3ter.F("{1{}}_"),
+				Name:        m3ter.F("x"),
+				Unit:        m3ter.F("x"),
 			}}),
 			Name: m3ter.F("x"),
 			CustomFields: m3ter.F(map[string]interface{}{
