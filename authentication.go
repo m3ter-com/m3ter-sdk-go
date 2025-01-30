@@ -45,7 +45,7 @@ type AuthenticationGetBearerTokenResponse struct {
 	// Token expiry time in seconds.
 	ExpiresIn int64 `json:"expires_in,required"`
 	// Not used.
-	Scope string `json:"scope,required"`
+	Scope string `json:"scope"`
 	// The token type, which in this case is "bearer".
 	TokenType string                                   `json:"token_type"`
 	JSON      authenticationGetBearerTokenResponseJSON `json:"-"`

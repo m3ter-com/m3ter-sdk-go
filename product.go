@@ -133,14 +133,7 @@ func (r *ProductService) ListAutoPaging(ctx context.Context, orgID string, query
 
 type Product struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
+	ID string `json:"id"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
 	Code string `json:"code"`
@@ -164,14 +157,20 @@ type Product struct {
 	// The unique identifier (UUID) of the user who last modified this Product.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Descriptive name for the Product providing context and information.
-	Name string      `json:"name"`
-	JSON productJSON `json:"-"`
+	Name string `json:"name"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64       `json:"version"`
+	JSON    productJSON `json:"-"`
 }
 
 // productJSON contains the JSON metadata for the struct [Product]
 type productJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	Code           apijson.Field
 	CreatedBy      apijson.Field
 	CustomFields   apijson.Field
@@ -179,6 +178,7 @@ type productJSON struct {
 	DtLastModified apijson.Field
 	LastModifiedBy apijson.Field
 	Name           apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
