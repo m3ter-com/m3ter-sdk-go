@@ -117,14 +117,7 @@ func (r *AggregationService) ListAutoPaging(ctx context.Context, orgID string, q
 
 type Aggregation struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
+	ID string `json:"id"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected targetField.
@@ -140,11 +133,13 @@ type Aggregation struct {
 	//   - **MAX**. Uses the maximum value. Can be applied to a **Measure**, **Income**,
 	//     or **Cost** `targetField`.
 	//
-	//   - **COUNT**. Counts the number of values. Can be applied to a **Who**, **What**,
-	//     **Where**, **Measure**, **Income**, **Cost** or **Other** `targetField`.
+	//   - **COUNT**. Counts the number of values. Can be applied to a **Measure**,
+	//     **Income**, or **Cost** `targetField`.
 	//
 	//   - **LATEST**. Uses the most recent value. Can be applied to a **Measure**,
-	//     **Income**, or **Cost** `targetField`.
+	//     **Income**, or **Cost** `targetField`. Note: Based on the timestamp (`ts`)
+	//     value of usage data measurement submissions. If using this method, please
+	//     ensure _distinct_ `ts` values are used for usage data measurment submissions.
 	//
 	//   - **MEAN**. Uses the arithmetic mean of the values. Can be applied to a
 	//     **Measure**, **Income**, or **Cost** `targetField`.
@@ -199,7 +194,7 @@ type Aggregation struct {
 	//     KiBy/s in a billing period, the charge would be 48,900 / 500 = 97.8 rounded up
 	//     to 98 \* 0.25 = $2.45.
 	//
-	// Enum: “UP” “DOWN” “NEAREST” “NONE”
+	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
 	Rounding AggregationRounding `json:"rounding"`
 	// _(Optional)_. Used when creating a segmented Aggregation, which segments the
 	// usage data collected by a single Meter. Works together with `segments`.
@@ -223,14 +218,20 @@ type Aggregation struct {
 	//
 	// Used as the label for billing, indicating to your customers what they are being
 	// charged for.
-	Unit string          `json:"unit"`
-	JSON aggregationJSON `json:"-"`
+	Unit string `json:"unit"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64           `json:"version"`
+	JSON    aggregationJSON `json:"-"`
 }
 
 // aggregationJSON contains the JSON metadata for the struct [Aggregation]
 type aggregationJSON struct {
 	ID              apijson.Field
-	Version         apijson.Field
 	Aggregation     apijson.Field
 	Code            apijson.Field
 	CreatedBy       apijson.Field
@@ -247,6 +248,7 @@ type aggregationJSON struct {
 	Segments        apijson.Field
 	TargetField     apijson.Field
 	Unit            apijson.Field
+	Version         apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
@@ -274,11 +276,13 @@ func (r aggregationJSON) RawJSON() string {
 //   - **MAX**. Uses the maximum value. Can be applied to a **Measure**, **Income**,
 //     or **Cost** `targetField`.
 //
-//   - **COUNT**. Counts the number of values. Can be applied to a **Who**, **What**,
-//     **Where**, **Measure**, **Income**, **Cost** or **Other** `targetField`.
+//   - **COUNT**. Counts the number of values. Can be applied to a **Measure**,
+//     **Income**, or **Cost** `targetField`.
 //
 //   - **LATEST**. Uses the most recent value. Can be applied to a **Measure**,
-//     **Income**, or **Cost** `targetField`.
+//     **Income**, or **Cost** `targetField`. Note: Based on the timestamp (`ts`)
+//     value of usage data measurement submissions. If using this method, please
+//     ensure _distinct_ `ts` values are used for usage data measurment submissions.
 //
 //   - **MEAN**. Uses the arithmetic mean of the values. Can be applied to a
 //     **Measure**, **Income**, or **Cost** `targetField`.
@@ -320,7 +324,7 @@ func (r AggregationAggregation) IsKnown() bool {
 //     KiBy/s in a billing period, the charge would be 48,900 / 500 = 97.8 rounded up
 //     to 98 \* 0.25 = $2.45.
 //
-// Enum: “UP” “DOWN” “NEAREST” “NONE”
+// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
 type AggregationRounding string
 
 const (
@@ -354,11 +358,13 @@ type AggregationNewParams struct {
 	//   - **MAX**. Uses the maximum value. Can be applied to a **Measure**, **Income**,
 	//     or **Cost** `targetField`.
 	//
-	//   - **COUNT**. Counts the number of values. Can be applied to a **Who**, **What**,
-	//     **Where**, **Measure**, **Income**, **Cost** or **Other** `targetField`.
+	//   - **COUNT**. Counts the number of values. Can be applied to a **Measure**,
+	//     **Income**, or **Cost** `targetField`.
 	//
 	//   - **LATEST**. Uses the most recent value. Can be applied to a **Measure**,
-	//     **Income**, or **Cost** `targetField`.
+	//     **Income**, or **Cost** `targetField`. Note: Based on the timestamp (`ts`)
+	//     value of usage data measurement submissions. If using this method, please
+	//     ensure _distinct_ `ts` values are used for usage data measurment submissions.
 	//
 	//   - **MEAN**. Uses the arithmetic mean of the values. Can be applied to a
 	//     **Measure**, **Income**, or **Cost** `targetField`.
@@ -395,7 +401,7 @@ type AggregationNewParams struct {
 	//     KiBy/s in a billing period, the charge would be 48,900 / 500 = 97.8 rounded up
 	//     to 98 \* 0.25 = $2.45.
 	//
-	// Enum: “UP” “DOWN” “NEAREST” “NONE”
+	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
 	Rounding param.Field[AggregationNewParamsRounding] `json:"rounding,required"`
 	// `Code` of the target `dataField` or `derivedField` on the Meter used as the
 	// basis for the Aggregation.
@@ -464,11 +470,13 @@ func (r AggregationNewParams) MarshalJSON() (data []byte, err error) {
 //   - **MAX**. Uses the maximum value. Can be applied to a **Measure**, **Income**,
 //     or **Cost** `targetField`.
 //
-//   - **COUNT**. Counts the number of values. Can be applied to a **Who**, **What**,
-//     **Where**, **Measure**, **Income**, **Cost** or **Other** `targetField`.
+//   - **COUNT**. Counts the number of values. Can be applied to a **Measure**,
+//     **Income**, or **Cost** `targetField`.
 //
 //   - **LATEST**. Uses the most recent value. Can be applied to a **Measure**,
-//     **Income**, or **Cost** `targetField`.
+//     **Income**, or **Cost** `targetField`. Note: Based on the timestamp (`ts`)
+//     value of usage data measurement submissions. If using this method, please
+//     ensure _distinct_ `ts` values are used for usage data measurment submissions.
 //
 //   - **MEAN**. Uses the arithmetic mean of the values. Can be applied to a
 //     **Measure**, **Income**, or **Cost** `targetField`.
@@ -510,7 +518,7 @@ func (r AggregationNewParamsAggregation) IsKnown() bool {
 //     KiBy/s in a billing period, the charge would be 48,900 / 500 = 97.8 rounded up
 //     to 98 \* 0.25 = $2.45.
 //
-// Enum: “UP” “DOWN” “NEAREST” “NONE”
+// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
 type AggregationNewParamsRounding string
 
 const (
@@ -544,11 +552,13 @@ type AggregationUpdateParams struct {
 	//   - **MAX**. Uses the maximum value. Can be applied to a **Measure**, **Income**,
 	//     or **Cost** `targetField`.
 	//
-	//   - **COUNT**. Counts the number of values. Can be applied to a **Who**, **What**,
-	//     **Where**, **Measure**, **Income**, **Cost** or **Other** `targetField`.
+	//   - **COUNT**. Counts the number of values. Can be applied to a **Measure**,
+	//     **Income**, or **Cost** `targetField`.
 	//
 	//   - **LATEST**. Uses the most recent value. Can be applied to a **Measure**,
-	//     **Income**, or **Cost** `targetField`.
+	//     **Income**, or **Cost** `targetField`. Note: Based on the timestamp (`ts`)
+	//     value of usage data measurement submissions. If using this method, please
+	//     ensure _distinct_ `ts` values are used for usage data measurment submissions.
 	//
 	//   - **MEAN**. Uses the arithmetic mean of the values. Can be applied to a
 	//     **Measure**, **Income**, or **Cost** `targetField`.
@@ -585,7 +595,7 @@ type AggregationUpdateParams struct {
 	//     KiBy/s in a billing period, the charge would be 48,900 / 500 = 97.8 rounded up
 	//     to 98 \* 0.25 = $2.45.
 	//
-	// Enum: “UP” “DOWN” “NEAREST” “NONE”
+	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
 	Rounding param.Field[AggregationUpdateParamsRounding] `json:"rounding,required"`
 	// `Code` of the target `dataField` or `derivedField` on the Meter used as the
 	// basis for the Aggregation.
@@ -654,11 +664,13 @@ func (r AggregationUpdateParams) MarshalJSON() (data []byte, err error) {
 //   - **MAX**. Uses the maximum value. Can be applied to a **Measure**, **Income**,
 //     or **Cost** `targetField`.
 //
-//   - **COUNT**. Counts the number of values. Can be applied to a **Who**, **What**,
-//     **Where**, **Measure**, **Income**, **Cost** or **Other** `targetField`.
+//   - **COUNT**. Counts the number of values. Can be applied to a **Measure**,
+//     **Income**, or **Cost** `targetField`.
 //
 //   - **LATEST**. Uses the most recent value. Can be applied to a **Measure**,
-//     **Income**, or **Cost** `targetField`.
+//     **Income**, or **Cost** `targetField`. Note: Based on the timestamp (`ts`)
+//     value of usage data measurement submissions. If using this method, please
+//     ensure _distinct_ `ts` values are used for usage data measurment submissions.
 //
 //   - **MEAN**. Uses the arithmetic mean of the values. Can be applied to a
 //     **Measure**, **Income**, or **Cost** `targetField`.
@@ -700,7 +712,7 @@ func (r AggregationUpdateParamsAggregation) IsKnown() bool {
 //     KiBy/s in a billing period, the charge would be 48,900 / 500 = 97.8 rounded up
 //     to 98 \* 0.25 = $2.45.
 //
-// Enum: “UP” “DOWN” “NEAREST” “NONE”
+// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
 type AggregationUpdateParamsRounding string
 
 const (
@@ -729,7 +741,7 @@ type AggregationListParams struct {
 	// Number of Aggregations to retrieve per page.
 	PageSize param.Field[int64] `query:"pageSize"`
 	// The UUIDs of the Products to retrieve Aggregations for.
-	ProductID param.Field[[]interface{}] `query:"productId"`
+	ProductID param.Field[[]string] `query:"productId"`
 }
 
 // URLQuery serializes [AggregationListParams]'s query parameters as `url.Values`.
