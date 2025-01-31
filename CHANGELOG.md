@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.2 (2025-01-31)
+
+Full Changelog: [v0.1.0-alpha.1...v0.1.0-alpha.2](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.1...v0.1.0-alpha.2)
+
+### Documentation
+
+* document raw responses ([#14](https://github.com/m3ter-com/m3ter-sdk-go/issues/14)) ([901aec5](https://github.com/m3ter-com/m3ter-sdk-go/commit/901aec5f4b35946bdc55385ac42f837e81e7eb60))
+
 ## 0.1.0-alpha.1 (2025-01-31)
 
 Full Changelog: [v0.0.1-alpha.1...v0.1.0-alpha.1](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.0.1-alpha.1...v0.1.0-alpha.1)
