@@ -112,8 +112,7 @@ func (r *MeterService) Update(ctx context.Context, orgID string, id string, body
 	return
 }
 
-// Retrieve a list of Meters that can be filtered by Product, Meter ID, or Meter
-// short code.
+// Retrieve a list of Meter entities
 func (r *MeterService) List(ctx context.Context, orgID string, query MeterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Meter], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -135,22 +134,14 @@ func (r *MeterService) List(ctx context.Context, orgID string, query MeterListPa
 	return res, nil
 }
 
-// Retrieve a list of Meters that can be filtered by Product, Meter ID, or Meter
-// short code.
+// Retrieve a list of Meter entities
 func (r *MeterService) ListAutoPaging(ctx context.Context, orgID string, query MeterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Meter] {
 	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 type Meter struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
+	ID string `json:"id"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	Code string `json:"code"`
 	// The id of the user who created this meter.
@@ -187,14 +178,20 @@ type Meter struct {
 	Name string `json:"name"`
 	// UUID of the Product the Meter belongs to. _(Optional)_ - if blank, the Meter is
 	// global.
-	ProductID string    `json:"productId"`
-	JSON      meterJSON `json:"-"`
+	ProductID string `json:"productId"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64     `json:"version"`
+	JSON    meterJSON `json:"-"`
 }
 
 // meterJSON contains the JSON metadata for the struct [Meter]
 type meterJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	Code           apijson.Field
 	CreatedBy      apijson.Field
 	CustomFields   apijson.Field
@@ -206,6 +203,7 @@ type meterJSON struct {
 	LastModifiedBy apijson.Field
 	Name           apijson.Field
 	ProductID      apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -619,17 +617,16 @@ func (r MeterUpdateParamsDerivedFieldsCategory) IsKnown() bool {
 }
 
 type MeterListParams struct {
-	// List of Meter codes to retrieve. These are the unique short codes that identify
-	// each Meter.
+	// list of codes to retrieve
 	Codes param.Field[[]string] `query:"codes"`
-	// List of Meter IDs to retrieve.
+	// list of ids to retrieve
 	IDs param.Field[[]string] `query:"ids"`
-	// `nextToken` for multi-page retrievals.
+	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
-	// Number of Meters to retrieve per page.
+	// Number of Meters to retrieve per page
 	PageSize param.Field[int64] `query:"pageSize"`
-	// The UUIDs of the Products to retrieve Meters for.
-	ProductID param.Field[[]interface{}] `query:"productId"`
+	// The UUIDs of the products to retrieve meters for
+	ProductID param.Field[[]string] `query:"productId"`
 }
 
 // URLQuery serializes [MeterListParams]'s query parameters as `url.Values`.
