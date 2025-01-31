@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.1 (2025-01-31)
+
+Full Changelog: [v0.0.1-alpha.1...v0.1.0-alpha.1](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.0.1-alpha.1...v0.1.0-alpha.1)
+
+### Features
+
+* **api:** updated OpenAPI spec ([#10](https://github.com/m3ter-com/m3ter-sdk-go/issues/10)) ([b1262dc](https://github.com/m3ter-com/m3ter-sdk-go/commit/b1262dc10d246e5e73b7ee5c97461d7259c88a64))
+
+
+### Bug Fixes
+
+* fix unicode encoding for json ([#12](https://github.com/m3ter-com/m3ter-sdk-go/issues/12)) ([a8dbab1](https://github.com/m3ter-com/m3ter-sdk-go/commit/a8dbab122865f4f686d1d03c6bc1c1c39f5b8086))
+
 ## 0.0.1-alpha.1 (2025-01-29)
 
 Full Changelog: [v0.0.1-alpha.0...v0.0.1-alpha.1](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.0.1-alpha.0...v0.0.1-alpha.1)
