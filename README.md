@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/m3ter-com/m3ter-sdk-go@v0.1.0-alpha.1'
+go get -u 'github.com/m3ter-com/m3ter-sdk-go@v0.1.0-alpha.2'
 ```
 
 <!-- x-release-please-end -->
@@ -285,6 +285,29 @@ client.Products.List(
 	m3ter.ProductListParams{},
 	option.WithMaxRetries(5),
 )
+```
+
+### Accessing raw response data (e.g. response headers)
+
+You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
+you need to examine response headers, status codes, or other details.
+
+```go
+// Create a variable to store the HTTP response
+var response *http.Response
+page, err := client.Products.List(
+	context.TODO(),
+	"ORG_ID",
+	m3ter.ProductListParams{},
+	option.WithResponseInto(&response),
+)
+if err != nil {
+	// handle error
+}
+fmt.Printf("%+v\n", page)
+
+fmt.Printf("Status Code: %d\n", response.StatusCode)
+fmt.Printf("Headers: %+#v\n", response.Header)
 ```
 
 ### Making custom/undocumented requests
