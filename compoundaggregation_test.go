@@ -36,7 +36,7 @@ func TestCompoundAggregationNewWithOptionalParams(t *testing.T) {
 			QuantityPerUnit: m3ter.F(1.000000),
 			Rounding:        m3ter.F(m3ter.CompoundAggregationNewParamsRoundingUp),
 			Unit:            m3ter.F("x"),
-			Code:            m3ter.F("{1{}}_"),
+			Code:            m3ter.F("example_code"),
 			CustomFields: m3ter.F(map[string]interface{}{
 				"foo": "bar",
 			}),
@@ -106,7 +106,7 @@ func TestCompoundAggregationUpdateWithOptionalParams(t *testing.T) {
 			QuantityPerUnit: m3ter.F(1.000000),
 			Rounding:        m3ter.F(m3ter.CompoundAggregationUpdateParamsRoundingUp),
 			Unit:            m3ter.F("x"),
-			Code:            m3ter.F("{1{}}_"),
+			Code:            m3ter.F("example_code"),
 			CustomFields: m3ter.F(map[string]interface{}{
 				"foo": "bar",
 			}),
