@@ -138,7 +138,14 @@ func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, orgID s
 
 type CompoundAggregation struct {
 	// The UUID of the entity.
-	ID string `json:"id"`
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
 	// This field is a string that represents the formula for the calculation. This
 	// formula determines how the CompoundAggregation is calculated from the underlying
 	// usage data.
@@ -202,21 +209,15 @@ type CompoundAggregation struct {
 	//
 	// Used as the label for billing, indicating to your customers what they are being
 	// charged for.
-	Unit string `json:"unit"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64                   `json:"version"`
-	JSON    compoundAggregationJSON `json:"-"`
+	Unit string                  `json:"unit"`
+	JSON compoundAggregationJSON `json:"-"`
 }
 
 // compoundAggregationJSON contains the JSON metadata for the struct
 // [CompoundAggregation]
 type compoundAggregationJSON struct {
 	ID                       apijson.Field
+	Version                  apijson.Field
 	Calculation              apijson.Field
 	Code                     apijson.Field
 	CreatedBy                apijson.Field
@@ -231,7 +232,6 @@ type compoundAggregationJSON struct {
 	Rounding                 apijson.Field
 	Segments                 apijson.Field
 	Unit                     apijson.Field
-	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }
