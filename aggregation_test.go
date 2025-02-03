@@ -38,7 +38,7 @@ func TestAggregationNewWithOptionalParams(t *testing.T) {
 			Rounding:        m3ter.F(m3ter.AggregationNewParamsRoundingUp),
 			TargetField:     m3ter.F("x"),
 			Unit:            m3ter.F("x"),
-			Code:            m3ter.F("{1{}}_"),
+			Code:            m3ter.F("example_code"),
 			CustomFields: m3ter.F(map[string]interface{}{
 				"foo": "bar",
 			}),
@@ -113,7 +113,7 @@ func TestAggregationUpdateWithOptionalParams(t *testing.T) {
 			Rounding:        m3ter.F(m3ter.AggregationUpdateParamsRoundingUp),
 			TargetField:     m3ter.F("x"),
 			Unit:            m3ter.F("x"),
-			Code:            m3ter.F("{1{}}_"),
+			Code:            m3ter.F("example_code"),
 			CustomFields: m3ter.F(map[string]interface{}{
 				"foo": "bar",
 			}),
