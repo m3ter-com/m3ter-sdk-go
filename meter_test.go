@@ -11,6 +11,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestMeterNewWithOptionalParams(t *testing.T) {
@@ -46,8 +47,8 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 				Unit:        m3ter.F("x"),
 			}}),
 			Name: m3ter.F("x"),
-			CustomFields: m3ter.F(map[string]interface{}{
-				"foo": "bar",
+			CustomFields: m3ter.F(map[string]m3ter.MeterNewParamsCustomFieldsUnion{
+				"foo": shared.UnionString("string"),
 			}),
 			GroupID:   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -125,8 +126,8 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 				Unit:        m3ter.F("x"),
 			}}),
 			Name: m3ter.F("x"),
-			CustomFields: m3ter.F(map[string]interface{}{
-				"foo": "bar",
+			CustomFields: m3ter.F(map[string]m3ter.MeterUpdateParamsCustomFieldsUnion{
+				"foo": shared.UnionString("string"),
 			}),
 			GroupID:   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -16,6 +17,8 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
+	"github.com/tidwall/gjson"
 )
 
 // MeterService contains methods and other services that help with interacting with
@@ -163,7 +166,7 @@ type Meter struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]interface{} `json:"customFields"`
+	CustomFields map[string]MeterCustomFieldsUnion `json:"customFields"`
 	// Used to submit categorized raw usage data values for ingest into the platform -
 	// either numeric quantitative values or non-numeric data values. At least one
 	// required per Meter; maximum 15 per Meter.
@@ -214,6 +217,26 @@ func (r *Meter) UnmarshalJSON(data []byte) (err error) {
 
 func (r meterJSON) RawJSON() string {
 	return r.raw
+}
+
+// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
+type MeterCustomFieldsUnion interface {
+	ImplementsMeterCustomFieldsUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*MeterCustomFieldsUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.Number,
+			Type:       reflect.TypeOf(shared.UnionFloat(0)),
+		},
+	)
 }
 
 type MeterDataField struct {
@@ -367,7 +390,7 @@ type MeterNewParams struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	CustomFields param.Field[map[string]MeterNewParamsCustomFieldsUnion] `json:"customFields"`
 	// UUID of the group the Meter belongs to. _(Optional)_.
 	GroupID param.Field[string] `json:"groupId"`
 	// UUID of the product the Meter belongs to. _(Optional)_ - if left blank, the
@@ -476,6 +499,11 @@ func (r MeterNewParamsDerivedFieldsCategory) IsKnown() bool {
 	return false
 }
 
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type MeterNewParamsCustomFieldsUnion interface {
+	ImplementsMeterNewParamsCustomFieldsUnion()
+}
+
 type MeterUpdateParams struct {
 	// Code of the Meter - unique short code used to identify the Meter.
 	//
@@ -507,7 +535,7 @@ type MeterUpdateParams struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	CustomFields param.Field[map[string]MeterUpdateParamsCustomFieldsUnion] `json:"customFields"`
 	// UUID of the group the Meter belongs to. _(Optional)_.
 	GroupID param.Field[string] `json:"groupId"`
 	// UUID of the product the Meter belongs to. _(Optional)_ - if left blank, the
@@ -614,6 +642,11 @@ func (r MeterUpdateParamsDerivedFieldsCategory) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type MeterUpdateParamsCustomFieldsUnion interface {
+	ImplementsMeterUpdateParamsCustomFieldsUnion()
 }
 
 type MeterListParams struct {

@@ -11,6 +11,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestCompoundAggregationNewWithOptionalParams(t *testing.T) {
@@ -37,8 +38,8 @@ func TestCompoundAggregationNewWithOptionalParams(t *testing.T) {
 			Rounding:        m3ter.F(m3ter.CompoundAggregationNewParamsRoundingUp),
 			Unit:            m3ter.F("x"),
 			Code:            m3ter.F("example_code"),
-			CustomFields: m3ter.F(map[string]interface{}{
-				"foo": "bar",
+			CustomFields: m3ter.F(map[string]m3ter.CompoundAggregationNewParamsCustomFieldsUnion{
+				"foo": shared.UnionString("string"),
 			}),
 			EvaluateNullAggregations: m3ter.F(true),
 			ProductID:                m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -107,8 +108,8 @@ func TestCompoundAggregationUpdateWithOptionalParams(t *testing.T) {
 			Rounding:        m3ter.F(m3ter.CompoundAggregationUpdateParamsRoundingUp),
 			Unit:            m3ter.F("x"),
 			Code:            m3ter.F("example_code"),
-			CustomFields: m3ter.F(map[string]interface{}{
-				"foo": "bar",
+			CustomFields: m3ter.F(map[string]m3ter.CompoundAggregationUpdateParamsCustomFieldsUnion{
+				"foo": shared.UnionString("string"),
 			}),
 			EvaluateNullAggregations: m3ter.F(true),
 			ProductID:                m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),

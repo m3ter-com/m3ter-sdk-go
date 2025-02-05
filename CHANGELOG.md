@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-alpha.5 (2025-02-05)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
+
+### Features
+
+* **api:** Update custom field type information ([#24](https://github.com/m3ter-com/m3ter-sdk-go/issues/24)) ([1e04e88](https://github.com/m3ter-com/m3ter-sdk-go/commit/1e04e88085a5cc4361f97f4518d716af7cc6bbf3))
+* **client:** send `X-Stainless-Timeout` header ([#22](https://github.com/m3ter-com/m3ter-sdk-go/issues/22)) ([8a69448](https://github.com/m3ter-com/m3ter-sdk-go/commit/8a69448d87595760f5b990e4bdaf4e31294f23df))
+
 ## 0.1.0-alpha.4 (2025-02-03)
 
 Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
