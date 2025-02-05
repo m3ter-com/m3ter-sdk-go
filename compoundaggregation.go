@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -16,6 +17,8 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
+	"github.com/tidwall/gjson"
 )
 
 // CompoundAggregationService contains methods and other services that help with
@@ -153,8 +156,8 @@ type CompoundAggregation struct {
 	// Code of the Aggregation. A unique short code to identify the Aggregation.
 	Code string `json:"code"`
 	// The unique identifier (UUID) of the user who created this CompoundAggregation.
-	CreatedBy    string                 `json:"createdBy"`
-	CustomFields map[string]interface{} `json:"customFields"`
+	CreatedBy    string                                          `json:"createdBy"`
+	CustomFields map[string]CompoundAggregationCustomFieldsUnion `json:"customFields"`
 	// The date and time _(in ISO-8601 format)_ when the CompoundAggregation was
 	// created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
@@ -244,6 +247,26 @@ func (r compoundAggregationJSON) RawJSON() string {
 	return r.raw
 }
 
+// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
+type CompoundAggregationCustomFieldsUnion interface {
+	ImplementsCompoundAggregationCustomFieldsUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*CompoundAggregationCustomFieldsUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.Number,
+			Type:       reflect.TypeOf(shared.UnionFloat(0)),
+		},
+	)
+}
+
 // Specifies how you want to deal with non-integer, fractional number Aggregation
 // values.
 //
@@ -321,8 +344,8 @@ type CompoundAggregationNewParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
-	Code         param.Field[string]                 `json:"code"`
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	Code         param.Field[string]                                                   `json:"code"`
+	CustomFields param.Field[map[string]CompoundAggregationNewParamsCustomFieldsUnion] `json:"customFields"`
 	// Boolean True / False flag:
 	//
 	//   - **TRUE** - set to TRUE if you want to allow null values from the simple
@@ -389,6 +412,11 @@ func (r CompoundAggregationNewParamsRounding) IsKnown() bool {
 	return false
 }
 
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type CompoundAggregationNewParamsCustomFieldsUnion interface {
+	ImplementsCompoundAggregationNewParamsCustomFieldsUnion()
+}
+
 type CompoundAggregationUpdateParams struct {
 	// String that represents the formula for the calculation. This formula determines
 	// how the CompoundAggregation value is calculated. The calculation can reference
@@ -433,8 +461,8 @@ type CompoundAggregationUpdateParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
-	Code         param.Field[string]                 `json:"code"`
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	Code         param.Field[string]                                                      `json:"code"`
+	CustomFields param.Field[map[string]CompoundAggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`
 	// Boolean True / False flag:
 	//
 	//   - **TRUE** - set to TRUE if you want to allow null values from the simple
@@ -499,6 +527,11 @@ func (r CompoundAggregationUpdateParamsRounding) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type CompoundAggregationUpdateParamsCustomFieldsUnion interface {
+	ImplementsCompoundAggregationUpdateParamsCustomFieldsUnion()
 }
 
 type CompoundAggregationListParams struct {

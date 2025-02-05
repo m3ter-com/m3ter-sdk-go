@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -16,6 +17,8 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
+	"github.com/tidwall/gjson"
 )
 
 // AggregationService contains methods and other services that help with
@@ -157,8 +160,8 @@ type Aggregation struct {
 	// Code of the Aggregation. A unique short code to identify the Aggregation.
 	Code string `json:"code"`
 	// The id of the user who created this aggregation.
-	CreatedBy    string                 `json:"createdBy"`
-	CustomFields map[string]interface{} `json:"customFields"`
+	CreatedBy    string                                  `json:"createdBy"`
+	CustomFields map[string]AggregationCustomFieldsUnion `json:"customFields"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -309,6 +312,26 @@ func (r AggregationAggregation) IsKnown() bool {
 	return false
 }
 
+// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
+type AggregationCustomFieldsUnion interface {
+	ImplementsAggregationCustomFieldsUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*AggregationCustomFieldsUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.Number,
+			Type:       reflect.TypeOf(shared.UnionFloat(0)),
+		},
+	)
+}
+
 // Specifies how you want to deal with non-integer, fractional number Aggregation
 // values.
 //
@@ -410,8 +433,8 @@ type AggregationNewParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
-	Code         param.Field[string]                 `json:"code"`
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	Code         param.Field[string]                                           `json:"code"`
+	CustomFields param.Field[map[string]AggregationNewParamsCustomFieldsUnion] `json:"customFields"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -536,6 +559,11 @@ func (r AggregationNewParamsRounding) IsKnown() bool {
 	return false
 }
 
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AggregationNewParamsCustomFieldsUnion interface {
+	ImplementsAggregationNewParamsCustomFieldsUnion()
+}
+
 type AggregationUpdateParams struct {
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
@@ -604,8 +632,8 @@ type AggregationUpdateParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
-	Code         param.Field[string]                 `json:"code"`
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	Code         param.Field[string]                                              `json:"code"`
+	CustomFields param.Field[map[string]AggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -728,6 +756,11 @@ func (r AggregationUpdateParamsRounding) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AggregationUpdateParamsCustomFieldsUnion interface {
+	ImplementsAggregationUpdateParamsCustomFieldsUnion()
 }
 
 type AggregationListParams struct {
