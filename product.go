@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -16,6 +17,8 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
+	"github.com/tidwall/gjson"
 )
 
 // ProductService contains methods and other services that help with interacting
@@ -156,7 +159,7 @@ type Product struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]interface{} `json:"customFields"`
+	CustomFields map[string]ProductCustomFieldsUnion `json:"customFields"`
 	// The date and time _(in ISO-8601 format)_ when the Product was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the Product was last modified.
@@ -191,6 +194,26 @@ func (r productJSON) RawJSON() string {
 	return r.raw
 }
 
+// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
+type ProductCustomFieldsUnion interface {
+	ImplementsProductCustomFieldsUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*ProductCustomFieldsUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.Number,
+			Type:       reflect.TypeOf(shared.UnionFloat(0)),
+		},
+	)
+}
+
 type ProductNewParams struct {
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
@@ -207,7 +230,7 @@ type ProductNewParams struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	CustomFields param.Field[map[string]ProductNewParamsCustomFieldsUnion] `json:"customFields"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -221,6 +244,11 @@ type ProductNewParams struct {
 
 func (r ProductNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type ProductNewParamsCustomFieldsUnion interface {
+	ImplementsProductNewParamsCustomFieldsUnion()
 }
 
 type ProductUpdateParams struct {
@@ -239,7 +267,7 @@ type ProductUpdateParams struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields param.Field[map[string]interface{}] `json:"customFields"`
+	CustomFields param.Field[map[string]ProductUpdateParamsCustomFieldsUnion] `json:"customFields"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -253,6 +281,11 @@ type ProductUpdateParams struct {
 
 func (r ProductUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type ProductUpdateParamsCustomFieldsUnion interface {
+	ImplementsProductUpdateParamsCustomFieldsUnion()
 }
 
 type ProductListParams struct {

@@ -11,6 +11,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestAggregationNewWithOptionalParams(t *testing.T) {
@@ -39,8 +40,8 @@ func TestAggregationNewWithOptionalParams(t *testing.T) {
 			TargetField:     m3ter.F("x"),
 			Unit:            m3ter.F("x"),
 			Code:            m3ter.F("example_code"),
-			CustomFields: m3ter.F(map[string]interface{}{
-				"foo": "bar",
+			CustomFields: m3ter.F(map[string]m3ter.AggregationNewParamsCustomFieldsUnion{
+				"foo": shared.UnionString("string"),
 			}),
 			DefaultValue:    m3ter.F(0.000000),
 			SegmentedFields: m3ter.F([]string{"string"}),
@@ -114,8 +115,8 @@ func TestAggregationUpdateWithOptionalParams(t *testing.T) {
 			TargetField:     m3ter.F("x"),
 			Unit:            m3ter.F("x"),
 			Code:            m3ter.F("example_code"),
-			CustomFields: m3ter.F(map[string]interface{}{
-				"foo": "bar",
+			CustomFields: m3ter.F(map[string]m3ter.AggregationUpdateParamsCustomFieldsUnion{
+				"foo": shared.UnionString("string"),
 			}),
 			DefaultValue:    m3ter.F(0.000000),
 			SegmentedFields: m3ter.F([]string{"string"}),
