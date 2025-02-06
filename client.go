@@ -17,11 +17,29 @@ import (
 type Client struct {
 	Options              []option.RequestOption
 	Authentication       *AuthenticationService
+	Accounts             *AccountService
+	AccountPlans         *AccountPlanService
 	Aggregations         *AggregationService
+	Balances             *BalanceService
+	BillConfig           *BillConfigService
+	Commitments          *CommitmentService
 	CompoundAggregations *CompoundAggregationService
+	Contracts            *ContractService
 	Counters             *CounterService
+	CounterAdjustments   *CounterAdjustmentService
+	CounterPricings      *CounterPricingService
+	CreditReasons        *CreditReasonService
+	Currencies           *CurrencyService
+	DebitReasons         *DebitReasonService
 	Meters               *MeterService
+	OrganizationConfig   *OrganizationConfigService
+	Plans                *PlanService
+	PlanGroups           *PlanGroupService
+	PlanGroupLinks       *PlanGroupLinkService
+	PlanTemplates        *PlanTemplateService
+	Pricings             *PricingService
 	Products             *ProductService
+	TransactionTypes     *TransactionTypeService
 }
 
 // NewClient generates a new client with the default option read from the
@@ -44,11 +62,29 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r = &Client{Options: opts}
 
 	r.Authentication = NewAuthenticationService(opts...)
+	r.Accounts = NewAccountService(opts...)
+	r.AccountPlans = NewAccountPlanService(opts...)
 	r.Aggregations = NewAggregationService(opts...)
+	r.Balances = NewBalanceService(opts...)
+	r.BillConfig = NewBillConfigService(opts...)
+	r.Commitments = NewCommitmentService(opts...)
 	r.CompoundAggregations = NewCompoundAggregationService(opts...)
+	r.Contracts = NewContractService(opts...)
 	r.Counters = NewCounterService(opts...)
+	r.CounterAdjustments = NewCounterAdjustmentService(opts...)
+	r.CounterPricings = NewCounterPricingService(opts...)
+	r.CreditReasons = NewCreditReasonService(opts...)
+	r.Currencies = NewCurrencyService(opts...)
+	r.DebitReasons = NewDebitReasonService(opts...)
 	r.Meters = NewMeterService(opts...)
+	r.OrganizationConfig = NewOrganizationConfigService(opts...)
+	r.Plans = NewPlanService(opts...)
+	r.PlanGroups = NewPlanGroupService(opts...)
+	r.PlanGroupLinks = NewPlanGroupLinkService(opts...)
+	r.PlanTemplates = NewPlanTemplateService(opts...)
+	r.Pricings = NewPricingService(opts...)
 	r.Products = NewProductService(opts...)
+	r.TransactionTypes = NewTransactionTypeService(opts...)
 
 	return
 }

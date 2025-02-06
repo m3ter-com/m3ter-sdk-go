@@ -118,6 +118,22 @@ func (r *AggregationService) ListAutoPaging(ctx context.Context, orgID string, q
 	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
+// Delete the Aggregation with the given UUID.
+func (r *AggregationService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Aggregation, err error) {
+	opts = append(r.Options[:], opts...)
+	if orgID == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/aggregations/%s", orgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
 type Aggregation struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
