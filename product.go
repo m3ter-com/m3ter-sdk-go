@@ -134,6 +134,25 @@ func (r *ProductService) ListAutoPaging(ctx context.Context, orgID string, query
 	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
+// Delete a Product with the given UUID.
+//
+// This endpoint deletes a specific Product within a specified Organization, using
+// the Product UUID.
+func (r *ProductService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Product, err error) {
+	opts = append(r.Options[:], opts...)
+	if orgID == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/products/%s", orgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
 type Product struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`

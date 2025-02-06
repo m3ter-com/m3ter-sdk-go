@@ -139,6 +139,27 @@ func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, orgID s
 	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
+// Delete a CompoundAggregation with the given UUID.
+//
+// This endpoint enables deletion of a specific CompoundAggregation associated with
+// a specific Organization. Useful when you need to remove an existing
+// CompoundAggregation that is no longer required, such as when changing pricing or
+// planning models.
+func (r *CompoundAggregationService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CompoundAggregation, err error) {
+	opts = append(r.Options[:], opts...)
+	if orgID == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/compoundaggregations/%s", orgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
 type CompoundAggregation struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
