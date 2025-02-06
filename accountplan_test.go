@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
@@ -14,7 +15,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
-func TestMeterNewWithOptionalParams(t *testing.T) {
+func TestAccountPlanNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,31 +29,23 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
 	)
-	_, err := client.Meters.New(
+	_, err := client.AccountPlans.New(
 		context.TODO(),
 		"orgId",
-		m3ter.MeterNewParams{
-			Code: m3ter.F("JS!?Q0]r] ]$]"),
-			DataFields: m3ter.F([]m3ter.MeterNewParamsDataField{{
-				Category: m3ter.F(m3ter.MeterNewParamsDataFieldsCategoryWho),
-				Code:     m3ter.F("{1{}}_"),
-				Name:     m3ter.F("x"),
-				Unit:     m3ter.F("x"),
-			}}),
-			DerivedFields: m3ter.F([]m3ter.MeterNewParamsDerivedField{{
-				Calculation: m3ter.F("x"),
-				Category:    m3ter.F(m3ter.MeterNewParamsDerivedFieldsCategoryWho),
-				Code:        m3ter.F("{1{}}_"),
-				Name:        m3ter.F("x"),
-				Unit:        m3ter.F("x"),
-			}}),
-			Name: m3ter.F("x"),
-			CustomFields: m3ter.F(map[string]m3ter.MeterNewParamsCustomFieldsUnion{
+		m3ter.AccountPlanNewParams{
+			AccountID:        m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			StartDate:        m3ter.F(time.Now()),
+			BillEpoch:        m3ter.F(time.Now()),
+			ChildBillingMode: m3ter.F(m3ter.AccountPlanNewParamsChildBillingModeParentSummary),
+			Code:             m3ter.F("JS!?Q0]r] ]$]"),
+			ContractID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			CustomFields: m3ter.F(map[string]m3ter.AccountPlanNewParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),
-			GroupID:   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Version:   m3ter.F(int64(0)),
+			EndDate:     m3ter.F(time.Now()),
+			PlanGroupID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			PlanID:      m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			Version:     m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -64,7 +57,7 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestMeterGet(t *testing.T) {
+func TestAccountPlanGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,7 +71,7 @@ func TestMeterGet(t *testing.T) {
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
 	)
-	_, err := client.Meters.Get(
+	_, err := client.AccountPlans.Get(
 		context.TODO(),
 		"orgId",
 		"id",
@@ -92,7 +85,7 @@ func TestMeterGet(t *testing.T) {
 	}
 }
 
-func TestMeterUpdateWithOptionalParams(t *testing.T) {
+func TestAccountPlanUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -106,32 +99,24 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
 	)
-	_, err := client.Meters.Update(
+	_, err := client.AccountPlans.Update(
 		context.TODO(),
 		"orgId",
 		"id",
-		m3ter.MeterUpdateParams{
-			Code: m3ter.F("JS!?Q0]r] ]$]"),
-			DataFields: m3ter.F([]m3ter.MeterUpdateParamsDataField{{
-				Category: m3ter.F(m3ter.MeterUpdateParamsDataFieldsCategoryWho),
-				Code:     m3ter.F("{1{}}_"),
-				Name:     m3ter.F("x"),
-				Unit:     m3ter.F("x"),
-			}}),
-			DerivedFields: m3ter.F([]m3ter.MeterUpdateParamsDerivedField{{
-				Calculation: m3ter.F("x"),
-				Category:    m3ter.F(m3ter.MeterUpdateParamsDerivedFieldsCategoryWho),
-				Code:        m3ter.F("{1{}}_"),
-				Name:        m3ter.F("x"),
-				Unit:        m3ter.F("x"),
-			}}),
-			Name: m3ter.F("x"),
-			CustomFields: m3ter.F(map[string]m3ter.MeterUpdateParamsCustomFieldsUnion{
+		m3ter.AccountPlanUpdateParams{
+			AccountID:        m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			StartDate:        m3ter.F(time.Now()),
+			BillEpoch:        m3ter.F(time.Now()),
+			ChildBillingMode: m3ter.F(m3ter.AccountPlanUpdateParamsChildBillingModeParentSummary),
+			Code:             m3ter.F("JS!?Q0]r] ]$]"),
+			ContractID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			CustomFields: m3ter.F(map[string]m3ter.AccountPlanUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),
-			GroupID:   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Version:   m3ter.F(int64(0)),
+			EndDate:     m3ter.F(time.Now()),
+			PlanGroupID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			PlanID:      m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			Version:     m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -143,7 +128,7 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestMeterListWithOptionalParams(t *testing.T) {
+func TestAccountPlanListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -157,15 +142,19 @@ func TestMeterListWithOptionalParams(t *testing.T) {
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
 	)
-	_, err := client.Meters.List(
+	_, err := client.AccountPlans.List(
 		context.TODO(),
 		"orgId",
-		m3ter.MeterListParams{
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-			ProductID: m3ter.F([]string{"string"}),
+		m3ter.AccountPlanListParams{
+			Account:    m3ter.F("account"),
+			Contract:   m3ter.F("contract"),
+			Date:       m3ter.F("date"),
+			IDs:        m3ter.F([]string{"string"}),
+			Includeall: m3ter.F(true),
+			NextToken:  m3ter.F("nextToken"),
+			PageSize:   m3ter.F(int64(1)),
+			Plan:       m3ter.F("plan"),
+			Product:    m3ter.F("product"),
 		},
 	)
 	if err != nil {
@@ -177,7 +166,7 @@ func TestMeterListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestMeterDelete(t *testing.T) {
+func TestAccountPlanDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -191,7 +180,7 @@ func TestMeterDelete(t *testing.T) {
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
 	)
-	_, err := client.Meters.Delete(
+	_, err := client.AccountPlans.Delete(
 		context.TODO(),
 		"orgId",
 		"id",

@@ -110,6 +110,22 @@ func (r *CounterService) ListAutoPaging(ctx context.Context, orgID string, query
 	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
+// Delete a Counter for the given UUID.
+func (r *CounterService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Counter, err error) {
+	opts = append(r.Options[:], opts...)
+	if orgID == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/counters/%s", orgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
 type Counter struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
