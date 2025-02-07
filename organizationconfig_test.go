@@ -62,7 +62,7 @@ func TestOrganizationConfigUpdateWithOptionalParams(t *testing.T) {
 			Timezone:                        m3ter.F("UTC"),
 			WeekEpoch:                       m3ter.F("2022-01-04"),
 			YearEpoch:                       m3ter.F("2022-01-01"),
-			AutoApproveBillsGracePeriod:     m3ter.F(int64(1)),
+			AutoApproveBillsGracePeriod:     m3ter.F(int64(2)),
 			AutoApproveBillsGracePeriodUnit: m3ter.F("DAYS"),
 			AutoGenerateStatementMode:       m3ter.F(m3ter.OrganizationConfigUpdateParamsAutoGenerateStatementModeNone),
 			BillPrefix:                      m3ter.F("Bill-"),
@@ -72,7 +72,7 @@ func TestOrganizationConfigUpdateWithOptionalParams(t *testing.T) {
 			CurrencyConversions: m3ter.F([]m3ter.OrganizationConfigUpdateParamsCurrencyConversion{{
 				From:       m3ter.F("EUR"),
 				To:         m3ter.F("USD"),
-				Multiplier: m3ter.F(1.000000),
+				Multiplier: m3ter.F(1.120000),
 			}}),
 			DefaultStatementDefinitionID: m3ter.F("defaultStatementDefinitionId"),
 			ExternalInvoiceDate:          m3ter.F("LAST_DAY_OF_ARREARS"),
