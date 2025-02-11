@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // CurrencyService contains methods and other services that help with interacting
@@ -92,34 +91,15 @@ func (r *CurrencyService) Update(ctx context.Context, orgID string, id string, b
 // Retrieves a list of Currencies for the specified Organization. This endpoint
 // supports pagination and includes various query parameters to filter the
 // Currencies based on Currency ID, and short codes.
-func (r *CurrencyService) List(ctx context.Context, orgID string, query CurrencyListParams, opts ...option.RequestOption) (res *pagination.Cursor[Currency], err error) {
-	var raw *http.Response
+func (r *CurrencyService) List(ctx context.Context, orgID string, query CurrencyListParams, opts ...option.RequestOption) (res *CurrencyListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/picklists/currency", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of Currencies.
-//
-// Retrieves a list of Currencies for the specified Organization. This endpoint
-// supports pagination and includes various query parameters to filter the
-// Currencies based on Currency ID, and short codes.
-func (r *CurrencyService) ListAutoPaging(ctx context.Context, orgID string, query CurrencyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Currency] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete the Currency with the given UUID.
@@ -217,6 +197,8 @@ func (r CurrencyRoundingMode) IsKnown() bool {
 	}
 	return false
 }
+
+type CurrencyListResponse = interface{}
 
 type CurrencyNewParams struct {
 	// The name of the entity.

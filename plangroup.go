@@ -16,7 +16,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -102,34 +101,15 @@ func (r *PlanGroupService) Update(ctx context.Context, orgID string, id string, 
 // Retrieves a list of PlanGroups within the specified organization. You can
 // optionally filter by Account IDs or PlanGroup IDs, and also paginate the results
 // for easier management.
-func (r *PlanGroupService) List(ctx context.Context, orgID string, query PlanGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroup], err error) {
-	var raw *http.Response
+func (r *PlanGroupService) List(ctx context.Context, orgID string, query PlanGroupListParams, opts ...option.RequestOption) (res *PlanGroupListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/plangroups", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of PlanGroups.
-//
-// Retrieves a list of PlanGroups within the specified organization. You can
-// optionally filter by Account IDs or PlanGroup IDs, and also paginate the results
-// for easier management.
-func (r *PlanGroupService) ListAutoPaging(ctx context.Context, orgID string, query PlanGroupListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroup] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a PlanGroup with the given UUID.
@@ -273,6 +253,8 @@ func init() {
 		},
 	)
 }
+
+type PlanGroupListResponse = interface{}
 
 type PlanGroupNewParams struct {
 	// Currency code for the PlanGroup (For example, USD).
