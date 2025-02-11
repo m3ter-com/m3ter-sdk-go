@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // TransactionTypeService contains methods and other services that help with
@@ -88,32 +87,15 @@ func (r *TransactionTypeService) Update(ctx context.Context, orgID string, id st
 // Retrieves a list of TransactionType entities for the specified Organization. The
 // list can be paginated for easier management, and supports filtering by various
 // parameters.
-func (r *TransactionTypeService) List(ctx context.Context, orgID string, query TransactionTypeListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionType], err error) {
-	var raw *http.Response
+func (r *TransactionTypeService) List(ctx context.Context, orgID string, query TransactionTypeListParams, opts ...option.RequestOption) (res *TransactionTypeListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieves a list of TransactionType entities for the specified Organization. The
-// list can be paginated for easier management, and supports filtering by various
-// parameters.
-func (r *TransactionTypeService) ListAutoPaging(ctx context.Context, orgID string, query TransactionTypeListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TransactionType] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes the TransactionType with the given UUID from the specified Organization.
@@ -183,6 +165,8 @@ func (r *TransactionType) UnmarshalJSON(data []byte) (err error) {
 func (r transactionTypeJSON) RawJSON() string {
 	return r.raw
 }
+
+type TransactionTypeListResponse = interface{}
 
 type TransactionTypeNewParams struct {
 	// The name of the entity.

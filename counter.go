@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // CounterService contains methods and other services that help with interacting
@@ -83,31 +82,15 @@ func (r *CounterService) Update(ctx context.Context, orgID string, id string, bo
 
 // Retrieve a list of Counter entities that can be filtered by Product, Counter ID,
 // or Codes.
-func (r *CounterService) List(ctx context.Context, orgID string, query CounterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Counter], err error) {
-	var raw *http.Response
+func (r *CounterService) List(ctx context.Context, orgID string, query CounterListParams, opts ...option.RequestOption) (res *CounterListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/counters", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of Counter entities that can be filtered by Product, Counter ID,
-// or Codes.
-func (r *CounterService) ListAutoPaging(ctx context.Context, orgID string, query CounterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Counter] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a Counter for the given UUID.
@@ -181,6 +164,8 @@ func (r *Counter) UnmarshalJSON(data []byte) (err error) {
 func (r counterJSON) RawJSON() string {
 	return r.raw
 }
+
+type CounterListResponse = interface{}
 
 type CounterNewParams struct {
 	// Descriptive name for the Counter.

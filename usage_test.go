@@ -26,7 +26,7 @@ func TestUsage(t *testing.T) {
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
 	)
-	page, err := client.Products.List(
+	product, err := client.Products.List(
 		context.TODO(),
 		"ORG_ID",
 		m3ter.ProductListParams{},
@@ -34,5 +34,5 @@ func TestUsage(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	t.Logf("%+v\n", page)
+	t.Logf("%+v\n", product)
 }

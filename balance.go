@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // BalanceService contains methods and other services that help with interacting
@@ -96,34 +95,15 @@ func (r *BalanceService) Update(ctx context.Context, orgID string, id string, bo
 // This endpoint returns a list of all Balances associated with your organization.
 // You can filter the Balances by the end customer's Account UUID and end dates,
 // and paginate through them using the `pageSize` and `nextToken` parameters.
-func (r *BalanceService) List(ctx context.Context, orgID string, query BalanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[Balance], err error) {
-	var raw *http.Response
+func (r *BalanceService) List(ctx context.Context, orgID string, query BalanceListParams, opts ...option.RequestOption) (res *BalanceListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/balances", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of all Balances for your Organization.
-//
-// This endpoint returns a list of all Balances associated with your organization.
-// You can filter the Balances by the end customer's Account UUID and end dates,
-// and paginate through them using the `pageSize` and `nextToken` parameters.
-func (r *BalanceService) ListAutoPaging(ctx context.Context, orgID string, query BalanceListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Balance] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a specific Balance.
@@ -257,6 +237,8 @@ func (r BalanceLineItemType) IsKnown() bool {
 	}
 	return false
 }
+
+type BalanceListResponse = interface{}
 
 type BalanceNewParams struct {
 	// The unique identifier (UUID) for the end customer Account.

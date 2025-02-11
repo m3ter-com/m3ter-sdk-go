@@ -16,7 +16,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -91,31 +90,15 @@ func (r *AggregationService) Update(ctx context.Context, orgID string, id string
 
 // Retrieve a list of Aggregations that can be filtered by Product, Aggregation ID,
 // or Code.
-func (r *AggregationService) List(ctx context.Context, orgID string, query AggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[Aggregation], err error) {
-	var raw *http.Response
+func (r *AggregationService) List(ctx context.Context, orgID string, query AggregationListParams, opts ...option.RequestOption) (res *AggregationListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/aggregations", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of Aggregations that can be filtered by Product, Aggregation ID,
-// or Code.
-func (r *AggregationService) ListAutoPaging(ctx context.Context, orgID string, query AggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Aggregation] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete the Aggregation with the given UUID.
@@ -380,6 +363,8 @@ func (r AggregationRounding) IsKnown() bool {
 	}
 	return false
 }
+
+type AggregationListResponse = interface{}
 
 type AggregationNewParams struct {
 	// Specifies the computation method applied to usage data collected in
