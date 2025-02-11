@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // CounterPricingService contains methods and other services that help with
@@ -91,31 +90,15 @@ func (r *CounterPricingService) Update(ctx context.Context, orgID string, id str
 
 // Retrieve a list of CounterPricing entities filtered by date, Plan ID, Plan
 // Template ID, or CounterPricing ID.
-func (r *CounterPricingService) List(ctx context.Context, orgID string, query CounterPricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterPricing], err error) {
-	var raw *http.Response
+func (r *CounterPricingService) List(ctx context.Context, orgID string, query CounterPricingListParams, opts ...option.RequestOption) (res *CounterPricingListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/counterpricings", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of CounterPricing entities filtered by date, Plan ID, Plan
-// Template ID, or CounterPricing ID.
-func (r *CounterPricingService) ListAutoPaging(ctx context.Context, orgID string, query CounterPricingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterPricing] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a CounterPricing for the given UUID.
@@ -282,6 +265,8 @@ func (r *CounterPricingPricingBand) UnmarshalJSON(data []byte) (err error) {
 func (r counterPricingPricingBandJSON) RawJSON() string {
 	return r.raw
 }
+
+type CounterPricingListResponse = interface{}
 
 type CounterPricingNewParams struct {
 	// UUID of the Counter used to create the pricing.

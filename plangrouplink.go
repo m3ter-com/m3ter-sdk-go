@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // PlanGroupLinkService contains methods and other services that help with
@@ -82,30 +81,15 @@ func (r *PlanGroupLinkService) Update(ctx context.Context, orgID string, id stri
 }
 
 // Retrieve a list of PlanGroupLink entities
-func (r *PlanGroupLinkService) List(ctx context.Context, orgID string, query PlanGroupLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroupLink], err error) {
-	var raw *http.Response
+func (r *PlanGroupLinkService) List(ctx context.Context, orgID string, query PlanGroupLinkListParams, opts ...option.RequestOption) (res *PlanGroupLinkListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/plangrouplinks", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of PlanGroupLink entities
-func (r *PlanGroupLinkService) ListAutoPaging(ctx context.Context, orgID string, query PlanGroupLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroupLink] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a PlanGroupLink for the given UUID.
@@ -170,6 +154,8 @@ func (r *PlanGroupLink) UnmarshalJSON(data []byte) (err error) {
 func (r planGroupLinkJSON) RawJSON() string {
 	return r.raw
 }
+
+type PlanGroupLinkListResponse = interface{}
 
 type PlanGroupLinkNewParams struct {
 	PlanGroupID param.Field[string] `json:"planGroupId,required"`

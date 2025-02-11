@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // BalanceTransactionService contains methods and other services that help with
@@ -73,10 +72,8 @@ func (r *BalanceTransactionService) New(ctx context.Context, orgID string, balan
 // This endpoint returns a list of all Transactions associated with a specific
 // Balance. You can paginate through the Transactions by using the `pageSize` and
 // `nextToken` parameters.
-func (r *BalanceTransactionService) List(ctx context.Context, orgID string, balanceID string, query BalanceTransactionListParams, opts ...option.RequestOption) (res *pagination.Cursor[Transaction], err error) {
-	var raw *http.Response
+func (r *BalanceTransactionService) List(ctx context.Context, orgID string, balanceID string, query BalanceTransactionListParams, opts ...option.RequestOption) (res *BalanceTransactionListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -86,25 +83,8 @@ func (r *BalanceTransactionService) List(ctx context.Context, orgID string, bala
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/balances/%s/transactions", orgID, balanceID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve all Transactions for a specific Balance.
-//
-// This endpoint returns a list of all Transactions associated with a specific
-// Balance. You can paginate through the Transactions by using the `pageSize` and
-// `nextToken` parameters.
-func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, orgID string, balanceID string, query BalanceTransactionListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Transaction] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, balanceID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type Transaction struct {
@@ -204,6 +184,8 @@ func (r TransactionEntityType) IsKnown() bool {
 	}
 	return false
 }
+
+type BalanceTransactionListResponse = interface{}
 
 type BalanceTransactionNewParams struct {
 	// The financial value of the transaction.

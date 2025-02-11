@@ -15,7 +15,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // DebitReasonService contains methods and other services that help with
@@ -86,32 +85,15 @@ func (r *DebitReasonService) Update(ctx context.Context, orgID string, id string
 // Retrieve a list of the Debit Reason entities created for your Organization. You
 // can filter the list returned for the call by Debit Reason ID, Debit Reason short
 // code, or by Archive status.
-func (r *DebitReasonService) List(ctx context.Context, orgID string, query DebitReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitReason], err error) {
-	var raw *http.Response
+func (r *DebitReasonService) List(ctx context.Context, orgID string, query DebitReasonListParams, opts ...option.RequestOption) (res *DebitReasonListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/picklists/debitreasons", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of the Debit Reason entities created for your Organization. You
-// can filter the list returned for the call by Debit Reason ID, Debit Reason short
-// code, or by Archive status.
-func (r *DebitReasonService) ListAutoPaging(ctx context.Context, orgID string, query DebitReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DebitReason] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete the Debit Reason with the given UUID.
@@ -180,6 +162,8 @@ func (r *DebitReason) UnmarshalJSON(data []byte) (err error) {
 func (r debitReasonJSON) RawJSON() string {
 	return r.raw
 }
+
+type DebitReasonListResponse = interface{}
 
 type DebitReasonNewParams struct {
 	// The name of the entity.
