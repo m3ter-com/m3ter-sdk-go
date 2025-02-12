@@ -15,6 +15,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // CommitmentService contains methods and other services that help with interacting
@@ -107,15 +108,34 @@ func (r *CommitmentService) Update(ctx context.Context, orgID string, id string,
 // Retrieves a list of all Commitments associated with an Organization. This
 // endpoint supports pagination and includes various query parameters to filter the
 // Commitments based on Account, Product, date, and end dates.
-func (r *CommitmentService) List(ctx context.Context, orgID string, query CommitmentListParams, opts ...option.RequestOption) (res *CommitmentListResponse, err error) {
+func (r *CommitmentService) List(ctx context.Context, orgID string, query CommitmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[Commitment], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/commitments", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of Commitments.
+//
+// Retrieves a list of all Commitments associated with an Organization. This
+// endpoint supports pagination and includes various query parameters to filter the
+// Commitments based on Account, Product, date, and end dates.
+func (r *CommitmentService) ListAutoPaging(ctx context.Context, orgID string, query CommitmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Commitment] {
+	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 // Remove a specific Commitment.
@@ -392,9 +412,31 @@ func (r CommitmentLineItemType) IsKnown() bool {
 	return false
 }
 
-type CommitmentListResponse = interface{}
+type CommitmentSearchResponse struct {
+	// The list of Commitments information.
+	Data []Commitment `json:"data"`
+	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
+	// Commitments in a paginated list.
+	NextToken string                       `json:"nextToken"`
+	JSON      commitmentSearchResponseJSON `json:"-"`
+}
 
-type CommitmentSearchResponse = interface{}
+// commitmentSearchResponseJSON contains the JSON metadata for the struct
+// [CommitmentSearchResponse]
+type commitmentSearchResponseJSON struct {
+	Data        apijson.Field
+	NextToken   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CommitmentSearchResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitmentSearchResponseJSON) RawJSON() string {
+	return r.raw
+}
 
 type CommitmentNewParams struct {
 	// The unique identifier (UUID) for the end customer Account the Commitment is

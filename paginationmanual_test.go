@@ -12,7 +12,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestUsage(t *testing.T) {
+func TestManualPagination(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -32,7 +32,19 @@ func TestUsage(t *testing.T) {
 		m3ter.ProductListParams{},
 	)
 	if err != nil {
-		t.Error(err)
+		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", page)
+	for _, product := range page.Data {
+		t.Logf("%+v\n", product.ID)
+	}
+	// Prism mock isn't going to give us real pagination
+	page, err = page.GetNextPage()
+	if err != nil {
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	if page != nil {
+		for _, product := range page.Data {
+			t.Logf("%+v\n", product.ID)
+		}
+	}
 }

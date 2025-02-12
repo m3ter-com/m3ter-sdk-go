@@ -15,6 +15,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
 // CounterAdjustmentService contains methods and other services that help with
@@ -100,15 +101,39 @@ func (r *CounterAdjustmentService) Update(ctx context.Context, orgID string, id 
 //     other query parameters.
 //   - If you want to use the `date`, `dateStart`, or `dateEnd` query parameters, you
 //     must also use the `accountId` query parameter.
-func (r *CounterAdjustmentService) List(ctx context.Context, orgID string, query CounterAdjustmentListParams, opts ...option.RequestOption) (res *CounterAdjustmentListResponse, err error) {
+func (r *CounterAdjustmentService) List(ctx context.Context, orgID string, query CounterAdjustmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterAdjustment], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/counteradjustments", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of CounterAdjustments created for Accounts in your Organization.
+// You can filter the list returned by date, Account ID, or Counter ID.
+//
+// **CONSTRAINTS:**
+//
+//   - The `counterId` query parameter is always required when calling this endpoint,
+//     used either as a single query parameter or in combination with any of the
+//     other query parameters.
+//   - If you want to use the `date`, `dateStart`, or `dateEnd` query parameters, you
+//     must also use the `accountId` query parameter.
+func (r *CounterAdjustmentService) ListAutoPaging(ctx context.Context, orgID string, query CounterAdjustmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterAdjustment] {
+	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 // Delete a CounterAdjustment for the given UUID.
@@ -185,8 +210,6 @@ func (r *CounterAdjustment) UnmarshalJSON(data []byte) (err error) {
 func (r counterAdjustmentJSON) RawJSON() string {
 	return r.raw
 }
-
-type CounterAdjustmentListResponse = interface{}
 
 type CounterAdjustmentNewParams struct {
 	// The Account ID the CounterAdjustment is created for.
