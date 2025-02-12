@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -106,15 +107,36 @@ func (r *CompoundAggregationService) Update(ctx context.Context, orgID string, i
 // measures based on simple Aggregations of usage data. It supports pagination, and
 // includes various query parameters to filter the CompoundAggregations based on
 // Product, CompoundAggregation IDs or short codes.
-func (r *CompoundAggregationService) List(ctx context.Context, orgID string, query CompoundAggregationListParams, opts ...option.RequestOption) (res *CompoundAggregationListResponse, err error) {
+func (r *CompoundAggregationService) List(ctx context.Context, orgID string, query CompoundAggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[CompoundAggregation], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/compoundaggregations", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of all CompoundAggregations.
+//
+// This endpoint retrieves a list of CompoundAggregations associated with a
+// specific organization. CompoundAggregations enable you to define numerical
+// measures based on simple Aggregations of usage data. It supports pagination, and
+// includes various query parameters to filter the CompoundAggregations based on
+// Product, CompoundAggregation IDs or short codes.
+func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, orgID string, query CompoundAggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CompoundAggregation] {
+	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 // Delete a CompoundAggregation with the given UUID.
@@ -298,8 +320,6 @@ func (r CompoundAggregationRounding) IsKnown() bool {
 	}
 	return false
 }
-
-type CompoundAggregationListResponse = interface{}
 
 type CompoundAggregationNewParams struct {
 	// String that represents the formula for the calculation. This formula determines

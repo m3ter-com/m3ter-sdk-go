@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -98,15 +99,32 @@ func (r *ContractService) Update(ctx context.Context, orgID string, id string, b
 // Retrieves a list of Contracts by Organization ID. Supports pagination and
 // includes various query parameters to filter the Contracts returned based on
 // Contract IDs or short codes.
-func (r *ContractService) List(ctx context.Context, orgID string, query ContractListParams, opts ...option.RequestOption) (res *ContractListResponse, err error) {
+func (r *ContractService) List(ctx context.Context, orgID string, query ContractListParams, opts ...option.RequestOption) (res *pagination.Cursor[Contract], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/contracts", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieves a list of Contracts by Organization ID. Supports pagination and
+// includes various query parameters to filter the Contracts returned based on
+// Contract IDs or short codes.
+func (r *ContractService) ListAutoPaging(ctx context.Context, orgID string, query ContractListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Contract] {
+	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 // Deletes the Contract with the specified UUID. Used to remove an existing
@@ -224,8 +242,6 @@ func init() {
 		},
 	)
 }
-
-type ContractListResponse = interface{}
 
 type ContractNewParams struct {
 	// The unique identifier (UUID) of the Account associated with this Contract.

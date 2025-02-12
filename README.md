@@ -54,7 +54,7 @@ func main() {
 		option.WithAPISecret("My API Secret"), // defaults to os.LookupEnv("M3TER_API_SECRET")
 		option.WithToken("My Token"),          // defaults to os.LookupEnv("M3TER_API_TOKEN")
 	)
-	product, err := client.Products.List(
+	page, err := client.Products.List(
 		context.TODO(),
 		"ORG_ID",
 		m3ter.ProductListParams{},
@@ -62,7 +62,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", product)
+	fmt.Printf("%+v\n", page)
 }
 
 ```
@@ -167,8 +167,41 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
+```go
+iter := client.Products.ListAutoPaging(
+	context.TODO(),
+	"ORG_ID",
+	m3ter.ProductListParams{},
+)
+// Automatically fetches more pages as needed.
+for iter.Next() {
+	product := iter.Current()
+	fmt.Printf("%+v\n", product)
+}
+if err := iter.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
+
+```go
+page, err := client.Products.List(
+	context.TODO(),
+	"ORG_ID",
+	m3ter.ProductListParams{},
+)
+for page != nil {
+	for _, product := range page.Data {
+		fmt.Printf("%+v\n", product)
+	}
+	page, err = page.GetNextPage()
+}
+if err != nil {
+	panic(err.Error())
+}
+```
 
 ### Errors
 
@@ -262,7 +295,7 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-product, err := client.Products.List(
+page, err := client.Products.List(
 	context.TODO(),
 	"ORG_ID",
 	m3ter.ProductListParams{},
@@ -271,7 +304,7 @@ product, err := client.Products.List(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", product)
+fmt.Printf("%+v\n", page)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

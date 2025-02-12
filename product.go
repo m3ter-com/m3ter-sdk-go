@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -103,15 +104,34 @@ func (r *ProductService) Update(ctx context.Context, orgID string, id string, bo
 // This endpoint retrieves a list of all the Products within a specified
 // Organization. The list can be paginated, and supports filtering by specific
 // Product IDs.
-func (r *ProductService) List(ctx context.Context, orgID string, query ProductListParams, opts ...option.RequestOption) (res *ProductListResponse, err error) {
+func (r *ProductService) List(ctx context.Context, orgID string, query ProductListParams, opts ...option.RequestOption) (res *pagination.Cursor[Product], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/products", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of Products.
+//
+// This endpoint retrieves a list of all the Products within a specified
+// Organization. The list can be paginated, and supports filtering by specific
+// Product IDs.
+func (r *ProductService) ListAutoPaging(ctx context.Context, orgID string, query ProductListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Product] {
+	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 // Delete a Product with the given UUID.
@@ -212,8 +232,6 @@ func init() {
 		},
 	)
 }
-
-type ProductListResponse = interface{}
 
 type ProductNewParams struct {
 	// A unique short code to identify the Product. It should not contain control
