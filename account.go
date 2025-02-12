@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -89,15 +90,30 @@ func (r *AccountService) Update(ctx context.Context, orgID string, id string, bo
 }
 
 // Retrieve a list of Accounts that can be filtered by Account ID or Account Code.
-func (r *AccountService) List(ctx context.Context, orgID string, query AccountListParams, opts ...option.RequestOption) (res *AccountListResponse, err error) {
+func (r *AccountService) List(ctx context.Context, orgID string, query AccountListParams, opts ...option.RequestOption) (res *pagination.Cursor[Account], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/accounts", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of Accounts that can be filtered by Account ID or Account Code.
+func (r *AccountService) ListAutoPaging(ctx context.Context, orgID string, query AccountListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Account] {
+	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 // Delete the Account with the given UUID. This may fail if there are any
@@ -372,9 +388,28 @@ func init() {
 	)
 }
 
-type AccountListResponse = interface{}
+type AccountSearchResponse struct {
+	Data      []Account                 `json:"data"`
+	NextToken string                    `json:"nextToken"`
+	JSON      accountSearchResponseJSON `json:"-"`
+}
 
-type AccountSearchResponse = interface{}
+// accountSearchResponseJSON contains the JSON metadata for the struct
+// [AccountSearchResponse]
+type accountSearchResponseJSON struct {
+	Data        apijson.Field
+	NextToken   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSearchResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSearchResponseJSON) RawJSON() string {
+	return r.raw
+}
 
 type AccountNewParams struct {
 	// Code of the Account. This is a unique short code used for the Account.

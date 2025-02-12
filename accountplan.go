@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 	"github.com/tidwall/gjson"
 )
@@ -116,15 +117,39 @@ func (r *AccountPlanService) Update(ctx context.Context, orgID string, id string
 // **NOTE:** You cannot use the `product` query parameter as a single filter
 // condition, but must always use it in combination with the `account` query
 // parameter.
-func (r *AccountPlanService) List(ctx context.Context, orgID string, query AccountPlanListParams, opts ...option.RequestOption) (res *AccountPlanListResponse, err error) {
+func (r *AccountPlanService) List(ctx context.Context, orgID string, query AccountPlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountPlan], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if orgID == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/accountplans", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of AccountPlan and AccountPlanGroup entities for the specified
+// Organization.
+//
+// This endpoint retrieves a list of AccountPlans and AccountPlanGroups for a
+// specific Organization. The list can be paginated for easier management, and
+// supports filtering with various parameters.
+//
+// **NOTE:** You cannot use the `product` query parameter as a single filter
+// condition, but must always use it in combination with the `account` query
+// parameter.
+func (r *AccountPlanService) ListAutoPaging(ctx context.Context, orgID string, query AccountPlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountPlan] {
+	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
 }
 
 // Delete the AccountPlan or AccountPlanGroup with the given UUID.
@@ -300,8 +325,6 @@ func init() {
 		},
 	)
 }
-
-type AccountPlanListResponse = interface{}
 
 type AccountPlanNewParams struct {
 	// The unique identifier (UUID) for the Account.
