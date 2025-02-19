@@ -173,6 +173,9 @@ type Plan struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	MinimumSpend float64 `json:"minimumSpend"`
+	// Optional Product ID this plan's minimum spend should be attributed to for
+	// accounting purposes
+	MinimumSpendAccountingProductID string `json:"minimumSpendAccountingProductId"`
 	// When TRUE, minimum spend is billed at the start of each billing period.
 	//
 	// When FALSE, minimum spend is billed at the end of each billing period.
@@ -200,6 +203,9 @@ type Plan struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	StandingCharge float64 `json:"standingCharge"`
+	// Optional Product ID this plan's standing charge should be attributed to for
+	// accounting purposes
+	StandingChargeAccountingProductID string `json:"standingChargeAccountingProductId"`
 	// When TRUE, standing charge is billed at the start of each billing period.
 	//
 	// When FALSE, standing charge is billed at the end of each billing period.
@@ -214,28 +220,30 @@ type Plan struct {
 
 // planJSON contains the JSON metadata for the struct [Plan]
 type planJSON struct {
-	ID                          apijson.Field
-	Version                     apijson.Field
-	AccountID                   apijson.Field
-	Bespoke                     apijson.Field
-	Code                        apijson.Field
-	CreatedBy                   apijson.Field
-	CustomFields                apijson.Field
-	DtCreated                   apijson.Field
-	DtLastModified              apijson.Field
-	LastModifiedBy              apijson.Field
-	MinimumSpend                apijson.Field
-	MinimumSpendBillInAdvance   apijson.Field
-	MinimumSpendDescription     apijson.Field
-	Name                        apijson.Field
-	Ordinal                     apijson.Field
-	PlanTemplateID              apijson.Field
-	ProductID                   apijson.Field
-	StandingCharge              apijson.Field
-	StandingChargeBillInAdvance apijson.Field
-	StandingChargeDescription   apijson.Field
-	raw                         string
-	ExtraFields                 map[string]apijson.Field
+	ID                                apijson.Field
+	Version                           apijson.Field
+	AccountID                         apijson.Field
+	Bespoke                           apijson.Field
+	Code                              apijson.Field
+	CreatedBy                         apijson.Field
+	CustomFields                      apijson.Field
+	DtCreated                         apijson.Field
+	DtLastModified                    apijson.Field
+	LastModifiedBy                    apijson.Field
+	MinimumSpend                      apijson.Field
+	MinimumSpendAccountingProductID   apijson.Field
+	MinimumSpendBillInAdvance         apijson.Field
+	MinimumSpendDescription           apijson.Field
+	Name                              apijson.Field
+	Ordinal                           apijson.Field
+	PlanTemplateID                    apijson.Field
+	ProductID                         apijson.Field
+	StandingCharge                    apijson.Field
+	StandingChargeAccountingProductID apijson.Field
+	StandingChargeBillInAdvance       apijson.Field
+	StandingChargeDescription         apijson.Field
+	raw                               string
+	ExtraFields                       map[string]apijson.Field
 }
 
 func (r *Plan) UnmarshalJSON(data []byte) (err error) {
@@ -304,6 +312,9 @@ type PlanNewParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	MinimumSpend param.Field[float64] `json:"minimumSpend"`
+	// Optional Product ID this plan's minimum spend should be attributed to for
+	// accounting purposes
+	MinimumSpendAccountingProductID param.Field[string] `json:"minimumSpendAccountingProductId"`
 	// When TRUE, minimum spend is billed at the start of each billing period.
 	//
 	// When FALSE, minimum spend is billed at the end of each billing period.
@@ -325,6 +336,9 @@ type PlanNewParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	StandingCharge param.Field[float64] `json:"standingCharge"`
+	// Optional Product ID this plan's standing charge should be attributed to for
+	// accounting purposes
+	StandingChargeAccountingProductID param.Field[string] `json:"standingChargeAccountingProductId"`
 	// When TRUE, standing charge is billed at the start of each billing period.
 	//
 	// When FALSE, standing charge is billed at the end of each billing period.
@@ -392,6 +406,9 @@ type PlanUpdateParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	MinimumSpend param.Field[float64] `json:"minimumSpend"`
+	// Optional Product ID this plan's minimum spend should be attributed to for
+	// accounting purposes
+	MinimumSpendAccountingProductID param.Field[string] `json:"minimumSpendAccountingProductId"`
 	// When TRUE, minimum spend is billed at the start of each billing period.
 	//
 	// When FALSE, minimum spend is billed at the end of each billing period.
@@ -413,6 +430,9 @@ type PlanUpdateParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	StandingCharge param.Field[float64] `json:"standingCharge"`
+	// Optional Product ID this plan's standing charge should be attributed to for
+	// accounting purposes
+	StandingChargeAccountingProductID param.Field[string] `json:"standingChargeAccountingProductId"`
 	// When TRUE, standing charge is billed at the start of each billing period.
 	//
 	// When FALSE, standing charge is billed at the end of each billing period.

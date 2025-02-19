@@ -143,7 +143,8 @@ type CounterPricing struct {
 	//     in the response.
 	//   - **Update:** On successful Update, the version is incremented by 1 in the
 	//     response.
-	Version int64 `json:"version,required"`
+	Version             int64  `json:"version,required"`
+	AccountingProductID string `json:"accountingProductId"`
 	// Unique short code for the Pricing.
 	Code string `json:"code"`
 	// UUID of the Counter used to create the pricing.
@@ -220,6 +221,7 @@ type CounterPricing struct {
 type counterPricingJSON struct {
 	ID                        apijson.Field
 	Version                   apijson.Field
+	AccountingProductID       apijson.Field
 	Code                      apijson.Field
 	CounterID                 apijson.Field
 	CreatedBy                 apijson.Field
@@ -290,6 +292,8 @@ type CounterPricingNewParams struct {
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	// Optional Product ID this Pricing should be attributed to for accounting purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Unique short code for the Pricing.
 	Code param.Field[string] `json:"code"`
 	// Controls whether or not charge rates under a set of pricing bands configured for
@@ -396,6 +400,8 @@ type CounterPricingUpdateParams struct {
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	// Optional Product ID this Pricing should be attributed to for accounting purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Unique short code for the Pricing.
 	Code param.Field[string] `json:"code"`
 	// Controls whether or not charge rates under a set of pricing bands configured for
