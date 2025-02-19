@@ -163,7 +163,8 @@ type Balance struct {
 	// Balance.
 	BalanceDrawDownDescription string `json:"balanceDrawDownDescription"`
 	// A unique short code assigned to the Balance.
-	Code string `json:"code"`
+	Code                            string `json:"code"`
+	ConsumptionsAccountingProductID string `json:"consumptionsAccountingProductId"`
 	// The unique identifier (UUID) for the user who created the Balance.
 	CreatedBy string `json:"createdBy"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
@@ -176,7 +177,8 @@ type Balance struct {
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be
 	// active.
-	EndDate time.Time `json:"endDate" format:"date-time"`
+	EndDate                 time.Time `json:"endDate" format:"date-time"`
+	FeesAccountingProductID string    `json:"feesAccountingProductId"`
 	// The unique identifier (UUID) for the user who last modified the Balance.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// A list of line item charge types that can draw-down against the Balance amount
@@ -206,29 +208,31 @@ type Balance struct {
 
 // balanceJSON contains the JSON metadata for the struct [Balance]
 type balanceJSON struct {
-	ID                         apijson.Field
-	Version                    apijson.Field
-	AccountID                  apijson.Field
-	Amount                     apijson.Field
-	BalanceDrawDownDescription apijson.Field
-	Code                       apijson.Field
-	CreatedBy                  apijson.Field
-	Currency                   apijson.Field
-	Description                apijson.Field
-	DtCreated                  apijson.Field
-	DtLastModified             apijson.Field
-	EndDate                    apijson.Field
-	LastModifiedBy             apijson.Field
-	LineItemTypes              apijson.Field
-	Name                       apijson.Field
-	OverageDescription         apijson.Field
-	OverageSurchargePercent    apijson.Field
-	ProductIDs                 apijson.Field
-	RolloverAmount             apijson.Field
-	RolloverEndDate            apijson.Field
-	StartDate                  apijson.Field
-	raw                        string
-	ExtraFields                map[string]apijson.Field
+	ID                              apijson.Field
+	Version                         apijson.Field
+	AccountID                       apijson.Field
+	Amount                          apijson.Field
+	BalanceDrawDownDescription      apijson.Field
+	Code                            apijson.Field
+	ConsumptionsAccountingProductID apijson.Field
+	CreatedBy                       apijson.Field
+	Currency                        apijson.Field
+	Description                     apijson.Field
+	DtCreated                       apijson.Field
+	DtLastModified                  apijson.Field
+	EndDate                         apijson.Field
+	FeesAccountingProductID         apijson.Field
+	LastModifiedBy                  apijson.Field
+	LineItemTypes                   apijson.Field
+	Name                            apijson.Field
+	OverageDescription              apijson.Field
+	OverageSurchargePercent         apijson.Field
+	ProductIDs                      apijson.Field
+	RolloverAmount                  apijson.Field
+	RolloverEndDate                 apijson.Field
+	StartDate                       apijson.Field
+	raw                             string
+	ExtraFields                     map[string]apijson.Field
 }
 
 func (r *Balance) UnmarshalJSON(data []byte) (err error) {
@@ -277,8 +281,14 @@ type BalanceNewParams struct {
 	BalanceDrawDownDescription param.Field[string] `json:"balanceDrawDownDescription"`
 	// Unique short code for the Balance.
 	Code param.Field[string] `json:"code"`
+	// Optional Product ID this Balance Consumptions should be attributed to for
+	// accounting purposes
+	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
+	// Optional Product ID this Balance Fees should be attributed to for accounting
+	// purposes
+	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Balance amount. Options are:
 	//
@@ -383,8 +393,14 @@ type BalanceUpdateParams struct {
 	BalanceDrawDownDescription param.Field[string] `json:"balanceDrawDownDescription"`
 	// Unique short code for the Balance.
 	Code param.Field[string] `json:"code"`
+	// Optional Product ID this Balance Consumptions should be attributed to for
+	// accounting purposes
+	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
+	// Optional Product ID this Balance Fees should be attributed to for accounting
+	// purposes
+	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Balance amount. Options are:
 	//
