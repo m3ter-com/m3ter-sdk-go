@@ -143,7 +143,8 @@ type Aggregation struct {
 	//     in the response.
 	//   - **Update:** On successful Update, the version is incremented by 1 in the
 	//     response.
-	Version int64 `json:"version,required"`
+	Version             int64  `json:"version,required"`
+	AccountingProductID string `json:"accountingProductId"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected targetField.
@@ -178,6 +179,7 @@ type Aggregation struct {
 	// The id of the user who created this aggregation.
 	CreatedBy    string                                  `json:"createdBy"`
 	CustomFields map[string]AggregationCustomFieldsUnion `json:"customFields"`
+	CustomSql    string                                  `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -250,26 +252,28 @@ type Aggregation struct {
 
 // aggregationJSON contains the JSON metadata for the struct [Aggregation]
 type aggregationJSON struct {
-	ID              apijson.Field
-	Version         apijson.Field
-	Aggregation     apijson.Field
-	Code            apijson.Field
-	CreatedBy       apijson.Field
-	CustomFields    apijson.Field
-	DefaultValue    apijson.Field
-	DtCreated       apijson.Field
-	DtLastModified  apijson.Field
-	LastModifiedBy  apijson.Field
-	MeterID         apijson.Field
-	Name            apijson.Field
-	QuantityPerUnit apijson.Field
-	Rounding        apijson.Field
-	SegmentedFields apijson.Field
-	Segments        apijson.Field
-	TargetField     apijson.Field
-	Unit            apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	ID                  apijson.Field
+	Version             apijson.Field
+	AccountingProductID apijson.Field
+	Aggregation         apijson.Field
+	Code                apijson.Field
+	CreatedBy           apijson.Field
+	CustomFields        apijson.Field
+	CustomSql           apijson.Field
+	DefaultValue        apijson.Field
+	DtCreated           apijson.Field
+	DtLastModified      apijson.Field
+	LastModifiedBy      apijson.Field
+	MeterID             apijson.Field
+	Name                apijson.Field
+	QuantityPerUnit     apijson.Field
+	Rounding            apijson.Field
+	SegmentedFields     apijson.Field
+	Segments            apijson.Field
+	TargetField         apijson.Field
+	Unit                apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
 }
 
 func (r *Aggregation) UnmarshalJSON(data []byte) (err error) {
@@ -448,9 +452,13 @@ type AggregationNewParams struct {
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                           `json:"code"`
 	CustomFields param.Field[map[string]AggregationNewParamsCustomFieldsUnion] `json:"customFields"`
+	CustomSql    param.Field[string]                                           `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -647,9 +655,13 @@ type AggregationUpdateParams struct {
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                              `json:"code"`
 	CustomFields param.Field[map[string]AggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`
+	CustomSql    param.Field[string]                                              `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//

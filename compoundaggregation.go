@@ -169,7 +169,8 @@ type CompoundAggregation struct {
 	//     in the response.
 	//   - **Update:** On successful Update, the version is incremented by 1 in the
 	//     response.
-	Version int64 `json:"version,required"`
+	Version             int64  `json:"version,required"`
+	AccountingProductID string `json:"accountingProductId"`
 	// This field is a string that represents the formula for the calculation. This
 	// formula determines how the CompoundAggregation is calculated from the underlying
 	// usage data.
@@ -242,6 +243,7 @@ type CompoundAggregation struct {
 type compoundAggregationJSON struct {
 	ID                       apijson.Field
 	Version                  apijson.Field
+	AccountingProductID      apijson.Field
 	Calculation              apijson.Field
 	Code                     apijson.Field
 	CreatedBy                apijson.Field
@@ -364,6 +366,9 @@ type CompoundAggregationNewParams struct {
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                                   `json:"code"`
 	CustomFields param.Field[map[string]CompoundAggregationNewParamsCustomFieldsUnion] `json:"customFields"`
@@ -481,6 +486,9 @@ type CompoundAggregationUpdateParams struct {
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                                      `json:"code"`
 	CustomFields param.Field[map[string]CompoundAggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`

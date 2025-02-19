@@ -40,6 +40,7 @@ type Client struct {
 	Pricings             *PricingService
 	Products             *ProductService
 	TransactionTypes     *TransactionTypeService
+	DataExports          *DataExportService
 }
 
 // NewClient generates a new client with the default option read from the
@@ -85,6 +86,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Pricings = NewPricingService(opts...)
 	r.Products = NewProductService(opts...)
 	r.TransactionTypes = NewTransactionTypeService(opts...)
+	r.DataExports = NewDataExportService(opts...)
 
 	return
 }

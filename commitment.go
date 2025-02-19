@@ -242,7 +242,8 @@ type Commitment struct {
 	// The unique identifier (UUID) of the user who created this Commitment.
 	CreatedBy string `json:"createdBy"`
 	// The currency used for the Commitment. For example, 'USD'.
-	Currency string `json:"currency"`
+	Currency                     string `json:"currency"`
+	DrawdownsAccountingProductID string `json:"drawdownsAccountingProductId"`
 	// The date and time _(in ISO-8601 format)_ when the Commitment was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the Commitment was last modified.
@@ -258,7 +259,8 @@ type Commitment struct {
 	//   - `amount` - the billed amount.
 	//   - `servicePeriodStartDate` and `servicePeriodEndDate` - defines the service
 	//     period the bill covers _(in ISO-8601 format)_.
-	FeeDates []CommitmentFeeDate `json:"feeDates"`
+	FeeDates                []CommitmentFeeDate `json:"feeDates"`
+	FeesAccountingProductID string              `json:"feesAccountingProductId"`
 	// The unique identifier (UUID) of the user who last modified this Commitment.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Specifies the line item charge types that can draw-down at billing against the
@@ -298,38 +300,40 @@ type Commitment struct {
 
 // commitmentJSON contains the JSON metadata for the struct [Commitment]
 type commitmentJSON struct {
-	ID                         apijson.Field
-	Version                    apijson.Field
-	AccountID                  apijson.Field
-	AccountingProductID        apijson.Field
-	Amount                     apijson.Field
-	AmountFirstBill            apijson.Field
-	AmountPrePaid              apijson.Field
-	AmountSpent                apijson.Field
-	BillEpoch                  apijson.Field
-	BillingInterval            apijson.Field
-	BillingOffset              apijson.Field
-	BillingPlanID              apijson.Field
-	ChildBillingMode           apijson.Field
-	CommitmentFeeBillInAdvance apijson.Field
-	CommitmentFeeDescription   apijson.Field
-	CommitmentUsageDescription apijson.Field
-	ContractID                 apijson.Field
-	CreatedBy                  apijson.Field
-	Currency                   apijson.Field
-	DtCreated                  apijson.Field
-	DtLastModified             apijson.Field
-	EndDate                    apijson.Field
-	FeeDates                   apijson.Field
-	LastModifiedBy             apijson.Field
-	LineItemTypes              apijson.Field
-	OverageDescription         apijson.Field
-	OverageSurchargePercent    apijson.Field
-	ProductIDs                 apijson.Field
-	SeparateOverageUsage       apijson.Field
-	StartDate                  apijson.Field
-	raw                        string
-	ExtraFields                map[string]apijson.Field
+	ID                           apijson.Field
+	Version                      apijson.Field
+	AccountID                    apijson.Field
+	AccountingProductID          apijson.Field
+	Amount                       apijson.Field
+	AmountFirstBill              apijson.Field
+	AmountPrePaid                apijson.Field
+	AmountSpent                  apijson.Field
+	BillEpoch                    apijson.Field
+	BillingInterval              apijson.Field
+	BillingOffset                apijson.Field
+	BillingPlanID                apijson.Field
+	ChildBillingMode             apijson.Field
+	CommitmentFeeBillInAdvance   apijson.Field
+	CommitmentFeeDescription     apijson.Field
+	CommitmentUsageDescription   apijson.Field
+	ContractID                   apijson.Field
+	CreatedBy                    apijson.Field
+	Currency                     apijson.Field
+	DrawdownsAccountingProductID apijson.Field
+	DtCreated                    apijson.Field
+	DtLastModified               apijson.Field
+	EndDate                      apijson.Field
+	FeeDates                     apijson.Field
+	FeesAccountingProductID      apijson.Field
+	LastModifiedBy               apijson.Field
+	LineItemTypes                apijson.Field
+	OverageDescription           apijson.Field
+	OverageSurchargePercent      apijson.Field
+	ProductIDs                   apijson.Field
+	SeparateOverageUsage         apijson.Field
+	StartDate                    apijson.Field
+	raw                          string
+	ExtraFields                  map[string]apijson.Field
 }
 
 func (r *Commitment) UnmarshalJSON(data []byte) (err error) {
@@ -510,6 +514,9 @@ type CommitmentNewParams struct {
 	// If the Account Plan Contract and Commitment Contract do not match, then at
 	// billing the Commitment amount will not be drawn-down against.
 	ContractID param.Field[string] `json:"contractId"`
+	// Optional Product ID this Commitment consumptions should be attributed to for
+	// accounting purposes
+	DrawdownsAccountingProductID param.Field[string] `json:"drawdownsAccountingProductId"`
 	// Used for billing any outstanding Commitment fees _on a schedule_.
 	//
 	// Create an array to define a series of bill dates and amounts covering specified
@@ -528,6 +535,9 @@ type CommitmentNewParams struct {
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
 	FeeDates param.Field[[]CommitmentNewParamsFeeDate] `json:"feeDates"`
+	// Optional Product ID this Commitment fees should be attributed to for accounting
+	// purposes
+	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Commitment amount. Options are:
 	//
@@ -719,6 +729,9 @@ type CommitmentUpdateParams struct {
 	// If the Account Plan Contract and Commitment Contract do not match, then at
 	// billing the Commitment amount will not be drawn-down against.
 	ContractID param.Field[string] `json:"contractId"`
+	// Optional Product ID this Commitment consumptions should be attributed to for
+	// accounting purposes
+	DrawdownsAccountingProductID param.Field[string] `json:"drawdownsAccountingProductId"`
 	// Used for billing any outstanding Commitment fees _on a schedule_.
 	//
 	// Create an array to define a series of bill dates and amounts covering specified
@@ -737,6 +750,9 @@ type CommitmentUpdateParams struct {
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
 	FeeDates param.Field[[]CommitmentUpdateParamsFeeDate] `json:"feeDates"`
+	// Optional Product ID this Commitment fees should be attributed to for accounting
+	// purposes
+	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Commitment amount. Options are:
 	//
