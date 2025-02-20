@@ -35,13 +35,13 @@ func NewBillConfigService(opts ...option.RequestOption) (r *BillConfigService) {
 }
 
 // Retrieve the Organization-wide BillConfig.
-func (r *BillConfigService) Get(ctx context.Context, orgID string, opts ...option.RequestOption) (res *BillConfig, err error) {
+func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, opts ...option.RequestOption) (res *BillConfig, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/billconfig", orgID)
+	path := fmt.Sprintf("organizations/%s/billconfig", query.OrgID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -51,14 +51,14 @@ func (r *BillConfigService) Get(ctx context.Context, orgID string, opts ...optio
 // You can use this endpoint to set a global lock date for **all** Bills - any Bill
 // with a service period end date on or before the set date will be locked and
 // cannot be updated or recalculated.
-func (r *BillConfigService) Update(ctx context.Context, orgID string, body BillConfigUpdateParams, opts ...option.RequestOption) (res *BillConfig, err error) {
+func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateParams, opts ...option.RequestOption) (res *BillConfig, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/billconfig", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/billconfig", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -107,7 +107,12 @@ func (r billConfigJSON) RawJSON() string {
 	return r.raw
 }
 
+type BillConfigGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type BillConfigUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The global lock date when all Bills will be locked _(in ISO 8601 format)_.
 	//
 	// For example: `"2024-03-01"`.

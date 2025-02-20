@@ -35,26 +35,26 @@ func NewOrganizationConfigService(opts ...option.RequestOption) (r *Organization
 }
 
 // Retrieve the Organization-wide configuration details.
-func (r *OrganizationConfigService) Get(ctx context.Context, orgID string, opts ...option.RequestOption) (res *OrganizationConfig, err error) {
+func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationConfigGetParams, opts ...option.RequestOption) (res *OrganizationConfig, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/organizationconfig", orgID)
+	path := fmt.Sprintf("organizations/%s/organizationconfig", query.OrgID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update the Organization-wide configuration details.
-func (r *OrganizationConfigService) Update(ctx context.Context, orgID string, body OrganizationConfigUpdateParams, opts ...option.RequestOption) (res *OrganizationConfig, err error) {
+func (r *OrganizationConfigService) Update(ctx context.Context, params OrganizationConfigUpdateParams, opts ...option.RequestOption) (res *OrganizationConfig, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/organizationconfig", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/organizationconfig", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -320,7 +320,12 @@ func (r OrganizationConfigExternalInvoiceDate) IsKnown() bool {
 	return false
 }
 
+type OrganizationConfigGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type OrganizationConfigUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The currency code for the Organization. For example: USD, GBP, or EUR:
 	//
 	//   - This defines the _billing currency_ for the Organization. You can override

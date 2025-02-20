@@ -28,41 +28,39 @@ func TestAccountNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Accounts.New(
-		context.TODO(),
-		"orgId",
-		m3ter.AccountNewParams{
-			Code:         m3ter.F("JS!?Q0]r] ]$]"),
-			EmailAddress: m3ter.F("dev@stainlessapi.com"),
-			Name:         m3ter.F("x"),
-			Address: m3ter.F(m3ter.AccountNewParamsAddress{
-				AddressLine1: m3ter.F("addressLine1"),
-				AddressLine2: m3ter.F("addressLine2"),
-				AddressLine3: m3ter.F("addressLine3"),
-				AddressLine4: m3ter.F("addressLine4"),
-				Country:      m3ter.F("country"),
-				Locality:     m3ter.F("locality"),
-				PostCode:     m3ter.F("postCode"),
-				Region:       m3ter.F("region"),
-			}),
-			AutoGenerateStatementMode: m3ter.F(m3ter.AccountNewParamsAutoGenerateStatementModeNone),
-			BillEpoch:                 m3ter.F(time.Now()),
-			ConfigData: m3ter.F(map[string]interface{}{
-				"foo": "bar",
-			}),
-			CreditApplicationOrder: m3ter.F([]m3ter.AccountNewParamsCreditApplicationOrder{m3ter.AccountNewParamsCreditApplicationOrderPrepayment}),
-			Currency:               m3ter.F("USD"),
-			CustomFields: m3ter.F(map[string]m3ter.AccountNewParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			DaysBeforeBillDue:     m3ter.F(int64(1)),
-			ParentAccountID:       m3ter.F("parentAccountId"),
-			PurchaseOrderNumber:   m3ter.F("purchaseOrderNumber"),
-			StatementDefinitionID: m3ter.F("statementDefinitionId"),
-			Version:               m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Accounts.New(context.TODO(), m3ter.AccountNewParams{
+		OrgID:        m3ter.F("orgId"),
+		Code:         m3ter.F("JS!?Q0]r] ]$]"),
+		EmailAddress: m3ter.F("dev@stainlessapi.com"),
+		Name:         m3ter.F("x"),
+		Address: m3ter.F(m3ter.AccountNewParamsAddress{
+			AddressLine1: m3ter.F("addressLine1"),
+			AddressLine2: m3ter.F("addressLine2"),
+			AddressLine3: m3ter.F("addressLine3"),
+			AddressLine4: m3ter.F("addressLine4"),
+			Country:      m3ter.F("country"),
+			Locality:     m3ter.F("locality"),
+			PostCode:     m3ter.F("postCode"),
+			Region:       m3ter.F("region"),
+		}),
+		AutoGenerateStatementMode: m3ter.F(m3ter.AccountNewParamsAutoGenerateStatementModeNone),
+		BillEpoch:                 m3ter.F(time.Now()),
+		ConfigData: m3ter.F(map[string]interface{}{
+			"foo": "bar",
+		}),
+		CreditApplicationOrder: m3ter.F([]m3ter.AccountNewParamsCreditApplicationOrder{m3ter.AccountNewParamsCreditApplicationOrderPrepayment}),
+		Currency:               m3ter.F("USD"),
+		CustomFields: m3ter.F(map[string]m3ter.AccountNewParamsCustomFieldsUnion{
+			"foo": shared.UnionString("string"),
+		}),
+		DaysBeforeBillDue:     m3ter.F(int64(1)),
+		ParentAccountID:       m3ter.F("parentAccountId"),
+		PurchaseOrderNumber:   m3ter.F("purchaseOrderNumber"),
+		StatementDefinitionID: m3ter.F("statementDefinitionId"),
+		Version:               m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -85,11 +83,14 @@ func TestAccountGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.AccountGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -113,12 +114,13 @@ func TestAccountUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.AccountUpdateParams{
+			OrgID:        m3ter.F("orgId"),
 			Code:         m3ter.F("JS!?Q0]r] ]$]"),
 			EmailAddress: m3ter.F("dev@stainlessapi.com"),
 			Name:         m3ter.F("x"),
@@ -171,17 +173,15 @@ func TestAccountListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Accounts.List(
-		context.TODO(),
-		"orgId",
-		m3ter.AccountListParams{
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.Accounts.List(context.TODO(), m3ter.AccountListParams{
+		OrgID:     m3ter.F("orgId"),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -204,11 +204,14 @@ func TestAccountDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.AccountDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -232,12 +235,13 @@ func TestAccountListChildrenWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.ListChildren(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.AccountListChildrenParams{
+			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -264,19 +268,17 @@ func TestAccountSearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Accounts.Search(
-		context.TODO(),
-		"orgId",
-		m3ter.AccountSearchParams{
-			FromDocument: m3ter.F(int64(0)),
-			Operator:     m3ter.F(m3ter.AccountSearchParamsOperatorAnd),
-			PageSize:     m3ter.F(int64(1)),
-			SearchQuery:  m3ter.F("searchQuery"),
-			SortBy:       m3ter.F("sortBy"),
-			SortOrder:    m3ter.F(m3ter.AccountSearchParamsSortOrderAsc),
-		},
-	)
+	_, err := client.Accounts.Search(context.TODO(), m3ter.AccountSearchParams{
+		OrgID:        m3ter.F("orgId"),
+		FromDocument: m3ter.F(int64(0)),
+		Operator:     m3ter.F(m3ter.AccountSearchParamsOperatorAnd),
+		PageSize:     m3ter.F(int64(1)),
+		SearchQuery:  m3ter.F("searchQuery"),
+		SortBy:       m3ter.F("sortBy"),
+		SortOrder:    m3ter.F(m3ter.AccountSearchParamsSortOrderAsc),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {

@@ -42,21 +42,21 @@ func NewPricingService(opts ...option.RequestOption) (r *PricingService) {
 // **Note:** Either `planId` or `planTemplateId` request parameters are required
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
-func (r *PricingService) New(ctx context.Context, orgID string, body PricingNewParams, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts ...option.RequestOption) (res *Pricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/pricings", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/pricings", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Pricing with the given UUID.
-func (r *PricingService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) Get(ctx context.Context, id string, query PricingGetParams, opts ...option.RequestOption) (res *Pricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -64,7 +64,7 @@ func (r *PricingService) Get(ctx context.Context, orgID string, id string, opts 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/pricings/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/pricings/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -74,9 +74,9 @@ func (r *PricingService) Get(ctx context.Context, orgID string, id string, opts 
 // **Note:** Either `planId` or `planTemplateId` request parameters are required
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
-func (r *PricingService) Update(ctx context.Context, orgID string, id string, body PricingUpdateParams, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) Update(ctx context.Context, id string, params PricingUpdateParams, opts ...option.RequestOption) (res *Pricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -84,23 +84,23 @@ func (r *PricingService) Update(ctx context.Context, orgID string, id string, bo
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/pricings/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/pricings/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of Pricings filtered by date, Plan ID, PlanTemplate ID, or
 // Pricing ID.
-func (r *PricingService) List(ctx context.Context, orgID string, query PricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[Pricing], err error) {
+func (r *PricingService) List(ctx context.Context, params PricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[Pricing], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/pricings", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/pricings", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,14 +114,14 @@ func (r *PricingService) List(ctx context.Context, orgID string, query PricingLi
 
 // Retrieve a list of Pricings filtered by date, Plan ID, PlanTemplate ID, or
 // Pricing ID.
-func (r *PricingService) ListAutoPaging(ctx context.Context, orgID string, query PricingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Pricing] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *PricingService) ListAutoPaging(ctx context.Context, params PricingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Pricing] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Pricing with the given UUID.
-func (r *PricingService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) Delete(ctx context.Context, id string, body PricingDeleteParams, opts ...option.RequestOption) (res *Pricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -129,7 +129,7 @@ func (r *PricingService) Delete(ctx context.Context, orgID string, id string, op
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/pricings/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/pricings/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -386,6 +386,7 @@ func (r PricingType) IsKnown() bool {
 }
 
 type PricingNewParams struct {
+	OrgID        param.Field[string]                        `path:"orgId,required"`
 	PricingBands param.Field[[]PricingNewParamsPricingBand] `json:"pricingBands,required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
@@ -557,7 +558,12 @@ func (r PricingNewParamsType) IsKnown() bool {
 	return false
 }
 
+type PricingGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type PricingUpdateParams struct {
+	OrgID        param.Field[string]                           `path:"orgId,required"`
 	PricingBands param.Field[[]PricingUpdateParamsPricingBand] `json:"pricingBands,required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
@@ -730,6 +736,7 @@ func (r PricingUpdateParamsType) IsKnown() bool {
 }
 
 type PricingListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Date on which to retrieve active Pricings.
 	Date param.Field[string] `query:"date"`
 	// List of Pricing IDs to retrieve.
@@ -750,4 +757,8 @@ func (r PricingListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type PricingDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

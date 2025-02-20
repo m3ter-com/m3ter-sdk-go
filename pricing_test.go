@@ -27,46 +27,44 @@ func TestPricingNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Pricings.New(
-		context.TODO(),
-		"orgId",
-		m3ter.PricingNewParams{
-			PricingBands: m3ter.F([]m3ter.PricingNewParamsPricingBand{{
-				FixedPrice:   m3ter.F(0.000000),
-				LowerLimit:   m3ter.F(0.000000),
-				UnitPrice:    m3ter.F(0.000000),
-				ID:           m3ter.F("id"),
-				CreditTypeID: m3ter.F("creditTypeId"),
-			}}),
-			StartDate:                 m3ter.F(time.Now()),
-			AccountingProductID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			AggregationID:             m3ter.F("aggregationId"),
-			Code:                      m3ter.F("JS!?Q0]r] ]$]"),
-			CompoundAggregationID:     m3ter.F("compoundAggregationId"),
-			Cumulative:                m3ter.F(true),
-			Description:               m3ter.F("description"),
-			EndDate:                   m3ter.F(time.Now()),
-			MinimumSpend:              m3ter.F(0.000000),
-			MinimumSpendBillInAdvance: m3ter.F(true),
-			MinimumSpendDescription:   m3ter.F("minimumSpendDescription"),
-			OveragePricingBands: m3ter.F([]m3ter.PricingNewParamsOveragePricingBand{{
-				FixedPrice:   m3ter.F(0.000000),
-				LowerLimit:   m3ter.F(0.000000),
-				UnitPrice:    m3ter.F(0.000000),
-				ID:           m3ter.F("id"),
-				CreditTypeID: m3ter.F("creditTypeId"),
-			}}),
-			PlanID:         m3ter.F("planId"),
-			PlanTemplateID: m3ter.F("planTemplateId"),
-			Segment: m3ter.F(map[string]string{
-				"foo": "string",
-			}),
-			TiersSpanPlan: m3ter.F(true),
-			Type:          m3ter.F(m3ter.PricingNewParamsTypeDebit),
-			Version:       m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Pricings.New(context.TODO(), m3ter.PricingNewParams{
+		OrgID: m3ter.F("orgId"),
+		PricingBands: m3ter.F([]m3ter.PricingNewParamsPricingBand{{
+			FixedPrice:   m3ter.F(0.000000),
+			LowerLimit:   m3ter.F(0.000000),
+			UnitPrice:    m3ter.F(0.000000),
+			ID:           m3ter.F("id"),
+			CreditTypeID: m3ter.F("creditTypeId"),
+		}}),
+		StartDate:                 m3ter.F(time.Now()),
+		AccountingProductID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		AggregationID:             m3ter.F("aggregationId"),
+		Code:                      m3ter.F("JS!?Q0]r] ]$]"),
+		CompoundAggregationID:     m3ter.F("compoundAggregationId"),
+		Cumulative:                m3ter.F(true),
+		Description:               m3ter.F("description"),
+		EndDate:                   m3ter.F(time.Now()),
+		MinimumSpend:              m3ter.F(0.000000),
+		MinimumSpendBillInAdvance: m3ter.F(true),
+		MinimumSpendDescription:   m3ter.F("minimumSpendDescription"),
+		OveragePricingBands: m3ter.F([]m3ter.PricingNewParamsOveragePricingBand{{
+			FixedPrice:   m3ter.F(0.000000),
+			LowerLimit:   m3ter.F(0.000000),
+			UnitPrice:    m3ter.F(0.000000),
+			ID:           m3ter.F("id"),
+			CreditTypeID: m3ter.F("creditTypeId"),
+		}}),
+		PlanID:         m3ter.F("planId"),
+		PlanTemplateID: m3ter.F("planTemplateId"),
+		Segment: m3ter.F(map[string]string{
+			"foo": "string",
+		}),
+		TiersSpanPlan: m3ter.F(true),
+		Type:          m3ter.F(m3ter.PricingNewParamsTypeDebit),
+		Version:       m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -89,11 +87,14 @@ func TestPricingGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.PricingGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -117,12 +118,13 @@ func TestPricingUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.PricingUpdateParams{
+			OrgID: m3ter.F("orgId"),
 			PricingBands: m3ter.F([]m3ter.PricingUpdateParamsPricingBand{{
 				FixedPrice:   m3ter.F(0.000000),
 				LowerLimit:   m3ter.F(0.000000),
@@ -180,19 +182,17 @@ func TestPricingListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Pricings.List(
-		context.TODO(),
-		"orgId",
-		m3ter.PricingListParams{
-			Date:           m3ter.F("date"),
-			IDs:            m3ter.F([]string{"string"}),
-			NextToken:      m3ter.F("nextToken"),
-			PageSize:       m3ter.F(int64(1)),
-			PlanID:         m3ter.F("planId"),
-			PlanTemplateID: m3ter.F("planTemplateId"),
-		},
-	)
+	_, err := client.Pricings.List(context.TODO(), m3ter.PricingListParams{
+		OrgID:          m3ter.F("orgId"),
+		Date:           m3ter.F("date"),
+		IDs:            m3ter.F([]string{"string"}),
+		NextToken:      m3ter.F("nextToken"),
+		PageSize:       m3ter.F(int64(1)),
+		PlanID:         m3ter.F("planId"),
+		PlanTemplateID: m3ter.F("planTemplateId"),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -215,11 +215,14 @@ func TestPricingDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.PricingDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

@@ -26,17 +26,15 @@ func TestCreditReasonNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CreditReasons.New(
-		context.TODO(),
-		"orgId",
-		m3ter.CreditReasonNewParams{
-			Name:     m3ter.F("x"),
-			Archived: m3ter.F(true),
-			Code:     m3ter.F("{1{}}_"),
-			Version:  m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.CreditReasons.New(context.TODO(), m3ter.CreditReasonNewParams{
+		OrgID:    m3ter.F("orgId"),
+		Name:     m3ter.F("x"),
+		Archived: m3ter.F(true),
+		Code:     m3ter.F("{1{}}_"),
+		Version:  m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -59,11 +57,14 @@ func TestCreditReasonGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CreditReasonGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -87,12 +88,13 @@ func TestCreditReasonUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.CreditReasonUpdateParams{
+			OrgID:    m3ter.F("orgId"),
 			Name:     m3ter.F("x"),
 			Archived: m3ter.F(true),
 			Code:     m3ter.F("{1{}}_"),
@@ -121,18 +123,16 @@ func TestCreditReasonListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CreditReasons.List(
-		context.TODO(),
-		"orgId",
-		m3ter.CreditReasonListParams{
-			Archived:  m3ter.F(true),
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.CreditReasons.List(context.TODO(), m3ter.CreditReasonListParams{
+		OrgID:     m3ter.F("orgId"),
+		Archived:  m3ter.F(true),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -155,11 +155,14 @@ func TestCreditReasonDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CreditReasonDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

@@ -27,12 +27,13 @@ func TestBalanceTransactionNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Transactions.New(
 		context.TODO(),
-		"orgId",
 		"balanceId",
 		m3ter.BalanceTransactionNewParams{
+			OrgID:             m3ter.F("orgId"),
 			Amount:            m3ter.F(0.000000),
 			AppliedDate:       m3ter.F(time.Now()),
 			CurrencyPaid:      m3ter.F("currencyPaid"),
@@ -65,12 +66,13 @@ func TestBalanceTransactionListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Transactions.List(
 		context.TODO(),
-		"orgId",
 		"balanceId",
 		m3ter.BalanceTransactionListParams{
+			OrgID:             m3ter.F("orgId"),
 			NextToken:         m3ter.F("nextToken"),
 			PageSize:          m3ter.F(int64(1)),
 			TransactionTypeID: m3ter.F("transactionTypeId"),

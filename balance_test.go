@@ -27,30 +27,28 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.New(
-		context.TODO(),
-		"orgId",
-		m3ter.BalanceNewParams{
-			AccountID:                       m3ter.F("x"),
-			Currency:                        m3ter.F("x"),
-			EndDate:                         m3ter.F(time.Now()),
-			StartDate:                       m3ter.F(time.Now()),
-			BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
-			Code:                            m3ter.F("JS!?Q0]r] ]$]"),
-			ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Description:                     m3ter.F("description"),
-			FeesAccountingProductID:         m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			LineItemTypes:                   m3ter.F([]m3ter.BalanceNewParamsLineItemType{m3ter.BalanceNewParamsLineItemTypeStandingCharge}),
-			Name:                            m3ter.F("name"),
-			OverageDescription:              m3ter.F("overageDescription"),
-			OverageSurchargePercent:         m3ter.F(0.000000),
-			ProductIDs:                      m3ter.F([]string{"string"}),
-			RolloverAmount:                  m3ter.F(0.000000),
-			RolloverEndDate:                 m3ter.F(time.Now()),
-			Version:                         m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Balances.New(context.TODO(), m3ter.BalanceNewParams{
+		OrgID:                           m3ter.F("orgId"),
+		AccountID:                       m3ter.F("x"),
+		Currency:                        m3ter.F("x"),
+		EndDate:                         m3ter.F(time.Now()),
+		StartDate:                       m3ter.F(time.Now()),
+		BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
+		Code:                            m3ter.F("JS!?Q0]r] ]$]"),
+		ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Description:                     m3ter.F("description"),
+		FeesAccountingProductID:         m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		LineItemTypes:                   m3ter.F([]m3ter.BalanceNewParamsLineItemType{m3ter.BalanceNewParamsLineItemTypeStandingCharge}),
+		Name:                            m3ter.F("name"),
+		OverageDescription:              m3ter.F("overageDescription"),
+		OverageSurchargePercent:         m3ter.F(0.000000),
+		ProductIDs:                      m3ter.F([]string{"string"}),
+		RolloverAmount:                  m3ter.F(0.000000),
+		RolloverEndDate:                 m3ter.F(time.Now()),
+		Version:                         m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -73,11 +71,14 @@ func TestBalanceGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.BalanceGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -101,12 +102,13 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.BalanceUpdateParams{
+			OrgID:                           m3ter.F("orgId"),
 			AccountID:                       m3ter.F("x"),
 			Currency:                        m3ter.F("x"),
 			EndDate:                         m3ter.F(time.Now()),
@@ -148,18 +150,16 @@ func TestBalanceListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.List(
-		context.TODO(),
-		"orgId",
-		m3ter.BalanceListParams{
-			AccountID:    m3ter.F("accountId"),
-			EndDateEnd:   m3ter.F("endDateEnd"),
-			EndDateStart: m3ter.F("endDateStart"),
-			NextToken:    m3ter.F("nextToken"),
-			PageSize:     m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.Balances.List(context.TODO(), m3ter.BalanceListParams{
+		OrgID:        m3ter.F("orgId"),
+		AccountID:    m3ter.F("accountId"),
+		EndDateEnd:   m3ter.F("endDateEnd"),
+		EndDateStart: m3ter.F("endDateStart"),
+		NextToken:    m3ter.F("nextToken"),
+		PageSize:     m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -182,11 +182,14 @@ func TestBalanceDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.BalanceDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

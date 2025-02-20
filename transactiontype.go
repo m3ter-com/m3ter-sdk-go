@@ -39,22 +39,22 @@ func NewTransactionTypeService(opts ...option.RequestOption) (r *TransactionType
 
 // Create a new TransactionType for the specified Organization. Details of the new
 // TransactionType should be included in the request body.
-func (r *TransactionTypeService) New(ctx context.Context, orgID string, body TransactionTypeNewParams, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) New(ctx context.Context, params TransactionTypeNewParams, opts ...option.RequestOption) (res *TransactionType, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieves the TransactionType with the given UUID from the specified
 // Organization.
-func (r *TransactionTypeService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) Get(ctx context.Context, id string, query TransactionTypeGetParams, opts ...option.RequestOption) (res *TransactionType, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -62,7 +62,7 @@ func (r *TransactionTypeService) Get(ctx context.Context, orgID string, id strin
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -70,9 +70,9 @@ func (r *TransactionTypeService) Get(ctx context.Context, orgID string, id strin
 // Updates the TransactionType with the specified UUID for the specified
 // Organization. Update details for the TransactionType should be included in the
 // request body.
-func (r *TransactionTypeService) Update(ctx context.Context, orgID string, id string, body TransactionTypeUpdateParams, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) Update(ctx context.Context, id string, params TransactionTypeUpdateParams, opts ...option.RequestOption) (res *TransactionType, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -80,24 +80,24 @@ func (r *TransactionTypeService) Update(ctx context.Context, orgID string, id st
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieves a list of TransactionType entities for the specified Organization. The
 // list can be paginated for easier management, and supports filtering by various
 // parameters.
-func (r *TransactionTypeService) List(ctx context.Context, orgID string, query TransactionTypeListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionType], err error) {
+func (r *TransactionTypeService) List(ctx context.Context, params TransactionTypeListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionType], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,14 +112,14 @@ func (r *TransactionTypeService) List(ctx context.Context, orgID string, query T
 // Retrieves a list of TransactionType entities for the specified Organization. The
 // list can be paginated for easier management, and supports filtering by various
 // parameters.
-func (r *TransactionTypeService) ListAutoPaging(ctx context.Context, orgID string, query TransactionTypeListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TransactionType] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *TransactionTypeService) ListAutoPaging(ctx context.Context, params TransactionTypeListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TransactionType] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Deletes the TransactionType with the given UUID from the specified Organization.
-func (r *TransactionTypeService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) Delete(ctx context.Context, id string, body TransactionTypeDeleteParams, opts ...option.RequestOption) (res *TransactionType, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -127,7 +127,7 @@ func (r *TransactionTypeService) Delete(ctx context.Context, orgID string, id st
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/transactiontypes/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -185,6 +185,7 @@ func (r transactionTypeJSON) RawJSON() string {
 }
 
 type TransactionTypeNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -210,7 +211,12 @@ func (r TransactionTypeNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type TransactionTypeGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type TransactionTypeUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -237,6 +243,7 @@ func (r TransactionTypeUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type TransactionTypeListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Filter with this Boolean flag whether to include TransactionTypes that are
 	// archived.
 	//
@@ -261,4 +268,8 @@ func (r TransactionTypeListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type TransactionTypeDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

@@ -68,21 +68,21 @@ func NewMeterService(opts ...option.RequestOption) (r *MeterService) {
 // See also:
 //
 // - [Reviewing Meter Options](https://www.m3ter.com/docs/guides/setting-up-usage-data-meters-and-aggregations/reviewing-meter-options).
-func (r *MeterService) New(ctx context.Context, orgID string, body MeterNewParams, opts ...option.RequestOption) (res *Meter, err error) {
+func (r *MeterService) New(ctx context.Context, params MeterNewParams, opts ...option.RequestOption) (res *Meter, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/meters", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/meters", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Meter with the given UUID.
-func (r *MeterService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Meter, err error) {
+func (r *MeterService) Get(ctx context.Context, id string, query MeterGetParams, opts ...option.RequestOption) (res *Meter, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -90,7 +90,7 @@ func (r *MeterService) Get(ctx context.Context, orgID string, id string, opts ..
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/meters/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/meters/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -100,9 +100,9 @@ func (r *MeterService) Get(ctx context.Context, orgID string, id string, opts ..
 // **Note:** If you have created Custom Fields for a Meter, when you use this
 // endpoint to update the Meter use the `customFields` parameter to preserve those
 // Custom Fields. If you omit them from the update request, they will be lost.
-func (r *MeterService) Update(ctx context.Context, orgID string, id string, body MeterUpdateParams, opts ...option.RequestOption) (res *Meter, err error) {
+func (r *MeterService) Update(ctx context.Context, id string, params MeterUpdateParams, opts ...option.RequestOption) (res *Meter, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -110,22 +110,22 @@ func (r *MeterService) Update(ctx context.Context, orgID string, id string, body
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/meters/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/meters/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of Meter entities
-func (r *MeterService) List(ctx context.Context, orgID string, query MeterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Meter], err error) {
+func (r *MeterService) List(ctx context.Context, params MeterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Meter], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/meters", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/meters", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -138,14 +138,14 @@ func (r *MeterService) List(ctx context.Context, orgID string, query MeterListPa
 }
 
 // Retrieve a list of Meter entities
-func (r *MeterService) ListAutoPaging(ctx context.Context, orgID string, query MeterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Meter] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *MeterService) ListAutoPaging(ctx context.Context, params MeterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Meter] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Meter with the given UUID.
-func (r *MeterService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Meter, err error) {
+func (r *MeterService) Delete(ctx context.Context, id string, body MeterDeleteParams, opts ...option.RequestOption) (res *Meter, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -153,7 +153,7 @@ func (r *MeterService) Delete(ctx context.Context, orgID string, id string, opts
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/meters/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/meters/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -376,6 +376,7 @@ func (r MeterDerivedFieldsCategory) IsKnown() bool {
 }
 
 type MeterNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	//
 	// **NOTE:** Code has a maximum length of 80 characters and must not contain
@@ -520,7 +521,12 @@ type MeterNewParamsCustomFieldsUnion interface {
 	ImplementsMeterNewParamsCustomFieldsUnion()
 }
 
+type MeterGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type MeterUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	//
 	// **NOTE:** Code has a maximum length of 80 characters and must not contain
@@ -666,6 +672,7 @@ type MeterUpdateParamsCustomFieldsUnion interface {
 }
 
 type MeterListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// list of codes to retrieve
 	Codes param.Field[[]string] `query:"codes"`
 	// list of ids to retrieve
@@ -684,4 +691,8 @@ func (r MeterListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type MeterDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

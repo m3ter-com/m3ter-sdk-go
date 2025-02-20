@@ -28,26 +28,24 @@ func TestAccountPlanNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.AccountPlans.New(
-		context.TODO(),
-		"orgId",
-		m3ter.AccountPlanNewParams{
-			AccountID:        m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			StartDate:        m3ter.F(time.Now()),
-			BillEpoch:        m3ter.F(time.Now()),
-			ChildBillingMode: m3ter.F(m3ter.AccountPlanNewParamsChildBillingModeParentSummary),
-			Code:             m3ter.F("JS!?Q0]r] ]$]"),
-			ContractID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			CustomFields: m3ter.F(map[string]m3ter.AccountPlanNewParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			EndDate:     m3ter.F(time.Now()),
-			PlanGroupID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			PlanID:      m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Version:     m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.AccountPlans.New(context.TODO(), m3ter.AccountPlanNewParams{
+		OrgID:            m3ter.F("orgId"),
+		AccountID:        m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		StartDate:        m3ter.F(time.Now()),
+		BillEpoch:        m3ter.F(time.Now()),
+		ChildBillingMode: m3ter.F(m3ter.AccountPlanNewParamsChildBillingModeParentSummary),
+		Code:             m3ter.F("JS!?Q0]r] ]$]"),
+		ContractID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		CustomFields: m3ter.F(map[string]m3ter.AccountPlanNewParamsCustomFieldsUnion{
+			"foo": shared.UnionString("string"),
+		}),
+		EndDate:     m3ter.F(time.Now()),
+		PlanGroupID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		PlanID:      m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Version:     m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -70,11 +68,14 @@ func TestAccountPlanGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.AccountPlanGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -98,12 +99,13 @@ func TestAccountPlanUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.AccountPlanUpdateParams{
+			OrgID:            m3ter.F("orgId"),
 			AccountID:        m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			StartDate:        m3ter.F(time.Now()),
 			BillEpoch:        m3ter.F(time.Now()),
@@ -141,22 +143,20 @@ func TestAccountPlanListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.AccountPlans.List(
-		context.TODO(),
-		"orgId",
-		m3ter.AccountPlanListParams{
-			Account:    m3ter.F("account"),
-			Contract:   m3ter.F("contract"),
-			Date:       m3ter.F("date"),
-			IDs:        m3ter.F([]string{"string"}),
-			Includeall: m3ter.F(true),
-			NextToken:  m3ter.F("nextToken"),
-			PageSize:   m3ter.F(int64(1)),
-			Plan:       m3ter.F("plan"),
-			Product:    m3ter.F("product"),
-		},
-	)
+	_, err := client.AccountPlans.List(context.TODO(), m3ter.AccountPlanListParams{
+		OrgID:      m3ter.F("orgId"),
+		Account:    m3ter.F("account"),
+		Contract:   m3ter.F("contract"),
+		Date:       m3ter.F("date"),
+		IDs:        m3ter.F([]string{"string"}),
+		Includeall: m3ter.F(true),
+		NextToken:  m3ter.F("nextToken"),
+		PageSize:   m3ter.F(int64(1)),
+		Plan:       m3ter.F("plan"),
+		Product:    m3ter.F("product"),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -179,11 +179,14 @@ func TestAccountPlanDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.AccountPlanDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

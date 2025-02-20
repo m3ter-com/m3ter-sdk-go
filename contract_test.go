@@ -28,24 +28,22 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.New(
-		context.TODO(),
-		"orgId",
-		m3ter.ContractNewParams{
-			AccountID: m3ter.F("x"),
-			EndDate:   m3ter.F(time.Now()),
-			Name:      m3ter.F("x"),
-			StartDate: m3ter.F(time.Now()),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
-			CustomFields: m3ter.F(map[string]m3ter.ContractNewParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			Description:         m3ter.F("description"),
-			PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-			Version:             m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Contracts.New(context.TODO(), m3ter.ContractNewParams{
+		OrgID:     m3ter.F("orgId"),
+		AccountID: m3ter.F("x"),
+		EndDate:   m3ter.F(time.Now()),
+		Name:      m3ter.F("x"),
+		StartDate: m3ter.F(time.Now()),
+		Code:      m3ter.F("JS!?Q0]r] ]$]"),
+		CustomFields: m3ter.F(map[string]m3ter.ContractNewParamsCustomFieldsUnion{
+			"foo": shared.UnionString("string"),
+		}),
+		Description:         m3ter.F("description"),
+		PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
+		Version:             m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -68,11 +66,14 @@ func TestContractGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.ContractGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -96,12 +97,13 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.ContractUpdateParams{
+			OrgID:     m3ter.F("orgId"),
 			AccountID: m3ter.F("x"),
 			EndDate:   m3ter.F(time.Now()),
 			Name:      m3ter.F("x"),
@@ -137,18 +139,16 @@ func TestContractListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.List(
-		context.TODO(),
-		"orgId",
-		m3ter.ContractListParams{
-			AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.Contracts.List(context.TODO(), m3ter.ContractListParams{
+		OrgID:     m3ter.F("orgId"),
+		AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -171,11 +171,14 @@ func TestContractDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.ContractDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

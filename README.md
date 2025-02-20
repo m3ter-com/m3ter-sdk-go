@@ -53,12 +53,11 @@ func main() {
 		option.WithAPIKey("My API Key"),       // defaults to os.LookupEnv("M3TER_API_KEY")
 		option.WithAPISecret("My API Secret"), // defaults to os.LookupEnv("M3TER_API_SECRET")
 		option.WithToken("My Token"),          // defaults to os.LookupEnv("M3TER_API_TOKEN")
+		option.WithOrgID("My Org ID"),
 	)
-	page, err := client.Products.List(
-		context.TODO(),
-		"ORG_ID",
-		m3ter.ProductListParams{},
-	)
+	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
+		OrgID: m3ter.F("ORG_ID"),
+	})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -168,11 +167,9 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.Products.ListAutoPaging(
-	context.TODO(),
-	"ORG_ID",
-	m3ter.ProductListParams{},
-)
+iter := client.Products.ListAutoPaging(context.TODO(), m3ter.ProductListParams{
+	OrgID: m3ter.F("ORG_ID"),
+})
 // Automatically fetches more pages as needed.
 for iter.Next() {
 	product := iter.Current()
@@ -187,11 +184,9 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.Products.List(
-	context.TODO(),
-	"ORG_ID",
-	m3ter.ProductListParams{},
-)
+page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
+	OrgID: m3ter.F("ORG_ID"),
+})
 for page != nil {
 	for _, product := range page.Data {
 		fmt.Printf("%+v\n", product)
@@ -213,11 +208,9 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Products.List(
-	context.TODO(),
-	"ORG_ID",
-	m3ter.ProductListParams{},
-)
+_, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
+	OrgID: m3ter.F("ORG_ID"),
+})
 if err != nil {
 	var apierr *m3ter.Error
 	if errors.As(err, &apierr) {
@@ -244,8 +237,9 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Products.List(
 	ctx,
-	"ORG_ID",
-	m3ter.ProductListParams{},
+	m3ter.ProductListParams{
+		OrgID: m3ter.F("ORG_ID"),
+	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -281,8 +275,9 @@ client := m3ter.NewClient(
 // Override per-request:
 client.Products.List(
 	context.TODO(),
-	"ORG_ID",
-	m3ter.ProductListParams{},
+	m3ter.ProductListParams{
+		OrgID: m3ter.F("ORG_ID"),
+	},
 	option.WithMaxRetries(5),
 )
 ```
@@ -297,8 +292,9 @@ you need to examine response headers, status codes, or other details.
 var response *http.Response
 page, err := client.Products.List(
 	context.TODO(),
-	"ORG_ID",
-	m3ter.ProductListParams{},
+	m3ter.ProductListParams{
+		OrgID: m3ter.F("ORG_ID"),
+	},
 	option.WithResponseInto(&response),
 )
 if err != nil {

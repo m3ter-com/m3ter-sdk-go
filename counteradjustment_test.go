@@ -26,19 +26,17 @@ func TestCounterAdjustmentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CounterAdjustments.New(
-		context.TODO(),
-		"orgId",
-		m3ter.CounterAdjustmentNewParams{
-			AccountID:           m3ter.F("x"),
-			CounterID:           m3ter.F("x"),
-			Date:                m3ter.F("2022-01-04"),
-			Value:               m3ter.F(int64(0)),
-			PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-			Version:             m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.CounterAdjustments.New(context.TODO(), m3ter.CounterAdjustmentNewParams{
+		OrgID:               m3ter.F("orgId"),
+		AccountID:           m3ter.F("x"),
+		CounterID:           m3ter.F("x"),
+		Date:                m3ter.F("2022-01-04"),
+		Value:               m3ter.F(int64(0)),
+		PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
+		Version:             m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -61,11 +59,14 @@ func TestCounterAdjustmentGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CounterAdjustmentGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -89,12 +90,13 @@ func TestCounterAdjustmentUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.CounterAdjustmentUpdateParams{
+			OrgID:               m3ter.F("orgId"),
 			AccountID:           m3ter.F("x"),
 			CounterID:           m3ter.F("x"),
 			Date:                m3ter.F("2022-01-04"),
@@ -125,22 +127,20 @@ func TestCounterAdjustmentListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CounterAdjustments.List(
-		context.TODO(),
-		"orgId",
-		m3ter.CounterAdjustmentListParams{
-			AccountID:    m3ter.F("accountId"),
-			CounterID:    m3ter.F("counterId"),
-			Date:         m3ter.F("date"),
-			DateEnd:      m3ter.F("dateEnd"),
-			DateStart:    m3ter.F("dateStart"),
-			EndDateEnd:   m3ter.F("endDateEnd"),
-			EndDateStart: m3ter.F("endDateStart"),
-			NextToken:    m3ter.F("nextToken"),
-			PageSize:     m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.CounterAdjustments.List(context.TODO(), m3ter.CounterAdjustmentListParams{
+		OrgID:        m3ter.F("orgId"),
+		AccountID:    m3ter.F("accountId"),
+		CounterID:    m3ter.F("counterId"),
+		Date:         m3ter.F("date"),
+		DateEnd:      m3ter.F("dateEnd"),
+		DateStart:    m3ter.F("dateStart"),
+		EndDateEnd:   m3ter.F("endDateEnd"),
+		EndDateStart: m3ter.F("endDateStart"),
+		NextToken:    m3ter.F("nextToken"),
+		PageSize:     m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -163,11 +163,14 @@ func TestCounterAdjustmentDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CounterAdjustmentDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
