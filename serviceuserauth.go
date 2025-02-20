@@ -45,7 +45,7 @@ func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOpt
 			*token = tokenRes.AccessToken
 		}
 
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", *token))
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", *token))
 		return next(req)
 	})
 
