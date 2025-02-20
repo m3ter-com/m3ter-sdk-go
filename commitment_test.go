@@ -27,44 +27,42 @@ func TestCommitmentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Commitments.New(
-		context.TODO(),
-		"orgId",
-		m3ter.CommitmentNewParams{
-			AccountID:                    m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Amount:                       m3ter.F(1.000000),
-			Currency:                     m3ter.F("x"),
-			EndDate:                      m3ter.F(time.Now()),
-			StartDate:                    m3ter.F(time.Now()),
-			AccountingProductID:          m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			AmountFirstBill:              m3ter.F(0.000000),
-			AmountPrePaid:                m3ter.F(0.000000),
-			BillEpoch:                    m3ter.F(time.Now()),
-			BillingInterval:              m3ter.F(int64(1)),
-			BillingOffset:                m3ter.F(int64(0)),
-			BillingPlanID:                m3ter.F("billingPlanId"),
-			ChildBillingMode:             m3ter.F(m3ter.CommitmentNewParamsChildBillingModeParentSummary),
-			CommitmentFeeBillInAdvance:   m3ter.F(true),
-			CommitmentFeeDescription:     m3ter.F("commitmentFeeDescription"),
-			CommitmentUsageDescription:   m3ter.F("commitmentUsageDescription"),
-			ContractID:                   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			DrawdownsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			FeeDates: m3ter.F([]m3ter.CommitmentNewParamsFeeDate{{
-				Amount:                 m3ter.F(1.000000),
-				Date:                   m3ter.F(time.Now()),
-				ServicePeriodEndDate:   m3ter.F(time.Now()),
-				ServicePeriodStartDate: m3ter.F(time.Now()),
-			}}),
-			FeesAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			LineItemTypes:           m3ter.F([]m3ter.CommitmentNewParamsLineItemType{m3ter.CommitmentNewParamsLineItemTypeStandingCharge}),
-			OverageDescription:      m3ter.F("overageDescription"),
-			OverageSurchargePercent: m3ter.F(0.000000),
-			ProductIDs:              m3ter.F([]string{"string"}),
-			SeparateOverageUsage:    m3ter.F(true),
-			Version:                 m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Commitments.New(context.TODO(), m3ter.CommitmentNewParams{
+		OrgID:                        m3ter.F("orgId"),
+		AccountID:                    m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Amount:                       m3ter.F(1.000000),
+		Currency:                     m3ter.F("x"),
+		EndDate:                      m3ter.F(time.Now()),
+		StartDate:                    m3ter.F(time.Now()),
+		AccountingProductID:          m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		AmountFirstBill:              m3ter.F(0.000000),
+		AmountPrePaid:                m3ter.F(0.000000),
+		BillEpoch:                    m3ter.F(time.Now()),
+		BillingInterval:              m3ter.F(int64(1)),
+		BillingOffset:                m3ter.F(int64(0)),
+		BillingPlanID:                m3ter.F("billingPlanId"),
+		ChildBillingMode:             m3ter.F(m3ter.CommitmentNewParamsChildBillingModeParentSummary),
+		CommitmentFeeBillInAdvance:   m3ter.F(true),
+		CommitmentFeeDescription:     m3ter.F("commitmentFeeDescription"),
+		CommitmentUsageDescription:   m3ter.F("commitmentUsageDescription"),
+		ContractID:                   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		DrawdownsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		FeeDates: m3ter.F([]m3ter.CommitmentNewParamsFeeDate{{
+			Amount:                 m3ter.F(1.000000),
+			Date:                   m3ter.F(time.Now()),
+			ServicePeriodEndDate:   m3ter.F(time.Now()),
+			ServicePeriodStartDate: m3ter.F(time.Now()),
+		}}),
+		FeesAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		LineItemTypes:           m3ter.F([]m3ter.CommitmentNewParamsLineItemType{m3ter.CommitmentNewParamsLineItemTypeStandingCharge}),
+		OverageDescription:      m3ter.F("overageDescription"),
+		OverageSurchargePercent: m3ter.F(0.000000),
+		ProductIDs:              m3ter.F([]string{"string"}),
+		SeparateOverageUsage:    m3ter.F(true),
+		Version:                 m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -87,11 +85,14 @@ func TestCommitmentGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CommitmentGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -115,12 +116,13 @@ func TestCommitmentUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.CommitmentUpdateParams{
+			OrgID:                        m3ter.F("orgId"),
 			AccountID:                    m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			Amount:                       m3ter.F(1.000000),
 			Currency:                     m3ter.F("x"),
@@ -176,22 +178,20 @@ func TestCommitmentListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Commitments.List(
-		context.TODO(),
-		"orgId",
-		m3ter.CommitmentListParams{
-			AccountID:    m3ter.F("accountId"),
-			ContractID:   m3ter.F("contractId"),
-			Date:         m3ter.F("date"),
-			EndDateEnd:   m3ter.F("endDateEnd"),
-			EndDateStart: m3ter.F("endDateStart"),
-			IDs:          m3ter.F([]string{"string"}),
-			NextToken:    m3ter.F("nextToken"),
-			PageSize:     m3ter.F(int64(1)),
-			ProductID:    m3ter.F("productId"),
-		},
-	)
+	_, err := client.Commitments.List(context.TODO(), m3ter.CommitmentListParams{
+		OrgID:        m3ter.F("orgId"),
+		AccountID:    m3ter.F("accountId"),
+		ContractID:   m3ter.F("contractId"),
+		Date:         m3ter.F("date"),
+		EndDateEnd:   m3ter.F("endDateEnd"),
+		EndDateStart: m3ter.F("endDateStart"),
+		IDs:          m3ter.F([]string{"string"}),
+		NextToken:    m3ter.F("nextToken"),
+		PageSize:     m3ter.F(int64(1)),
+		ProductID:    m3ter.F("productId"),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -214,11 +214,14 @@ func TestCommitmentDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CommitmentDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -242,19 +245,17 @@ func TestCommitmentSearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Commitments.Search(
-		context.TODO(),
-		"orgId",
-		m3ter.CommitmentSearchParams{
-			FromDocument: m3ter.F(int64(0)),
-			Operator:     m3ter.F(m3ter.CommitmentSearchParamsOperatorAnd),
-			PageSize:     m3ter.F(int64(1)),
-			SearchQuery:  m3ter.F("searchQuery"),
-			SortBy:       m3ter.F("sortBy"),
-			SortOrder:    m3ter.F(m3ter.CommitmentSearchParamsSortOrderAsc),
-		},
-	)
+	_, err := client.Commitments.Search(context.TODO(), m3ter.CommitmentSearchParams{
+		OrgID:        m3ter.F("orgId"),
+		FromDocument: m3ter.F(int64(0)),
+		Operator:     m3ter.F(m3ter.CommitmentSearchParamsOperatorAnd),
+		PageSize:     m3ter.F(int64(1)),
+		SearchQuery:  m3ter.F("searchQuery"),
+		SortBy:       m3ter.F("sortBy"),
+		SortOrder:    m3ter.F(m3ter.CommitmentSearchParamsSortOrderAsc),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {

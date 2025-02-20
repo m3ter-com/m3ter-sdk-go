@@ -52,14 +52,14 @@ func NewCommitmentService(opts ...option.RequestOption) (r *CommitmentService) {
 //   - Define a _schedule of billing dates_. Omit a `billingPlanId` and use the
 //     `feeDates` request parameter to define a precise schedule of bill dates and
 //     amounts.
-func (r *CommitmentService) New(ctx context.Context, orgID string, body CommitmentNewParams, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams, opts ...option.RequestOption) (res *Commitment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/commitments", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/commitments", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -68,9 +68,9 @@ func (r *CommitmentService) New(ctx context.Context, orgID string, body Commitme
 // Retrieve the details of the Commitment with the given UUID. It provides
 // comprehensive information about the Commitment, such as the agreed amount,
 // overage surcharge percentage, and other related details.
-func (r *CommitmentService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) Get(ctx context.Context, id string, query CommitmentGetParams, opts ...option.RequestOption) (res *Commitment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -78,7 +78,7 @@ func (r *CommitmentService) Get(ctx context.Context, orgID string, id string, op
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/commitments/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/commitments/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -88,9 +88,9 @@ func (r *CommitmentService) Get(ctx context.Context, orgID string, id string, op
 // Update the details of the Commitment with the given UUID. Use this endpoint to
 // adjust Commitment parameters such as the fixed amount, overage surcharge
 // percentage, or associated contract details.
-func (r *CommitmentService) Update(ctx context.Context, orgID string, id string, body CommitmentUpdateParams, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) Update(ctx context.Context, id string, params CommitmentUpdateParams, opts ...option.RequestOption) (res *Commitment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -98,8 +98,8 @@ func (r *CommitmentService) Update(ctx context.Context, orgID string, id string,
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/commitments/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/commitments/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -108,16 +108,16 @@ func (r *CommitmentService) Update(ctx context.Context, orgID string, id string,
 // Retrieves a list of all Commitments associated with an Organization. This
 // endpoint supports pagination and includes various query parameters to filter the
 // Commitments based on Account, Product, date, and end dates.
-func (r *CommitmentService) List(ctx context.Context, orgID string, query CommitmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[Commitment], err error) {
+func (r *CommitmentService) List(ctx context.Context, params CommitmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[Commitment], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/commitments", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/commitments", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -134,17 +134,17 @@ func (r *CommitmentService) List(ctx context.Context, orgID string, query Commit
 // Retrieves a list of all Commitments associated with an Organization. This
 // endpoint supports pagination and includes various query parameters to filter the
 // Commitments based on Account, Product, date, and end dates.
-func (r *CommitmentService) ListAutoPaging(ctx context.Context, orgID string, query CommitmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Commitment] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *CommitmentService) ListAutoPaging(ctx context.Context, params CommitmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Commitment] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Remove a specific Commitment.
 //
 // Deletes the Commitment with the given UUID. Use this endpoint when a Commitment
 // is no longer valid or needs to be removed from the system.
-func (r *CommitmentService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) Delete(ctx context.Context, id string, body CommitmentDeleteParams, opts ...option.RequestOption) (res *Commitment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -152,7 +152,7 @@ func (r *CommitmentService) Delete(ctx context.Context, orgID string, id string,
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/commitments/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/commitments/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -163,14 +163,14 @@ func (r *CommitmentService) Delete(ctx context.Context, orgID string, id string,
 // specified search criteria. The search query is customizable, allowing for
 // complex nested conditions and sorting. The returned list of Commitments can be
 // paginated for easier management.
-func (r *CommitmentService) Search(ctx context.Context, orgID string, query CommitmentSearchParams, opts ...option.RequestOption) (res *CommitmentSearchResponse, err error) {
+func (r *CommitmentService) Search(ctx context.Context, params CommitmentSearchParams, opts ...option.RequestOption) (res *CommitmentSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/commitments/search", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/commitments/search", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
@@ -443,6 +443,7 @@ func (r commitmentSearchResponseJSON) RawJSON() string {
 }
 
 type CommitmentNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -657,7 +658,12 @@ func (r CommitmentNewParamsLineItemType) IsKnown() bool {
 	return false
 }
 
+type CommitmentGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CommitmentUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -873,6 +879,7 @@ func (r CommitmentUpdateParamsLineItemType) IsKnown() bool {
 }
 
 type CommitmentListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account. This parameter helps filter the
 	// Commitments related to a specific end-customer Account.
 	AccountID  param.Field[string] `query:"accountId"`
@@ -907,7 +914,12 @@ func (r CommitmentListParams) URLQuery() (v url.Values) {
 	})
 }
 
+type CommitmentDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CommitmentSearchParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// fromDocument for multi page retrievals
 	FromDocument param.Field[int64] `query:"fromDocument"`
 	// Search Operator to be used while querying search

@@ -40,21 +40,21 @@ func NewDebitReasonService(opts ...option.RequestOption) (r *DebitReasonService)
 // Create a new Debit Reason for your Organization. When you've created a Debit
 // Reason, it becomes available as a debit type for adding Debit line items to
 // Bills. See [Debits](https://www.m3ter.com/docs/api#tag/Debits).
-func (r *DebitReasonService) New(ctx context.Context, orgID string, body DebitReasonNewParams, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) New(ctx context.Context, params DebitReasonNewParams, opts ...option.RequestOption) (res *DebitReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/debitreasons", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/debitreasons", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Debit Reason with the given UUID.
-func (r *DebitReasonService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) Get(ctx context.Context, id string, query DebitReasonGetParams, opts ...option.RequestOption) (res *DebitReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -62,15 +62,15 @@ func (r *DebitReasonService) Get(ctx context.Context, orgID string, id string, o
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/debitreasons/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/debitreasons/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update the Debit Reason with the given UUID.
-func (r *DebitReasonService) Update(ctx context.Context, orgID string, id string, body DebitReasonUpdateParams, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) Update(ctx context.Context, id string, params DebitReasonUpdateParams, opts ...option.RequestOption) (res *DebitReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -78,24 +78,24 @@ func (r *DebitReasonService) Update(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/debitreasons/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/debitreasons/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of the Debit Reason entities created for your Organization. You
 // can filter the list returned for the call by Debit Reason ID, Debit Reason short
 // code, or by Archive status.
-func (r *DebitReasonService) List(ctx context.Context, orgID string, query DebitReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitReason], err error) {
+func (r *DebitReasonService) List(ctx context.Context, params DebitReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitReason], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/debitreasons", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/debitreasons", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,14 +110,14 @@ func (r *DebitReasonService) List(ctx context.Context, orgID string, query Debit
 // Retrieve a list of the Debit Reason entities created for your Organization. You
 // can filter the list returned for the call by Debit Reason ID, Debit Reason short
 // code, or by Archive status.
-func (r *DebitReasonService) ListAutoPaging(ctx context.Context, orgID string, query DebitReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DebitReason] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *DebitReasonService) ListAutoPaging(ctx context.Context, params DebitReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DebitReason] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Debit Reason with the given UUID.
-func (r *DebitReasonService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) Delete(ctx context.Context, id string, body DebitReasonDeleteParams, opts ...option.RequestOption) (res *DebitReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -125,7 +125,7 @@ func (r *DebitReasonService) Delete(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/debitreasons/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/debitreasons/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -182,6 +182,7 @@ func (r debitReasonJSON) RawJSON() string {
 }
 
 type DebitReasonNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -207,7 +208,12 @@ func (r DebitReasonNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type DebitReasonGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type DebitReasonUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -234,6 +240,7 @@ func (r DebitReasonUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type DebitReasonListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Filter using the boolean archived flag. DebitReasons can be archived if they are
 	// obsolete.
 	//
@@ -256,4 +263,8 @@ func (r DebitReasonListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type DebitReasonDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

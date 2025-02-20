@@ -89,14 +89,14 @@ func NewDataExportService(opts ...option.RequestOption) (r *DataExportService) {
 // triggered ad-hoc export. See the
 // [ExportJob](https://www.m3ter.com/docs/api#tag/ExportJob) section of this API
 // Reference.
-func (r *DataExportService) NewAdhoc(ctx context.Context, orgID string, body DataExportNewAdhocParams, opts ...option.RequestOption) (res *AdhocExport, err error) {
+func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAdhocParams, opts ...option.RequestOption) (res *AdhocExport, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/dataexports/adhoc", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/dataexports/adhoc", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -399,6 +399,7 @@ func (r AdHocUsageDataRequestTimePeriod) IsKnown() bool {
 }
 
 type DataExportNewAdhocParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Request representing an operational data export configuration.
 	Body DataExportNewAdhocParamsBodyUnion `json:"body,required"`
 }

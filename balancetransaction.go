@@ -53,9 +53,9 @@ func NewBalanceTransactionService(opts ...option.RequestOption) (r *BalanceTrans
 // to record the amount paid and alternative currency respectively. For example,
 // you might add a Transaction amount of 200 USD to a Balance on a customer Account
 // where the customer actually paid you 50 units in virtual currency X.
-func (r *BalanceTransactionService) New(ctx context.Context, orgID string, balanceID string, body BalanceTransactionNewParams, opts ...option.RequestOption) (res *Transaction, err error) {
+func (r *BalanceTransactionService) New(ctx context.Context, balanceID string, params BalanceTransactionNewParams, opts ...option.RequestOption) (res *Transaction, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -63,8 +63,8 @@ func (r *BalanceTransactionService) New(ctx context.Context, orgID string, balan
 		err = errors.New("missing required balanceId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/balances/%s/transactions", orgID, balanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/balances/%s/transactions", params.OrgID, balanceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -73,11 +73,11 @@ func (r *BalanceTransactionService) New(ctx context.Context, orgID string, balan
 // This endpoint returns a list of all Transactions associated with a specific
 // Balance. You can paginate through the Transactions by using the `pageSize` and
 // `nextToken` parameters.
-func (r *BalanceTransactionService) List(ctx context.Context, orgID string, balanceID string, query BalanceTransactionListParams, opts ...option.RequestOption) (res *pagination.Cursor[Transaction], err error) {
+func (r *BalanceTransactionService) List(ctx context.Context, balanceID string, params BalanceTransactionListParams, opts ...option.RequestOption) (res *pagination.Cursor[Transaction], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -85,8 +85,8 @@ func (r *BalanceTransactionService) List(ctx context.Context, orgID string, bala
 		err = errors.New("missing required balanceId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/balances/%s/transactions", orgID, balanceID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/balances/%s/transactions", params.OrgID, balanceID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +103,8 @@ func (r *BalanceTransactionService) List(ctx context.Context, orgID string, bala
 // This endpoint returns a list of all Transactions associated with a specific
 // Balance. You can paginate through the Transactions by using the `pageSize` and
 // `nextToken` parameters.
-func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, orgID string, balanceID string, query BalanceTransactionListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Transaction] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, balanceID, query, opts...))
+func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, balanceID string, params BalanceTransactionListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Transaction] {
+	return pagination.NewCursorAutoPager(r.List(ctx, balanceID, params, opts...))
 }
 
 type Transaction struct {
@@ -206,6 +206,7 @@ func (r TransactionEntityType) IsKnown() bool {
 }
 
 type BalanceTransactionNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The financial value of the transaction.
 	Amount param.Field[float64] `json:"amount,required"`
 	// The date _(in ISO 8601 format)_ when the Balance transaction was applied.
@@ -238,6 +239,7 @@ func (r BalanceTransactionNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type BalanceTransactionListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// `nextToken` for multi page retrievals. A token for retrieving the next page of
 	// transactions. You'll get this from the response to your request.
 	NextToken param.Field[string] `query:"nextToken"`

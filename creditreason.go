@@ -40,21 +40,21 @@ func NewCreditReasonService(opts ...option.RequestOption) (r *CreditReasonServic
 // Create a new Credit Reason for your Organization. When you've created a Credit
 // Reason, it becomes available as a credit type for adding Credit line items to
 // Bills. See [Credits](https://www.m3ter.com/docs/api#tag/Credits).
-func (r *CreditReasonService) New(ctx context.Context, orgID string, body CreditReasonNewParams, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) New(ctx context.Context, params CreditReasonNewParams, opts ...option.RequestOption) (res *CreditReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/creditreasons", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/creditreasons", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Credit Reason with the given UUID.
-func (r *CreditReasonService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) Get(ctx context.Context, id string, query CreditReasonGetParams, opts ...option.RequestOption) (res *CreditReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -62,15 +62,15 @@ func (r *CreditReasonService) Get(ctx context.Context, orgID string, id string, 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/creditreasons/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/creditreasons/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update the Credit Reason with the given UUID.
-func (r *CreditReasonService) Update(ctx context.Context, orgID string, id string, body CreditReasonUpdateParams, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) Update(ctx context.Context, id string, params CreditReasonUpdateParams, opts ...option.RequestOption) (res *CreditReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -78,24 +78,24 @@ func (r *CreditReasonService) Update(ctx context.Context, orgID string, id strin
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/creditreasons/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/creditreasons/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of the Credit Reason entities created for your Organization. You
 // can filter the list returned for the call by Credit Reason ID, Credit Reason
 // short code, or by Archive status.
-func (r *CreditReasonService) List(ctx context.Context, orgID string, query CreditReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditReason], err error) {
+func (r *CreditReasonService) List(ctx context.Context, params CreditReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditReason], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/creditreasons", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/creditreasons", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,14 +110,14 @@ func (r *CreditReasonService) List(ctx context.Context, orgID string, query Cred
 // Retrieve a list of the Credit Reason entities created for your Organization. You
 // can filter the list returned for the call by Credit Reason ID, Credit Reason
 // short code, or by Archive status.
-func (r *CreditReasonService) ListAutoPaging(ctx context.Context, orgID string, query CreditReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CreditReason] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *CreditReasonService) ListAutoPaging(ctx context.Context, params CreditReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CreditReason] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Credit Reason with the given UUID.
-func (r *CreditReasonService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) Delete(ctx context.Context, id string, body CreditReasonDeleteParams, opts ...option.RequestOption) (res *CreditReason, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -125,7 +125,7 @@ func (r *CreditReasonService) Delete(ctx context.Context, orgID string, id strin
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/creditreasons/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/creditreasons/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -182,6 +182,7 @@ func (r creditReasonJSON) RawJSON() string {
 }
 
 type CreditReasonNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -207,7 +208,12 @@ func (r CreditReasonNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type CreditReasonGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CreditReasonUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -234,6 +240,7 @@ func (r CreditReasonUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CreditReasonListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// TRUE / FALSE archived flag to filter the list. CreditReasons can be archived
 	// once they are obsolete.
 	//
@@ -256,4 +263,8 @@ func (r CreditReasonListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type CreditReasonDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

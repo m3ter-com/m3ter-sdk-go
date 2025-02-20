@@ -49,22 +49,22 @@ func NewAccountPlanService(opts ...option.RequestOption) (r *AccountPlanService)
 // **Note:** You cannot use this call to create _both_ an AccountPlan and
 // AccountPlanGroup for an Account at the same time. If you want to create both for
 // an Account, you must submit two separate calls.
-func (r *AccountPlanService) New(ctx context.Context, orgID string, body AccountPlanNewParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accountplans", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accountplans", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the AccountPlan or AccountPlanGroup details corresponding to the given
 // UUID.
-func (r *AccountPlanService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPlanGetParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -72,7 +72,7 @@ func (r *AccountPlanService) Get(ctx context.Context, orgID string, id string, o
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accountplans/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/accountplans/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -92,9 +92,9 @@ func (r *AccountPlanService) Get(ctx context.Context, orgID string, id string, o
 //     endpoint to update the AccountPlan use the `customFields` parameter to
 //     preserve those Custom Fields. If you omit them from the update request, they
 //     will be lost.
-func (r *AccountPlanService) Update(ctx context.Context, orgID string, id string, body AccountPlanUpdateParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) Update(ctx context.Context, id string, params AccountPlanUpdateParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -102,8 +102,8 @@ func (r *AccountPlanService) Update(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accountplans/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accountplans/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -117,16 +117,16 @@ func (r *AccountPlanService) Update(ctx context.Context, orgID string, id string
 // **NOTE:** You cannot use the `product` query parameter as a single filter
 // condition, but must always use it in combination with the `account` query
 // parameter.
-func (r *AccountPlanService) List(ctx context.Context, orgID string, query AccountPlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountPlan], err error) {
+func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountPlan], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accountplans", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accountplans", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -148,17 +148,17 @@ func (r *AccountPlanService) List(ctx context.Context, orgID string, query Accou
 // **NOTE:** You cannot use the `product` query parameter as a single filter
 // condition, but must always use it in combination with the `account` query
 // parameter.
-func (r *AccountPlanService) ListAutoPaging(ctx context.Context, orgID string, query AccountPlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountPlan] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *AccountPlanService) ListAutoPaging(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountPlan] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the AccountPlan or AccountPlanGroup with the given UUID.
 //
 // This endpoint deletes an AccountPlan or AccountPlanGroup that has been attached
 // to a specific Account in your Organization.
-func (r *AccountPlanService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) Delete(ctx context.Context, id string, body AccountPlanDeleteParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -166,7 +166,7 @@ func (r *AccountPlanService) Delete(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accountplans/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/accountplans/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -327,6 +327,7 @@ func init() {
 }
 
 type AccountPlanNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The start date _(in ISO-8601 format)_ for the AccountPlan or AccountPlanGroup
@@ -435,7 +436,12 @@ type AccountPlanNewParamsCustomFieldsUnion interface {
 	ImplementsAccountPlanNewParamsCustomFieldsUnion()
 }
 
+type AccountPlanGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type AccountPlanUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The start date _(in ISO-8601 format)_ for the AccountPlan or AccountPlanGroup
@@ -545,6 +551,7 @@ type AccountPlanUpdateParamsCustomFieldsUnion interface {
 }
 
 type AccountPlanListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account whose AccountPlans and
 	// AccountPlanGroups you want to retrieve.
 	Account  param.Field[string] `query:"account"`
@@ -587,4 +594,8 @@ func (r AccountPlanListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type AccountPlanDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

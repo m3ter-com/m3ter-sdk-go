@@ -25,12 +25,11 @@ func TestManualPagination(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	page, err := client.Products.List(
-		context.TODO(),
-		"ORG_ID",
-		m3ter.ProductListParams{},
-	)
+	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
+		OrgID: m3ter.F("ORG_ID"),
+	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}

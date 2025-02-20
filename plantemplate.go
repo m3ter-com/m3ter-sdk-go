@@ -45,14 +45,14 @@ func NewPlanTemplateService(opts ...option.RequestOption) (r *PlanTemplateServic
 // This endpoint creates a new PlanTemplate within a specific Organization,
 // identified by its unique UUID. The request body should contain the necessary
 // information for the new PlanTemplate.
-func (r *PlanTemplateService) New(ctx context.Context, orgID string, body PlanTemplateNewParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plantemplates", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plantemplates", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -60,9 +60,9 @@ func (r *PlanTemplateService) New(ctx context.Context, orgID string, body PlanTe
 //
 // This endpoint allows you to retrieve a specific PlanTemplate within a specific
 // Organization, both identified by their unique identifiers (UUIDs).
-func (r *PlanTemplateService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemplateGetParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -70,7 +70,7 @@ func (r *PlanTemplateService) Get(ctx context.Context, orgID string, id string, 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plantemplates/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plantemplates/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -85,9 +85,9 @@ func (r *PlanTemplateService) Get(ctx context.Context, orgID string, id string, 
 // this endpoint to update the Plan Template use the `customFields` parameter to
 // preserve those Custom Fields. If you omit them from the update request, they
 // will be lost.
-func (r *PlanTemplateService) Update(ctx context.Context, orgID string, id string, body PlanTemplateUpdateParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) Update(ctx context.Context, id string, params PlanTemplateUpdateParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -95,8 +95,8 @@ func (r *PlanTemplateService) Update(ctx context.Context, orgID string, id strin
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plantemplates/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plantemplates/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -105,16 +105,16 @@ func (r *PlanTemplateService) Update(ctx context.Context, orgID string, id strin
 // This endpoint enables you to retrieve a paginated list of PlanTemplates
 // belonging to a specific Organization, identified by its UUID. You can filter the
 // list by PlanTemplate IDs or Product IDs for more focused retrieval.
-func (r *PlanTemplateService) List(ctx context.Context, orgID string, query PlanTemplateListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanTemplate], err error) {
+func (r *PlanTemplateService) List(ctx context.Context, params PlanTemplateListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanTemplate], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plantemplates", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plantemplates", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,17 +131,17 @@ func (r *PlanTemplateService) List(ctx context.Context, orgID string, query Plan
 // This endpoint enables you to retrieve a paginated list of PlanTemplates
 // belonging to a specific Organization, identified by its UUID. You can filter the
 // list by PlanTemplate IDs or Product IDs for more focused retrieval.
-func (r *PlanTemplateService) ListAutoPaging(ctx context.Context, orgID string, query PlanTemplateListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanTemplate] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *PlanTemplateService) ListAutoPaging(ctx context.Context, params PlanTemplateListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanTemplate] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a specific PlanTemplate.
 //
 // This endpoint enables you to delete a specific PlanTemplate within a specific
 // Organization, both identified by their unique identifiers (UUIDs).
-func (r *PlanTemplateService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTemplateDeleteParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -149,7 +149,7 @@ func (r *PlanTemplateService) Delete(ctx context.Context, orgID string, id strin
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plantemplates/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plantemplates/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -345,6 +345,7 @@ func init() {
 }
 
 type PlanTemplateNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Determines the frequency at which bills are generated.
 	//
 	//   - **Daily**. Starting at midnight each day, covering the twenty-four hour period
@@ -491,7 +492,12 @@ type PlanTemplateNewParamsCustomFieldsUnion interface {
 	ImplementsPlanTemplateNewParamsCustomFieldsUnion()
 }
 
+type PlanTemplateGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type PlanTemplateUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Determines the frequency at which bills are generated.
 	//
 	//   - **Daily**. Starting at midnight each day, covering the twenty-four hour period
@@ -639,6 +645,7 @@ type PlanTemplateUpdateParamsCustomFieldsUnion interface {
 }
 
 type PlanTemplateListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List of specific PlanTemplate UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
@@ -657,4 +664,8 @@ func (r PlanTemplateListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type PlanTemplateDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

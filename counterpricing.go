@@ -42,21 +42,21 @@ func NewCounterPricingService(opts ...option.RequestOption) (r *CounterPricingSe
 // **Note:** Either `planId` or `planTemplateId` request parameters are required
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
-func (r *CounterPricingService) New(ctx context.Context, orgID string, body CounterPricingNewParams, opts ...option.RequestOption) (res *CounterPricing, err error) {
+func (r *CounterPricingService) New(ctx context.Context, params CounterPricingNewParams, opts ...option.RequestOption) (res *CounterPricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counterpricings", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counterpricings", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a CounterPricing for the given UUID.
-func (r *CounterPricingService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CounterPricing, err error) {
+func (r *CounterPricingService) Get(ctx context.Context, id string, query CounterPricingGetParams, opts ...option.RequestOption) (res *CounterPricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -64,7 +64,7 @@ func (r *CounterPricingService) Get(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counterpricings/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/counterpricings/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -74,9 +74,9 @@ func (r *CounterPricingService) Get(ctx context.Context, orgID string, id string
 // **Note:** Either `planId` or `planTemplateId` request parameters are required
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
-func (r *CounterPricingService) Update(ctx context.Context, orgID string, id string, body CounterPricingUpdateParams, opts ...option.RequestOption) (res *CounterPricing, err error) {
+func (r *CounterPricingService) Update(ctx context.Context, id string, params CounterPricingUpdateParams, opts ...option.RequestOption) (res *CounterPricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -84,23 +84,23 @@ func (r *CounterPricingService) Update(ctx context.Context, orgID string, id str
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counterpricings/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counterpricings/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of CounterPricing entities filtered by date, Plan ID, Plan
 // Template ID, or CounterPricing ID.
-func (r *CounterPricingService) List(ctx context.Context, orgID string, query CounterPricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterPricing], err error) {
+func (r *CounterPricingService) List(ctx context.Context, params CounterPricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterPricing], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counterpricings", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counterpricings", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,14 +114,14 @@ func (r *CounterPricingService) List(ctx context.Context, orgID string, query Co
 
 // Retrieve a list of CounterPricing entities filtered by date, Plan ID, Plan
 // Template ID, or CounterPricing ID.
-func (r *CounterPricingService) ListAutoPaging(ctx context.Context, orgID string, query CounterPricingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterPricing] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *CounterPricingService) ListAutoPaging(ctx context.Context, params CounterPricingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterPricing] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a CounterPricing for the given UUID.
-func (r *CounterPricingService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CounterPricing, err error) {
+func (r *CounterPricingService) Delete(ctx context.Context, id string, body CounterPricingDeleteParams, opts ...option.RequestOption) (res *CounterPricing, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -129,7 +129,7 @@ func (r *CounterPricingService) Delete(ctx context.Context, orgID string, id str
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counterpricings/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/counterpricings/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -286,6 +286,7 @@ func (r counterPricingPricingBandJSON) RawJSON() string {
 }
 
 type CounterPricingNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// UUID of the Counter used to create the pricing.
 	CounterID    param.Field[string]                               `json:"counterId,required"`
 	PricingBands param.Field[[]CounterPricingNewParamsPricingBand] `json:"pricingBands,required"`
@@ -393,7 +394,12 @@ func (r CounterPricingNewParamsPricingBand) MarshalJSON() (data []byte, err erro
 	return apijson.MarshalRoot(r)
 }
 
+type CounterPricingGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CounterPricingUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// UUID of the Counter used to create the pricing.
 	CounterID    param.Field[string]                                  `json:"counterId,required"`
 	PricingBands param.Field[[]CounterPricingUpdateParamsPricingBand] `json:"pricingBands,required"`
@@ -502,6 +508,7 @@ func (r CounterPricingUpdateParamsPricingBand) MarshalJSON() (data []byte, err e
 }
 
 type CounterPricingListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Date on which to retrieve active CounterPricings.
 	Date param.Field[string] `query:"date"`
 	// List of CounterPricing IDs to retrieve.
@@ -523,4 +530,8 @@ func (r CounterPricingListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type CounterPricingDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

@@ -42,14 +42,14 @@ func NewPlanGroupService(opts ...option.RequestOption) (r *PlanGroupService) {
 
 // Create a new PlanGroup. This endpoint creates a new PlanGroup within the
 // specified organization.
-func (r *PlanGroupService) New(ctx context.Context, orgID string, body PlanGroupNewParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) New(ctx context.Context, params PlanGroupNewParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangroups", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plangroups", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -57,9 +57,9 @@ func (r *PlanGroupService) New(ctx context.Context, orgID string, body PlanGroup
 //
 // This endpoint retrieves detailed information about a specific PlanGroup
 // identified by the given UUID within a specific organization.
-func (r *PlanGroupService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) Get(ctx context.Context, id string, query PlanGroupGetParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -67,7 +67,7 @@ func (r *PlanGroupService) Get(ctx context.Context, orgID string, id string, opt
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangroups/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plangroups/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -82,9 +82,9 @@ func (r *PlanGroupService) Get(ctx context.Context, orgID string, id string, opt
 // endpoint to update the PlanGroup use the `customFields` parameter to preserve
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
-func (r *PlanGroupService) Update(ctx context.Context, orgID string, id string, body PlanGroupUpdateParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) Update(ctx context.Context, id string, params PlanGroupUpdateParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -92,8 +92,8 @@ func (r *PlanGroupService) Update(ctx context.Context, orgID string, id string, 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangroups/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plangroups/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -102,16 +102,16 @@ func (r *PlanGroupService) Update(ctx context.Context, orgID string, id string, 
 // Retrieves a list of PlanGroups within the specified organization. You can
 // optionally filter by Account IDs or PlanGroup IDs, and also paginate the results
 // for easier management.
-func (r *PlanGroupService) List(ctx context.Context, orgID string, query PlanGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroup], err error) {
+func (r *PlanGroupService) List(ctx context.Context, params PlanGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroup], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangroups", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plangroups", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -128,8 +128,8 @@ func (r *PlanGroupService) List(ctx context.Context, orgID string, query PlanGro
 // Retrieves a list of PlanGroups within the specified organization. You can
 // optionally filter by Account IDs or PlanGroup IDs, and also paginate the results
 // for easier management.
-func (r *PlanGroupService) ListAutoPaging(ctx context.Context, orgID string, query PlanGroupListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroup] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *PlanGroupService) ListAutoPaging(ctx context.Context, params PlanGroupListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroup] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a PlanGroup with the given UUID.
@@ -137,9 +137,9 @@ func (r *PlanGroupService) ListAutoPaging(ctx context.Context, orgID string, que
 // This endpoint deletes the PlanGroup identified by the given UUID within a
 // specific organization. This operation is irreversible and removes the PlanGroup
 // along with any associated settings.
-func (r *PlanGroupService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) Delete(ctx context.Context, id string, body PlanGroupDeleteParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -147,7 +147,7 @@ func (r *PlanGroupService) Delete(ctx context.Context, orgID string, id string, 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangroups/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plangroups/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -275,6 +275,7 @@ func init() {
 }
 
 type PlanGroupNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Currency code for the PlanGroup (For example, USD).
 	Currency param.Field[string] `json:"currency,required"`
 	// The name of the PlanGroup.
@@ -343,7 +344,12 @@ type PlanGroupNewParamsCustomFieldsUnion interface {
 	ImplementsPlanGroupNewParamsCustomFieldsUnion()
 }
 
+type PlanGroupGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type PlanGroupUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Currency code for the PlanGroup (For example, USD).
 	Currency param.Field[string] `json:"currency,required"`
 	// The name of the PlanGroup.
@@ -413,6 +419,7 @@ type PlanGroupUpdateParamsCustomFieldsUnion interface {
 }
 
 type PlanGroupListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Optional filter. The list of Account IDs to which the PlanGroups belong.
 	AccountID param.Field[[]string] `query:"accountId"`
 	// Optional filter. The list of PlanGroup IDs to retrieve.
@@ -430,4 +437,8 @@ func (r PlanGroupListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type PlanGroupDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }
