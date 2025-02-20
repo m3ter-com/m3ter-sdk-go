@@ -251,10 +251,3 @@ func WithToken(value string) RequestOption {
 		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.Token)))
 	}
 }
-
-func WithBasicAuth(username, password string) RequestOption {
-	return func(r *requestconfig.RequestConfig) error {
-		r.Request.SetBasicAuth(username, password)
-		return nil
-	}
-}

@@ -4,10 +4,10 @@ package m3ter
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
@@ -63,33 +63,43 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 // Additionally, NewClientWithServiceUserAuth makes an API call to the oauth/token
 // endpoint to exchange the provided APIKey and APISecret for an access token.
 func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOption) (*Client, error) {
-	authClient := NewClient(opts...)
+	var client *Client
+	token := new(string)
+	expiry := new(time.Time)
 
-	//create a dummy request so we can access the APIKey and APISecret properties
-	dummyReq, err := requestconfig.NewRequestConfig(context.Background(), "POST", "oauth/token", nil, nil, authClient.Options...)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to create request config: %w", err)
-	}
+	authMiddleware := option.Middleware(func(req *http.Request, next option.MiddlewareNext) (*http.Response, error) {
+		//only perform token refresh if we don't already have a valid token
+		if expiry.Before(time.Now()) {
+			tokenReq := AuthenticationGetBearerTokenParams{
+				GrantType: F(AuthenticationGetBearerTokenParamsGrantTypeClientCredentials),
+			}
 
-	if dummyReq.APIKey == "" {
-		return nil, errors.New("An APIKey must be provided to perform service user auth")
-	}
+			basicAuthOption := func(r *requestconfig.RequestConfig) error {
+				r.Request.SetBasicAuth(r.APIKey, r.APISecret)
+				return nil
+			}
 
-	if dummyReq.APISecret == "" {
-		return nil, errors.New("An APISecret must be provided to perform service user auth")
-	}
+			reqTime := time.Now()
 
-	req := AuthenticationGetBearerTokenParams{
-		GrantType: F(AuthenticationGetBearerTokenParamsGrantTypeClientCredentials),
-	}
-	res, err := authClient.Authentication.GetBearerToken(ctx, req, option.WithBasicAuth(dummyReq.APIKey, dummyReq.APISecret))
-	if err != nil {
-		return nil, fmt.Errorf("Failed to retrieve a token using the specified API key and API secret: %w", err)
-	}
+			tokenRes, tokenErr := (client).Authentication.GetBearerToken(ctx, tokenReq, basicAuthOption)
+			if tokenErr != nil {
+				return nil, fmt.Errorf("Failed to retrieve a token using the specified API key and API secret: %w", tokenErr)
+			}
 
-	opts = append(opts, option.WithToken(res.AccessToken))
+			*expiry = reqTime.Add(time.Duration(tokenRes.ExpiresIn) * time.Second)
+			*token = tokenRes.AccessToken
+		}
 
-	return NewClient(opts...), nil
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", *token))
+		return next(req)
+	})
+
+	optsWithAuth := append(opts, option.WithMiddleware(authMiddleware))
+	client = NewClient(optsWithAuth...)
+	//don't use the token refresh middleware on the token refresh endpoint
+	client.Authentication.Options = opts
+
+	return client, nil
 }
 
 // Execute makes a request with the given context, method, URL, request params,
