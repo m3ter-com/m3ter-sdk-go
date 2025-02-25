@@ -133,6 +133,27 @@ func (r *AccountService) Delete(ctx context.Context, id string, body AccountDele
 	return
 }
 
+// Apply the specified end-date to billing entities associated with an Account.
+//
+// **NOTE:**
+//
+//   - When you successfully end-date billing entities, the version number of each
+//     entity is incremented.
+func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, params AccountEndDateBillingEntitiesParams, opts ...option.RequestOption) (res *AccountEndDateBillingEntitiesResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if params.OrgID.Value == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/accounts/%s/enddatebillingentities", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
+	return
+}
+
 // Retrieve a list of Accounts that are children of the specified Account.
 func (r *AccountService) ListChildren(ctx context.Context, id string, params AccountListChildrenParams, opts ...option.RequestOption) (res *Account, err error) {
 	opts = append(r.Options[:], opts...)
@@ -386,6 +407,318 @@ func init() {
 			Type:       reflect.TypeOf(shared.UnionFloat(0)),
 		},
 	)
+}
+
+type AccountEndDateBillingEntitiesResponse struct {
+	// A dictionary with keys as identifiers of billing entities and values as lists
+	// containing details of the entities for which the update failed.
+	FailedEntities AccountEndDateBillingEntitiesResponseFailedEntities `json:"failedEntities"`
+	// A message indicating the status of the operation.
+	StatusMessage string `json:"statusMessage"`
+	// A dictionary with keys as identifiers of billing entities and values as lists
+	// containing details of the updated entities.
+	UpdatedEntities AccountEndDateBillingEntitiesResponseUpdatedEntities `json:"updatedEntities"`
+	JSON            accountEndDateBillingEntitiesResponseJSON            `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseJSON contains the JSON metadata for the
+// struct [AccountEndDateBillingEntitiesResponse]
+type accountEndDateBillingEntitiesResponseJSON struct {
+	FailedEntities  apijson.Field
+	StatusMessage   apijson.Field
+	UpdatedEntities apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// A dictionary with keys as identifiers of billing entities and values as lists
+// containing details of the entities for which the update failed.
+type AccountEndDateBillingEntitiesResponseFailedEntities struct {
+	Accountplan     AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan     `json:"ACCOUNTPLAN"`
+	Contract        AccountEndDateBillingEntitiesResponseFailedEntitiesContract        `json:"CONTRACT"`
+	CounterPricings AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings `json:"COUNTER_PRICINGS"`
+	Prepayment      AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment      `json:"PREPAYMENT"`
+	Pricings        AccountEndDateBillingEntitiesResponseFailedEntitiesPricings        `json:"PRICINGS"`
+	JSON            accountEndDateBillingEntitiesResponseFailedEntitiesJSON            `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseFailedEntitiesJSON contains the JSON
+// metadata for the struct [AccountEndDateBillingEntitiesResponseFailedEntities]
+type accountEndDateBillingEntitiesResponseFailedEntitiesJSON struct {
+	Accountplan     apijson.Field
+	Contract        apijson.Field
+	CounterPricings apijson.Field
+	Prepayment      apijson.Field
+	Pricings        apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseFailedEntities) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseFailedEntitiesJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan struct {
+	Empty bool                                                               `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan]
+type accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseFailedEntitiesContract struct {
+	Empty bool                                                            `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseFailedEntitiesContract]
+type accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesContract) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings struct {
+	Empty bool                                                                   `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON contains
+// the JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings]
+type accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment struct {
+	Empty bool                                                              `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment]
+type accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseFailedEntitiesPricings struct {
+	Empty bool                                                            `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseFailedEntitiesPricings]
+type accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesPricings) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON) RawJSON() string {
+	return r.raw
+}
+
+// A dictionary with keys as identifiers of billing entities and values as lists
+// containing details of the updated entities.
+type AccountEndDateBillingEntitiesResponseUpdatedEntities struct {
+	Accountplan     AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan     `json:"ACCOUNTPLAN"`
+	Contract        AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract        `json:"CONTRACT"`
+	CounterPricings AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings `json:"COUNTER_PRICINGS"`
+	Prepayment      AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment      `json:"PREPAYMENT"`
+	Pricings        AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings        `json:"PRICINGS"`
+	JSON            accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON            `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON contains the JSON
+// metadata for the struct [AccountEndDateBillingEntitiesResponseUpdatedEntities]
+type accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON struct {
+	Accountplan     apijson.Field
+	Contract        apijson.Field
+	CounterPricings apijson.Field
+	Prepayment      apijson.Field
+	Pricings        apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseUpdatedEntities) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan struct {
+	Empty bool                                                                `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan]
+type accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract struct {
+	Empty bool                                                             `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract]
+type accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings struct {
+	Empty bool                                                                    `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON contains
+// the JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings]
+type accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment struct {
+	Empty bool                                                               `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment]
+type accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings struct {
+	Empty bool                                                             `json:"empty"`
+	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON `json:"-"`
+}
+
+// accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON contains the
+// JSON metadata for the struct
+// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings]
+type accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON struct {
+	Empty       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON) RawJSON() string {
+	return r.raw
 }
 
 type AccountSearchResponse struct {
@@ -792,6 +1125,44 @@ func (r AccountListParams) URLQuery() (v url.Values) {
 
 type AccountDeleteParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
+}
+
+type AccountEndDateBillingEntitiesParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+	// Defines which billing entities associated with the Account will have the
+	// specified end-date applied. For example, if you want the specified end-date to
+	// be applied to all Prepayments/Commitments created for the Account use
+	// `"PREPAYMENT"`.
+	BillingEntities param.Field[[]AccountEndDateBillingEntitiesParamsBillingEntity] `json:"billingEntities,required"`
+	// The end date and time applied to the specified billing entities _(in ISO 8601
+	// format)_.
+	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	// A Boolean TRUE/FALSE flag. For Parent Accounts, set to TRUE if you want the
+	// specified end-date to be applied to any billing entities associated with Child
+	// Accounts. _(Optional)_
+	ApplyToChildren param.Field[bool] `json:"applyToChildren"`
+}
+
+func (r AccountEndDateBillingEntitiesParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountEndDateBillingEntitiesParamsBillingEntity string
+
+const (
+	AccountEndDateBillingEntitiesParamsBillingEntityContract        AccountEndDateBillingEntitiesParamsBillingEntity = "CONTRACT"
+	AccountEndDateBillingEntitiesParamsBillingEntityAccountplan     AccountEndDateBillingEntitiesParamsBillingEntity = "ACCOUNTPLAN"
+	AccountEndDateBillingEntitiesParamsBillingEntityPrepayment      AccountEndDateBillingEntitiesParamsBillingEntity = "PREPAYMENT"
+	AccountEndDateBillingEntitiesParamsBillingEntityPricings        AccountEndDateBillingEntitiesParamsBillingEntity = "PRICINGS"
+	AccountEndDateBillingEntitiesParamsBillingEntityCounterPricings AccountEndDateBillingEntitiesParamsBillingEntity = "COUNTER_PRICINGS"
+)
+
+func (r AccountEndDateBillingEntitiesParamsBillingEntity) IsKnown() bool {
+	switch r {
+	case AccountEndDateBillingEntitiesParamsBillingEntityContract, AccountEndDateBillingEntitiesParamsBillingEntityAccountplan, AccountEndDateBillingEntitiesParamsBillingEntityPrepayment, AccountEndDateBillingEntitiesParamsBillingEntityPricings, AccountEndDateBillingEntitiesParamsBillingEntityCounterPricings:
+		return true
+	}
+	return false
 }
 
 type AccountListChildrenParams struct {

@@ -107,6 +107,22 @@ func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, balanceI
 	return pagination.NewCursorAutoPager(r.List(ctx, balanceID, params, opts...))
 }
 
+// Retrieves the Balance Transactions Summary for a given Balance.
+func (r *BalanceTransactionService) Summary(ctx context.Context, balanceID string, query BalanceTransactionSummaryParams, opts ...option.RequestOption) (res *BalanceTransactionSummaryResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if query.OrgID.Value == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if balanceID == "" {
+		err = errors.New("missing required balanceId parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/balances/%s/transactions/summary", query.OrgID, balanceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 type Transaction struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -205,6 +221,31 @@ func (r TransactionEntityType) IsKnown() bool {
 	return false
 }
 
+type BalanceTransactionSummaryResponse struct {
+	InitialCreditAmount float64                               `json:"initialCreditAmount"`
+	TotalCreditAmount   float64                               `json:"totalCreditAmount"`
+	TotalDebitAmount    float64                               `json:"totalDebitAmount"`
+	JSON                balanceTransactionSummaryResponseJSON `json:"-"`
+}
+
+// balanceTransactionSummaryResponseJSON contains the JSON metadata for the struct
+// [BalanceTransactionSummaryResponse]
+type balanceTransactionSummaryResponseJSON struct {
+	InitialCreditAmount apijson.Field
+	TotalCreditAmount   apijson.Field
+	TotalDebitAmount    apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *BalanceTransactionSummaryResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r balanceTransactionSummaryResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type BalanceTransactionNewParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The financial value of the transaction.
@@ -255,4 +296,8 @@ func (r BalanceTransactionListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type BalanceTransactionSummaryParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

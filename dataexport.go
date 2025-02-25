@@ -21,7 +21,10 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDataExportService] method instead.
 type DataExportService struct {
-	Options []option.RequestOption
+	Options      []option.RequestOption
+	Destinations *DataExportDestinationService
+	Jobs         *DataExportJobService
+	Schedules    *DataExportScheduleService
 }
 
 // NewDataExportService generates a new service that applies the given options to
@@ -30,6 +33,9 @@ type DataExportService struct {
 func NewDataExportService(opts ...option.RequestOption) (r *DataExportService) {
 	r = &DataExportService{}
 	r.Options = opts
+	r.Destinations = NewDataExportDestinationService(opts...)
+	r.Jobs = NewDataExportJobService(opts...)
+	r.Schedules = NewDataExportScheduleService(opts...)
 	return
 }
 

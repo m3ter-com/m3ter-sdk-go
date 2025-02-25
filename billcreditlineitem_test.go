@@ -12,10 +12,9 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
-func TestContractNewWithOptionalParams(t *testing.T) {
+func TestBillCreditLineItemNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,20 +29,24 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.New(context.TODO(), m3ter.ContractNewParams{
-		OrgID:     m3ter.F("orgId"),
-		AccountID: m3ter.F("x"),
-		EndDate:   m3ter.F(time.Now()),
-		Name:      m3ter.F("x"),
-		StartDate: m3ter.F(time.Now()),
-		Code:      m3ter.F("JS!?Q0]r] ]$]"),
-		CustomFields: m3ter.F(map[string]m3ter.ContractNewParamsCustomFieldsUnion{
-			"foo": shared.UnionString("string"),
-		}),
-		Description:         m3ter.F("description"),
-		PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-		Version:             m3ter.F(int64(0)),
-	})
+	_, err := client.Bills.CreditLineItems.New(
+		context.TODO(),
+		"billId",
+		m3ter.BillCreditLineItemNewParams{
+			OrgID:                  m3ter.F("orgId"),
+			Amount:                 m3ter.F(1.000000),
+			Description:            m3ter.F("x"),
+			ProductID:              m3ter.F("productId"),
+			ReferencedBillID:       m3ter.F("referencedBillId"),
+			ReferencedLineItemID:   m3ter.F("referencedLineItemId"),
+			ServicePeriodEndDate:   m3ter.F(time.Now()),
+			ServicePeriodStartDate: m3ter.F(time.Now()),
+			CreditReasonID:         m3ter.F("creditReasonId"),
+			LineItemType:           m3ter.F(m3ter.BillCreditLineItemNewParamsLineItemTypeStandingCharge),
+			ReasonID:               m3ter.F("reasonId"),
+			Version:                m3ter.F(int64(0)),
+		},
+	)
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -53,7 +56,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractGet(t *testing.T) {
+func TestBillCreditLineItemGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -68,10 +71,11 @@ func TestContractGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Get(
+	_, err := client.Bills.CreditLineItems.Get(
 		context.TODO(),
+		"billId",
 		"id",
-		m3ter.ContractGetParams{
+		m3ter.BillCreditLineItemGetParams{
 			OrgID: m3ter.F("orgId"),
 		},
 	)
@@ -84,7 +88,7 @@ func TestContractGet(t *testing.T) {
 	}
 }
 
-func TestContractUpdateWithOptionalParams(t *testing.T) {
+func TestBillCreditLineItemUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,22 +103,56 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Update(
+	_, err := client.Bills.CreditLineItems.Update(
 		context.TODO(),
+		"billId",
 		"id",
-		m3ter.ContractUpdateParams{
+		m3ter.BillCreditLineItemUpdateParams{
+			OrgID:                  m3ter.F("orgId"),
+			Amount:                 m3ter.F(1.000000),
+			Description:            m3ter.F("x"),
+			ProductID:              m3ter.F("productId"),
+			ReferencedBillID:       m3ter.F("referencedBillId"),
+			ReferencedLineItemID:   m3ter.F("referencedLineItemId"),
+			ServicePeriodEndDate:   m3ter.F(time.Now()),
+			ServicePeriodStartDate: m3ter.F(time.Now()),
+			CreditReasonID:         m3ter.F("creditReasonId"),
+			LineItemType:           m3ter.F(m3ter.BillCreditLineItemUpdateParamsLineItemTypeStandingCharge),
+			ReasonID:               m3ter.F("reasonId"),
+			Version:                m3ter.F(int64(0)),
+		},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestBillCreditLineItemListWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.Bills.CreditLineItems.List(
+		context.TODO(),
+		"billId",
+		m3ter.BillCreditLineItemListParams{
 			OrgID:     m3ter.F("orgId"),
-			AccountID: m3ter.F("x"),
-			EndDate:   m3ter.F(time.Now()),
-			Name:      m3ter.F("x"),
-			StartDate: m3ter.F(time.Now()),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
-			CustomFields: m3ter.F(map[string]m3ter.ContractUpdateParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			Description:         m3ter.F("description"),
-			PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-			Version:             m3ter.F(int64(0)),
+			NextToken: m3ter.F("nextToken"),
+			PageSize:  m3ter.F(int64(1)),
 		},
 	)
 	if err != nil {
@@ -126,7 +164,7 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractListWithOptionalParams(t *testing.T) {
+func TestBillCreditLineItemDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,77 +179,12 @@ func TestContractListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.List(context.TODO(), m3ter.ContractListParams{
-		OrgID:     m3ter.F("orgId"),
-		AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		Codes:     m3ter.F([]string{"string"}),
-		IDs:       m3ter.F([]string{"string"}),
-		NextToken: m3ter.F("nextToken"),
-		PageSize:  m3ter.F(int64(1)),
-	})
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestContractDelete(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Contracts.Delete(
+	_, err := client.Bills.CreditLineItems.Delete(
 		context.TODO(),
+		"billId",
 		"id",
-		m3ter.ContractDeleteParams{
+		m3ter.BillCreditLineItemDeleteParams{
 			OrgID: m3ter.F("orgId"),
-		},
-	)
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestContractEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Contracts.EndDateBillingEntities(
-		context.TODO(),
-		"id",
-		m3ter.ContractEndDateBillingEntitiesParams{
-			OrgID:           m3ter.F("orgId"),
-			BillingEntities: m3ter.F([]m3ter.ContractEndDateBillingEntitiesParamsBillingEntity{m3ter.ContractEndDateBillingEntitiesParamsBillingEntityContract}),
-			EndDate:         m3ter.F(time.Now()),
-			ApplyToChildren: m3ter.F(true),
 		},
 	)
 	if err != nil {

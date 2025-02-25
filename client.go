@@ -17,32 +17,45 @@ import (
 // interacting with the m3ter API. You should not instantiate this client directly,
 // and instead use the [NewClient] method instead.
 type Client struct {
-	Options              []option.RequestOption
-	Authentication       *AuthenticationService
-	Accounts             *AccountService
-	AccountPlans         *AccountPlanService
-	Aggregations         *AggregationService
-	Balances             *BalanceService
-	BillConfig           *BillConfigService
-	Commitments          *CommitmentService
-	CompoundAggregations *CompoundAggregationService
-	Contracts            *ContractService
-	Counters             *CounterService
-	CounterAdjustments   *CounterAdjustmentService
-	CounterPricings      *CounterPricingService
-	CreditReasons        *CreditReasonService
-	Currencies           *CurrencyService
-	DebitReasons         *DebitReasonService
-	Meters               *MeterService
-	OrganizationConfig   *OrganizationConfigService
-	Plans                *PlanService
-	PlanGroups           *PlanGroupService
-	PlanGroupLinks       *PlanGroupLinkService
-	PlanTemplates        *PlanTemplateService
-	Pricings             *PricingService
-	Products             *ProductService
-	TransactionTypes     *TransactionTypeService
-	DataExports          *DataExportService
+	Options                      []option.RequestOption
+	Authentication               *AuthenticationService
+	Accounts                     *AccountService
+	AccountPlans                 *AccountPlanService
+	Aggregations                 *AggregationService
+	Balances                     *BalanceService
+	Bills                        *BillService
+	BillConfig                   *BillConfigService
+	Commitments                  *CommitmentService
+	BillJobs                     *BillJobService
+	CompoundAggregations         *CompoundAggregationService
+	Contracts                    *ContractService
+	Counters                     *CounterService
+	CounterAdjustments           *CounterAdjustmentService
+	CounterPricings              *CounterPricingService
+	CreditReasons                *CreditReasonService
+	Currencies                   *CurrencyService
+	CustomFields                 *CustomFieldService
+	DataExports                  *DataExportService
+	DebitReasons                 *DebitReasonService
+	Events                       *EventService
+	ExternalMappings             *ExternalMappingService
+	IntegrationConfigurations    *IntegrationConfigurationService
+	Meters                       *MeterService
+	NotificationConfigurations   *NotificationConfigurationService
+	OrganizationConfig           *OrganizationConfigService
+	PermissionPolicies           *PermissionPolicyService
+	Plans                        *PlanService
+	PlanGroups                   *PlanGroupService
+	PlanGroupLinks               *PlanGroupLinkService
+	PlanTemplates                *PlanTemplateService
+	Pricings                     *PricingService
+	Products                     *ProductService
+	ResourceGroups               *ResourceGroupService
+	ScheduledEventConfigurations *ScheduledEventConfigurationService
+	TransactionTypes             *TransactionTypeService
+	Usage                        *UsageService
+	Users                        *UserService
+	Webhooks                     *WebhookService
 }
 
 // NewClient generates a new client with the default option read from the
@@ -69,8 +82,10 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.AccountPlans = NewAccountPlanService(opts...)
 	r.Aggregations = NewAggregationService(opts...)
 	r.Balances = NewBalanceService(opts...)
+	r.Bills = NewBillService(opts...)
 	r.BillConfig = NewBillConfigService(opts...)
 	r.Commitments = NewCommitmentService(opts...)
+	r.BillJobs = NewBillJobService(opts...)
 	r.CompoundAggregations = NewCompoundAggregationService(opts...)
 	r.Contracts = NewContractService(opts...)
 	r.Counters = NewCounterService(opts...)
@@ -78,17 +93,28 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.CounterPricings = NewCounterPricingService(opts...)
 	r.CreditReasons = NewCreditReasonService(opts...)
 	r.Currencies = NewCurrencyService(opts...)
+	r.CustomFields = NewCustomFieldService(opts...)
+	r.DataExports = NewDataExportService(opts...)
 	r.DebitReasons = NewDebitReasonService(opts...)
+	r.Events = NewEventService(opts...)
+	r.ExternalMappings = NewExternalMappingService(opts...)
+	r.IntegrationConfigurations = NewIntegrationConfigurationService(opts...)
 	r.Meters = NewMeterService(opts...)
+	r.NotificationConfigurations = NewNotificationConfigurationService(opts...)
 	r.OrganizationConfig = NewOrganizationConfigService(opts...)
+	r.PermissionPolicies = NewPermissionPolicyService(opts...)
 	r.Plans = NewPlanService(opts...)
 	r.PlanGroups = NewPlanGroupService(opts...)
 	r.PlanGroupLinks = NewPlanGroupLinkService(opts...)
 	r.PlanTemplates = NewPlanTemplateService(opts...)
 	r.Pricings = NewPricingService(opts...)
 	r.Products = NewProductService(opts...)
+	r.ResourceGroups = NewResourceGroupService(opts...)
+	r.ScheduledEventConfigurations = NewScheduledEventConfigurationService(opts...)
 	r.TransactionTypes = NewTransactionTypeService(opts...)
-	r.DataExports = NewDataExportService(opts...)
+	r.Usage = NewUsageService(opts...)
+	r.Users = NewUserService(opts...)
+	r.Webhooks = NewWebhookService(opts...)
 
 	return
 }
