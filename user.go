@@ -117,7 +117,7 @@ func (r *UserService) ListAutoPaging(ctx context.Context, params UserListParams,
 //
 // Retrieves a list of all permissions associated with a specific user in an
 // Organization using their UUID. The list can be paginated for easier management.
-func (r *UserService) ListPermissions(ctx context.Context, id string, params UserListPermissionsParams, opts ...option.RequestOption) (res *PermissionPolicy, err error) {
+func (r *UserService) GetPermissions(ctx context.Context, id string, params UserGetPermissionsParams, opts ...option.RequestOption) (res *PermissionPolicy, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -157,7 +157,7 @@ func (r *UserService) ListPermissions(ctx context.Context, id string, params Use
 //     Groups those Groups belong to as nested Groups are returned.
 //   - If `inherited = FALSE`, then only those User Resource Groups to which the
 //     user belongs are returned.
-func (r *UserService) ListUserGroups(ctx context.Context, id string, params UserListUserGroupsParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *UserService) GetUserGroups(ctx context.Context, id string, params UserGetUserGroupsParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -737,7 +737,7 @@ func (r UserListParams) URLQuery() (v url.Values) {
 	})
 }
 
-type UserListPermissionsParams struct {
+type UserGetPermissionsParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// Permission Policies in a paginated list.
@@ -746,16 +746,16 @@ type UserListPermissionsParams struct {
 	PageSize param.Field[int64] `query:"pageSize"`
 }
 
-// URLQuery serializes [UserListPermissionsParams]'s query parameters as
+// URLQuery serializes [UserGetPermissionsParams]'s query parameters as
 // `url.Values`.
-func (r UserListPermissionsParams) URLQuery() (v url.Values) {
+func (r UserGetPermissionsParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type UserListUserGroupsParams struct {
+type UserGetUserGroupsParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// User Groups in a paginated list.
@@ -764,9 +764,9 @@ type UserListUserGroupsParams struct {
 	PageSize param.Field[int64] `query:"pageSize"`
 }
 
-// URLQuery serializes [UserListUserGroupsParams]'s query parameters as
+// URLQuery serializes [UserGetUserGroupsParams]'s query parameters as
 // `url.Values`.
-func (r UserListUserGroupsParams) URLQuery() (v url.Values) {
+func (r UserGetUserGroupsParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

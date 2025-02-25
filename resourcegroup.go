@@ -165,8 +165,10 @@ func (r *ResourceGroupService) AddResource(ctx context.Context, type_ string, re
 }
 
 // Retrieve a list of items for a ResourceGroup
-func (r *ResourceGroupService) ListContents(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListContentsParams, opts ...option.RequestOption) (res *ResourceGroupListContentsResponse, err error) {
+func (r *ResourceGroupService) ListContents(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListContentsParams, opts ...option.RequestOption) (res *pagination.Cursor[ResourceGroupListContentsResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -180,13 +182,28 @@ func (r *ResourceGroupService) ListContents(ctx context.Context, type_ string, r
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/resourcegroups/%s/%s/contents", params.OrgID, type_, resourceGroupID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodPost, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of items for a ResourceGroup
+func (r *ResourceGroupService) ListContentsAutoPaging(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListContentsParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ResourceGroupListContentsResponse] {
+	return pagination.NewCursorAutoPager(r.ListContents(ctx, type_, resourceGroupID, params, opts...))
 }
 
 // Retrieve a list of permission policies for a ResourceGroup
-func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) (res *ResourceGroupListPermissionsResponse, err error) {
+func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) (res *pagination.Cursor[PermissionPolicy], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -200,8 +217,21 @@ func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/resourcegroups/%s/%s/permissions", params.OrgID, type_, resourceGroupID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of permission policies for a ResourceGroup
+func (r *ResourceGroupService) ListPermissionsAutoPaging(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PermissionPolicy] {
+	return pagination.NewCursorAutoPager(r.ListPermissions(ctx, type_, resourceGroupID, params, opts...))
 }
 
 // Remove an item from a ResourceGroup.
@@ -265,29 +295,6 @@ func (r resourceGroupJSON) RawJSON() string {
 }
 
 type ResourceGroupListContentsResponse struct {
-	Data      []ResourceGroupListContentsResponseData `json:"data"`
-	NextToken string                                  `json:"nextToken"`
-	JSON      resourceGroupListContentsResponseJSON   `json:"-"`
-}
-
-// resourceGroupListContentsResponseJSON contains the JSON metadata for the struct
-// [ResourceGroupListContentsResponse]
-type resourceGroupListContentsResponseJSON struct {
-	Data        apijson.Field
-	NextToken   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResourceGroupListContentsResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r resourceGroupListContentsResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type ResourceGroupListContentsResponseData struct {
 	// The id of the user who created this item for the resource group.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the item was created for the resource group.
@@ -297,14 +304,14 @@ type ResourceGroupListContentsResponseData struct {
 	// The id of the user who last modified this item for the resource group.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The UUID of the item.
-	TargetID   string                                          `json:"targetId"`
-	TargetType ResourceGroupListContentsResponseDataTargetType `json:"targetType"`
-	JSON       resourceGroupListContentsResponseDataJSON       `json:"-"`
+	TargetID   string                                      `json:"targetId"`
+	TargetType ResourceGroupListContentsResponseTargetType `json:"targetType"`
+	JSON       resourceGroupListContentsResponseJSON       `json:"-"`
 }
 
-// resourceGroupListContentsResponseDataJSON contains the JSON metadata for the
-// struct [ResourceGroupListContentsResponseData]
-type resourceGroupListContentsResponseDataJSON struct {
+// resourceGroupListContentsResponseJSON contains the JSON metadata for the struct
+// [ResourceGroupListContentsResponse]
+type resourceGroupListContentsResponseJSON struct {
 	CreatedBy      apijson.Field
 	DtCreated      apijson.Field
 	DtLastModified apijson.Field
@@ -315,50 +322,27 @@ type resourceGroupListContentsResponseDataJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *ResourceGroupListContentsResponseData) UnmarshalJSON(data []byte) (err error) {
+func (r *ResourceGroupListContentsResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r resourceGroupListContentsResponseDataJSON) RawJSON() string {
+func (r resourceGroupListContentsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type ResourceGroupListContentsResponseDataTargetType string
+type ResourceGroupListContentsResponseTargetType string
 
 const (
-	ResourceGroupListContentsResponseDataTargetTypeItem  ResourceGroupListContentsResponseDataTargetType = "ITEM"
-	ResourceGroupListContentsResponseDataTargetTypeGroup ResourceGroupListContentsResponseDataTargetType = "GROUP"
+	ResourceGroupListContentsResponseTargetTypeItem  ResourceGroupListContentsResponseTargetType = "ITEM"
+	ResourceGroupListContentsResponseTargetTypeGroup ResourceGroupListContentsResponseTargetType = "GROUP"
 )
 
-func (r ResourceGroupListContentsResponseDataTargetType) IsKnown() bool {
+func (r ResourceGroupListContentsResponseTargetType) IsKnown() bool {
 	switch r {
-	case ResourceGroupListContentsResponseDataTargetTypeItem, ResourceGroupListContentsResponseDataTargetTypeGroup:
+	case ResourceGroupListContentsResponseTargetTypeItem, ResourceGroupListContentsResponseTargetTypeGroup:
 		return true
 	}
 	return false
-}
-
-type ResourceGroupListPermissionsResponse struct {
-	Data      []PermissionPolicy                       `json:"data"`
-	NextToken string                                   `json:"nextToken"`
-	JSON      resourceGroupListPermissionsResponseJSON `json:"-"`
-}
-
-// resourceGroupListPermissionsResponseJSON contains the JSON metadata for the
-// struct [ResourceGroupListPermissionsResponse]
-type resourceGroupListPermissionsResponseJSON struct {
-	Data        apijson.Field
-	NextToken   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResourceGroupListPermissionsResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r resourceGroupListPermissionsResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type ResourceGroupNewParams struct {
