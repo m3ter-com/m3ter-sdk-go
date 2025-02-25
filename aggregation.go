@@ -315,18 +315,19 @@ func (r aggregationJSON) RawJSON() string {
 type AggregationAggregation string
 
 const (
-	AggregationAggregationSum    AggregationAggregation = "SUM"
-	AggregationAggregationMin    AggregationAggregation = "MIN"
-	AggregationAggregationMax    AggregationAggregation = "MAX"
-	AggregationAggregationCount  AggregationAggregation = "COUNT"
-	AggregationAggregationLatest AggregationAggregation = "LATEST"
-	AggregationAggregationMean   AggregationAggregation = "MEAN"
-	AggregationAggregationUnique AggregationAggregation = "UNIQUE"
+	AggregationAggregationSum       AggregationAggregation = "SUM"
+	AggregationAggregationMin       AggregationAggregation = "MIN"
+	AggregationAggregationMax       AggregationAggregation = "MAX"
+	AggregationAggregationCount     AggregationAggregation = "COUNT"
+	AggregationAggregationLatest    AggregationAggregation = "LATEST"
+	AggregationAggregationMean      AggregationAggregation = "MEAN"
+	AggregationAggregationUnique    AggregationAggregation = "UNIQUE"
+	AggregationAggregationCustomSql AggregationAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationAggregation) IsKnown() bool {
 	switch r {
-	case AggregationAggregationSum, AggregationAggregationMin, AggregationAggregationMax, AggregationAggregationCount, AggregationAggregationLatest, AggregationAggregationMean, AggregationAggregationUnique:
+	case AggregationAggregationSum, AggregationAggregationMin, AggregationAggregationMax, AggregationAggregationCount, AggregationAggregationLatest, AggregationAggregationMean, AggregationAggregationUnique, AggregationAggregationCustomSql:
 		return true
 	}
 	return false
@@ -534,18 +535,19 @@ func (r AggregationNewParams) MarshalJSON() (data []byte, err error) {
 type AggregationNewParamsAggregation string
 
 const (
-	AggregationNewParamsAggregationSum    AggregationNewParamsAggregation = "SUM"
-	AggregationNewParamsAggregationMin    AggregationNewParamsAggregation = "MIN"
-	AggregationNewParamsAggregationMax    AggregationNewParamsAggregation = "MAX"
-	AggregationNewParamsAggregationCount  AggregationNewParamsAggregation = "COUNT"
-	AggregationNewParamsAggregationLatest AggregationNewParamsAggregation = "LATEST"
-	AggregationNewParamsAggregationMean   AggregationNewParamsAggregation = "MEAN"
-	AggregationNewParamsAggregationUnique AggregationNewParamsAggregation = "UNIQUE"
+	AggregationNewParamsAggregationSum       AggregationNewParamsAggregation = "SUM"
+	AggregationNewParamsAggregationMin       AggregationNewParamsAggregation = "MIN"
+	AggregationNewParamsAggregationMax       AggregationNewParamsAggregation = "MAX"
+	AggregationNewParamsAggregationCount     AggregationNewParamsAggregation = "COUNT"
+	AggregationNewParamsAggregationLatest    AggregationNewParamsAggregation = "LATEST"
+	AggregationNewParamsAggregationMean      AggregationNewParamsAggregation = "MEAN"
+	AggregationNewParamsAggregationUnique    AggregationNewParamsAggregation = "UNIQUE"
+	AggregationNewParamsAggregationCustomSql AggregationNewParamsAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationNewParamsAggregation) IsKnown() bool {
 	switch r {
-	case AggregationNewParamsAggregationSum, AggregationNewParamsAggregationMin, AggregationNewParamsAggregationMax, AggregationNewParamsAggregationCount, AggregationNewParamsAggregationLatest, AggregationNewParamsAggregationMean, AggregationNewParamsAggregationUnique:
+	case AggregationNewParamsAggregationSum, AggregationNewParamsAggregationMin, AggregationNewParamsAggregationMax, AggregationNewParamsAggregationCount, AggregationNewParamsAggregationLatest, AggregationNewParamsAggregationMean, AggregationNewParamsAggregationUnique, AggregationNewParamsAggregationCustomSql:
 		return true
 	}
 	return false
@@ -742,18 +744,19 @@ func (r AggregationUpdateParams) MarshalJSON() (data []byte, err error) {
 type AggregationUpdateParamsAggregation string
 
 const (
-	AggregationUpdateParamsAggregationSum    AggregationUpdateParamsAggregation = "SUM"
-	AggregationUpdateParamsAggregationMin    AggregationUpdateParamsAggregation = "MIN"
-	AggregationUpdateParamsAggregationMax    AggregationUpdateParamsAggregation = "MAX"
-	AggregationUpdateParamsAggregationCount  AggregationUpdateParamsAggregation = "COUNT"
-	AggregationUpdateParamsAggregationLatest AggregationUpdateParamsAggregation = "LATEST"
-	AggregationUpdateParamsAggregationMean   AggregationUpdateParamsAggregation = "MEAN"
-	AggregationUpdateParamsAggregationUnique AggregationUpdateParamsAggregation = "UNIQUE"
+	AggregationUpdateParamsAggregationSum       AggregationUpdateParamsAggregation = "SUM"
+	AggregationUpdateParamsAggregationMin       AggregationUpdateParamsAggregation = "MIN"
+	AggregationUpdateParamsAggregationMax       AggregationUpdateParamsAggregation = "MAX"
+	AggregationUpdateParamsAggregationCount     AggregationUpdateParamsAggregation = "COUNT"
+	AggregationUpdateParamsAggregationLatest    AggregationUpdateParamsAggregation = "LATEST"
+	AggregationUpdateParamsAggregationMean      AggregationUpdateParamsAggregation = "MEAN"
+	AggregationUpdateParamsAggregationUnique    AggregationUpdateParamsAggregation = "UNIQUE"
+	AggregationUpdateParamsAggregationCustomSql AggregationUpdateParamsAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationUpdateParamsAggregation) IsKnown() bool {
 	switch r {
-	case AggregationUpdateParamsAggregationSum, AggregationUpdateParamsAggregationMin, AggregationUpdateParamsAggregationMax, AggregationUpdateParamsAggregationCount, AggregationUpdateParamsAggregationLatest, AggregationUpdateParamsAggregationMean, AggregationUpdateParamsAggregationUnique:
+	case AggregationUpdateParamsAggregationSum, AggregationUpdateParamsAggregationMin, AggregationUpdateParamsAggregationMax, AggregationUpdateParamsAggregationCount, AggregationUpdateParamsAggregationLatest, AggregationUpdateParamsAggregationMean, AggregationUpdateParamsAggregationUnique, AggregationUpdateParamsAggregationCustomSql:
 		return true
 	}
 	return false
