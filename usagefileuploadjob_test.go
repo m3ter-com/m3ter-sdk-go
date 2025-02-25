@@ -7,14 +7,13 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestBalanceTransactionNewWithOptionalParams(t *testing.T) {
+func TestUsageFileUploadJobGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -29,19 +28,11 @@ func TestBalanceTransactionNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.Transactions.New(
+	_, err := client.Usage.FileUploads.Jobs.Get(
 		context.TODO(),
-		"balanceId",
-		m3ter.BalanceTransactionNewParams{
-			OrgID:             m3ter.F("orgId"),
-			Amount:            m3ter.F(0.000000),
-			AppliedDate:       m3ter.F(time.Now()),
-			CurrencyPaid:      m3ter.F("currencyPaid"),
-			Description:       m3ter.F("description"),
-			Paid:              m3ter.F(0.000000),
-			TransactionDate:   m3ter.F(time.Now()),
-			TransactionTypeID: m3ter.F("transactionTypeId"),
-			Version:           m3ter.F(int64(0)),
+		"id",
+		m3ter.UsageFileUploadJobGetParams{
+			OrgID: m3ter.F("orgId"),
 		},
 	)
 	if err != nil {
@@ -53,7 +44,7 @@ func TestBalanceTransactionNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBalanceTransactionListWithOptionalParams(t *testing.T) {
+func TestUsageFileUploadJobListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -68,16 +59,14 @@ func TestBalanceTransactionListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.Transactions.List(
-		context.TODO(),
-		"balanceId",
-		m3ter.BalanceTransactionListParams{
-			OrgID:             m3ter.F("orgId"),
-			NextToken:         m3ter.F("nextToken"),
-			PageSize:          m3ter.F(int64(1)),
-			TransactionTypeID: m3ter.F("transactionTypeId"),
-		},
-	)
+	_, err := client.Usage.FileUploads.Jobs.List(context.TODO(), m3ter.UsageFileUploadJobListParams{
+		OrgID:            m3ter.F("orgId"),
+		DateCreatedEnd:   m3ter.F("dateCreatedEnd"),
+		DateCreatedStart: m3ter.F("dateCreatedStart"),
+		FileKey:          m3ter.F("fileKey"),
+		NextToken:        m3ter.F("nextToken"),
+		PageSize:         m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -87,7 +76,7 @@ func TestBalanceTransactionListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBalanceTransactionSummary(t *testing.T) {
+func TestUsageFileUploadJobGetOriginalDownloadURL(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -102,10 +91,10 @@ func TestBalanceTransactionSummary(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.Transactions.Summary(
+	_, err := client.Usage.FileUploads.Jobs.GetOriginalDownloadURL(
 		context.TODO(),
-		"balanceId",
-		m3ter.BalanceTransactionSummaryParams{
+		"id",
+		m3ter.UsageFileUploadJobGetOriginalDownloadURLParams{
 			OrgID: m3ter.F("orgId"),
 		},
 	)

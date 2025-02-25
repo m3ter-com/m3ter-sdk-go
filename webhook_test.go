@@ -7,15 +7,13 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
-func TestContractNewWithOptionalParams(t *testing.T) {
+func TestWebhookNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,19 +28,15 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.New(context.TODO(), m3ter.ContractNewParams{
-		OrgID:     m3ter.F("orgId"),
-		AccountID: m3ter.F("x"),
-		EndDate:   m3ter.F(time.Now()),
-		Name:      m3ter.F("x"),
-		StartDate: m3ter.F(time.Now()),
-		Code:      m3ter.F("JS!?Q0]r] ]$]"),
-		CustomFields: m3ter.F(map[string]m3ter.ContractNewParamsCustomFieldsUnion{
-			"foo": shared.UnionString("string"),
-		}),
-		Description:         m3ter.F("description"),
-		PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-		Version:             m3ter.F(int64(0)),
+	_, err := client.Webhooks.New(context.TODO(), m3ter.WebhookNewParams{
+		OrgID:       m3ter.F("orgId"),
+		Credentials: m3ter.F(m3ter.WebhookNewParamsCredentials{}),
+		Description: m3ter.F("x"),
+		Name:        m3ter.F("x"),
+		URL:         m3ter.F("x"),
+		Active:      m3ter.F(true),
+		Code:        m3ter.F("code"),
+		Version:     m3ter.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -53,7 +47,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractGet(t *testing.T) {
+func TestWebhookGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -68,10 +62,10 @@ func TestContractGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Get(
+	_, err := client.Webhooks.Get(
 		context.TODO(),
 		"id",
-		m3ter.ContractGetParams{
+		m3ter.WebhookGetParams{
 			OrgID: m3ter.F("orgId"),
 		},
 	)
@@ -84,7 +78,7 @@ func TestContractGet(t *testing.T) {
 	}
 }
 
-func TestContractUpdateWithOptionalParams(t *testing.T) {
+func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,22 +93,18 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Update(
+	_, err := client.Webhooks.Update(
 		context.TODO(),
 		"id",
-		m3ter.ContractUpdateParams{
-			OrgID:     m3ter.F("orgId"),
-			AccountID: m3ter.F("x"),
-			EndDate:   m3ter.F(time.Now()),
-			Name:      m3ter.F("x"),
-			StartDate: m3ter.F(time.Now()),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
-			CustomFields: m3ter.F(map[string]m3ter.ContractUpdateParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			Description:         m3ter.F("description"),
-			PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-			Version:             m3ter.F(int64(0)),
+		m3ter.WebhookUpdateParams{
+			OrgID:       m3ter.F("orgId"),
+			Credentials: m3ter.F(m3ter.WebhookUpdateParamsCredentials{}),
+			Description: m3ter.F("x"),
+			Name:        m3ter.F("x"),
+			URL:         m3ter.F("x"),
+			Active:      m3ter.F(true),
+			Code:        m3ter.F("code"),
+			Version:     m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -126,7 +116,7 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractListWithOptionalParams(t *testing.T) {
+func TestWebhookListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,10 +131,8 @@ func TestContractListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.List(context.TODO(), m3ter.ContractListParams{
+	_, err := client.Webhooks.List(context.TODO(), m3ter.WebhookListParams{
 		OrgID:     m3ter.F("orgId"),
-		AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -158,7 +146,7 @@ func TestContractListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractDelete(t *testing.T) {
+func TestWebhookDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -173,10 +161,10 @@ func TestContractDelete(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Delete(
+	_, err := client.Webhooks.Delete(
 		context.TODO(),
 		"id",
-		m3ter.ContractDeleteParams{
+		m3ter.WebhookDeleteParams{
 			OrgID: m3ter.F("orgId"),
 		},
 	)
@@ -189,7 +177,7 @@ func TestContractDelete(t *testing.T) {
 	}
 }
 
-func TestContractEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
+func TestWebhookSetActiveWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -204,14 +192,12 @@ func TestContractEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.EndDateBillingEntities(
+	_, err := client.Webhooks.SetActive(
 		context.TODO(),
 		"id",
-		m3ter.ContractEndDateBillingEntitiesParams{
-			OrgID:           m3ter.F("orgId"),
-			BillingEntities: m3ter.F([]m3ter.ContractEndDateBillingEntitiesParamsBillingEntity{m3ter.ContractEndDateBillingEntitiesParamsBillingEntityContract}),
-			EndDate:         m3ter.F(time.Now()),
-			ApplyToChildren: m3ter.F(true),
+		m3ter.WebhookSetActiveParams{
+			OrgID:  m3ter.F("orgId"),
+			Active: m3ter.F(true),
 		},
 	)
 	if err != nil {

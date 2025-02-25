@@ -7,15 +7,13 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
-func TestContractNewWithOptionalParams(t *testing.T) {
+func TestIntegrationConfigurationNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,19 +28,25 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.New(context.TODO(), m3ter.ContractNewParams{
-		OrgID:     m3ter.F("orgId"),
-		AccountID: m3ter.F("x"),
-		EndDate:   m3ter.F(time.Now()),
-		Name:      m3ter.F("x"),
-		StartDate: m3ter.F(time.Now()),
-		Code:      m3ter.F("JS!?Q0]r] ]$]"),
-		CustomFields: m3ter.F(map[string]m3ter.ContractNewParamsCustomFieldsUnion{
-			"foo": shared.UnionString("string"),
+	_, err := client.IntegrationConfigurations.New(context.TODO(), m3ter.IntegrationConfigurationNewParams{
+		OrgID: m3ter.F("orgId"),
+		ConfigData: m3ter.F(map[string]interface{}{
+			"foo": "bar",
 		}),
-		Description:         m3ter.F("description"),
-		PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-		Version:             m3ter.F(int64(0)),
+		Credentials: m3ter.F(m3ter.IntegrationConfigurationNewParamsCredentials{
+			Type:        m3ter.F(m3ter.IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic),
+			Destination: m3ter.F(m3ter.IntegrationConfigurationNewParamsCredentialsDestinationWebhook),
+			Empty:       m3ter.F(true),
+			Name:        m3ter.F("name"),
+			Version:     m3ter.F(int64(0)),
+		}),
+		Destination:              m3ter.F("destination"),
+		DestinationID:            m3ter.F("destinationId"),
+		EntityID:                 m3ter.F("entityId"),
+		EntityType:               m3ter.F("entityType"),
+		IntegrationCredentialsID: m3ter.F("integrationCredentialsId"),
+		Name:                     m3ter.F("name"),
+		Version:                  m3ter.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -53,7 +57,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractGet(t *testing.T) {
+func TestIntegrationConfigurationGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -68,10 +72,10 @@ func TestContractGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Get(
+	_, err := client.IntegrationConfigurations.Get(
 		context.TODO(),
 		"id",
-		m3ter.ContractGetParams{
+		m3ter.IntegrationConfigurationGetParams{
 			OrgID: m3ter.F("orgId"),
 		},
 	)
@@ -84,7 +88,7 @@ func TestContractGet(t *testing.T) {
 	}
 }
 
-func TestContractUpdateWithOptionalParams(t *testing.T) {
+func TestIntegrationConfigurationUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,22 +103,28 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Update(
+	_, err := client.IntegrationConfigurations.Update(
 		context.TODO(),
 		"id",
-		m3ter.ContractUpdateParams{
-			OrgID:     m3ter.F("orgId"),
-			AccountID: m3ter.F("x"),
-			EndDate:   m3ter.F(time.Now()),
-			Name:      m3ter.F("x"),
-			StartDate: m3ter.F(time.Now()),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
-			CustomFields: m3ter.F(map[string]m3ter.ContractUpdateParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
+		m3ter.IntegrationConfigurationUpdateParams{
+			OrgID: m3ter.F("orgId"),
+			ConfigData: m3ter.F(map[string]interface{}{
+				"foo": "bar",
 			}),
-			Description:         m3ter.F("description"),
-			PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-			Version:             m3ter.F(int64(0)),
+			Credentials: m3ter.F(m3ter.IntegrationConfigurationUpdateParamsCredentials{
+				Type:        m3ter.F(m3ter.IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic),
+				Destination: m3ter.F(m3ter.IntegrationConfigurationUpdateParamsCredentialsDestinationWebhook),
+				Empty:       m3ter.F(true),
+				Name:        m3ter.F("name"),
+				Version:     m3ter.F(int64(0)),
+			}),
+			Destination:              m3ter.F("destination"),
+			DestinationID:            m3ter.F("destinationId"),
+			EntityID:                 m3ter.F("entityId"),
+			EntityType:               m3ter.F("entityType"),
+			IntegrationCredentialsID: m3ter.F("integrationCredentialsId"),
+			Name:                     m3ter.F("name"),
+			Version:                  m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -126,7 +136,7 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractListWithOptionalParams(t *testing.T) {
+func TestIntegrationConfigurationListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,11 +151,8 @@ func TestContractListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.List(context.TODO(), m3ter.ContractListParams{
+	_, err := client.IntegrationConfigurations.List(context.TODO(), m3ter.IntegrationConfigurationListParams{
 		OrgID:     m3ter.F("orgId"),
-		AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		Codes:     m3ter.F([]string{"string"}),
-		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
 	})
@@ -158,7 +165,7 @@ func TestContractListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestContractDelete(t *testing.T) {
+func TestIntegrationConfigurationDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -173,10 +180,10 @@ func TestContractDelete(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.Delete(
+	_, err := client.IntegrationConfigurations.Delete(
 		context.TODO(),
 		"id",
-		m3ter.ContractDeleteParams{
+		m3ter.IntegrationConfigurationDeleteParams{
 			OrgID: m3ter.F("orgId"),
 		},
 	)
@@ -189,7 +196,7 @@ func TestContractDelete(t *testing.T) {
 	}
 }
 
-func TestContractEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
+func TestIntegrationConfigurationEnable(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -204,14 +211,43 @@ func TestContractEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Contracts.EndDateBillingEntities(
+	_, err := client.IntegrationConfigurations.Enable(
 		context.TODO(),
 		"id",
-		m3ter.ContractEndDateBillingEntitiesParams{
-			OrgID:           m3ter.F("orgId"),
-			BillingEntities: m3ter.F([]m3ter.ContractEndDateBillingEntitiesParamsBillingEntity{m3ter.ContractEndDateBillingEntitiesParamsBillingEntityContract}),
-			EndDate:         m3ter.F(time.Now()),
-			ApplyToChildren: m3ter.F(true),
+		m3ter.IntegrationConfigurationEnableParams{
+			OrgID: m3ter.F("orgId"),
+		},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestIntegrationConfigurationGetByEntityWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.IntegrationConfigurations.GetByEntity(
+		context.TODO(),
+		"entityType",
+		m3ter.IntegrationConfigurationGetByEntityParams{
+			OrgID:    m3ter.F("orgId"),
+			EntityID: m3ter.F("entityId"),
 		},
 	)
 	if err != nil {
