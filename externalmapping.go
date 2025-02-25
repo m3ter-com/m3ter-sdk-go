@@ -149,8 +149,10 @@ func (r *ExternalMappingService) Delete(ctx context.Context, id string, body Ext
 // Use this endpoint to retrieve a list of External Mapping entities associated
 // with a specific external system entity. The list can be paginated for easier
 // management.
-func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) (res *ExternalMappingListByExternalEntityResponse, err error) {
+func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMapping], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -168,16 +170,36 @@ func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, syste
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/externalmappings/externalid/%s/%s/%s", params.OrgID, system, externalTable, externalID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of External Mapping entities for a specified external system
+// entity.
+//
+// Use this endpoint to retrieve a list of External Mapping entities associated
+// with a specific external system entity. The list can be paginated for easier
+// management.
+func (r *ExternalMappingService) ListByExternalEntityAutoPaging(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMapping] {
+	return pagination.NewCursorAutoPager(r.ListByExternalEntity(ctx, system, externalTable, externalID, params, opts...))
 }
 
 // Retrieve a list of External Mapping entities for a specified m3ter entity.
 //
 // Use this endpoint to retrieve a list of External Mapping entities associated
 // with a specific m3ter entity. The list can be paginated for easier management.
-func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) (res *ExternalMappingListByM3terEntityResponse, err error) {
+func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMapping], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -191,8 +213,24 @@ func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity s
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/externalmappings/external/%s/%s", params.OrgID, entity, m3terID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of External Mapping entities for a specified m3ter entity.
+//
+// Use this endpoint to retrieve a list of External Mapping entities associated
+// with a specific m3ter entity. The list can be paginated for easier management.
+func (r *ExternalMappingService) ListByM3terEntityAutoPaging(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMapping] {
+	return pagination.NewCursorAutoPager(r.ListByM3terEntity(ctx, entity, m3terID, params, opts...))
 }
 
 type ExternalMapping struct {
@@ -252,58 +290,6 @@ func (r *ExternalMapping) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r externalMappingJSON) RawJSON() string {
-	return r.raw
-}
-
-type ExternalMappingListByExternalEntityResponse struct {
-	// An array containing the list of requested External Mapping entities.
-	Data []ExternalMapping `json:"data"`
-	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
-	// External Mappings in a paginated list.
-	NextToken string                                          `json:"nextToken"`
-	JSON      externalMappingListByExternalEntityResponseJSON `json:"-"`
-}
-
-// externalMappingListByExternalEntityResponseJSON contains the JSON metadata for
-// the struct [ExternalMappingListByExternalEntityResponse]
-type externalMappingListByExternalEntityResponseJSON struct {
-	Data        apijson.Field
-	NextToken   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExternalMappingListByExternalEntityResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r externalMappingListByExternalEntityResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type ExternalMappingListByM3terEntityResponse struct {
-	// An array containing the list of requested External Mapping entities.
-	Data []ExternalMapping `json:"data"`
-	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
-	// External Mappings in a paginated list.
-	NextToken string                                       `json:"nextToken"`
-	JSON      externalMappingListByM3terEntityResponseJSON `json:"-"`
-}
-
-// externalMappingListByM3terEntityResponseJSON contains the JSON metadata for the
-// struct [ExternalMappingListByM3terEntityResponse]
-type externalMappingListByM3terEntityResponseJSON struct {
-	Data        apijson.Field
-	NextToken   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExternalMappingListByM3terEntityResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r externalMappingListByM3terEntityResponseJSON) RawJSON() string {
 	return r.raw
 }
 

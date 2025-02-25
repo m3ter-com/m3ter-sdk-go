@@ -155,7 +155,7 @@ func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, 
 }
 
 // Retrieve a list of Accounts that are children of the specified Account.
-func (r *AccountService) ListChildren(ctx context.Context, id string, params AccountListChildrenParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *Account, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -1165,15 +1165,15 @@ func (r AccountEndDateBillingEntitiesParamsBillingEntity) IsKnown() bool {
 	return false
 }
 
-type AccountListChildrenParams struct {
+type AccountGetChildrenParams struct {
 	OrgID     param.Field[string] `path:"orgId,required"`
 	NextToken param.Field[string] `query:"nextToken"`
 	PageSize  param.Field[int64]  `query:"pageSize"`
 }
 
-// URLQuery serializes [AccountListChildrenParams]'s query parameters as
+// URLQuery serializes [AccountGetChildrenParams]'s query parameters as
 // `url.Values`.
-func (r AccountListChildrenParams) URLQuery() (v url.Values) {
+func (r AccountGetChildrenParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

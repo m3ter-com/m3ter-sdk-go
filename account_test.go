@@ -256,7 +256,7 @@ func TestAccountEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAccountListChildrenWithOptionalParams(t *testing.T) {
+func TestAccountGetChildrenWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -271,10 +271,10 @@ func TestAccountListChildrenWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Accounts.ListChildren(
+	_, err := client.Accounts.GetChildren(
 		context.TODO(),
 		"id",
-		m3ter.AccountListChildrenParams{
+		m3ter.AccountGetChildrenParams{
 			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
