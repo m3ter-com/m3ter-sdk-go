@@ -31,7 +31,7 @@ func TestUserInvitationNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Users.Invitations.New(context.TODO(), m3ter.UserInvitationNewParams{
 		OrgID:               m3ter.F("orgId"),
-		Email:               m3ter.F("dev@stainlessapi.com"),
+		Email:               m3ter.F("dev@stainless.com"),
 		FirstName:           m3ter.F("x"),
 		LastName:            m3ter.F("x"),
 		ContactNumber:       m3ter.F("contactNumber"),
