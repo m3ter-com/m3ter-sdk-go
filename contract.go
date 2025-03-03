@@ -304,12 +304,12 @@ func (r contractEndDateBillingEntitiesResponseJSON) RawJSON() string {
 // A dictionary with keys as identifiers of billing entities and values as lists
 // containing details of the entities for which the update failed.
 type ContractEndDateBillingEntitiesResponseFailedEntities struct {
-	Accountplan     ContractEndDateBillingEntitiesResponseFailedEntitiesAccountplan     `json:"ACCOUNTPLAN"`
-	Contract        ContractEndDateBillingEntitiesResponseFailedEntitiesContract        `json:"CONTRACT"`
-	CounterPricings ContractEndDateBillingEntitiesResponseFailedEntitiesCounterPricings `json:"COUNTER_PRICINGS"`
-	Prepayment      ContractEndDateBillingEntitiesResponseFailedEntitiesPrepayment      `json:"PREPAYMENT"`
-	Pricings        ContractEndDateBillingEntitiesResponseFailedEntitiesPricings        `json:"PRICINGS"`
-	JSON            contractEndDateBillingEntitiesResponseFailedEntitiesJSON            `json:"-"`
+	Accountplan     shared.SetString                                         `json:"ACCOUNTPLAN"`
+	Contract        shared.SetString                                         `json:"CONTRACT"`
+	CounterPricings shared.SetString                                         `json:"COUNTER_PRICINGS"`
+	Prepayment      shared.SetString                                         `json:"PREPAYMENT"`
+	Pricings        shared.SetString                                         `json:"PRICINGS"`
+	JSON            contractEndDateBillingEntitiesResponseFailedEntitiesJSON `json:"-"`
 }
 
 // contractEndDateBillingEntitiesResponseFailedEntitiesJSON contains the JSON
@@ -332,125 +332,15 @@ func (r contractEndDateBillingEntitiesResponseFailedEntitiesJSON) RawJSON() stri
 	return r.raw
 }
 
-type ContractEndDateBillingEntitiesResponseFailedEntitiesAccountplan struct {
-	Empty bool                                                                `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON contains the
-// JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseFailedEntitiesAccountplan]
-type contractEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseFailedEntitiesAccountplan) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseFailedEntitiesContract struct {
-	Empty bool                                                             `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseFailedEntitiesContractJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseFailedEntitiesContractJSON contains the
-// JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseFailedEntitiesContract]
-type contractEndDateBillingEntitiesResponseFailedEntitiesContractJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseFailedEntitiesContract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseFailedEntitiesContractJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseFailedEntitiesCounterPricings struct {
-	Empty bool                                                                    `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON contains
-// the JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseFailedEntitiesCounterPricings]
-type contractEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseFailedEntitiesCounterPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseFailedEntitiesPrepayment struct {
-	Empty bool                                                               `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON contains the
-// JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseFailedEntitiesPrepayment]
-type contractEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseFailedEntitiesPrepayment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseFailedEntitiesPricings struct {
-	Empty bool                                                             `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON contains the
-// JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseFailedEntitiesPricings]
-type contractEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseFailedEntitiesPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON) RawJSON() string {
-	return r.raw
-}
-
 // A dictionary with keys as identifiers of billing entities and values as lists
 // containing details of the updated entities.
 type ContractEndDateBillingEntitiesResponseUpdatedEntities struct {
-	Accountplan     ContractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan     `json:"ACCOUNTPLAN"`
-	Contract        ContractEndDateBillingEntitiesResponseUpdatedEntitiesContract        `json:"CONTRACT"`
-	CounterPricings ContractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings `json:"COUNTER_PRICINGS"`
-	Prepayment      ContractEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment      `json:"PREPAYMENT"`
-	Pricings        ContractEndDateBillingEntitiesResponseUpdatedEntitiesPricings        `json:"PRICINGS"`
-	JSON            contractEndDateBillingEntitiesResponseUpdatedEntitiesJSON            `json:"-"`
+	Accountplan     shared.SetString                                          `json:"ACCOUNTPLAN"`
+	Contract        shared.SetString                                          `json:"CONTRACT"`
+	CounterPricings shared.SetString                                          `json:"COUNTER_PRICINGS"`
+	Prepayment      shared.SetString                                          `json:"PREPAYMENT"`
+	Pricings        shared.SetString                                          `json:"PRICINGS"`
+	JSON            contractEndDateBillingEntitiesResponseUpdatedEntitiesJSON `json:"-"`
 }
 
 // contractEndDateBillingEntitiesResponseUpdatedEntitiesJSON contains the JSON
@@ -470,116 +360,6 @@ func (r *ContractEndDateBillingEntitiesResponseUpdatedEntities) UnmarshalJSON(da
 }
 
 func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan struct {
-	Empty bool                                                                 `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON contains
-// the JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan]
-type contractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseUpdatedEntitiesContract struct {
-	Empty bool                                                              `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON contains the
-// JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseUpdatedEntitiesContract]
-type contractEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseUpdatedEntitiesContract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings struct {
-	Empty bool                                                                     `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON
-// contains the JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings]
-type contractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment struct {
-	Empty bool                                                                `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON contains the
-// JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment]
-type contractEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON) RawJSON() string {
-	return r.raw
-}
-
-type ContractEndDateBillingEntitiesResponseUpdatedEntitiesPricings struct {
-	Empty bool                                                              `json:"empty"`
-	JSON  contractEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON `json:"-"`
-}
-
-// contractEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON contains the
-// JSON metadata for the struct
-// [ContractEndDateBillingEntitiesResponseUpdatedEntitiesPricings]
-type contractEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ContractEndDateBillingEntitiesResponseUpdatedEntitiesPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON) RawJSON() string {
 	return r.raw
 }
 

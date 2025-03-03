@@ -35,7 +35,7 @@ func TestAccountNewWithOptionalParams(t *testing.T) {
 		Code:         m3ter.F("JS!?Q0]r] ]$]"),
 		EmailAddress: m3ter.F("dev@stainless.com"),
 		Name:         m3ter.F("x"),
-		Address: m3ter.F(m3ter.AccountNewParamsAddress{
+		Address: m3ter.F(m3ter.AddressParam{
 			AddressLine1: m3ter.F("addressLine1"),
 			AddressLine2: m3ter.F("addressLine2"),
 			AddressLine3: m3ter.F("addressLine3"),
@@ -124,7 +124,7 @@ func TestAccountUpdateWithOptionalParams(t *testing.T) {
 			Code:         m3ter.F("JS!?Q0]r] ]$]"),
 			EmailAddress: m3ter.F("dev@stainless.com"),
 			Name:         m3ter.F("x"),
-			Address: m3ter.F(m3ter.AccountUpdateParamsAddress{
+			Address: m3ter.F(m3ter.AddressParam{
 				AddressLine1: m3ter.F("addressLine1"),
 				AddressLine2: m3ter.F("addressLine2"),
 				AddressLine3: m3ter.F("addressLine3"),

@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 // BillJobService contains methods and other services that help with interacting
@@ -225,7 +226,7 @@ type BillJob struct {
 	// currency. For example, if Account is billed in GBP and Organization is set to
 	// USD, Bill line items are calculated in GBP and then converted to USD using the
 	// defined rate.
-	CurrencyConversions []BillJobCurrencyConversion `json:"currencyConversions"`
+	CurrencyConversions []shared.CurrencyConversion `json:"currencyConversions"`
 	// The starting date _(epoch)_ for Daily billing frequency _(in ISO 8601 format)_,
 	// determining the first Bill date for daily Bills.
 	DayEpoch time.Time `json:"dayEpoch" format:"date"`
@@ -359,38 +360,6 @@ func (r BillJobBillingFrequency) IsKnown() bool {
 	return false
 }
 
-// An array of currency conversion rates from Bill currency to Organization
-// currency. For example, if Account is billed in GBP and Organization is set to
-// USD, Bill line items are calculated in GBP and then converted to USD using the
-// defined rate.
-type BillJobCurrencyConversion struct {
-	// Currency to convert from. For example: GBP.
-	From string `json:"from,required"`
-	// Currency to convert to. For example: USD.
-	To string `json:"to,required"`
-	// Conversion rate between currencies.
-	Multiplier float64                       `json:"multiplier"`
-	JSON       billJobCurrencyConversionJSON `json:"-"`
-}
-
-// billJobCurrencyConversionJSON contains the JSON metadata for the struct
-// [BillJobCurrencyConversion]
-type billJobCurrencyConversionJSON struct {
-	From        apijson.Field
-	To          apijson.Field
-	Multiplier  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillJobCurrencyConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billJobCurrencyConversionJSON) RawJSON() string {
-	return r.raw
-}
-
 // The current status of the BillJob, indicating its progress or completion state.
 type BillJobStatus string
 
@@ -466,7 +435,7 @@ type BillJobNewParams struct {
 	// currency. For example, if Account is billed in GBP and Organization is set to
 	// USD, Bill line items are calculated in GBP and then converted to USD using the
 	// defined rate.
-	CurrencyConversions param.Field[[]BillJobNewParamsCurrencyConversion] `json:"currencyConversions"`
+	CurrencyConversions param.Field[[]shared.CurrencyConversionParam] `json:"currencyConversions"`
 	// The starting date _(epoch)_ for Daily billing frequency _(in ISO 8601 format)_,
 	// determining the first Bill date for daily Bills.
 	DayEpoch param.Field[time.Time] `json:"dayEpoch" format:"date"`
@@ -559,23 +528,6 @@ func (r BillJobNewParamsBillingFrequency) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// An array of currency conversion rates from Bill currency to Organization
-// currency. For example, if Account is billed in GBP and Organization is set to
-// USD, Bill line items are calculated in GBP and then converted to USD using the
-// defined rate.
-type BillJobNewParamsCurrencyConversion struct {
-	// Currency to convert from. For example: GBP.
-	From param.Field[string] `json:"from,required"`
-	// Currency to convert to. For example: USD.
-	To param.Field[string] `json:"to,required"`
-	// Conversion rate between currencies.
-	Multiplier param.Field[float64] `json:"multiplier"`
-}
-
-func (r BillJobNewParamsCurrencyConversion) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type BillJobGetParams struct {

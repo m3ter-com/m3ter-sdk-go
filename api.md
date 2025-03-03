@@ -1,3 +1,14 @@
+# Shared Params Types
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared#CurrencyConversionParam">CurrencyConversionParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared#PricingBandParam">PricingBandParam</a>
+
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared#CurrencyConversion">CurrencyConversion</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared#PricingBand">PricingBand</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go/shared#SetString">SetString</a>
+
 # Authentication
 
 Response Types:
@@ -10,9 +21,14 @@ Methods:
 
 # Accounts
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AddressParam">AddressParam</a>
+
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#Account">Account</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#Address">Address</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AccountEndDateBillingEntitiesResponse">AccountEndDateBillingEntitiesResponse</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AccountSearchResponse">AccountSearchResponse</a>
 
@@ -465,9 +481,14 @@ Methods:
 
 # PermissionPolicies
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#PermissionStatementParam">PermissionStatementParam</a>
+
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#PermissionPolicy">PermissionPolicy</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#PermissionStatement">PermissionStatement</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#PermissionPolicyAddToServiceUserResponse">PermissionPolicyAddToServiceUserResponse</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#PermissionPolicyAddToSupportUserResponse">PermissionPolicyAddToSupportUserResponse</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#PermissionPolicyAddToUserResponse">PermissionPolicyAddToUserResponse</a>
@@ -692,8 +713,14 @@ Methods:
 
 # Webhooks
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#M3terSignedCredentialsReqParam">M3terSignedCredentialsReqParam</a>
+
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#M3terSignedCredentialsReq">M3terSignedCredentialsReq</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#M3terSignedCredentialsResp">M3terSignedCredentialsResp</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#Webhook">Webhook</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#WebhookNewResponse">WebhookNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#WebhookUpdateResponse">WebhookUpdateResponse</a>

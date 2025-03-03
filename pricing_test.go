@@ -12,6 +12,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestPricingNewWithOptionalParams(t *testing.T) {
@@ -31,7 +32,7 @@ func TestPricingNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Pricings.New(context.TODO(), m3ter.PricingNewParams{
 		OrgID: m3ter.F("orgId"),
-		PricingBands: m3ter.F([]m3ter.PricingNewParamsPricingBand{{
+		PricingBands: m3ter.F([]shared.PricingBandParam{{
 			FixedPrice:   m3ter.F(0.000000),
 			LowerLimit:   m3ter.F(0.000000),
 			UnitPrice:    m3ter.F(0.000000),
@@ -49,7 +50,7 @@ func TestPricingNewWithOptionalParams(t *testing.T) {
 		MinimumSpend:              m3ter.F(0.000000),
 		MinimumSpendBillInAdvance: m3ter.F(true),
 		MinimumSpendDescription:   m3ter.F("minimumSpendDescription"),
-		OveragePricingBands: m3ter.F([]m3ter.PricingNewParamsOveragePricingBand{{
+		OveragePricingBands: m3ter.F([]shared.PricingBandParam{{
 			FixedPrice:   m3ter.F(0.000000),
 			LowerLimit:   m3ter.F(0.000000),
 			UnitPrice:    m3ter.F(0.000000),
@@ -125,7 +126,7 @@ func TestPricingUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		m3ter.PricingUpdateParams{
 			OrgID: m3ter.F("orgId"),
-			PricingBands: m3ter.F([]m3ter.PricingUpdateParamsPricingBand{{
+			PricingBands: m3ter.F([]shared.PricingBandParam{{
 				FixedPrice:   m3ter.F(0.000000),
 				LowerLimit:   m3ter.F(0.000000),
 				UnitPrice:    m3ter.F(0.000000),
@@ -143,7 +144,7 @@ func TestPricingUpdateWithOptionalParams(t *testing.T) {
 			MinimumSpend:              m3ter.F(0.000000),
 			MinimumSpendBillInAdvance: m3ter.F(true),
 			MinimumSpendDescription:   m3ter.F("minimumSpendDescription"),
-			OveragePricingBands: m3ter.F([]m3ter.PricingUpdateParamsOveragePricingBand{{
+			OveragePricingBands: m3ter.F([]shared.PricingBandParam{{
 				FixedPrice:   m3ter.F(0.000000),
 				LowerLimit:   m3ter.F(0.000000),
 				UnitPrice:    m3ter.F(0.000000),

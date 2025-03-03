@@ -37,7 +37,9 @@ func NewUserInvitationService(opts ...option.RequestOption) (r *UserInvitationSe
 	return
 }
 
-// Invite User to Organization
+// Invite a new user to your Organization.
+//
+// This sends an email to someone inviting them to join your m3ter Organization.
 func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNewParams, opts ...option.RequestOption) (res *Invitation, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {

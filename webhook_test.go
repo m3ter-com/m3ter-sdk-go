@@ -29,8 +29,14 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), m3ter.WebhookNewParams{
-		OrgID:       m3ter.F("orgId"),
-		Credentials: m3ter.F(m3ter.WebhookNewParamsCredentials{}),
+		OrgID: m3ter.F("orgId"),
+		Credentials: m3ter.F(m3ter.M3terSignedCredentialsReqParam{
+			APIKey:  m3ter.F("x"),
+			Secret:  m3ter.F("x"),
+			Type:    m3ter.F(m3ter.M3terSignedCredentialsReqTypeM3TerSignedRequest),
+			Empty:   m3ter.F(true),
+			Version: m3ter.F(int64(0)),
+		}),
 		Description: m3ter.F("x"),
 		Name:        m3ter.F("x"),
 		URL:         m3ter.F("x"),
@@ -97,8 +103,14 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.WebhookUpdateParams{
-			OrgID:       m3ter.F("orgId"),
-			Credentials: m3ter.F(m3ter.WebhookUpdateParamsCredentials{}),
+			OrgID: m3ter.F("orgId"),
+			Credentials: m3ter.F(m3ter.M3terSignedCredentialsReqParam{
+				APIKey:  m3ter.F("x"),
+				Secret:  m3ter.F("x"),
+				Type:    m3ter.F(m3ter.M3terSignedCredentialsReqTypeM3TerSignedRequest),
+				Empty:   m3ter.F(true),
+				Version: m3ter.F(int64(0)),
+			}),
 			Description: m3ter.F("x"),
 			Name:        m3ter.F("x"),
 			URL:         m3ter.F("x"),

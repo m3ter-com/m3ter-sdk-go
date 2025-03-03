@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 // PricingService contains methods and other services that help with interacting
@@ -196,12 +197,12 @@ type Pricing struct {
 	MinimumSpendDescription string `json:"minimumSpendDescription"`
 	// The Prepayment/Balance overage pricing in pricing bands for the case of a
 	// **Tiered** pricing structure.
-	OveragePricingBands []PricingOveragePricingBand `json:"overagePricingBands"`
+	OveragePricingBands []shared.PricingBand `json:"overagePricingBands"`
 	// UUID of the Plan the Pricing is created for.
 	PlanID string `json:"planId"`
 	// UUID of the Plan Template the Pricing was created for.
 	PlanTemplateID string               `json:"planTemplateId"`
-	PricingBands   []PricingPricingBand `json:"pricingBands"`
+	PricingBands   []shared.PricingBand `json:"pricingBands"`
 	// Name of the segment for which you are defining a Pricing.
 	//
 	// For each segment in a segmented aggregation, make a separate call using
@@ -290,74 +291,6 @@ func (r PricingAggregationType) IsKnown() bool {
 	return false
 }
 
-type PricingOveragePricingBand struct {
-	// Fixed price charged for the Pricing band.
-	FixedPrice float64 `json:"fixedPrice,required"`
-	// Lower limit for the Pricing band.
-	LowerLimit float64 `json:"lowerLimit,required"`
-	// Unit price charged for the Pricing band.
-	UnitPrice float64 `json:"unitPrice,required"`
-	// The ID for the Pricing band.
-	ID string `json:"id"`
-	// **OBSOLETE - this is deprecated and no longer used.**
-	CreditTypeID string                        `json:"creditTypeId"`
-	JSON         pricingOveragePricingBandJSON `json:"-"`
-}
-
-// pricingOveragePricingBandJSON contains the JSON metadata for the struct
-// [PricingOveragePricingBand]
-type pricingOveragePricingBandJSON struct {
-	FixedPrice   apijson.Field
-	LowerLimit   apijson.Field
-	UnitPrice    apijson.Field
-	ID           apijson.Field
-	CreditTypeID apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *PricingOveragePricingBand) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r pricingOveragePricingBandJSON) RawJSON() string {
-	return r.raw
-}
-
-type PricingPricingBand struct {
-	// Fixed price charged for the Pricing band.
-	FixedPrice float64 `json:"fixedPrice,required"`
-	// Lower limit for the Pricing band.
-	LowerLimit float64 `json:"lowerLimit,required"`
-	// Unit price charged for the Pricing band.
-	UnitPrice float64 `json:"unitPrice,required"`
-	// The ID for the Pricing band.
-	ID string `json:"id"`
-	// **OBSOLETE - this is deprecated and no longer used.**
-	CreditTypeID string                 `json:"creditTypeId"`
-	JSON         pricingPricingBandJSON `json:"-"`
-}
-
-// pricingPricingBandJSON contains the JSON metadata for the struct
-// [PricingPricingBand]
-type pricingPricingBandJSON struct {
-	FixedPrice   apijson.Field
-	LowerLimit   apijson.Field
-	UnitPrice    apijson.Field
-	ID           apijson.Field
-	CreditTypeID apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *PricingPricingBand) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r pricingPricingBandJSON) RawJSON() string {
-	return r.raw
-}
-
 //   - **DEBIT**. Default setting. The amount calculated using the Pricing is added
 //     to the bill as a debit.
 //
@@ -386,8 +319,8 @@ func (r PricingType) IsKnown() bool {
 }
 
 type PricingNewParams struct {
-	OrgID        param.Field[string]                        `path:"orgId,required"`
-	PricingBands param.Field[[]PricingNewParamsPricingBand] `json:"pricingBands,required"`
+	OrgID        param.Field[string]                    `path:"orgId,required"`
+	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
@@ -439,7 +372,7 @@ type PricingNewParams struct {
 	MinimumSpendDescription param.Field[string] `json:"minimumSpendDescription"`
 	// Specify Prepayment/Balance overage pricing in pricing bands for the case of a
 	// **Tiered** pricing structure.
-	OveragePricingBands param.Field[[]PricingNewParamsOveragePricingBand] `json:"overagePricingBands"`
+	OveragePricingBands param.Field[[]shared.PricingBandParam] `json:"overagePricingBands"`
 	// UUID of the Plan the Pricing is created for.
 	PlanID param.Field[string] `json:"planId"`
 	// UUID of the Plan Template the Pricing is created for.
@@ -497,40 +430,6 @@ func (r PricingNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type PricingNewParamsPricingBand struct {
-	// Fixed price charged for the Pricing band.
-	FixedPrice param.Field[float64] `json:"fixedPrice,required"`
-	// Lower limit for the Pricing band.
-	LowerLimit param.Field[float64] `json:"lowerLimit,required"`
-	// Unit price charged for the Pricing band.
-	UnitPrice param.Field[float64] `json:"unitPrice,required"`
-	// The ID for the Pricing band.
-	ID param.Field[string] `json:"id"`
-	// **OBSOLETE - this is deprecated and no longer used.**
-	CreditTypeID param.Field[string] `json:"creditTypeId"`
-}
-
-func (r PricingNewParamsPricingBand) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type PricingNewParamsOveragePricingBand struct {
-	// Fixed price charged for the Pricing band.
-	FixedPrice param.Field[float64] `json:"fixedPrice,required"`
-	// Lower limit for the Pricing band.
-	LowerLimit param.Field[float64] `json:"lowerLimit,required"`
-	// Unit price charged for the Pricing band.
-	UnitPrice param.Field[float64] `json:"unitPrice,required"`
-	// The ID for the Pricing band.
-	ID param.Field[string] `json:"id"`
-	// **OBSOLETE - this is deprecated and no longer used.**
-	CreditTypeID param.Field[string] `json:"creditTypeId"`
-}
-
-func (r PricingNewParamsOveragePricingBand) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 //   - **DEBIT**. Default setting. The amount calculated using the Pricing is added
 //     to the bill as a debit.
 //
@@ -563,8 +462,8 @@ type PricingGetParams struct {
 }
 
 type PricingUpdateParams struct {
-	OrgID        param.Field[string]                           `path:"orgId,required"`
-	PricingBands param.Field[[]PricingUpdateParamsPricingBand] `json:"pricingBands,required"`
+	OrgID        param.Field[string]                    `path:"orgId,required"`
+	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
@@ -616,7 +515,7 @@ type PricingUpdateParams struct {
 	MinimumSpendDescription param.Field[string] `json:"minimumSpendDescription"`
 	// Specify Prepayment/Balance overage pricing in pricing bands for the case of a
 	// **Tiered** pricing structure.
-	OveragePricingBands param.Field[[]PricingUpdateParamsOveragePricingBand] `json:"overagePricingBands"`
+	OveragePricingBands param.Field[[]shared.PricingBandParam] `json:"overagePricingBands"`
 	// UUID of the Plan the Pricing is created for.
 	PlanID param.Field[string] `json:"planId"`
 	// UUID of the Plan Template the Pricing is created for.
@@ -671,40 +570,6 @@ type PricingUpdateParams struct {
 }
 
 func (r PricingUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type PricingUpdateParamsPricingBand struct {
-	// Fixed price charged for the Pricing band.
-	FixedPrice param.Field[float64] `json:"fixedPrice,required"`
-	// Lower limit for the Pricing band.
-	LowerLimit param.Field[float64] `json:"lowerLimit,required"`
-	// Unit price charged for the Pricing band.
-	UnitPrice param.Field[float64] `json:"unitPrice,required"`
-	// The ID for the Pricing band.
-	ID param.Field[string] `json:"id"`
-	// **OBSOLETE - this is deprecated and no longer used.**
-	CreditTypeID param.Field[string] `json:"creditTypeId"`
-}
-
-func (r PricingUpdateParamsPricingBand) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type PricingUpdateParamsOveragePricingBand struct {
-	// Fixed price charged for the Pricing band.
-	FixedPrice param.Field[float64] `json:"fixedPrice,required"`
-	// Lower limit for the Pricing band.
-	LowerLimit param.Field[float64] `json:"lowerLimit,required"`
-	// Unit price charged for the Pricing band.
-	UnitPrice param.Field[float64] `json:"unitPrice,required"`
-	// The ID for the Pricing band.
-	ID param.Field[string] `json:"id"`
-	// **OBSOLETE - this is deprecated and no longer used.**
-	CreditTypeID param.Field[string] `json:"creditTypeId"`
-}
-
-func (r PricingUpdateParamsOveragePricingBand) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 

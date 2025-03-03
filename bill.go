@@ -16,6 +16,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 // BillService contains methods and other services that help with interacting with
@@ -149,6 +150,10 @@ func (r *BillService) Approve(ctx context.Context, params BillApproveParams, opt
 }
 
 // Retrieve the latest Bill for the given Account.
+//
+// This endpoint retrieves the latest Bill for the given Account in the specified
+// Organization. It facilitates tracking of the most recent charges and consumption
+// details.
 func (r *BillService) LatestByAccount(ctx context.Context, accountID string, query BillLatestByAccountParams, opts ...option.RequestOption) (res *Bill, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
@@ -164,7 +169,13 @@ func (r *BillService) LatestByAccount(ctx context.Context, accountID string, que
 	return
 }
 
-// Lock a Bill for the given UUID
+// Lock the specific Bill identified by the given UUID. Once a Bill is locked, no
+// further changes can be made to it.
+//
+// **NOTE:** You cannot lock a Bill whose current status is `PENDING`. You will
+// receive an error message if you try to do this. You must first use the
+// [Approve Bills](https://www.m3ter.com/docs/api#tag/Bill/operation/ApproveBills)
+// call to approve a Bill before you can lock it.
 func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, opts ...option.RequestOption) (res *Bill, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
@@ -180,7 +191,12 @@ func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, 
 	return
 }
 
-// Search for bill entities
+// Search for Bill entities.
+//
+// This endpoint executes a search query for Bills based on the user specified
+// search criteria. The search query is customizable, allowing for complex nested
+// conditions and sorting. The returned list of Bills can be paginated for easier
+// management.
 func (r *BillService) Search(ctx context.Context, params BillSearchParams, opts ...option.RequestOption) (res *BillSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
@@ -192,7 +208,10 @@ func (r *BillService) Search(ctx context.Context, params BillSearchParams, opts 
 	return
 }
 
-// Update Bill Status for the given UUID
+// Updates the status of a specified Bill with the given Bill ID.
+//
+// This endpoint allows you to transition a Bill's status through various stages,
+// such as from "Pending" to "Approved".
 func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUpdateStatusParams, opts ...option.RequestOption) (res *Bill, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
@@ -234,9 +253,9 @@ type Bill struct {
 	//
 	// - **TRUE** - CSV statement has been generated.
 	// - **FALSE** - no CSV statement generated.
-	CsvStatementGenerated bool                     `json:"csvStatementGenerated"`
-	Currency              string                   `json:"currency"`
-	CurrencyConversions   []BillCurrencyConversion `json:"currencyConversions"`
+	CsvStatementGenerated bool                        `json:"csvStatementGenerated"`
+	Currency              string                      `json:"currency"`
+	CurrencyConversions   []shared.CurrencyConversion `json:"currencyConversions"`
 	// The date and time _(in ISO 8601 format)_ when the Bill was first created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO 8601 format)_ when the Bill was last modified.
@@ -354,38 +373,6 @@ func (r BillBillingFrequency) IsKnown() bool {
 	return false
 }
 
-// An array of currency conversion rates from Bill currency to Organization
-// currency. For example, if Account is billed in GBP and Organization is set to
-// USD, Bill line items are calculated in GBP and then converted to USD using the
-// defined rate.
-type BillCurrencyConversion struct {
-	// Currency to convert from. For example: GBP.
-	From string `json:"from,required"`
-	// Currency to convert to. For example: USD.
-	To string `json:"to,required"`
-	// Conversion rate between currencies.
-	Multiplier float64                    `json:"multiplier"`
-	JSON       billCurrencyConversionJSON `json:"-"`
-}
-
-// billCurrencyConversionJSON contains the JSON metadata for the struct
-// [BillCurrencyConversion]
-type billCurrencyConversionJSON struct {
-	From        apijson.Field
-	To          apijson.Field
-	Multiplier  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillCurrencyConversion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billCurrencyConversionJSON) RawJSON() string {
-	return r.raw
-}
-
 type BillLineItem struct {
 	// The average unit price across all tiers / pricing bands.
 	AverageUnitPrice float64 `json:"averageUnitPrice,required"`
@@ -414,6 +401,7 @@ type BillLineItem struct {
 	// The Aggregation ID used for the line item.
 	AggregationID string `json:"aggregationId"`
 	BalanceID     string `json:"balanceId"`
+	ChargeID      string `json:"chargeId"`
 	// If part of a Parent/Child account billing hierarchy, this is the code for the
 	// child Account.
 	ChildAccountCode string `json:"childAccountCode"`
@@ -476,6 +464,7 @@ type billLineItemJSON struct {
 	ID                     apijson.Field
 	AggregationID          apijson.Field
 	BalanceID              apijson.Field
+	ChargeID               apijson.Field
 	ChildAccountCode       apijson.Field
 	ChildAccountID         apijson.Field
 	CommitmentID           apijson.Field
@@ -760,20 +749,38 @@ type BillLockParams struct {
 
 type BillSearchParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
-	// fromDocument for multi page retrievals
+	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
-	// Search Operator to be used while querying search
+	// Search Operator to be used while querying search.
 	Operator param.Field[BillSearchParamsOperator] `query:"operator"`
-	// Number of Commitments to retrieve per page
+	// Number of Bills to retrieve per page.
+	//
+	// **NOTE:** If not defined, default is 10.
 	PageSize param.Field[int64] `query:"pageSize"`
-	// Query for data using special syntax. Query parameters should be delimited using
-	// $.Allowed comparators are > (greater than), >= (grater than or equal), : (equal), < (less than), <= (less than or equal), ~ (contains). Allowed parameters: accountId, locked, billDate, startDate, endDate, dueDate, billingFrequency, externalInvoiceDateStart, externalInvoiceDateEnd, id, createdBy, dtCreated, lastModifiedBy, ids.Query example: searchQuery=startDate>2023-01-01$accountId:999cb15f-3e8a-4146-b4be-28d0aaedf275.
-	// This query is translated into: find bills that startDate is older than
-	// 2023-01-01 AND accountId is equal to 999cb15f-3e8a-4146-b4be-28d0aaedf275.
+	// Query for data using special syntax:
+	//
+	// - Query parameters should be delimited using $ (dollar sign).
+	// - Allowed comparators are:
+	//   - (greater than) >
+	//   - (greater than or equal to) >=
+	//   - (equal to) :
+	//   - (less than) <
+	//   - (less than or equal to) <=
+	//   - (match phrase/prefix) ~
+	//   - Allowed parameters: accountId, locked, billDate, startDate, endDate, dueDate,
+	//     billingFrequency, id, createdBy, dtCreated, lastModifiedBy, ids.
+	//   - Query example:
+	//   - searchQuery=startDate>2023-01-01$accountId:62eaad67-5790-407e-b853-881564f0e543.
+	//   - This query is translated into: find Bills that startDate is older than
+	//     2023-01-01 AND accountId is equal to 62eaad67-5790-407e-b853-881564f0e543.
+	//
+	// **Note:** Using the ~ match phrase/prefix comparator. For best results, we
+	// recommend treating this as a "starts with" comparator for your search query.
 	SearchQuery param.Field[string] `query:"searchQuery"`
-	// Name of the parameter on which sorting is performed
+	// Name of the parameter on which sorting is performed. Use any field available on
+	// the Bill entity to sort by, such as `accountId`, `endDate`, and so on.
 	SortBy param.Field[string] `query:"sortBy"`
-	// Sorting order
+	// Sorting order.
 	SortOrder param.Field[BillSearchParamsSortOrder] `query:"sortOrder"`
 }
 
@@ -785,7 +792,7 @@ func (r BillSearchParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Search Operator to be used while querying search
+// Search Operator to be used while querying search.
 type BillSearchParamsOperator string
 
 const (
@@ -801,7 +808,7 @@ func (r BillSearchParamsOperator) IsKnown() bool {
 	return false
 }
 
-// Sorting order
+// Sorting order.
 type BillSearchParamsSortOrder string
 
 const (

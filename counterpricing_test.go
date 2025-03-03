@@ -12,6 +12,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestCounterPricingNewWithOptionalParams(t *testing.T) {
@@ -32,7 +33,7 @@ func TestCounterPricingNewWithOptionalParams(t *testing.T) {
 	_, err := client.CounterPricings.New(context.TODO(), m3ter.CounterPricingNewParams{
 		OrgID:     m3ter.F("orgId"),
 		CounterID: m3ter.F("x"),
-		PricingBands: m3ter.F([]m3ter.CounterPricingNewParamsPricingBand{{
+		PricingBands: m3ter.F([]shared.PricingBandParam{{
 			FixedPrice:   m3ter.F(0.000000),
 			LowerLimit:   m3ter.F(0.000000),
 			UnitPrice:    m3ter.F(0.000000),
@@ -114,7 +115,7 @@ func TestCounterPricingUpdateWithOptionalParams(t *testing.T) {
 		m3ter.CounterPricingUpdateParams{
 			OrgID:     m3ter.F("orgId"),
 			CounterID: m3ter.F("x"),
-			PricingBands: m3ter.F([]m3ter.CounterPricingUpdateParamsPricingBand{{
+			PricingBands: m3ter.F([]shared.PricingBandParam{{
 				FixedPrice:   m3ter.F(0.000000),
 				LowerLimit:   m3ter.F(0.000000),
 				UnitPrice:    m3ter.F(0.000000),
