@@ -27,7 +27,6 @@ func TestCompoundAggregationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.New(context.TODO(), m3ter.CompoundAggregationNewParams{
 		OrgID:               m3ter.F("orgId"),
@@ -67,7 +66,6 @@ func TestCompoundAggregationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.Get(
 		context.TODO(),
@@ -98,7 +96,6 @@ func TestCompoundAggregationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.Update(
 		context.TODO(),
@@ -142,7 +139,6 @@ func TestCompoundAggregationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.List(context.TODO(), m3ter.CompoundAggregationListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -174,7 +170,6 @@ func TestCompoundAggregationDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.Delete(
 		context.TODO(),

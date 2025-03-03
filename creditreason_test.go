@@ -26,7 +26,6 @@ func TestCreditReasonNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.New(context.TODO(), m3ter.CreditReasonNewParams{
 		OrgID:    m3ter.F("orgId"),
@@ -57,7 +56,6 @@ func TestCreditReasonGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.Get(
 		context.TODO(),
@@ -88,7 +86,6 @@ func TestCreditReasonUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.Update(
 		context.TODO(),
@@ -123,7 +120,6 @@ func TestCreditReasonListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.List(context.TODO(), m3ter.CreditReasonListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -155,7 +151,6 @@ func TestCreditReasonDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.Delete(
 		context.TODO(),

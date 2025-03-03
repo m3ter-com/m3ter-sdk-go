@@ -26,7 +26,6 @@ func TestAuthenticationGetBearerTokenWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Authentication.GetBearerToken(context.TODO(), m3ter.AuthenticationGetBearerTokenParams{
 		GrantType: m3ter.F(m3ter.AuthenticationGetBearerTokenParamsGrantTypeClientCredentials),

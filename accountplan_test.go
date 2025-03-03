@@ -28,7 +28,6 @@ func TestAccountPlanNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.New(context.TODO(), m3ter.AccountPlanNewParams{
 		OrgID:            m3ter.F("orgId"),
@@ -68,7 +67,6 @@ func TestAccountPlanGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.Get(
 		context.TODO(),
@@ -99,7 +97,6 @@ func TestAccountPlanUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.Update(
 		context.TODO(),
@@ -143,7 +140,6 @@ func TestAccountPlanListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.List(context.TODO(), m3ter.AccountPlanListParams{
 		OrgID:      m3ter.F("orgId"),
@@ -179,7 +175,6 @@ func TestAccountPlanDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.Delete(
 		context.TODO(),

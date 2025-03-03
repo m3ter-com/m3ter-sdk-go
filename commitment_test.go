@@ -27,7 +27,6 @@ func TestCommitmentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.New(context.TODO(), m3ter.CommitmentNewParams{
 		OrgID:                        m3ter.F("orgId"),
@@ -85,7 +84,6 @@ func TestCommitmentGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Get(
 		context.TODO(),
@@ -116,7 +114,6 @@ func TestCommitmentUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Update(
 		context.TODO(),
@@ -178,7 +175,6 @@ func TestCommitmentListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.List(context.TODO(), m3ter.CommitmentListParams{
 		OrgID:        m3ter.F("orgId"),
@@ -214,7 +210,6 @@ func TestCommitmentDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Delete(
 		context.TODO(),
@@ -245,7 +240,6 @@ func TestCommitmentSearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Search(context.TODO(), m3ter.CommitmentSearchParams{
 		OrgID:        m3ter.F("orgId"),
