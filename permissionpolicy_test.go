@@ -31,9 +31,9 @@ func TestPermissionPolicyNewWithOptionalParams(t *testing.T) {
 	_, err := client.PermissionPolicies.New(context.TODO(), m3ter.PermissionPolicyNewParams{
 		OrgID: m3ter.F("orgId"),
 		Name:  m3ter.F("x"),
-		PermissionPolicy: m3ter.F([]m3ter.PermissionPolicyNewParamsPermissionPolicy{{
-			Action:   m3ter.F([]m3ter.PermissionPolicyNewParamsPermissionPolicyAction{m3ter.PermissionPolicyNewParamsPermissionPolicyActionAll}),
-			Effect:   m3ter.F(m3ter.PermissionPolicyNewParamsPermissionPolicyEffectAllow),
+		PermissionPolicy: m3ter.F([]m3ter.PermissionStatementParam{{
+			Action:   m3ter.F([]m3ter.PermissionStatementAction{m3ter.PermissionStatementActionAll}),
+			Effect:   m3ter.F(m3ter.PermissionStatementEffectAllow),
 			Resource: m3ter.F([]string{"string"}),
 		}}),
 		Version: m3ter.F(int64(0)),
@@ -99,9 +99,9 @@ func TestPermissionPolicyUpdateWithOptionalParams(t *testing.T) {
 		m3ter.PermissionPolicyUpdateParams{
 			OrgID: m3ter.F("orgId"),
 			Name:  m3ter.F("x"),
-			PermissionPolicy: m3ter.F([]m3ter.PermissionPolicyUpdateParamsPermissionPolicy{{
-				Action:   m3ter.F([]m3ter.PermissionPolicyUpdateParamsPermissionPolicyAction{m3ter.PermissionPolicyUpdateParamsPermissionPolicyActionAll}),
-				Effect:   m3ter.F(m3ter.PermissionPolicyUpdateParamsPermissionPolicyEffectAllow),
+			PermissionPolicy: m3ter.F([]m3ter.PermissionStatementParam{{
+				Action:   m3ter.F([]m3ter.PermissionStatementAction{m3ter.PermissionStatementActionAll}),
+				Effect:   m3ter.F(m3ter.PermissionStatementEffectAllow),
 				Resource: m3ter.F([]string{"string"}),
 			}}),
 			Version: m3ter.F(int64(0)),

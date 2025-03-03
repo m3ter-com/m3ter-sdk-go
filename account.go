@@ -170,7 +170,12 @@ func (r *AccountService) GetChildren(ctx context.Context, id string, params Acco
 	return
 }
 
-// Search for account entities
+// Search for Account entities.
+//
+// This endpoint executes a search query for Accounts based on the user specified
+// search criteria. The search query is customizable, allowing for complex nested
+// conditions and sorting. The returned list of Accounts can be paginated for
+// easier management.
 func (r *AccountService) Search(ctx context.Context, params AccountSearchParams, opts ...option.RequestOption) (res *AccountSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
@@ -193,7 +198,7 @@ type Account struct {
 	//     response.
 	Version int64 `json:"version,required"`
 	// Contact address.
-	Address AccountAddress `json:"address"`
+	Address Address `json:"address"`
 	// Specify whether to auto-generate statements once Bills are approved or locked.
 	//
 	// - **None**. Statements will not be auto-generated.
@@ -318,41 +323,6 @@ func (r accountJSON) RawJSON() string {
 	return r.raw
 }
 
-// Contact address.
-type AccountAddress struct {
-	AddressLine1 string             `json:"addressLine1"`
-	AddressLine2 string             `json:"addressLine2"`
-	AddressLine3 string             `json:"addressLine3"`
-	AddressLine4 string             `json:"addressLine4"`
-	Country      string             `json:"country"`
-	Locality     string             `json:"locality"`
-	PostCode     string             `json:"postCode"`
-	Region       string             `json:"region"`
-	JSON         accountAddressJSON `json:"-"`
-}
-
-// accountAddressJSON contains the JSON metadata for the struct [AccountAddress]
-type accountAddressJSON struct {
-	AddressLine1 apijson.Field
-	AddressLine2 apijson.Field
-	AddressLine3 apijson.Field
-	AddressLine4 apijson.Field
-	Country      apijson.Field
-	Locality     apijson.Field
-	PostCode     apijson.Field
-	Region       apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *AccountAddress) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAddressJSON) RawJSON() string {
-	return r.raw
-}
-
 // Specify whether to auto-generate statements once Bills are approved or locked.
 //
 // - **None**. Statements will not be auto-generated.
@@ -409,6 +379,57 @@ func init() {
 	)
 }
 
+// Contact address.
+type Address struct {
+	AddressLine1 string      `json:"addressLine1"`
+	AddressLine2 string      `json:"addressLine2"`
+	AddressLine3 string      `json:"addressLine3"`
+	AddressLine4 string      `json:"addressLine4"`
+	Country      string      `json:"country"`
+	Locality     string      `json:"locality"`
+	PostCode     string      `json:"postCode"`
+	Region       string      `json:"region"`
+	JSON         addressJSON `json:"-"`
+}
+
+// addressJSON contains the JSON metadata for the struct [Address]
+type addressJSON struct {
+	AddressLine1 apijson.Field
+	AddressLine2 apijson.Field
+	AddressLine3 apijson.Field
+	AddressLine4 apijson.Field
+	Country      apijson.Field
+	Locality     apijson.Field
+	PostCode     apijson.Field
+	Region       apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *Address) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r addressJSON) RawJSON() string {
+	return r.raw
+}
+
+// Contact address.
+type AddressParam struct {
+	AddressLine1 param.Field[string] `json:"addressLine1"`
+	AddressLine2 param.Field[string] `json:"addressLine2"`
+	AddressLine3 param.Field[string] `json:"addressLine3"`
+	AddressLine4 param.Field[string] `json:"addressLine4"`
+	Country      param.Field[string] `json:"country"`
+	Locality     param.Field[string] `json:"locality"`
+	PostCode     param.Field[string] `json:"postCode"`
+	Region       param.Field[string] `json:"region"`
+}
+
+func (r AddressParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type AccountEndDateBillingEntitiesResponse struct {
 	// A dictionary with keys as identifiers of billing entities and values as lists
 	// containing details of the entities for which the update failed.
@@ -442,12 +463,12 @@ func (r accountEndDateBillingEntitiesResponseJSON) RawJSON() string {
 // A dictionary with keys as identifiers of billing entities and values as lists
 // containing details of the entities for which the update failed.
 type AccountEndDateBillingEntitiesResponseFailedEntities struct {
-	Accountplan     AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan     `json:"ACCOUNTPLAN"`
-	Contract        AccountEndDateBillingEntitiesResponseFailedEntitiesContract        `json:"CONTRACT"`
-	CounterPricings AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings `json:"COUNTER_PRICINGS"`
-	Prepayment      AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment      `json:"PREPAYMENT"`
-	Pricings        AccountEndDateBillingEntitiesResponseFailedEntitiesPricings        `json:"PRICINGS"`
-	JSON            accountEndDateBillingEntitiesResponseFailedEntitiesJSON            `json:"-"`
+	Accountplan     shared.SetString                                        `json:"ACCOUNTPLAN"`
+	Contract        shared.SetString                                        `json:"CONTRACT"`
+	CounterPricings shared.SetString                                        `json:"COUNTER_PRICINGS"`
+	Prepayment      shared.SetString                                        `json:"PREPAYMENT"`
+	Pricings        shared.SetString                                        `json:"PRICINGS"`
+	JSON            accountEndDateBillingEntitiesResponseFailedEntitiesJSON `json:"-"`
 }
 
 // accountEndDateBillingEntitiesResponseFailedEntitiesJSON contains the JSON
@@ -470,125 +491,15 @@ func (r accountEndDateBillingEntitiesResponseFailedEntitiesJSON) RawJSON() strin
 	return r.raw
 }
 
-type AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan struct {
-	Empty bool                                                               `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan]
-type accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesAccountplan) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseFailedEntitiesAccountplanJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseFailedEntitiesContract struct {
-	Empty bool                                                            `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseFailedEntitiesContract]
-type accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesContract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseFailedEntitiesContractJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings struct {
-	Empty bool                                                                   `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON contains
-// the JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings]
-type accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesCounterPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseFailedEntitiesCounterPricingsJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment struct {
-	Empty bool                                                              `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment]
-type accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesPrepayment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseFailedEntitiesPrepaymentJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseFailedEntitiesPricings struct {
-	Empty bool                                                            `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseFailedEntitiesPricings]
-type accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseFailedEntitiesPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseFailedEntitiesPricingsJSON) RawJSON() string {
-	return r.raw
-}
-
 // A dictionary with keys as identifiers of billing entities and values as lists
 // containing details of the updated entities.
 type AccountEndDateBillingEntitiesResponseUpdatedEntities struct {
-	Accountplan     AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan     `json:"ACCOUNTPLAN"`
-	Contract        AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract        `json:"CONTRACT"`
-	CounterPricings AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings `json:"COUNTER_PRICINGS"`
-	Prepayment      AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment      `json:"PREPAYMENT"`
-	Pricings        AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings        `json:"PRICINGS"`
-	JSON            accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON            `json:"-"`
+	Accountplan     shared.SetString                                         `json:"ACCOUNTPLAN"`
+	Contract        shared.SetString                                         `json:"CONTRACT"`
+	CounterPricings shared.SetString                                         `json:"COUNTER_PRICINGS"`
+	Prepayment      shared.SetString                                         `json:"PREPAYMENT"`
+	Pricings        shared.SetString                                         `json:"PRICINGS"`
+	JSON            accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON `json:"-"`
 }
 
 // accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON contains the JSON
@@ -608,116 +519,6 @@ func (r *AccountEndDateBillingEntitiesResponseUpdatedEntities) UnmarshalJSON(dat
 }
 
 func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan struct {
-	Empty bool                                                                `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan]
-type accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplan) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesAccountplanJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract struct {
-	Empty bool                                                             `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract]
-type accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesContract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesContractJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings struct {
-	Empty bool                                                                    `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON contains
-// the JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings]
-type accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesCounterPricingsJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment struct {
-	Empty bool                                                               `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment]
-type accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesPrepayment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesPrepaymentJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings struct {
-	Empty bool                                                             `json:"empty"`
-	JSON  accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON `json:"-"`
-}
-
-// accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON contains the
-// JSON metadata for the struct
-// [AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings]
-type accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON struct {
-	Empty       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEndDateBillingEntitiesResponseUpdatedEntitiesPricings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesPricingsJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -753,7 +554,7 @@ type AccountNewParams struct {
 	// Name of the Account.
 	Name param.Field[string] `json:"name,required"`
 	// Contact address.
-	Address param.Field[AccountNewParamsAddress] `json:"address"`
+	Address param.Field[AddressParam] `json:"address"`
 	// Specify whether to auto-generate statements once Bills are approved or locked.
 	//
 	// - **None**. Statements will not be auto-generated.
@@ -864,22 +665,6 @@ func (r AccountNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// Contact address.
-type AccountNewParamsAddress struct {
-	AddressLine1 param.Field[string] `json:"addressLine1"`
-	AddressLine2 param.Field[string] `json:"addressLine2"`
-	AddressLine3 param.Field[string] `json:"addressLine3"`
-	AddressLine4 param.Field[string] `json:"addressLine4"`
-	Country      param.Field[string] `json:"country"`
-	Locality     param.Field[string] `json:"locality"`
-	PostCode     param.Field[string] `json:"postCode"`
-	Region       param.Field[string] `json:"region"`
-}
-
-func (r AccountNewParamsAddress) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 // Specify whether to auto-generate statements once Bills are approved or locked.
 //
 // - **None**. Statements will not be auto-generated.
@@ -934,7 +719,7 @@ type AccountUpdateParams struct {
 	// Name of the Account.
 	Name param.Field[string] `json:"name,required"`
 	// Contact address.
-	Address param.Field[AccountUpdateParamsAddress] `json:"address"`
+	Address param.Field[AddressParam] `json:"address"`
 	// Specify whether to auto-generate statements once Bills are approved or locked.
 	//
 	// - **None**. Statements will not be auto-generated.
@@ -1042,22 +827,6 @@ type AccountUpdateParams struct {
 }
 
 func (r AccountUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Contact address.
-type AccountUpdateParamsAddress struct {
-	AddressLine1 param.Field[string] `json:"addressLine1"`
-	AddressLine2 param.Field[string] `json:"addressLine2"`
-	AddressLine3 param.Field[string] `json:"addressLine3"`
-	AddressLine4 param.Field[string] `json:"addressLine4"`
-	Country      param.Field[string] `json:"country"`
-	Locality     param.Field[string] `json:"locality"`
-	PostCode     param.Field[string] `json:"postCode"`
-	Region       param.Field[string] `json:"region"`
-}
-
-func (r AccountUpdateParamsAddress) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1182,23 +951,38 @@ func (r AccountGetChildrenParams) URLQuery() (v url.Values) {
 
 type AccountSearchParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
-	// fromDocument for multi page retrievals
+	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
-	// Search Operator to be used while querying search
+	// Search Operator to be used while querying search.
 	Operator param.Field[AccountSearchParamsOperator] `query:"operator"`
-	// Number of Accounts to retrieve per page
+	// Number of Accounts to retrieve per page.
+	//
+	// **NOTE:** If not defined, default is 10.
 	PageSize param.Field[int64] `query:"pageSize"`
-	// Query for data using special syntax. Query parameters should be delimited using
-	// $ Allowed comparators are > (greater than), >= (grater or equal than), :
-	// (equal), < (less than), <= (less than or equal), ~ (contains). Allowed
-	// parameters: name, code, currency, purchaseOrderNumber, parentAccountId, codes,
-	// id, createdBy, dtCreated, lastModifiedBy, ids.Query example:
-	// searchQuery=name~test$currency:USD. This query is translated into: find accounts
-	// that name contains 'test' AND currency is USD.
+	// Query for data using special syntax:
+	//
+	// - Query parameters should be delimited using the $ (dollar sign).
+	// - Allowed comparators are:
+	//   - (greater than) >
+	//   - (greater than or equal to) >=
+	//   - (equal to) :
+	//   - (less than) <
+	//   - (less than or equal to) <=
+	//   - (match phrase/prefix) ~
+	//   - Allowed parameters are: name, code, currency, purchaseOrderNumber,
+	//     parentAccountId, codes, id, createdBy, dtCreated, lastModifiedBy, ids.
+	//   - Query example:
+	//   - searchQuery=name~Premium On$currency:USD.
+	//   - This query is translated into: find accounts whose name contains the
+	//     phrase/prefix 'Premium On' AND the account currency is USD.
+	//
+	// **Note:** Using the ~ match phrase/prefix comparator. For best results, we
+	// recommend treating this as a "starts with" comparator for your search query.
 	SearchQuery param.Field[string] `query:"searchQuery"`
-	// Name of the parameter on which sorting is performed
+	// Name of the parameter on which sorting is performed. Use any field available on
+	// the Account entity to sort by, such as `name`, `code`, and so on.
 	SortBy param.Field[string] `query:"sortBy"`
-	// Sorting order
+	// Sorting order.
 	SortOrder param.Field[AccountSearchParamsSortOrder] `query:"sortOrder"`
 }
 
@@ -1210,7 +994,7 @@ func (r AccountSearchParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Search Operator to be used while querying search
+// Search Operator to be used while querying search.
 type AccountSearchParamsOperator string
 
 const (
@@ -1226,7 +1010,7 @@ func (r AccountSearchParamsOperator) IsKnown() bool {
 	return false
 }
 
-// Sorting order
+// Sorting order.
 type AccountSearchParamsSortOrder string
 
 const (

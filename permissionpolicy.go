@@ -326,7 +326,7 @@ type PermissionPolicy struct {
 	// The name of the Permission Policy.
 	Name string `json:"name"`
 	// Array containing the Permission Policies information.
-	PermissionPolicy []PermissionPolicyPermissionPolicy `json:"permissionPolicy"`
+	PermissionPolicy []PermissionStatement `json:"permissionPolicy"`
 	// The version number. Default value when newly created is one.
 	Version int64                `json:"version"`
 	JSON    permissionPolicyJSON `json:"-"`
@@ -356,7 +356,7 @@ func (r permissionPolicyJSON) RawJSON() string {
 	return r.raw
 }
 
-type PermissionPolicyPermissionPolicy struct {
+type PermissionStatement struct {
 	// The actions available to users who are assigned the Permission Policy - what
 	// they can do or cannot do with respect to the specified resource.
 	//
@@ -369,23 +369,23 @@ type PermissionPolicyPermissionPolicy struct {
 	// "config:retrieve",
 	// "config:update"
 	// ```
-	Action []PermissionPolicyPermissionPolicyAction `json:"action,required"`
+	Action []PermissionStatementAction `json:"action,required"`
 	// Specifies whether or not the user is allowed to perform the action on the
 	// resource.
 	//
 	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
 	// receive an error.
-	Effect PermissionPolicyPermissionPolicyEffect `json:"effect,required"`
+	Effect PermissionStatementEffect `json:"effect,required"`
 	// See
 	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
 	// for a listing of available resources for Permission Policy statements.
-	Resource []string                             `json:"resource,required"`
-	JSON     permissionPolicyPermissionPolicyJSON `json:"-"`
+	Resource []string                `json:"resource,required"`
+	JSON     permissionStatementJSON `json:"-"`
 }
 
-// permissionPolicyPermissionPolicyJSON contains the JSON metadata for the struct
-// [PermissionPolicyPermissionPolicy]
-type permissionPolicyPermissionPolicyJSON struct {
+// permissionStatementJSON contains the JSON metadata for the struct
+// [PermissionStatement]
+type permissionStatementJSON struct {
 	Action      apijson.Field
 	Effect      apijson.Field
 	Resource    apijson.Field
@@ -393,37 +393,37 @@ type permissionPolicyPermissionPolicyJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *PermissionPolicyPermissionPolicy) UnmarshalJSON(data []byte) (err error) {
+func (r *PermissionStatement) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r permissionPolicyPermissionPolicyJSON) RawJSON() string {
+func (r permissionStatementJSON) RawJSON() string {
 	return r.raw
 }
 
-type PermissionPolicyPermissionPolicyAction string
+type PermissionStatementAction string
 
 const (
-	PermissionPolicyPermissionPolicyActionAll                    PermissionPolicyPermissionPolicyAction = "ALL"
-	PermissionPolicyPermissionPolicyActionConfigCreate           PermissionPolicyPermissionPolicyAction = "CONFIG_CREATE"
-	PermissionPolicyPermissionPolicyActionConfigRetrieve         PermissionPolicyPermissionPolicyAction = "CONFIG_RETRIEVE"
-	PermissionPolicyPermissionPolicyActionConfigUpdate           PermissionPolicyPermissionPolicyAction = "CONFIG_UPDATE"
-	PermissionPolicyPermissionPolicyActionConfigDelete           PermissionPolicyPermissionPolicyAction = "CONFIG_DELETE"
-	PermissionPolicyPermissionPolicyActionConfigExport           PermissionPolicyPermissionPolicyAction = "CONFIG_EXPORT"
-	PermissionPolicyPermissionPolicyActionAnalyticsQuery         PermissionPolicyPermissionPolicyAction = "ANALYTICS_QUERY"
-	PermissionPolicyPermissionPolicyActionMeasurementsUpload     PermissionPolicyPermissionPolicyAction = "MEASUREMENTS_UPLOAD"
-	PermissionPolicyPermissionPolicyActionMeasurementsFileupload PermissionPolicyPermissionPolicyAction = "MEASUREMENTS_FILEUPLOAD"
-	PermissionPolicyPermissionPolicyActionMeasurementsRetrieve   PermissionPolicyPermissionPolicyAction = "MEASUREMENTS_RETRIEVE"
-	PermissionPolicyPermissionPolicyActionMeasurementsExport     PermissionPolicyPermissionPolicyAction = "MEASUREMENTS_EXPORT"
-	PermissionPolicyPermissionPolicyActionForecastRetrieve       PermissionPolicyPermissionPolicyAction = "FORECAST_RETRIEVE"
-	PermissionPolicyPermissionPolicyActionHealthscoresRetrieve   PermissionPolicyPermissionPolicyAction = "HEALTHSCORES_RETRIEVE"
-	PermissionPolicyPermissionPolicyActionAnomaliesRetrieve      PermissionPolicyPermissionPolicyAction = "ANOMALIES_RETRIEVE"
-	PermissionPolicyPermissionPolicyActionExportsDownload        PermissionPolicyPermissionPolicyAction = "EXPORTS_DOWNLOAD"
+	PermissionStatementActionAll                    PermissionStatementAction = "ALL"
+	PermissionStatementActionConfigCreate           PermissionStatementAction = "CONFIG_CREATE"
+	PermissionStatementActionConfigRetrieve         PermissionStatementAction = "CONFIG_RETRIEVE"
+	PermissionStatementActionConfigUpdate           PermissionStatementAction = "CONFIG_UPDATE"
+	PermissionStatementActionConfigDelete           PermissionStatementAction = "CONFIG_DELETE"
+	PermissionStatementActionConfigExport           PermissionStatementAction = "CONFIG_EXPORT"
+	PermissionStatementActionAnalyticsQuery         PermissionStatementAction = "ANALYTICS_QUERY"
+	PermissionStatementActionMeasurementsUpload     PermissionStatementAction = "MEASUREMENTS_UPLOAD"
+	PermissionStatementActionMeasurementsFileupload PermissionStatementAction = "MEASUREMENTS_FILEUPLOAD"
+	PermissionStatementActionMeasurementsRetrieve   PermissionStatementAction = "MEASUREMENTS_RETRIEVE"
+	PermissionStatementActionMeasurementsExport     PermissionStatementAction = "MEASUREMENTS_EXPORT"
+	PermissionStatementActionForecastRetrieve       PermissionStatementAction = "FORECAST_RETRIEVE"
+	PermissionStatementActionHealthscoresRetrieve   PermissionStatementAction = "HEALTHSCORES_RETRIEVE"
+	PermissionStatementActionAnomaliesRetrieve      PermissionStatementAction = "ANOMALIES_RETRIEVE"
+	PermissionStatementActionExportsDownload        PermissionStatementAction = "EXPORTS_DOWNLOAD"
 )
 
-func (r PermissionPolicyPermissionPolicyAction) IsKnown() bool {
+func (r PermissionStatementAction) IsKnown() bool {
 	switch r {
-	case PermissionPolicyPermissionPolicyActionAll, PermissionPolicyPermissionPolicyActionConfigCreate, PermissionPolicyPermissionPolicyActionConfigRetrieve, PermissionPolicyPermissionPolicyActionConfigUpdate, PermissionPolicyPermissionPolicyActionConfigDelete, PermissionPolicyPermissionPolicyActionConfigExport, PermissionPolicyPermissionPolicyActionAnalyticsQuery, PermissionPolicyPermissionPolicyActionMeasurementsUpload, PermissionPolicyPermissionPolicyActionMeasurementsFileupload, PermissionPolicyPermissionPolicyActionMeasurementsRetrieve, PermissionPolicyPermissionPolicyActionMeasurementsExport, PermissionPolicyPermissionPolicyActionForecastRetrieve, PermissionPolicyPermissionPolicyActionHealthscoresRetrieve, PermissionPolicyPermissionPolicyActionAnomaliesRetrieve, PermissionPolicyPermissionPolicyActionExportsDownload:
+	case PermissionStatementActionAll, PermissionStatementActionConfigCreate, PermissionStatementActionConfigRetrieve, PermissionStatementActionConfigUpdate, PermissionStatementActionConfigDelete, PermissionStatementActionConfigExport, PermissionStatementActionAnalyticsQuery, PermissionStatementActionMeasurementsUpload, PermissionStatementActionMeasurementsFileupload, PermissionStatementActionMeasurementsRetrieve, PermissionStatementActionMeasurementsExport, PermissionStatementActionForecastRetrieve, PermissionStatementActionHealthscoresRetrieve, PermissionStatementActionAnomaliesRetrieve, PermissionStatementActionExportsDownload:
 		return true
 	}
 	return false
@@ -434,19 +434,49 @@ func (r PermissionPolicyPermissionPolicyAction) IsKnown() bool {
 //
 // **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
 // receive an error.
-type PermissionPolicyPermissionPolicyEffect string
+type PermissionStatementEffect string
 
 const (
-	PermissionPolicyPermissionPolicyEffectAllow PermissionPolicyPermissionPolicyEffect = "ALLOW"
-	PermissionPolicyPermissionPolicyEffectDeny  PermissionPolicyPermissionPolicyEffect = "DENY"
+	PermissionStatementEffectAllow PermissionStatementEffect = "ALLOW"
+	PermissionStatementEffectDeny  PermissionStatementEffect = "DENY"
 )
 
-func (r PermissionPolicyPermissionPolicyEffect) IsKnown() bool {
+func (r PermissionStatementEffect) IsKnown() bool {
 	switch r {
-	case PermissionPolicyPermissionPolicyEffectAllow, PermissionPolicyPermissionPolicyEffectDeny:
+	case PermissionStatementEffectAllow, PermissionStatementEffectDeny:
 		return true
 	}
 	return false
+}
+
+type PermissionStatementParam struct {
+	// The actions available to users who are assigned the Permission Policy - what
+	// they can do or cannot do with respect to the specified resource.
+	//
+	// **NOTE:** Use lower case and a colon-separated format, for example, if you want
+	// to confer full CRUD, use:
+	//
+	// ```
+	// "config:create",
+	// "config:delete",
+	// "config:retrieve",
+	// "config:update"
+	// ```
+	Action param.Field[[]PermissionStatementAction] `json:"action,required"`
+	// Specifies whether or not the user is allowed to perform the action on the
+	// resource.
+	//
+	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
+	// receive an error.
+	Effect param.Field[PermissionStatementEffect] `json:"effect,required"`
+	// See
+	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
+	// for a listing of available resources for Permission Policy statements.
+	Resource param.Field[[]string] `json:"resource,required"`
+}
+
+func (r PermissionStatementParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type PermissionPolicyAddToServiceUserResponse struct {
@@ -970,9 +1000,9 @@ func (r PermissionPolicyRemoveFromUserGroupResponsePrincipalType) IsKnown() bool
 }
 
 type PermissionPolicyNewParams struct {
-	OrgID            param.Field[string]                                      `path:"orgId,required"`
-	Name             param.Field[string]                                      `json:"name,required"`
-	PermissionPolicy param.Field[[]PermissionPolicyNewParamsPermissionPolicy] `json:"permissionPolicy,required"`
+	OrgID            param.Field[string]                     `path:"orgId,required"`
+	Name             param.Field[string]                     `json:"name,required"`
+	PermissionPolicy param.Field[[]PermissionStatementParam] `json:"permissionPolicy,required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - do not use
@@ -987,92 +1017,14 @@ func (r PermissionPolicyNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type PermissionPolicyNewParamsPermissionPolicy struct {
-	// The actions available to users who are assigned the Permission Policy - what
-	// they can do or cannot do with respect to the specified resource.
-	//
-	// **NOTE:** Use lower case and a colon-separated format, for example, if you want
-	// to confer full CRUD, use:
-	//
-	// ```
-	// "config:create",
-	// "config:delete",
-	// "config:retrieve",
-	// "config:update"
-	// ```
-	Action param.Field[[]PermissionPolicyNewParamsPermissionPolicyAction] `json:"action,required"`
-	// Specifies whether or not the user is allowed to perform the action on the
-	// resource.
-	//
-	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
-	// receive an error.
-	Effect param.Field[PermissionPolicyNewParamsPermissionPolicyEffect] `json:"effect,required"`
-	// See
-	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
-	// for a listing of available resources for Permission Policy statements.
-	Resource param.Field[[]string] `json:"resource,required"`
-}
-
-func (r PermissionPolicyNewParamsPermissionPolicy) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type PermissionPolicyNewParamsPermissionPolicyAction string
-
-const (
-	PermissionPolicyNewParamsPermissionPolicyActionAll                    PermissionPolicyNewParamsPermissionPolicyAction = "ALL"
-	PermissionPolicyNewParamsPermissionPolicyActionConfigCreate           PermissionPolicyNewParamsPermissionPolicyAction = "CONFIG_CREATE"
-	PermissionPolicyNewParamsPermissionPolicyActionConfigRetrieve         PermissionPolicyNewParamsPermissionPolicyAction = "CONFIG_RETRIEVE"
-	PermissionPolicyNewParamsPermissionPolicyActionConfigUpdate           PermissionPolicyNewParamsPermissionPolicyAction = "CONFIG_UPDATE"
-	PermissionPolicyNewParamsPermissionPolicyActionConfigDelete           PermissionPolicyNewParamsPermissionPolicyAction = "CONFIG_DELETE"
-	PermissionPolicyNewParamsPermissionPolicyActionConfigExport           PermissionPolicyNewParamsPermissionPolicyAction = "CONFIG_EXPORT"
-	PermissionPolicyNewParamsPermissionPolicyActionAnalyticsQuery         PermissionPolicyNewParamsPermissionPolicyAction = "ANALYTICS_QUERY"
-	PermissionPolicyNewParamsPermissionPolicyActionMeasurementsUpload     PermissionPolicyNewParamsPermissionPolicyAction = "MEASUREMENTS_UPLOAD"
-	PermissionPolicyNewParamsPermissionPolicyActionMeasurementsFileupload PermissionPolicyNewParamsPermissionPolicyAction = "MEASUREMENTS_FILEUPLOAD"
-	PermissionPolicyNewParamsPermissionPolicyActionMeasurementsRetrieve   PermissionPolicyNewParamsPermissionPolicyAction = "MEASUREMENTS_RETRIEVE"
-	PermissionPolicyNewParamsPermissionPolicyActionMeasurementsExport     PermissionPolicyNewParamsPermissionPolicyAction = "MEASUREMENTS_EXPORT"
-	PermissionPolicyNewParamsPermissionPolicyActionForecastRetrieve       PermissionPolicyNewParamsPermissionPolicyAction = "FORECAST_RETRIEVE"
-	PermissionPolicyNewParamsPermissionPolicyActionHealthscoresRetrieve   PermissionPolicyNewParamsPermissionPolicyAction = "HEALTHSCORES_RETRIEVE"
-	PermissionPolicyNewParamsPermissionPolicyActionAnomaliesRetrieve      PermissionPolicyNewParamsPermissionPolicyAction = "ANOMALIES_RETRIEVE"
-	PermissionPolicyNewParamsPermissionPolicyActionExportsDownload        PermissionPolicyNewParamsPermissionPolicyAction = "EXPORTS_DOWNLOAD"
-)
-
-func (r PermissionPolicyNewParamsPermissionPolicyAction) IsKnown() bool {
-	switch r {
-	case PermissionPolicyNewParamsPermissionPolicyActionAll, PermissionPolicyNewParamsPermissionPolicyActionConfigCreate, PermissionPolicyNewParamsPermissionPolicyActionConfigRetrieve, PermissionPolicyNewParamsPermissionPolicyActionConfigUpdate, PermissionPolicyNewParamsPermissionPolicyActionConfigDelete, PermissionPolicyNewParamsPermissionPolicyActionConfigExport, PermissionPolicyNewParamsPermissionPolicyActionAnalyticsQuery, PermissionPolicyNewParamsPermissionPolicyActionMeasurementsUpload, PermissionPolicyNewParamsPermissionPolicyActionMeasurementsFileupload, PermissionPolicyNewParamsPermissionPolicyActionMeasurementsRetrieve, PermissionPolicyNewParamsPermissionPolicyActionMeasurementsExport, PermissionPolicyNewParamsPermissionPolicyActionForecastRetrieve, PermissionPolicyNewParamsPermissionPolicyActionHealthscoresRetrieve, PermissionPolicyNewParamsPermissionPolicyActionAnomaliesRetrieve, PermissionPolicyNewParamsPermissionPolicyActionExportsDownload:
-		return true
-	}
-	return false
-}
-
-// Specifies whether or not the user is allowed to perform the action on the
-// resource.
-//
-// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
-// receive an error.
-type PermissionPolicyNewParamsPermissionPolicyEffect string
-
-const (
-	PermissionPolicyNewParamsPermissionPolicyEffectAllow PermissionPolicyNewParamsPermissionPolicyEffect = "ALLOW"
-	PermissionPolicyNewParamsPermissionPolicyEffectDeny  PermissionPolicyNewParamsPermissionPolicyEffect = "DENY"
-)
-
-func (r PermissionPolicyNewParamsPermissionPolicyEffect) IsKnown() bool {
-	switch r {
-	case PermissionPolicyNewParamsPermissionPolicyEffectAllow, PermissionPolicyNewParamsPermissionPolicyEffectDeny:
-		return true
-	}
-	return false
-}
-
 type PermissionPolicyGetParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PermissionPolicyUpdateParams struct {
-	OrgID            param.Field[string]                                         `path:"orgId,required"`
-	Name             param.Field[string]                                         `json:"name,required"`
-	PermissionPolicy param.Field[[]PermissionPolicyUpdateParamsPermissionPolicy] `json:"permissionPolicy,required"`
+	OrgID            param.Field[string]                     `path:"orgId,required"`
+	Name             param.Field[string]                     `json:"name,required"`
+	PermissionPolicy param.Field[[]PermissionStatementParam] `json:"permissionPolicy,required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - do not use
@@ -1085,84 +1037,6 @@ type PermissionPolicyUpdateParams struct {
 
 func (r PermissionPolicyUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type PermissionPolicyUpdateParamsPermissionPolicy struct {
-	// The actions available to users who are assigned the Permission Policy - what
-	// they can do or cannot do with respect to the specified resource.
-	//
-	// **NOTE:** Use lower case and a colon-separated format, for example, if you want
-	// to confer full CRUD, use:
-	//
-	// ```
-	// "config:create",
-	// "config:delete",
-	// "config:retrieve",
-	// "config:update"
-	// ```
-	Action param.Field[[]PermissionPolicyUpdateParamsPermissionPolicyAction] `json:"action,required"`
-	// Specifies whether or not the user is allowed to perform the action on the
-	// resource.
-	//
-	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
-	// receive an error.
-	Effect param.Field[PermissionPolicyUpdateParamsPermissionPolicyEffect] `json:"effect,required"`
-	// See
-	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
-	// for a listing of available resources for Permission Policy statements.
-	Resource param.Field[[]string] `json:"resource,required"`
-}
-
-func (r PermissionPolicyUpdateParamsPermissionPolicy) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type PermissionPolicyUpdateParamsPermissionPolicyAction string
-
-const (
-	PermissionPolicyUpdateParamsPermissionPolicyActionAll                    PermissionPolicyUpdateParamsPermissionPolicyAction = "ALL"
-	PermissionPolicyUpdateParamsPermissionPolicyActionConfigCreate           PermissionPolicyUpdateParamsPermissionPolicyAction = "CONFIG_CREATE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionConfigRetrieve         PermissionPolicyUpdateParamsPermissionPolicyAction = "CONFIG_RETRIEVE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionConfigUpdate           PermissionPolicyUpdateParamsPermissionPolicyAction = "CONFIG_UPDATE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionConfigDelete           PermissionPolicyUpdateParamsPermissionPolicyAction = "CONFIG_DELETE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionConfigExport           PermissionPolicyUpdateParamsPermissionPolicyAction = "CONFIG_EXPORT"
-	PermissionPolicyUpdateParamsPermissionPolicyActionAnalyticsQuery         PermissionPolicyUpdateParamsPermissionPolicyAction = "ANALYTICS_QUERY"
-	PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsUpload     PermissionPolicyUpdateParamsPermissionPolicyAction = "MEASUREMENTS_UPLOAD"
-	PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsFileupload PermissionPolicyUpdateParamsPermissionPolicyAction = "MEASUREMENTS_FILEUPLOAD"
-	PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsRetrieve   PermissionPolicyUpdateParamsPermissionPolicyAction = "MEASUREMENTS_RETRIEVE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsExport     PermissionPolicyUpdateParamsPermissionPolicyAction = "MEASUREMENTS_EXPORT"
-	PermissionPolicyUpdateParamsPermissionPolicyActionForecastRetrieve       PermissionPolicyUpdateParamsPermissionPolicyAction = "FORECAST_RETRIEVE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionHealthscoresRetrieve   PermissionPolicyUpdateParamsPermissionPolicyAction = "HEALTHSCORES_RETRIEVE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionAnomaliesRetrieve      PermissionPolicyUpdateParamsPermissionPolicyAction = "ANOMALIES_RETRIEVE"
-	PermissionPolicyUpdateParamsPermissionPolicyActionExportsDownload        PermissionPolicyUpdateParamsPermissionPolicyAction = "EXPORTS_DOWNLOAD"
-)
-
-func (r PermissionPolicyUpdateParamsPermissionPolicyAction) IsKnown() bool {
-	switch r {
-	case PermissionPolicyUpdateParamsPermissionPolicyActionAll, PermissionPolicyUpdateParamsPermissionPolicyActionConfigCreate, PermissionPolicyUpdateParamsPermissionPolicyActionConfigRetrieve, PermissionPolicyUpdateParamsPermissionPolicyActionConfigUpdate, PermissionPolicyUpdateParamsPermissionPolicyActionConfigDelete, PermissionPolicyUpdateParamsPermissionPolicyActionConfigExport, PermissionPolicyUpdateParamsPermissionPolicyActionAnalyticsQuery, PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsUpload, PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsFileupload, PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsRetrieve, PermissionPolicyUpdateParamsPermissionPolicyActionMeasurementsExport, PermissionPolicyUpdateParamsPermissionPolicyActionForecastRetrieve, PermissionPolicyUpdateParamsPermissionPolicyActionHealthscoresRetrieve, PermissionPolicyUpdateParamsPermissionPolicyActionAnomaliesRetrieve, PermissionPolicyUpdateParamsPermissionPolicyActionExportsDownload:
-		return true
-	}
-	return false
-}
-
-// Specifies whether or not the user is allowed to perform the action on the
-// resource.
-//
-// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
-// receive an error.
-type PermissionPolicyUpdateParamsPermissionPolicyEffect string
-
-const (
-	PermissionPolicyUpdateParamsPermissionPolicyEffectAllow PermissionPolicyUpdateParamsPermissionPolicyEffect = "ALLOW"
-	PermissionPolicyUpdateParamsPermissionPolicyEffectDeny  PermissionPolicyUpdateParamsPermissionPolicyEffect = "DENY"
-)
-
-func (r PermissionPolicyUpdateParamsPermissionPolicyEffect) IsKnown() bool {
-	switch r {
-	case PermissionPolicyUpdateParamsPermissionPolicyEffectAllow, PermissionPolicyUpdateParamsPermissionPolicyEffectDeny:
-		return true
-	}
-	return false
 }
 
 type PermissionPolicyListParams struct {

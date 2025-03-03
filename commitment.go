@@ -920,11 +920,13 @@ type CommitmentDeleteParams struct {
 
 type CommitmentSearchParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
-	// fromDocument for multi page retrievals
+	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
-	// Search Operator to be used while querying search
+	// Search Operator to be used while querying search.
 	Operator param.Field[CommitmentSearchParamsOperator] `query:"operator"`
-	// Number of Commitments to retrieve per page
+	// Number of Commitments to retrieve per page.
+	//
+	// **NOTE:** If not defined, default is 10.
 	PageSize param.Field[int64] `query:"pageSize"`
 	// Query for data using special syntax:
 	//
@@ -950,7 +952,7 @@ type CommitmentSearchParams struct {
 	// Name of the parameter on which sorting is performed. Use any field available on
 	// the Commitment entity to sort by, such as `accountId`, `endDate`, and so on.
 	SortBy param.Field[string] `query:"sortBy"`
-	// Sorting order
+	// Sorting order.
 	SortOrder param.Field[CommitmentSearchParamsSortOrder] `query:"sortOrder"`
 }
 
@@ -962,7 +964,7 @@ func (r CommitmentSearchParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Search Operator to be used while querying search
+// Search Operator to be used while querying search.
 type CommitmentSearchParamsOperator string
 
 const (
@@ -978,7 +980,7 @@ func (r CommitmentSearchParamsOperator) IsKnown() bool {
 	return false
 }
 
-// Sorting order
+// Sorting order.
 type CommitmentSearchParamsSortOrder string
 
 const (

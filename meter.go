@@ -115,7 +115,8 @@ func (r *MeterService) Update(ctx context.Context, id string, params MeterUpdate
 	return
 }
 
-// Retrieve a list of Meter entities
+// Retrieve a list of Meters that can be filtered by Product, Meter ID, or Meter
+// short code.
 func (r *MeterService) List(ctx context.Context, params MeterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Meter], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -137,7 +138,8 @@ func (r *MeterService) List(ctx context.Context, params MeterListParams, opts ..
 	return res, nil
 }
 
-// Retrieve a list of Meter entities
+// Retrieve a list of Meters that can be filtered by Product, Meter ID, or Meter
+// short code.
 func (r *MeterService) ListAutoPaging(ctx context.Context, params MeterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Meter] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
@@ -673,15 +675,16 @@ type MeterUpdateParamsCustomFieldsUnion interface {
 
 type MeterListParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
-	// list of codes to retrieve
+	// List of Meter codes to retrieve. These are the unique short codes that identify
+	// each Meter.
 	Codes param.Field[[]string] `query:"codes"`
-	// list of ids to retrieve
+	// List of Meter IDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
-	// nextToken for multi page retrievals
+	// `nextToken` for multi page retrievals.
 	NextToken param.Field[string] `query:"nextToken"`
-	// Number of Meters to retrieve per page
+	// Number of Meters to retrieve per page.
 	PageSize param.Field[int64] `query:"pageSize"`
-	// The UUIDs of the products to retrieve meters for
+	// The UUIDs of the Products to retrieve Meters for.
 	ProductID param.Field[[]string] `query:"productId"`
 }
 
