@@ -27,6 +27,7 @@ func TestAggregationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.New(context.TODO(), m3ter.AggregationNewParams{
 		OrgID:               m3ter.F("orgId"),
@@ -72,6 +73,7 @@ func TestAggregationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.Get(
 		context.TODO(),
@@ -102,6 +104,7 @@ func TestAggregationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.Update(
 		context.TODO(),
@@ -151,6 +154,7 @@ func TestAggregationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.List(context.TODO(), m3ter.AggregationListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -182,6 +186,7 @@ func TestAggregationDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.Delete(
 		context.TODO(),

@@ -26,6 +26,7 @@ func TestDataExportNewAdhocWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.NewAdhoc(context.TODO(), m3ter.DataExportNewAdhocParams{
 		OrgID: m3ter.F("orgId"),

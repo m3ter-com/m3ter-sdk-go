@@ -28,6 +28,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.New(context.TODO(), m3ter.ContractNewParams{
 		OrgID:     m3ter.F("orgId"),
@@ -65,6 +66,7 @@ func TestContractGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.Get(
 		context.TODO(),
@@ -95,6 +97,7 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.Update(
 		context.TODO(),
@@ -136,6 +139,7 @@ func TestContractListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.List(context.TODO(), m3ter.ContractListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -167,6 +171,7 @@ func TestContractDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.Delete(
 		context.TODO(),
@@ -197,6 +202,7 @@ func TestContractEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.EndDateBillingEntities(
 		context.TODO(),

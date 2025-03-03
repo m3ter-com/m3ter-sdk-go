@@ -25,6 +25,7 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
 		OrgID: m3ter.F("ORG_ID"),

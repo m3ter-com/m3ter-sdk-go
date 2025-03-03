@@ -26,6 +26,7 @@ func TestExternalMappingNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.New(context.TODO(), m3ter.ExternalMappingNewParams{
 		OrgID:               m3ter.F("orgId"),
@@ -59,6 +60,7 @@ func TestExternalMappingGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.Get(
 		context.TODO(),
@@ -89,6 +91,7 @@ func TestExternalMappingUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.Update(
 		context.TODO(),
@@ -126,6 +129,7 @@ func TestExternalMappingListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.List(context.TODO(), m3ter.ExternalMappingListParams{
 		OrgID:               m3ter.F("orgId"),
@@ -157,6 +161,7 @@ func TestExternalMappingDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.Delete(
 		context.TODO(),
@@ -187,6 +192,7 @@ func TestExternalMappingListByExternalEntityWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.ListByExternalEntity(
 		context.TODO(),
@@ -221,6 +227,7 @@ func TestExternalMappingListByM3terEntityWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.ListByM3terEntity(
 		context.TODO(),

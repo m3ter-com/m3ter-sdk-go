@@ -27,6 +27,7 @@ func TestUsageGetFailedIngestDownloadURLWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.GetFailedIngestDownloadURL(context.TODO(), m3ter.UsageGetFailedIngestDownloadURLParams{
 		OrgID: m3ter.F("orgId"),
@@ -54,6 +55,7 @@ func TestUsageQueryWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.Query(context.TODO(), m3ter.UsageQueryParams{
 		OrgID:      m3ter.F("orgId"),
@@ -99,6 +101,7 @@ func TestUsageSubmit(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.Submit(context.TODO(), m3ter.UsageSubmitParams{
 		OrgID: m3ter.F("orgId"),

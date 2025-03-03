@@ -26,6 +26,7 @@ func TestUsageFileUploadJobGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.FileUploads.Jobs.Get(
 		context.TODO(),
@@ -56,6 +57,7 @@ func TestUsageFileUploadJobListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.FileUploads.Jobs.List(context.TODO(), m3ter.UsageFileUploadJobListParams{
 		OrgID:            m3ter.F("orgId"),
@@ -87,6 +89,7 @@ func TestUsageFileUploadJobGetOriginalDownloadURL(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.FileUploads.Jobs.GetOriginalDownloadURL(
 		context.TODO(),

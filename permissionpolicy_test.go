@@ -26,6 +26,7 @@ func TestPermissionPolicyNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.New(context.TODO(), m3ter.PermissionPolicyNewParams{
 		OrgID: m3ter.F("orgId"),
@@ -59,6 +60,7 @@ func TestPermissionPolicyGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.Get(
 		context.TODO(),
@@ -89,6 +91,7 @@ func TestPermissionPolicyUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.Update(
 		context.TODO(),
@@ -126,6 +129,7 @@ func TestPermissionPolicyListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.List(context.TODO(), m3ter.PermissionPolicyListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -154,6 +158,7 @@ func TestPermissionPolicyDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.Delete(
 		context.TODO(),
@@ -184,6 +189,7 @@ func TestPermissionPolicyAddToServiceUserWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.AddToServiceUser(
 		context.TODO(),
@@ -216,6 +222,7 @@ func TestPermissionPolicyAddToSupportUserWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.AddToSupportUser(
 		context.TODO(),
@@ -247,6 +254,7 @@ func TestPermissionPolicyAddToUserWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.AddToUser(
 		context.TODO(),
@@ -279,6 +287,7 @@ func TestPermissionPolicyAddToUserGroupWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.AddToUserGroup(
 		context.TODO(),
@@ -311,6 +320,7 @@ func TestPermissionPolicyRemoveFromServiceUserWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.RemoveFromServiceUser(
 		context.TODO(),
@@ -343,6 +353,7 @@ func TestPermissionPolicyRemoveFromSupportUser(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.RemoveFromSupportUser(
 		context.TODO(),
@@ -373,6 +384,7 @@ func TestPermissionPolicyRemoveFromUserWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.RemoveFromUser(
 		context.TODO(),
@@ -405,6 +417,7 @@ func TestPermissionPolicyRemoveFromUserGroupWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PermissionPolicies.RemoveFromUserGroup(
 		context.TODO(),
