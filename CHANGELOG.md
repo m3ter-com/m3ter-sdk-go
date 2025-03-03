@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.1.0-alpha.6 (2025-03-03)
+
+Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)
+
+### Features
+
+* **api:** add missing endpoints ([#40](https://github.com/m3ter-com/m3ter-sdk-go/issues/40)) ([78a923b](https://github.com/m3ter-com/m3ter-sdk-go/commit/78a923bdcced25a367e87d7beeae624475cd7f79))
+* **api:** add more endpoints ([#28](https://github.com/m3ter-com/m3ter-sdk-go/issues/28)) ([b144ab9](https://github.com/m3ter-com/m3ter-sdk-go/commit/b144ab958b845409fe9fbf11e06c3bc2884a04e6))
+* **api:** add orgId path param to client settings ([#36](https://github.com/m3ter-com/m3ter-sdk-go/issues/36)) ([3a82d5d](https://github.com/m3ter-com/m3ter-sdk-go/commit/3a82d5df0fe394a7446b57296d6d1ac9829ed5e7))
+* **api:** create ad hoc data export endpoint ([#34](https://github.com/m3ter-com/m3ter-sdk-go/issues/34)) ([2f4279c](https://github.com/m3ter-com/m3ter-sdk-go/commit/2f4279c00eb2b1f6641894d12da15e08951d66bc))
+* **api:** snake case method names ([#41](https://github.com/m3ter-com/m3ter-sdk-go/issues/41)) ([e205a41](https://github.com/m3ter-com/m3ter-sdk-go/commit/e205a410f3c4716b2c3d14c34785e67ef94b13ec))
+* **api:** Spec Update + Various Fixes ([#43](https://github.com/m3ter-com/m3ter-sdk-go/issues/43)) ([05e9595](https://github.com/m3ter-com/m3ter-sdk-go/commit/05e95955aeb7ce44e5bc0217aa21ca1d637840fa))
+* **api:** update open api spec ([#39](https://github.com/m3ter-com/m3ter-sdk-go/issues/39)) ([1e18233](https://github.com/m3ter-com/m3ter-sdk-go/commit/1e18233b750652fbebb2ccc1161846fa7c913119))
+
+
+### Bug Fixes
+
+* **client:** don't truncate manually specified filenames ([#35](https://github.com/m3ter-com/m3ter-sdk-go/issues/35)) ([82c8f90](https://github.com/m3ter-com/m3ter-sdk-go/commit/82c8f904e5d073a8d6b5074ee1841dec7252ef10))
+* do not call path.Base on ContentType ([#31](https://github.com/m3ter-com/m3ter-sdk-go/issues/31)) ([98b4819](https://github.com/m3ter-com/m3ter-sdk-go/commit/98b4819fbc0dc1b040c1351019fc58aea72c2637))
+* fix early cancel when RequestTimeout is provided for streaming requests ([#29](https://github.com/m3ter-com/m3ter-sdk-go/issues/29)) ([f31e0c3](https://github.com/m3ter-com/m3ter-sdk-go/commit/f31e0c326a0e929e7a0e66fdeb743e98ae73c51f))
+
+
+### Chores
+
+* add UnionUnmarshaler for responses that are interfaces ([#26](https://github.com/m3ter-com/m3ter-sdk-go/issues/26)) ([ecf5f78](https://github.com/m3ter-com/m3ter-sdk-go/commit/ecf5f78f3f5e41ca1de803417ecb9bdb24642275))
+* **internal:** codegen related update ([#32](https://github.com/m3ter-com/m3ter-sdk-go/issues/32)) ([d4fa04f](https://github.com/m3ter-com/m3ter-sdk-go/commit/d4fa04f3d8fd502a94dec5f0efa2fd9fa6374b0a))
+* **internal:** codegen related update ([#33](https://github.com/m3ter-com/m3ter-sdk-go/issues/33)) ([dbf36b4](https://github.com/m3ter-com/m3ter-sdk-go/commit/dbf36b430a59fe37d23a0c2208988f56d20ce8aa))
+* **internal:** fix devcontainers setup ([#38](https://github.com/m3ter-com/m3ter-sdk-go/issues/38)) ([7166c86](https://github.com/m3ter-com/m3ter-sdk-go/commit/7166c863766ddc20a12f6ef1830ef181f11cc5f1))
+* minor change to tests ([#30](https://github.com/m3ter-com/m3ter-sdk-go/issues/30)) ([7441195](https://github.com/m3ter-com/m3ter-sdk-go/commit/744119527cb3f7e258c3e2a0879a1b4189979e19))
+* org ID at the client level is required ([#45](https://github.com/m3ter-com/m3ter-sdk-go/issues/45)) ([626a859](https://github.com/m3ter-com/m3ter-sdk-go/commit/626a8599f02757dc5019a996ebc633d167bdf760))
+* org ID client arg is optional ([#44](https://github.com/m3ter-com/m3ter-sdk-go/issues/44)) ([8d2850b](https://github.com/m3ter-com/m3ter-sdk-go/commit/8d2850b144f7e5d2d0de5bdcb6dd0106e30fda74))
+
+
+### Documentation
+
+* update URLs from stainlessapi.com to stainless.com ([#42](https://github.com/m3ter-com/m3ter-sdk-go/issues/42)) ([b3f9d32](https://github.com/m3ter-com/m3ter-sdk-go/commit/b3f9d32ba6bfe5ed4c5200d2edaa0d8bb8e6732c))
+
 ## 0.1.0-alpha.5 (2025-02-05)
 
 Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
