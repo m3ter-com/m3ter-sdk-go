@@ -27,7 +27,6 @@ func TestBillDebitLineItemNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.DebitLineItems.New(
 		context.TODO(),
@@ -69,7 +68,6 @@ func TestBillDebitLineItemGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.DebitLineItems.Get(
 		context.TODO(),
@@ -101,7 +99,6 @@ func TestBillDebitLineItemUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.DebitLineItems.Update(
 		context.TODO(),
@@ -144,7 +141,6 @@ func TestBillDebitLineItemListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.DebitLineItems.List(
 		context.TODO(),
@@ -177,7 +173,6 @@ func TestBillDebitLineItemDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.DebitLineItems.Delete(
 		context.TODO(),

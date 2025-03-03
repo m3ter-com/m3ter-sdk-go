@@ -27,7 +27,6 @@ func TestUserGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.Get(
 		context.TODO(),
@@ -58,7 +57,6 @@ func TestUserUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.Update(
 		context.TODO(),
@@ -96,7 +94,6 @@ func TestUserListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.List(context.TODO(), m3ter.UserListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -126,7 +123,6 @@ func TestUserGetPermissionsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.GetPermissions(
 		context.TODO(),
@@ -159,7 +155,6 @@ func TestUserGetUserGroupsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.GetUserGroups(
 		context.TODO(),
@@ -192,7 +187,6 @@ func TestUserMe(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.Me(context.TODO(), m3ter.UserMeParams{
 		OrgID: m3ter.F("orgId"),
@@ -219,7 +213,6 @@ func TestUserResendPassword(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	err := client.Users.ResendPassword(
 		context.TODO(),

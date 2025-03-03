@@ -27,7 +27,6 @@ func TestOrganizationConfigGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.OrganizationConfig.Get(context.TODO(), m3ter.OrganizationConfigGetParams{
 		OrgID: m3ter.F("orgId"),
@@ -54,7 +53,6 @@ func TestOrganizationConfigUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.OrganizationConfig.Update(context.TODO(), m3ter.OrganizationConfigUpdateParams{
 		OrgID:                           m3ter.F("orgId"),

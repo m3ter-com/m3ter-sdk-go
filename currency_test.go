@@ -26,7 +26,6 @@ func TestCurrencyNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.New(context.TODO(), m3ter.CurrencyNewParams{
 		OrgID:            m3ter.F("orgId"),
@@ -59,7 +58,6 @@ func TestCurrencyGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.Get(
 		context.TODO(),
@@ -90,7 +88,6 @@ func TestCurrencyUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.Update(
 		context.TODO(),
@@ -127,7 +124,6 @@ func TestCurrencyListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.List(context.TODO(), m3ter.CurrencyListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -159,7 +155,6 @@ func TestCurrencyDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.Delete(
 		context.TODO(),

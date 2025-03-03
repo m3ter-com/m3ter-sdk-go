@@ -26,7 +26,6 @@ func TestBillLineItemGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.LineItems.Get(
 		context.TODO(),
@@ -58,7 +57,6 @@ func TestBillLineItemListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.LineItems.List(
 		context.TODO(),

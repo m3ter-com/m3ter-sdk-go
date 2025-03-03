@@ -26,7 +26,6 @@ func TestEventGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Events.Get(
 		context.TODO(),
@@ -57,7 +56,6 @@ func TestEventListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Events.List(context.TODO(), m3ter.EventListParams{
 		OrgID:            m3ter.F("orgId"),
@@ -94,7 +92,6 @@ func TestEventGetFieldsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Events.GetFields(context.TODO(), m3ter.EventGetFieldsParams{
 		OrgID:     m3ter.F("orgId"),
@@ -122,7 +119,6 @@ func TestEventGetTypes(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Events.GetTypes(context.TODO(), m3ter.EventGetTypesParams{
 		OrgID: m3ter.F("orgId"),

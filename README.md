@@ -53,7 +53,6 @@ func main() {
 		option.WithAPIKey("My API Key"),       // defaults to os.LookupEnv("M3TER_API_KEY")
 		option.WithAPISecret("My API Secret"), // defaults to os.LookupEnv("M3TER_API_SECRET")
 		option.WithToken("My Token"),          // defaults to os.LookupEnv("M3TER_API_TOKEN")
-		option.WithOrgID("My Org ID"),
 	)
 	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
 		OrgID: m3ter.F("ORG_ID"),

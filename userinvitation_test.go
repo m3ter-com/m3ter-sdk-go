@@ -27,7 +27,6 @@ func TestUserInvitationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.Invitations.New(context.TODO(), m3ter.UserInvitationNewParams{
 		OrgID:               m3ter.F("orgId"),
@@ -63,7 +62,6 @@ func TestUserInvitationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.Invitations.Get(
 		context.TODO(),
@@ -94,7 +92,6 @@ func TestUserInvitationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.Invitations.List(context.TODO(), m3ter.UserInvitationListParams{
 		OrgID:     m3ter.F("orgId"),

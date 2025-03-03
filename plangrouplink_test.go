@@ -26,7 +26,6 @@ func TestPlanGroupLinkNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.New(context.TODO(), m3ter.PlanGroupLinkNewParams{
 		OrgID:       m3ter.F("orgId"),
@@ -56,7 +55,6 @@ func TestPlanGroupLinkGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.Get(
 		context.TODO(),
@@ -87,7 +85,6 @@ func TestPlanGroupLinkUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.Update(
 		context.TODO(),
@@ -121,7 +118,6 @@ func TestPlanGroupLinkListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.List(context.TODO(), m3ter.PlanGroupLinkListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -153,7 +149,6 @@ func TestPlanGroupLinkDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.Delete(
 		context.TODO(),

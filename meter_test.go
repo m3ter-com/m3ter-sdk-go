@@ -27,7 +27,6 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.New(context.TODO(), m3ter.MeterNewParams{
 		OrgID: m3ter.F("orgId"),
@@ -75,7 +74,6 @@ func TestMeterGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.Get(
 		context.TODO(),
@@ -106,7 +104,6 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.Update(
 		context.TODO(),
@@ -158,7 +155,6 @@ func TestMeterListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.List(context.TODO(), m3ter.MeterListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -190,7 +186,6 @@ func TestMeterDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.Delete(
 		context.TODO(),

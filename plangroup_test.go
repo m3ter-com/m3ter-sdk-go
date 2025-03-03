@@ -27,7 +27,6 @@ func TestPlanGroupNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroups.New(context.TODO(), m3ter.PlanGroupNewParams{
 		OrgID:     m3ter.F("orgId"),
@@ -70,7 +69,6 @@ func TestPlanGroupGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroups.Get(
 		context.TODO(),
@@ -101,7 +99,6 @@ func TestPlanGroupUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroups.Update(
 		context.TODO(),
@@ -148,7 +145,6 @@ func TestPlanGroupListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroups.List(context.TODO(), m3ter.PlanGroupListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -179,7 +175,6 @@ func TestPlanGroupDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroups.Delete(
 		context.TODO(),

@@ -27,7 +27,6 @@ func TestPlanTemplateNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.New(context.TODO(), m3ter.PlanTemplateNewParams{
 		OrgID:                 m3ter.F("orgId"),
@@ -73,7 +72,6 @@ func TestPlanTemplateGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.Get(
 		context.TODO(),
@@ -104,7 +102,6 @@ func TestPlanTemplateUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.Update(
 		context.TODO(),
@@ -154,7 +151,6 @@ func TestPlanTemplateListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.List(context.TODO(), m3ter.PlanTemplateListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -185,7 +181,6 @@ func TestPlanTemplateDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.Delete(
 		context.TODO(),

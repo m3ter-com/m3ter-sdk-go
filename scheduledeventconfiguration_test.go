@@ -26,7 +26,6 @@ func TestScheduledEventConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ScheduledEventConfigurations.New(context.TODO(), m3ter.ScheduledEventConfigurationNewParams{
 		OrgID:   m3ter.F("orgId"),
@@ -58,7 +57,6 @@ func TestScheduledEventConfigurationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ScheduledEventConfigurations.Get(
 		context.TODO(),
@@ -89,7 +87,6 @@ func TestScheduledEventConfigurationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ScheduledEventConfigurations.Update(
 		context.TODO(),
@@ -125,7 +122,6 @@ func TestScheduledEventConfigurationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ScheduledEventConfigurations.List(context.TODO(), m3ter.ScheduledEventConfigurationListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -155,7 +151,6 @@ func TestScheduledEventConfigurationDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ScheduledEventConfigurations.Delete(
 		context.TODO(),

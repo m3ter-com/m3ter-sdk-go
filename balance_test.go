@@ -27,7 +27,6 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.New(context.TODO(), m3ter.BalanceNewParams{
 		OrgID:                           m3ter.F("orgId"),
@@ -71,7 +70,6 @@ func TestBalanceGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Get(
 		context.TODO(),
@@ -102,7 +100,6 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Update(
 		context.TODO(),
@@ -150,7 +147,6 @@ func TestBalanceListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.List(context.TODO(), m3ter.BalanceListParams{
 		OrgID:        m3ter.F("orgId"),
@@ -182,7 +178,6 @@ func TestBalanceDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Delete(
 		context.TODO(),

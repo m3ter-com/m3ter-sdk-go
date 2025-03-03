@@ -28,7 +28,6 @@ func TestPricingNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.New(context.TODO(), m3ter.PricingNewParams{
 		OrgID: m3ter.F("orgId"),
@@ -88,7 +87,6 @@ func TestPricingGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.Get(
 		context.TODO(),
@@ -119,7 +117,6 @@ func TestPricingUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.Update(
 		context.TODO(),
@@ -183,7 +180,6 @@ func TestPricingListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.List(context.TODO(), m3ter.PricingListParams{
 		OrgID:          m3ter.F("orgId"),
@@ -216,7 +212,6 @@ func TestPricingDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.Delete(
 		context.TODO(),
