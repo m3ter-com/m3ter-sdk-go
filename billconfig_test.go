@@ -27,6 +27,7 @@ func TestBillConfigGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillConfig.Get(context.TODO(), m3ter.BillConfigGetParams{
 		OrgID: m3ter.F("orgId"),
@@ -53,6 +54,7 @@ func TestBillConfigUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillConfig.Update(context.TODO(), m3ter.BillConfigUpdateParams{
 		OrgID:        m3ter.F("orgId"),

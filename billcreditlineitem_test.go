@@ -27,6 +27,7 @@ func TestBillCreditLineItemNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.CreditLineItems.New(
 		context.TODO(),
@@ -68,6 +69,7 @@ func TestBillCreditLineItemGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.CreditLineItems.Get(
 		context.TODO(),
@@ -99,6 +101,7 @@ func TestBillCreditLineItemUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.CreditLineItems.Update(
 		context.TODO(),
@@ -141,6 +144,7 @@ func TestBillCreditLineItemListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.CreditLineItems.List(
 		context.TODO(),
@@ -173,6 +177,7 @@ func TestBillCreditLineItemDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.CreditLineItems.Delete(
 		context.TODO(),

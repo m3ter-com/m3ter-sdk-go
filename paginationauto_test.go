@@ -25,6 +25,7 @@ func TestAutoPagination(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	iter := client.Products.ListAutoPaging(context.TODO(), m3ter.ProductListParams{
 		OrgID: m3ter.F("ORG_ID"),

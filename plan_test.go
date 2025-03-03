@@ -27,6 +27,7 @@ func TestPlanNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.New(context.TODO(), m3ter.PlanNewParams{
 		OrgID:          m3ter.F("orgId"),
@@ -71,6 +72,7 @@ func TestPlanGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.Get(
 		context.TODO(),
@@ -101,6 +103,7 @@ func TestPlanUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.Update(
 		context.TODO(),
@@ -149,6 +152,7 @@ func TestPlanListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.List(context.TODO(), m3ter.PlanListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -180,6 +184,7 @@ func TestPlanDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.Delete(
 		context.TODO(),

@@ -28,6 +28,7 @@ func TestAccountNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.New(context.TODO(), m3ter.AccountNewParams{
 		OrgID:        m3ter.F("orgId"),
@@ -82,6 +83,7 @@ func TestAccountGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Get(
 		context.TODO(),
@@ -112,6 +114,7 @@ func TestAccountUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Update(
 		context.TODO(),
@@ -170,6 +173,7 @@ func TestAccountListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.List(context.TODO(), m3ter.AccountListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -200,6 +204,7 @@ func TestAccountDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Delete(
 		context.TODO(),
@@ -230,6 +235,7 @@ func TestAccountEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.EndDateBillingEntities(
 		context.TODO(),
@@ -263,6 +269,7 @@ func TestAccountGetChildrenWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.GetChildren(
 		context.TODO(),
@@ -295,6 +302,7 @@ func TestAccountSearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Search(context.TODO(), m3ter.AccountSearchParams{
 		OrgID:        m3ter.F("orgId"),

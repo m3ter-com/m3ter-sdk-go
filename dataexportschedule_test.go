@@ -26,6 +26,7 @@ func TestDataExportScheduleNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Schedules.New(context.TODO(), m3ter.DataExportScheduleNewParams{
 		OrgID: m3ter.F("orgId"),
@@ -57,6 +58,7 @@ func TestDataExportScheduleGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Schedules.Get(
 		context.TODO(),
@@ -87,6 +89,7 @@ func TestDataExportScheduleUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Schedules.Update(
 		context.TODO(),
@@ -122,6 +125,7 @@ func TestDataExportScheduleListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Schedules.List(context.TODO(), m3ter.DataExportScheduleListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -151,6 +155,7 @@ func TestDataExportScheduleDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Schedules.Delete(
 		context.TODO(),

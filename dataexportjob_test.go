@@ -26,6 +26,7 @@ func TestDataExportJobGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Jobs.Get(
 		context.TODO(),
@@ -56,6 +57,7 @@ func TestDataExportJobListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Jobs.List(context.TODO(), m3ter.DataExportJobListParams{
 		OrgID:            m3ter.F("orgId"),
@@ -89,6 +91,7 @@ func TestDataExportJobGetDownloadURL(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Jobs.GetDownloadURL(
 		context.TODO(),

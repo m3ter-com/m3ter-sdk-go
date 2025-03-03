@@ -26,6 +26,7 @@ func TestCustomFieldGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CustomFields.Get(context.TODO(), m3ter.CustomFieldGetParams{
 		OrgID: m3ter.F("orgId"),
@@ -52,6 +53,7 @@ func TestCustomFieldUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CustomFields.Update(context.TODO(), m3ter.CustomFieldUpdateParams{
 		OrgID: m3ter.F("orgId"),

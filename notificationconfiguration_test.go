@@ -26,6 +26,7 @@ func TestNotificationConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.New(context.TODO(), m3ter.NotificationConfigurationNewParams{
 		OrgID:           m3ter.F("orgId"),
@@ -60,6 +61,7 @@ func TestNotificationConfigurationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.Get(
 		context.TODO(),
@@ -90,6 +92,7 @@ func TestNotificationConfigurationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.Update(
 		context.TODO(),
@@ -128,6 +131,7 @@ func TestNotificationConfigurationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.List(context.TODO(), m3ter.NotificationConfigurationListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -159,6 +163,7 @@ func TestNotificationConfigurationDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.Delete(
 		context.TODO(),

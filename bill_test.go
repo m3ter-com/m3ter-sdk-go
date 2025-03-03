@@ -26,6 +26,7 @@ func TestBillGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.Get(
 		context.TODO(),
@@ -56,6 +57,7 @@ func TestBillListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.List(context.TODO(), m3ter.BillListParams{
 		OrgID:                    m3ter.F("orgId"),
@@ -96,6 +98,7 @@ func TestBillDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.Delete(
 		context.TODO(),
@@ -126,6 +129,7 @@ func TestBillApproveWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.Approve(context.TODO(), m3ter.BillApproveParams{
 		OrgID:                    m3ter.F("orgId"),
@@ -156,6 +160,7 @@ func TestBillLatestByAccount(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.LatestByAccount(
 		context.TODO(),
@@ -186,6 +191,7 @@ func TestBillLock(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.Lock(
 		context.TODO(),
@@ -216,6 +222,7 @@ func TestBillSearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.Search(context.TODO(), m3ter.BillSearchParams{
 		OrgID:        m3ter.F("orgId"),
@@ -248,6 +255,7 @@ func TestBillUpdateStatus(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.UpdateStatus(
 		context.TODO(),
