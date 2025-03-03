@@ -26,6 +26,7 @@ func TestDebitReasonNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.New(context.TODO(), m3ter.DebitReasonNewParams{
 		OrgID:    m3ter.F("orgId"),
@@ -56,6 +57,7 @@ func TestDebitReasonGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.Get(
 		context.TODO(),
@@ -86,6 +88,7 @@ func TestDebitReasonUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.Update(
 		context.TODO(),
@@ -120,6 +123,7 @@ func TestDebitReasonListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.List(context.TODO(), m3ter.DebitReasonListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -151,6 +155,7 @@ func TestDebitReasonDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.Delete(
 		context.TODO(),

@@ -27,6 +27,7 @@ func TestProductNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.New(context.TODO(), m3ter.ProductNewParams{
 		OrgID: m3ter.F("orgId"),
@@ -59,6 +60,7 @@ func TestProductGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.Get(
 		context.TODO(),
@@ -89,6 +91,7 @@ func TestProductUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.Update(
 		context.TODO(),
@@ -125,6 +128,7 @@ func TestProductListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -154,6 +158,7 @@ func TestProductDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.Delete(
 		context.TODO(),

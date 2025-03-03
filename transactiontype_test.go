@@ -26,6 +26,7 @@ func TestTransactionTypeNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.New(context.TODO(), m3ter.TransactionTypeNewParams{
 		OrgID:    m3ter.F("orgId"),
@@ -56,6 +57,7 @@ func TestTransactionTypeGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.Get(
 		context.TODO(),
@@ -86,6 +88,7 @@ func TestTransactionTypeUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.Update(
 		context.TODO(),
@@ -120,6 +123,7 @@ func TestTransactionTypeListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.List(context.TODO(), m3ter.TransactionTypeListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -151,6 +155,7 @@ func TestTransactionTypeDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.Delete(
 		context.TODO(),

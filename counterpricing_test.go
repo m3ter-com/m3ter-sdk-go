@@ -28,6 +28,7 @@ func TestCounterPricingNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.New(context.TODO(), m3ter.CounterPricingNewParams{
 		OrgID:     m3ter.F("orgId"),
@@ -75,6 +76,7 @@ func TestCounterPricingGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.Get(
 		context.TODO(),
@@ -105,6 +107,7 @@ func TestCounterPricingUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.Update(
 		context.TODO(),
@@ -156,6 +159,7 @@ func TestCounterPricingListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.List(context.TODO(), m3ter.CounterPricingListParams{
 		OrgID:          m3ter.F("orgId"),
@@ -188,6 +192,7 @@ func TestCounterPricingDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.Delete(
 		context.TODO(),

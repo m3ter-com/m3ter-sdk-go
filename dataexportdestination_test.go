@@ -26,6 +26,7 @@ func TestDataExportDestinationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Destinations.New(context.TODO(), m3ter.DataExportDestinationNewParams{
 		OrgID:          m3ter.F("orgId"),
@@ -59,6 +60,7 @@ func TestDataExportDestinationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Destinations.Get(
 		context.TODO(),
@@ -89,6 +91,7 @@ func TestDataExportDestinationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Destinations.Update(
 		context.TODO(),
@@ -126,6 +129,7 @@ func TestDataExportDestinationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Destinations.List(context.TODO(), m3ter.DataExportDestinationListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -155,6 +159,7 @@ func TestDataExportDestinationDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Destinations.Delete(
 		context.TODO(),

@@ -28,6 +28,7 @@ func TestBillJobNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.New(context.TODO(), m3ter.BillJobNewParams{
 		OrgID:                 m3ter.F("orgId"),
@@ -73,6 +74,7 @@ func TestBillJobGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.Get(
 		context.TODO(),
@@ -103,6 +105,7 @@ func TestBillJobListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.List(context.TODO(), m3ter.BillJobListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -133,6 +136,7 @@ func TestBillJobCancel(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.Cancel(
 		context.TODO(),
@@ -163,6 +167,7 @@ func TestBillJobRecalculateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.Recalculate(context.TODO(), m3ter.BillJobRecalculateParams{
 		OrgID:   m3ter.F("orgId"),
