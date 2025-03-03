@@ -12,6 +12,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestBillJobNewWithOptionalParams(t *testing.T) {
@@ -35,7 +36,7 @@ func TestBillJobNewWithOptionalParams(t *testing.T) {
 		BillDate:              m3ter.F(time.Now()),
 		BillFrequencyInterval: m3ter.F(int64(0)),
 		BillingFrequency:      m3ter.F(m3ter.BillJobNewParamsBillingFrequencyDaily),
-		CurrencyConversions: m3ter.F([]m3ter.BillJobNewParamsCurrencyConversion{{
+		CurrencyConversions: m3ter.F([]shared.CurrencyConversionParam{{
 			From:       m3ter.F("EUR"),
 			To:         m3ter.F("USD"),
 			Multiplier: m3ter.F(1.120000),

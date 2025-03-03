@@ -11,6 +11,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestOrganizationConfigGet(t *testing.T) {
@@ -71,7 +72,7 @@ func TestOrganizationConfigUpdateWithOptionalParams(t *testing.T) {
 		CommitmentFeeBillInAdvance:      m3ter.F(true),
 		ConsolidateBills:                m3ter.F(true),
 		CreditApplicationOrder:          m3ter.F([]m3ter.OrganizationConfigUpdateParamsCreditApplicationOrder{m3ter.OrganizationConfigUpdateParamsCreditApplicationOrderPrepayment}),
-		CurrencyConversions: m3ter.F([]m3ter.OrganizationConfigUpdateParamsCurrencyConversion{{
+		CurrencyConversions: m3ter.F([]shared.CurrencyConversionParam{{
 			From:       m3ter.F("EUR"),
 			To:         m3ter.F("USD"),
 			Multiplier: m3ter.F(1.120000),

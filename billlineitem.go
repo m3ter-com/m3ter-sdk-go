@@ -148,7 +148,8 @@ type LineItem struct {
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO 8601 format)_ when the Bill line item was last
 	// modified.
-	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	DtLastModified time.Time         `json:"dtLastModified" format:"date-time"`
+	Group          map[string]string `json:"group"`
 	// Boolean flag indicating whether the Bill line item has associated statement
 	// usage in JSON format. When a Bill statement is generated, usage line items have
 	// their usage stored in JSON format.
@@ -231,6 +232,7 @@ type lineItemJSON struct {
 	Description            apijson.Field
 	DtCreated              apijson.Field
 	DtLastModified         apijson.Field
+	Group                  apijson.Field
 	JsonUsageGenerated     apijson.Field
 	LastModifiedBy         apijson.Field
 	LineItemType           apijson.Field

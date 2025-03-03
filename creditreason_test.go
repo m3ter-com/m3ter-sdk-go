@@ -32,7 +32,7 @@ func TestCreditReasonNewWithOptionalParams(t *testing.T) {
 		OrgID:    m3ter.F("orgId"),
 		Name:     m3ter.F("x"),
 		Archived: m3ter.F(true),
-		Code:     m3ter.F("{1{}}_"),
+		Code:     m3ter.F("code"),
 		Version:  m3ter.F(int64(0)),
 	})
 	if err != nil {
@@ -97,7 +97,7 @@ func TestCreditReasonUpdateWithOptionalParams(t *testing.T) {
 			OrgID:    m3ter.F("orgId"),
 			Name:     m3ter.F("x"),
 			Archived: m3ter.F(true),
-			Code:     m3ter.F("{1{}}_"),
+			Code:     m3ter.F("code"),
 			Version:  m3ter.F(int64(0)),
 		},
 	)
