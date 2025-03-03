@@ -26,7 +26,6 @@ func TestCounterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Counters.New(context.TODO(), m3ter.CounterNewParams{
 		OrgID:     m3ter.F("orgId"),
@@ -58,7 +57,6 @@ func TestCounterGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Counters.Get(
 		context.TODO(),
@@ -89,7 +87,6 @@ func TestCounterUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Counters.Update(
 		context.TODO(),
@@ -125,7 +122,6 @@ func TestCounterListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Counters.List(context.TODO(), m3ter.CounterListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -157,7 +153,6 @@ func TestCounterDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Counters.Delete(
 		context.TODO(),

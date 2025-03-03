@@ -26,7 +26,6 @@ func TestResourceGroupNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.New(
 		context.TODO(),
@@ -59,7 +58,6 @@ func TestResourceGroupGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.Get(
 		context.TODO(),
@@ -91,7 +89,6 @@ func TestResourceGroupUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.Update(
 		context.TODO(),
@@ -125,7 +122,6 @@ func TestResourceGroupListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.List(
 		context.TODO(),
@@ -158,7 +154,6 @@ func TestResourceGroupDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.Delete(
 		context.TODO(),
@@ -190,7 +185,6 @@ func TestResourceGroupAddResourceWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.AddResource(
 		context.TODO(),
@@ -225,7 +219,6 @@ func TestResourceGroupListContentsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.ListContents(
 		context.TODO(),
@@ -259,7 +252,6 @@ func TestResourceGroupListPermissionsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.ListPermissions(
 		context.TODO(),
@@ -293,7 +285,6 @@ func TestResourceGroupRemoveResourceWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ResourceGroups.RemoveResource(
 		context.TODO(),

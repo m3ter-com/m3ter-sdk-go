@@ -26,7 +26,6 @@ func TestIntegrationConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.New(context.TODO(), m3ter.IntegrationConfigurationNewParams{
 		OrgID: m3ter.F("orgId"),
@@ -70,7 +69,6 @@ func TestIntegrationConfigurationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.Get(
 		context.TODO(),
@@ -101,7 +99,6 @@ func TestIntegrationConfigurationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.Update(
 		context.TODO(),
@@ -149,7 +146,6 @@ func TestIntegrationConfigurationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.List(context.TODO(), m3ter.IntegrationConfigurationListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -178,7 +174,6 @@ func TestIntegrationConfigurationDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.Delete(
 		context.TODO(),
@@ -209,7 +204,6 @@ func TestIntegrationConfigurationEnable(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.Enable(
 		context.TODO(),
@@ -240,7 +234,6 @@ func TestIntegrationConfigurationGetByEntityWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.GetByEntity(
 		context.TODO(),

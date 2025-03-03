@@ -26,7 +26,6 @@ func TestCounterAdjustmentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.New(context.TODO(), m3ter.CounterAdjustmentNewParams{
 		OrgID:               m3ter.F("orgId"),
@@ -59,7 +58,6 @@ func TestCounterAdjustmentGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.Get(
 		context.TODO(),
@@ -90,7 +88,6 @@ func TestCounterAdjustmentUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.Update(
 		context.TODO(),
@@ -127,7 +124,6 @@ func TestCounterAdjustmentListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.List(context.TODO(), m3ter.CounterAdjustmentListParams{
 		OrgID:        m3ter.F("orgId"),
@@ -163,7 +159,6 @@ func TestCounterAdjustmentDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.Delete(
 		context.TODO(),

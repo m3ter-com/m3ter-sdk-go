@@ -59,9 +59,10 @@ type Client struct {
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (M3TER_API_KEY, M3TER_API_SECRET, M3TER_API_TOKEN). The option
-// passed in as arguments are applied after these default arguments, and all option
-// will be passed down to the services and requests that this client makes.
+// environment (M3TER_API_KEY, M3TER_API_SECRET, M3TER_API_TOKEN, M3TER_ORG_ID).
+// The option passed in as arguments are applied after these default arguments, and
+// all option will be passed down to the services and requests that this client
+// makes.
 func NewClient(opts ...option.RequestOption) (r *Client) {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("M3TER_API_KEY"); ok {
@@ -72,6 +73,9 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	}
 	if o, ok := os.LookupEnv("M3TER_API_TOKEN"); ok {
 		defaults = append(defaults, option.WithToken(o))
+	}
+	if o, ok := os.LookupEnv("M3TER_ORG_ID"); ok {
+		defaults = append(defaults, option.WithOrgID(o))
 	}
 	opts = append(defaults, opts...)
 

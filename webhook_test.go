@@ -26,7 +26,6 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), m3ter.WebhookNewParams{
 		OrgID: m3ter.F("orgId"),
@@ -66,7 +65,6 @@ func TestWebhookGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.Get(
 		context.TODO(),
@@ -97,7 +95,6 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.Update(
 		context.TODO(),
@@ -141,7 +138,6 @@ func TestWebhookListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.List(context.TODO(), m3ter.WebhookListParams{
 		OrgID:     m3ter.F("orgId"),
@@ -171,7 +167,6 @@ func TestWebhookDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.Delete(
 		context.TODO(),
@@ -202,7 +197,6 @@ func TestWebhookSetActiveWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.SetActive(
 		context.TODO(),

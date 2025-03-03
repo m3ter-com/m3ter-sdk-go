@@ -27,7 +27,6 @@ func TestBalanceTransactionNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Transactions.New(
 		context.TODO(),
@@ -66,7 +65,6 @@ func TestBalanceTransactionListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Transactions.List(
 		context.TODO(),
@@ -100,7 +98,6 @@ func TestBalanceTransactionSummary(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.Transactions.Summary(
 		context.TODO(),
