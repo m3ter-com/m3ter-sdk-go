@@ -256,6 +256,13 @@ func WithToken(value string) RequestOption {
 func WithOrgID(value string) RequestOption {
 	return func(r *requestconfig.RequestConfig) error {
 		r.OrgID = value
+    return nil
+  } 
+}
+
+func WithBasicAuth(username, password string) RequestOption {
+	return func(r *requestconfig.RequestConfig) error {
+		r.Request.SetBasicAuth(username, password)
 		return nil
 	}
 }
