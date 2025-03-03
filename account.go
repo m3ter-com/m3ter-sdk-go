@@ -41,21 +41,21 @@ func NewAccountService(opts ...option.RequestOption) (r *AccountService) {
 }
 
 // Create a new Account within the Organization.
-func (r *AccountService) New(ctx context.Context, orgID string, body AccountNewParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts ...option.RequestOption) (res *Account, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accounts", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accounts", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Account with the given Account UUID.
-func (r *AccountService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) Get(ctx context.Context, id string, query AccountGetParams, opts ...option.RequestOption) (res *Account, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -63,7 +63,7 @@ func (r *AccountService) Get(ctx context.Context, orgID string, id string, opts 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accounts/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/accounts/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -74,9 +74,9 @@ func (r *AccountService) Get(ctx context.Context, orgID string, id string, opts 
 // endpoint to update the Account, use the `customFields` parameter to preserve
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
-func (r *AccountService) Update(ctx context.Context, orgID string, id string, body AccountUpdateParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) Update(ctx context.Context, id string, params AccountUpdateParams, opts ...option.RequestOption) (res *Account, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -84,22 +84,22 @@ func (r *AccountService) Update(ctx context.Context, orgID string, id string, bo
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accounts/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accounts/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of Accounts that can be filtered by Account ID or Account Code.
-func (r *AccountService) List(ctx context.Context, orgID string, query AccountListParams, opts ...option.RequestOption) (res *pagination.Cursor[Account], err error) {
+func (r *AccountService) List(ctx context.Context, params AccountListParams, opts ...option.RequestOption) (res *pagination.Cursor[Account], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accounts", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accounts", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,15 +112,15 @@ func (r *AccountService) List(ctx context.Context, orgID string, query AccountLi
 }
 
 // Retrieve a list of Accounts that can be filtered by Account ID or Account Code.
-func (r *AccountService) ListAutoPaging(ctx context.Context, orgID string, query AccountListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Account] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *AccountService) ListAutoPaging(ctx context.Context, params AccountListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Account] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Account with the given UUID. This may fail if there are any
 // AccountPlans that reference the Account being deleted.
-func (r *AccountService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) Delete(ctx context.Context, id string, body AccountDeleteParams, opts ...option.RequestOption) (res *Account, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -128,15 +128,15 @@ func (r *AccountService) Delete(ctx context.Context, orgID string, id string, op
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accounts/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/accounts/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 // Retrieve a list of Accounts that are children of the specified Account.
-func (r *AccountService) ListChildren(ctx context.Context, orgID string, id string, query AccountListChildrenParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) ListChildren(ctx context.Context, id string, params AccountListChildrenParams, opts ...option.RequestOption) (res *Account, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -144,20 +144,20 @@ func (r *AccountService) ListChildren(ctx context.Context, orgID string, id stri
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accounts/%s/children", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accounts/%s/children", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
 // Search for account entities
-func (r *AccountService) Search(ctx context.Context, orgID string, query AccountSearchParams, opts ...option.RequestOption) (res *AccountSearchResponse, err error) {
+func (r *AccountService) Search(ctx context.Context, params AccountSearchParams, opts ...option.RequestOption) (res *AccountSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/accounts/search", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/accounts/search", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
@@ -412,6 +412,7 @@ func (r accountSearchResponseJSON) RawJSON() string {
 }
 
 type AccountNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Account. This is a unique short code used for the Account.
 	Code param.Field[string] `json:"code,required"`
 	// Contact email for the Account.
@@ -587,7 +588,12 @@ type AccountNewParamsCustomFieldsUnion interface {
 	ImplementsAccountNewParamsCustomFieldsUnion()
 }
 
+type AccountGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type AccountUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Account. This is a unique short code used for the Account.
 	Code param.Field[string] `json:"code,required"`
 	// Contact email for the Account.
@@ -764,6 +770,7 @@ type AccountUpdateParamsCustomFieldsUnion interface {
 }
 
 type AccountListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Account Codes to retrieve. These are unique short codes for each
 	// Account.
 	Codes param.Field[[]string] `query:"codes"`
@@ -783,7 +790,12 @@ func (r AccountListParams) URLQuery() (v url.Values) {
 	})
 }
 
+type AccountDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type AccountListChildrenParams struct {
+	OrgID     param.Field[string] `path:"orgId,required"`
 	NextToken param.Field[string] `query:"nextToken"`
 	PageSize  param.Field[int64]  `query:"pageSize"`
 }
@@ -798,6 +810,7 @@ func (r AccountListChildrenParams) URLQuery() (v url.Values) {
 }
 
 type AccountSearchParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// fromDocument for multi page retrievals
 	FromDocument param.Field[int64] `query:"fromDocument"`
 	// Search Operator to be used while querying search

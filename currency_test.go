@@ -26,19 +26,17 @@ func TestCurrencyNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Currencies.New(
-		context.TODO(),
-		"orgId",
-		m3ter.CurrencyNewParams{
-			Name:             m3ter.F("x"),
-			Archived:         m3ter.F(true),
-			Code:             m3ter.F("{1{}}_"),
-			MaxDecimalPlaces: m3ter.F(int64(0)),
-			RoundingMode:     m3ter.F(m3ter.CurrencyNewParamsRoundingModeUp),
-			Version:          m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Currencies.New(context.TODO(), m3ter.CurrencyNewParams{
+		OrgID:            m3ter.F("orgId"),
+		Name:             m3ter.F("x"),
+		Archived:         m3ter.F(true),
+		Code:             m3ter.F("{1{}}_"),
+		MaxDecimalPlaces: m3ter.F(int64(0)),
+		RoundingMode:     m3ter.F(m3ter.CurrencyNewParamsRoundingModeUp),
+		Version:          m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -61,11 +59,14 @@ func TestCurrencyGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CurrencyGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -89,12 +90,13 @@ func TestCurrencyUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.CurrencyUpdateParams{
+			OrgID:            m3ter.F("orgId"),
 			Name:             m3ter.F("x"),
 			Archived:         m3ter.F(true),
 			Code:             m3ter.F("{1{}}_"),
@@ -125,18 +127,16 @@ func TestCurrencyListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Currencies.List(
-		context.TODO(),
-		"orgId",
-		m3ter.CurrencyListParams{
-			Archived:  m3ter.F(true),
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.Currencies.List(context.TODO(), m3ter.CurrencyListParams{
+		OrgID:     m3ter.F("orgId"),
+		Archived:  m3ter.F(true),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -159,11 +159,14 @@ func TestCurrencyDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CurrencyDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

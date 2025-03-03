@@ -26,17 +26,15 @@ func TestDebitReasonNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.DebitReasons.New(
-		context.TODO(),
-		"orgId",
-		m3ter.DebitReasonNewParams{
-			Name:     m3ter.F("x"),
-			Archived: m3ter.F(true),
-			Code:     m3ter.F("{1{}}_"),
-			Version:  m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.DebitReasons.New(context.TODO(), m3ter.DebitReasonNewParams{
+		OrgID:    m3ter.F("orgId"),
+		Name:     m3ter.F("x"),
+		Archived: m3ter.F(true),
+		Code:     m3ter.F("{1{}}_"),
+		Version:  m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -59,11 +57,14 @@ func TestDebitReasonGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.DebitReasonGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -87,12 +88,13 @@ func TestDebitReasonUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.DebitReasonUpdateParams{
+			OrgID:    m3ter.F("orgId"),
 			Name:     m3ter.F("x"),
 			Archived: m3ter.F(true),
 			Code:     m3ter.F("{1{}}_"),
@@ -121,18 +123,16 @@ func TestDebitReasonListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.DebitReasons.List(
-		context.TODO(),
-		"orgId",
-		m3ter.DebitReasonListParams{
-			Archived:  m3ter.F(true),
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.DebitReasons.List(context.TODO(), m3ter.DebitReasonListParams{
+		OrgID:     m3ter.F("orgId"),
+		Archived:  m3ter.F(true),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -155,11 +155,14 @@ func TestDebitReasonDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.DebitReasonDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

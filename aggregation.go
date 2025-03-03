@@ -41,21 +41,21 @@ func NewAggregationService(opts ...option.RequestOption) (r *AggregationService)
 }
 
 // Create a new Aggregation.
-func (r *AggregationService) New(ctx context.Context, orgID string, body AggregationNewParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *AggregationService) New(ctx context.Context, params AggregationNewParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/aggregations", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Aggregation with the given UUID.
-func (r *AggregationService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *AggregationService) Get(ctx context.Context, id string, query AggregationGetParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -63,7 +63,7 @@ func (r *AggregationService) Get(ctx context.Context, orgID string, id string, o
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/aggregations/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -74,9 +74,9 @@ func (r *AggregationService) Get(ctx context.Context, orgID string, id string, o
 // this endpoint to update the Aggregation use the `customFields` parameter to
 // preserve those Custom Fields. If you omit them from the update request, they
 // will be lost.
-func (r *AggregationService) Update(ctx context.Context, orgID string, id string, body AggregationUpdateParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *AggregationService) Update(ctx context.Context, id string, params AggregationUpdateParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -84,23 +84,23 @@ func (r *AggregationService) Update(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/aggregations/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of Aggregations that can be filtered by Product, Aggregation ID,
 // or Code.
-func (r *AggregationService) List(ctx context.Context, orgID string, query AggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[Aggregation], err error) {
+func (r *AggregationService) List(ctx context.Context, params AggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[Aggregation], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/aggregations", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,14 +114,14 @@ func (r *AggregationService) List(ctx context.Context, orgID string, query Aggre
 
 // Retrieve a list of Aggregations that can be filtered by Product, Aggregation ID,
 // or Code.
-func (r *AggregationService) ListAutoPaging(ctx context.Context, orgID string, query AggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Aggregation] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *AggregationService) ListAutoPaging(ctx context.Context, params AggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Aggregation] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Aggregation with the given UUID.
-func (r *AggregationService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *AggregationService) Delete(ctx context.Context, id string, body AggregationDeleteParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -129,7 +129,7 @@ func (r *AggregationService) Delete(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/aggregations/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -386,6 +386,7 @@ func (r AggregationRounding) IsKnown() bool {
 }
 
 type AggregationNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected targetField.
@@ -588,7 +589,12 @@ type AggregationNewParamsCustomFieldsUnion interface {
 	ImplementsAggregationNewParamsCustomFieldsUnion()
 }
 
+type AggregationGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type AggregationUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected targetField.
@@ -792,6 +798,7 @@ type AggregationUpdateParamsCustomFieldsUnion interface {
 }
 
 type AggregationListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Aggregation codes to retrieve. These are unique short codes to identify
 	// each Aggregation.
 	Codes param.Field[[]string] `query:"codes"`
@@ -811,4 +818,8 @@ func (r AggregationListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type AggregationDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

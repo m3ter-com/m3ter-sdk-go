@@ -41,21 +41,21 @@ func NewPlanService(opts ...option.RequestOption) (r *PlanService) {
 }
 
 // Create a new Plan.
-func (r *PlanService) New(ctx context.Context, orgID string, body PlanNewParams, opts ...option.RequestOption) (res *Plan, err error) {
+func (r *PlanService) New(ctx context.Context, params PlanNewParams, opts ...option.RequestOption) (res *Plan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plans", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plans", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Plan with the given UUID.
-func (r *PlanService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Plan, err error) {
+func (r *PlanService) Get(ctx context.Context, id string, query PlanGetParams, opts ...option.RequestOption) (res *Plan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -63,7 +63,7 @@ func (r *PlanService) Get(ctx context.Context, orgID string, id string, opts ...
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plans/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plans/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -73,9 +73,9 @@ func (r *PlanService) Get(ctx context.Context, orgID string, id string, opts ...
 // **Note:** If you have created Custom Fields for a Plan, when you use this
 // endpoint to update the Plan use the `customFields` parameter to preserve those
 // Custom Fields. If you omit them from the update request, they will be lost.
-func (r *PlanService) Update(ctx context.Context, orgID string, id string, body PlanUpdateParams, opts ...option.RequestOption) (res *Plan, err error) {
+func (r *PlanService) Update(ctx context.Context, id string, params PlanUpdateParams, opts ...option.RequestOption) (res *Plan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -83,22 +83,22 @@ func (r *PlanService) Update(ctx context.Context, orgID string, id string, body 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plans/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plans/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of Plans that can be filtered by Product, Account, or Plan ID.
-func (r *PlanService) List(ctx context.Context, orgID string, query PlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[Plan], err error) {
+func (r *PlanService) List(ctx context.Context, params PlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[Plan], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plans", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plans", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -111,14 +111,14 @@ func (r *PlanService) List(ctx context.Context, orgID string, query PlanListPara
 }
 
 // Retrieve a list of Plans that can be filtered by Product, Account, or Plan ID.
-func (r *PlanService) ListAutoPaging(ctx context.Context, orgID string, query PlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Plan] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *PlanService) ListAutoPaging(ctx context.Context, params PlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Plan] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Plan with the given UUID.
-func (r *PlanService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Plan, err error) {
+func (r *PlanService) Delete(ctx context.Context, id string, body PlanDeleteParams, opts ...option.RequestOption) (res *Plan, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -126,7 +126,7 @@ func (r *PlanService) Delete(ctx context.Context, orgID string, id string, opts 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plans/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plans/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -275,6 +275,7 @@ func init() {
 }
 
 type PlanNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Unique short code reference for the Plan.
 	Code param.Field[string] `json:"code,required"`
 	// Descriptive name for the Plan.
@@ -368,7 +369,12 @@ type PlanNewParamsCustomFieldsUnion interface {
 	ImplementsPlanNewParamsCustomFieldsUnion()
 }
 
+type PlanGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type PlanUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Unique short code reference for the Plan.
 	Code param.Field[string] `json:"code,required"`
 	// Descriptive name for the Plan.
@@ -463,6 +469,7 @@ type PlanUpdateParamsCustomFieldsUnion interface {
 }
 
 type PlanListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Account IDs the Plan belongs to.
 	AccountID param.Field[[]string] `query:"accountId"`
 	// List of Plan IDs to retrieve.
@@ -481,4 +488,8 @@ func (r PlanListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type PlanDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

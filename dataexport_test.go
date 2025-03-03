@@ -26,18 +26,16 @@ func TestDataExportNewAdhocWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.DataExports.NewAdhoc(
-		context.TODO(),
-		"orgId",
-		m3ter.DataExportNewAdhocParams{
-			Body: m3ter.AdHocOperationalDataRequestParam{
-				OperationalDataTypes: m3ter.F([]m3ter.AdHocOperationalDataRequestOperationalDataType{m3ter.AdHocOperationalDataRequestOperationalDataTypeBills}),
-				SourceType:           m3ter.F(m3ter.AdHocOperationalDataRequestSourceTypeUsage),
-				Version:              m3ter.F(int64(0)),
-			},
+	_, err := client.DataExports.NewAdhoc(context.TODO(), m3ter.DataExportNewAdhocParams{
+		OrgID: m3ter.F("orgId"),
+		Body: m3ter.AdHocOperationalDataRequestParam{
+			OperationalDataTypes: m3ter.F([]m3ter.AdHocOperationalDataRequestOperationalDataType{m3ter.AdHocOperationalDataRequestOperationalDataTypeBills}),
+			SourceType:           m3ter.F(m3ter.AdHocOperationalDataRequestSourceTypeUsage),
+			Version:              m3ter.F(int64(0)),
 		},
-	)
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {

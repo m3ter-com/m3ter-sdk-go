@@ -38,21 +38,21 @@ func NewPlanGroupLinkService(opts ...option.RequestOption) (r *PlanGroupLinkServ
 }
 
 // Create a new PlanGroupLink.
-func (r *PlanGroupLinkService) New(ctx context.Context, orgID string, body PlanGroupLinkNewParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) New(ctx context.Context, params PlanGroupLinkNewParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangrouplinks", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plangrouplinks", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a PlanGroupLink for the given UUID.
-func (r *PlanGroupLinkService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) Get(ctx context.Context, id string, query PlanGroupLinkGetParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -60,15 +60,15 @@ func (r *PlanGroupLinkService) Get(ctx context.Context, orgID string, id string,
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangrouplinks/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plangrouplinks/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update PlanGroupLink for the given UUID.
-func (r *PlanGroupLinkService) Update(ctx context.Context, orgID string, id string, body PlanGroupLinkUpdateParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) Update(ctx context.Context, id string, params PlanGroupLinkUpdateParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -76,22 +76,22 @@ func (r *PlanGroupLinkService) Update(ctx context.Context, orgID string, id stri
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangrouplinks/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plangrouplinks/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of PlanGroupLink entities
-func (r *PlanGroupLinkService) List(ctx context.Context, orgID string, query PlanGroupLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroupLink], err error) {
+func (r *PlanGroupLinkService) List(ctx context.Context, params PlanGroupLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroupLink], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangrouplinks", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/plangrouplinks", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,14 +104,14 @@ func (r *PlanGroupLinkService) List(ctx context.Context, orgID string, query Pla
 }
 
 // Retrieve a list of PlanGroupLink entities
-func (r *PlanGroupLinkService) ListAutoPaging(ctx context.Context, orgID string, query PlanGroupLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroupLink] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *PlanGroupLinkService) ListAutoPaging(ctx context.Context, params PlanGroupLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroupLink] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a PlanGroupLink for the given UUID.
-func (r *PlanGroupLinkService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) Delete(ctx context.Context, id string, body PlanGroupLinkDeleteParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -119,7 +119,7 @@ func (r *PlanGroupLinkService) Delete(ctx context.Context, orgID string, id stri
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/plangrouplinks/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/plangrouplinks/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -172,6 +172,7 @@ func (r planGroupLinkJSON) RawJSON() string {
 }
 
 type PlanGroupLinkNewParams struct {
+	OrgID       param.Field[string] `path:"orgId,required"`
 	PlanGroupID param.Field[string] `json:"planGroupId,required"`
 	PlanID      param.Field[string] `json:"planId,required"`
 	// The version number of the entity:
@@ -189,7 +190,12 @@ func (r PlanGroupLinkNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type PlanGroupLinkGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type PlanGroupLinkUpdateParams struct {
+	OrgID       param.Field[string] `path:"orgId,required"`
 	PlanGroupID param.Field[string] `json:"planGroupId,required"`
 	PlanID      param.Field[string] `json:"planId,required"`
 	// The version number of the entity:
@@ -208,6 +214,7 @@ func (r PlanGroupLinkUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type PlanGroupLinkListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// list of IDs to retrieve
 	IDs param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
@@ -227,4 +234,8 @@ func (r PlanGroupLinkListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type PlanGroupLinkDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

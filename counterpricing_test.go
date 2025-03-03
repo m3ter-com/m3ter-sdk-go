@@ -27,34 +27,32 @@ func TestCounterPricingNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CounterPricings.New(
-		context.TODO(),
-		"orgId",
-		m3ter.CounterPricingNewParams{
-			CounterID: m3ter.F("x"),
-			PricingBands: m3ter.F([]m3ter.CounterPricingNewParamsPricingBand{{
-				FixedPrice:   m3ter.F(0.000000),
-				LowerLimit:   m3ter.F(0.000000),
-				UnitPrice:    m3ter.F(0.000000),
-				ID:           m3ter.F("id"),
-				CreditTypeID: m3ter.F("creditTypeId"),
-			}}),
-			StartDate:                 m3ter.F(time.Now()),
-			AccountingProductID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Code:                      m3ter.F("JS!?Q0]r] ]$]"),
-			Cumulative:                m3ter.F(true),
-			Description:               m3ter.F("description"),
-			EndDate:                   m3ter.F(time.Now()),
-			PlanID:                    m3ter.F("planId"),
-			PlanTemplateID:            m3ter.F("planTemplateId"),
-			ProRateAdjustmentCredit:   m3ter.F(true),
-			ProRateAdjustmentDebit:    m3ter.F(true),
-			ProRateRunningTotal:       m3ter.F(true),
-			RunningTotalBillInAdvance: m3ter.F(true),
-			Version:                   m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.CounterPricings.New(context.TODO(), m3ter.CounterPricingNewParams{
+		OrgID:     m3ter.F("orgId"),
+		CounterID: m3ter.F("x"),
+		PricingBands: m3ter.F([]m3ter.CounterPricingNewParamsPricingBand{{
+			FixedPrice:   m3ter.F(0.000000),
+			LowerLimit:   m3ter.F(0.000000),
+			UnitPrice:    m3ter.F(0.000000),
+			ID:           m3ter.F("id"),
+			CreditTypeID: m3ter.F("creditTypeId"),
+		}}),
+		StartDate:                 m3ter.F(time.Now()),
+		AccountingProductID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Code:                      m3ter.F("JS!?Q0]r] ]$]"),
+		Cumulative:                m3ter.F(true),
+		Description:               m3ter.F("description"),
+		EndDate:                   m3ter.F(time.Now()),
+		PlanID:                    m3ter.F("planId"),
+		PlanTemplateID:            m3ter.F("planTemplateId"),
+		ProRateAdjustmentCredit:   m3ter.F(true),
+		ProRateAdjustmentDebit:    m3ter.F(true),
+		ProRateRunningTotal:       m3ter.F(true),
+		RunningTotalBillInAdvance: m3ter.F(true),
+		Version:                   m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -77,11 +75,14 @@ func TestCounterPricingGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CounterPricingGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -105,12 +106,13 @@ func TestCounterPricingUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.CounterPricingUpdateParams{
+			OrgID:     m3ter.F("orgId"),
 			CounterID: m3ter.F("x"),
 			PricingBands: m3ter.F([]m3ter.CounterPricingUpdateParamsPricingBand{{
 				FixedPrice:   m3ter.F(0.000000),
@@ -156,19 +158,17 @@ func TestCounterPricingListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CounterPricings.List(
-		context.TODO(),
-		"orgId",
-		m3ter.CounterPricingListParams{
-			Date:           m3ter.F("date"),
-			IDs:            m3ter.F([]string{"string"}),
-			NextToken:      m3ter.F("nextToken"),
-			PageSize:       m3ter.F(int64(1)),
-			PlanID:         m3ter.F("planId"),
-			PlanTemplateID: m3ter.F("planTemplateId"),
-		},
-	)
+	_, err := client.CounterPricings.List(context.TODO(), m3ter.CounterPricingListParams{
+		OrgID:          m3ter.F("orgId"),
+		Date:           m3ter.F("date"),
+		IDs:            m3ter.F([]string{"string"}),
+		NextToken:      m3ter.F("nextToken"),
+		PageSize:       m3ter.F(int64(1)),
+		PlanID:         m3ter.F("planId"),
+		PlanTemplateID: m3ter.F("planTemplateId"),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -191,11 +191,14 @@ func TestCounterPricingDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CounterPricingDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

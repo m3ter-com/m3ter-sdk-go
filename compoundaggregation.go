@@ -45,14 +45,14 @@ func NewCompoundAggregationService(opts ...option.RequestOption) (r *CompoundAgg
 // This endpoint allows you to create a new CompoundAggregation for a specific
 // Organization. The request body must include all the necessary details such as
 // the Calculation formula.
-func (r *CompoundAggregationService) New(ctx context.Context, orgID string, body CompoundAggregationNewParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAggregationNewParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/compoundaggregations", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/compoundaggregations", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -60,9 +60,9 @@ func (r *CompoundAggregationService) New(ctx context.Context, orgID string, body
 //
 // This endpoint returns a specific CompoundAggregation associated with an
 // Organization. It provides detailed information about the CompoundAggregation.
-func (r *CompoundAggregationService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CompoundAggregation, err error) {
+func (r *CompoundAggregationService) Get(ctx context.Context, id string, query CompoundAggregationGetParams, opts ...option.RequestOption) (res *CompoundAggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -70,7 +70,7 @@ func (r *CompoundAggregationService) Get(ctx context.Context, orgID string, id s
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/compoundaggregations/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/compoundaggregations/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -85,9 +85,9 @@ func (r *CompoundAggregationService) Get(ctx context.Context, orgID string, id s
 // use this endpoint to update the Compound Aggregation use the `customFields`
 // parameter to preserve those Custom Fields. If you omit them from the update
 // request, they will be lost.
-func (r *CompoundAggregationService) Update(ctx context.Context, orgID string, id string, body CompoundAggregationUpdateParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *CompoundAggregationService) Update(ctx context.Context, id string, params CompoundAggregationUpdateParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -95,8 +95,8 @@ func (r *CompoundAggregationService) Update(ctx context.Context, orgID string, i
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/compoundaggregations/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/compoundaggregations/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -107,16 +107,16 @@ func (r *CompoundAggregationService) Update(ctx context.Context, orgID string, i
 // measures based on simple Aggregations of usage data. It supports pagination, and
 // includes various query parameters to filter the CompoundAggregations based on
 // Product, CompoundAggregation IDs or short codes.
-func (r *CompoundAggregationService) List(ctx context.Context, orgID string, query CompoundAggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[CompoundAggregation], err error) {
+func (r *CompoundAggregationService) List(ctx context.Context, params CompoundAggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[CompoundAggregation], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/compoundaggregations", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/compoundaggregations", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,8 +135,8 @@ func (r *CompoundAggregationService) List(ctx context.Context, orgID string, que
 // measures based on simple Aggregations of usage data. It supports pagination, and
 // includes various query parameters to filter the CompoundAggregations based on
 // Product, CompoundAggregation IDs or short codes.
-func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, orgID string, query CompoundAggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CompoundAggregation] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, params CompoundAggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CompoundAggregation] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a CompoundAggregation with the given UUID.
@@ -145,9 +145,9 @@ func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, orgID s
 // a specific Organization. Useful when you need to remove an existing
 // CompoundAggregation that is no longer required, such as when changing pricing or
 // planning models.
-func (r *CompoundAggregationService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CompoundAggregation, err error) {
+func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body CompoundAggregationDeleteParams, opts ...option.RequestOption) (res *CompoundAggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -155,7 +155,7 @@ func (r *CompoundAggregationService) Delete(ctx context.Context, orgID string, i
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/compoundaggregations/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/compoundaggregations/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -324,6 +324,7 @@ func (r CompoundAggregationRounding) IsKnown() bool {
 }
 
 type CompoundAggregationNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// String that represents the formula for the calculation. This formula determines
 	// how the CompoundAggregation value is calculated. The calculation can reference
 	// simple Aggregations or Custom Fields. This field is required when creating or
@@ -443,7 +444,12 @@ type CompoundAggregationNewParamsCustomFieldsUnion interface {
 	ImplementsCompoundAggregationNewParamsCustomFieldsUnion()
 }
 
+type CompoundAggregationGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CompoundAggregationUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// String that represents the formula for the calculation. This formula determines
 	// how the CompoundAggregation value is calculated. The calculation can reference
 	// simple Aggregations or Custom Fields. This field is required when creating or
@@ -564,6 +570,7 @@ type CompoundAggregationUpdateParamsCustomFieldsUnion interface {
 }
 
 type CompoundAggregationListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// An optional parameter to retrieve specific CompoundAggregations based on their
 	// short codes.
 	Codes param.Field[[]string] `query:"codes"`
@@ -587,4 +594,8 @@ func (r CompoundAggregationListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type CompoundAggregationDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

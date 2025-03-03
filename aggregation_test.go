@@ -27,32 +27,30 @@ func TestAggregationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Aggregations.New(
-		context.TODO(),
-		"orgId",
-		m3ter.AggregationNewParams{
-			Aggregation:         m3ter.F(m3ter.AggregationNewParamsAggregationSum),
-			MeterID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Name:                m3ter.F("x"),
-			QuantityPerUnit:     m3ter.F(1.000000),
-			Rounding:            m3ter.F(m3ter.AggregationNewParamsRoundingUp),
-			TargetField:         m3ter.F("x"),
-			Unit:                m3ter.F("x"),
-			AccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Code:                m3ter.F("example_code"),
-			CustomFields: m3ter.F(map[string]m3ter.AggregationNewParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			CustomSql:       m3ter.F("customSql"),
-			DefaultValue:    m3ter.F(0.000000),
-			SegmentedFields: m3ter.F([]string{"string"}),
-			Segments: m3ter.F([]map[string]string{{
-				"foo": "string",
-			}}),
-			Version: m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Aggregations.New(context.TODO(), m3ter.AggregationNewParams{
+		OrgID:               m3ter.F("orgId"),
+		Aggregation:         m3ter.F(m3ter.AggregationNewParamsAggregationSum),
+		MeterID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Name:                m3ter.F("x"),
+		QuantityPerUnit:     m3ter.F(1.000000),
+		Rounding:            m3ter.F(m3ter.AggregationNewParamsRoundingUp),
+		TargetField:         m3ter.F("x"),
+		Unit:                m3ter.F("x"),
+		AccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Code:                m3ter.F("example_code"),
+		CustomFields: m3ter.F(map[string]m3ter.AggregationNewParamsCustomFieldsUnion{
+			"foo": shared.UnionString("string"),
+		}),
+		CustomSql:       m3ter.F("customSql"),
+		DefaultValue:    m3ter.F(0.000000),
+		SegmentedFields: m3ter.F([]string{"string"}),
+		Segments: m3ter.F([]map[string]string{{
+			"foo": "string",
+		}}),
+		Version: m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -75,11 +73,14 @@ func TestAggregationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.AggregationGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -103,12 +104,13 @@ func TestAggregationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.AggregationUpdateParams{
+			OrgID:               m3ter.F("orgId"),
 			Aggregation:         m3ter.F(m3ter.AggregationUpdateParamsAggregationSum),
 			MeterID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			Name:                m3ter.F("x"),
@@ -152,18 +154,16 @@ func TestAggregationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Aggregations.List(
-		context.TODO(),
-		"orgId",
-		m3ter.AggregationListParams{
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-			ProductID: m3ter.F([]string{"string"}),
-		},
-	)
+	_, err := client.Aggregations.List(context.TODO(), m3ter.AggregationListParams{
+		OrgID:     m3ter.F("orgId"),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+		ProductID: m3ter.F([]string{"string"}),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -186,11 +186,14 @@ func TestAggregationDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.AggregationDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

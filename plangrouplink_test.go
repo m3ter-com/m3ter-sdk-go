@@ -26,16 +26,14 @@ func TestPlanGroupLinkNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.PlanGroupLinks.New(
-		context.TODO(),
-		"orgId",
-		m3ter.PlanGroupLinkNewParams{
-			PlanGroupID: m3ter.F("x"),
-			PlanID:      m3ter.F("x"),
-			Version:     m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.PlanGroupLinks.New(context.TODO(), m3ter.PlanGroupLinkNewParams{
+		OrgID:       m3ter.F("orgId"),
+		PlanGroupID: m3ter.F("x"),
+		PlanID:      m3ter.F("x"),
+		Version:     m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -58,11 +56,14 @@ func TestPlanGroupLinkGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.PlanGroupLinkGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -86,12 +87,13 @@ func TestPlanGroupLinkUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.PlanGroupLinkUpdateParams{
+			OrgID:       m3ter.F("orgId"),
 			PlanGroupID: m3ter.F("x"),
 			PlanID:      m3ter.F("x"),
 			Version:     m3ter.F(int64(0)),
@@ -119,18 +121,16 @@ func TestPlanGroupLinkListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.PlanGroupLinks.List(
-		context.TODO(),
-		"orgId",
-		m3ter.PlanGroupLinkListParams{
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-			Plan:      m3ter.F("plan"),
-			PlanGroup: m3ter.F("planGroup"),
-		},
-	)
+	_, err := client.PlanGroupLinks.List(context.TODO(), m3ter.PlanGroupLinkListParams{
+		OrgID:     m3ter.F("orgId"),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+		Plan:      m3ter.F("plan"),
+		PlanGroup: m3ter.F("planGroup"),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -153,11 +153,14 @@ func TestPlanGroupLinkDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.PlanGroupLinkDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

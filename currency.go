@@ -40,22 +40,22 @@ func NewCurrencyService(opts ...option.RequestOption) (r *CurrencyService) {
 // Creates a new Currency for the specified Organization.
 //
 // Used to create a Currency that your Organization will start to use.
-func (r *CurrencyService) New(ctx context.Context, orgID string, body CurrencyNewParams, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opts ...option.RequestOption) (res *Currency, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/currency", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/currency", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the specified Currency with the given UUID. Used to obtain the details
 // of a specified existing Currency in your Organization.
-func (r *CurrencyService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetParams, opts ...option.RequestOption) (res *Currency, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -63,7 +63,7 @@ func (r *CurrencyService) Get(ctx context.Context, orgID string, id string, opts
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/currency/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/currency/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -72,9 +72,9 @@ func (r *CurrencyService) Get(ctx context.Context, orgID string, id string, opts
 //
 // Used to update the attributes of the specified Currency for the specified
 // Organization.
-func (r *CurrencyService) Update(ctx context.Context, orgID string, id string, body CurrencyUpdateParams, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) Update(ctx context.Context, id string, params CurrencyUpdateParams, opts ...option.RequestOption) (res *Currency, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -82,8 +82,8 @@ func (r *CurrencyService) Update(ctx context.Context, orgID string, id string, b
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/currency/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/currency/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -92,16 +92,16 @@ func (r *CurrencyService) Update(ctx context.Context, orgID string, id string, b
 // Retrieves a list of Currencies for the specified Organization. This endpoint
 // supports pagination and includes various query parameters to filter the
 // Currencies based on Currency ID, and short codes.
-func (r *CurrencyService) List(ctx context.Context, orgID string, query CurrencyListParams, opts ...option.RequestOption) (res *pagination.Cursor[Currency], err error) {
+func (r *CurrencyService) List(ctx context.Context, params CurrencyListParams, opts ...option.RequestOption) (res *pagination.Cursor[Currency], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/currency", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/picklists/currency", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -118,17 +118,17 @@ func (r *CurrencyService) List(ctx context.Context, orgID string, query Currency
 // Retrieves a list of Currencies for the specified Organization. This endpoint
 // supports pagination and includes various query parameters to filter the
 // Currencies based on Currency ID, and short codes.
-func (r *CurrencyService) ListAutoPaging(ctx context.Context, orgID string, query CurrencyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Currency] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *CurrencyService) ListAutoPaging(ctx context.Context, params CurrencyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Currency] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Currency with the given UUID.
 //
 // Used to remove an existing Currency from your Organization that is no longer
 // required.
-func (r *CurrencyService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDeleteParams, opts ...option.RequestOption) (res *Currency, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -136,7 +136,7 @@ func (r *CurrencyService) Delete(ctx context.Context, orgID string, id string, o
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/picklists/currency/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/picklists/currency/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -219,6 +219,7 @@ func (r CurrencyRoundingMode) IsKnown() bool {
 }
 
 type CurrencyNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -268,7 +269,12 @@ func (r CurrencyNewParamsRoundingMode) IsKnown() bool {
 	return false
 }
 
+type CurrencyGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CurrencyUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
@@ -319,6 +325,7 @@ func (r CurrencyUpdateParamsRoundingMode) IsKnown() bool {
 }
 
 type CurrencyListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Filter by archived flag. A True / False flag indicating whether to return
 	// Currencies that are archived _(obsolete)_.
 	//
@@ -344,4 +351,8 @@ func (r CurrencyListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type CurrencyDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

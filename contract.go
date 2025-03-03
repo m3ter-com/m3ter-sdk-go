@@ -44,22 +44,22 @@ func NewContractService(opts ...option.RequestOption) (r *ContractService) {
 //
 // Creates a new Contract for the specified Account. The Contract includes
 // information such as the associated Account along with start and end dates.
-func (r *ContractService) New(ctx context.Context, orgID string, body ContractNewParams, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) New(ctx context.Context, params ContractNewParams, opts ...option.RequestOption) (res *Contract, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/contracts", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/contracts", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieves the Contract with the given UUID. Used to obtain the details of a
 // Contract.
-func (r *ContractService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) Get(ctx context.Context, id string, query ContractGetParams, opts ...option.RequestOption) (res *Contract, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -67,7 +67,7 @@ func (r *ContractService) Get(ctx context.Context, orgID string, id string, opts
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/contracts/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/contracts/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -81,9 +81,9 @@ func (r *ContractService) Get(ctx context.Context, orgID string, id string, opts
 // endpoint to update the Contract use the `customFields` parameter to preserve
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
-func (r *ContractService) Update(ctx context.Context, orgID string, id string, body ContractUpdateParams, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) Update(ctx context.Context, id string, params ContractUpdateParams, opts ...option.RequestOption) (res *Contract, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -91,24 +91,24 @@ func (r *ContractService) Update(ctx context.Context, orgID string, id string, b
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/contracts/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/contracts/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieves a list of Contracts by Organization ID. Supports pagination and
 // includes various query parameters to filter the Contracts returned based on
 // Contract IDs or short codes.
-func (r *ContractService) List(ctx context.Context, orgID string, query ContractListParams, opts ...option.RequestOption) (res *pagination.Cursor[Contract], err error) {
+func (r *ContractService) List(ctx context.Context, params ContractListParams, opts ...option.RequestOption) (res *pagination.Cursor[Contract], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/contracts", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/contracts", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +123,8 @@ func (r *ContractService) List(ctx context.Context, orgID string, query Contract
 // Retrieves a list of Contracts by Organization ID. Supports pagination and
 // includes various query parameters to filter the Contracts returned based on
 // Contract IDs or short codes.
-func (r *ContractService) ListAutoPaging(ctx context.Context, orgID string, query ContractListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Contract] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Contract] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Deletes the Contract with the specified UUID. Used to remove an existing
@@ -132,9 +132,9 @@ func (r *ContractService) ListAutoPaging(ctx context.Context, orgID string, quer
 //
 // **Note:** This call will fail if there are any AccountPlans or Commitments that
 // have been added to the Contract.
-func (r *ContractService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) Delete(ctx context.Context, id string, body ContractDeleteParams, opts ...option.RequestOption) (res *Contract, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -142,7 +142,7 @@ func (r *ContractService) Delete(ctx context.Context, orgID string, id string, o
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/contracts/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/contracts/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -244,6 +244,7 @@ func init() {
 }
 
 type ContractNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The exclusive end date of the Contract _(in ISO-8601 format)_. This means the
@@ -291,7 +292,12 @@ type ContractNewParamsCustomFieldsUnion interface {
 	ImplementsContractNewParamsCustomFieldsUnion()
 }
 
+type ContractGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type ContractUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The exclusive end date of the Contract _(in ISO-8601 format)_. This means the
@@ -340,6 +346,7 @@ type ContractUpdateParamsCustomFieldsUnion interface {
 }
 
 type ContractListParams struct {
+	OrgID     param.Field[string] `path:"orgId,required"`
 	AccountID param.Field[string] `query:"accountId"`
 	// An optional parameter to retrieve specific Contracts based on their short codes.
 	Codes param.Field[[]string] `query:"codes"`
@@ -359,4 +366,8 @@ func (r ContractListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type ContractDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

@@ -48,21 +48,21 @@ func NewCounterAdjustmentService(opts ...option.RequestOption) (r *CounterAdjust
 //   - CounterAdjustments on Accounts are supported down to a _specific day_ of
 //     granularity - you cannot create more than one CounterAdjustment for any given
 //     day using the same Counter and you'll receive an error if you try to do this.
-func (r *CounterAdjustmentService) New(ctx context.Context, orgID string, body CounterAdjustmentNewParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjustmentNewParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counteradjustments", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counteradjustments", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a CounterAdjustment for the given UUID.
-func (r *CounterAdjustmentService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query CounterAdjustmentGetParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -70,15 +70,15 @@ func (r *CounterAdjustmentService) Get(ctx context.Context, orgID string, id str
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counteradjustments/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/counteradjustments/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update a CounterAdjustment for an Account.
-func (r *CounterAdjustmentService) Update(ctx context.Context, orgID string, id string, body CounterAdjustmentUpdateParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) Update(ctx context.Context, id string, params CounterAdjustmentUpdateParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -86,8 +86,8 @@ func (r *CounterAdjustmentService) Update(ctx context.Context, orgID string, id 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counteradjustments/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counteradjustments/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -101,16 +101,16 @@ func (r *CounterAdjustmentService) Update(ctx context.Context, orgID string, id 
 //     other query parameters.
 //   - If you want to use the `date`, `dateStart`, or `dateEnd` query parameters, you
 //     must also use the `accountId` query parameter.
-func (r *CounterAdjustmentService) List(ctx context.Context, orgID string, query CounterAdjustmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterAdjustment], err error) {
+func (r *CounterAdjustmentService) List(ctx context.Context, params CounterAdjustmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterAdjustment], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counteradjustments", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counteradjustments", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -132,14 +132,14 @@ func (r *CounterAdjustmentService) List(ctx context.Context, orgID string, query
 //     other query parameters.
 //   - If you want to use the `date`, `dateStart`, or `dateEnd` query parameters, you
 //     must also use the `accountId` query parameter.
-func (r *CounterAdjustmentService) ListAutoPaging(ctx context.Context, orgID string, query CounterAdjustmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterAdjustment] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *CounterAdjustmentService) ListAutoPaging(ctx context.Context, params CounterAdjustmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterAdjustment] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a CounterAdjustment for the given UUID.
-func (r *CounterAdjustmentService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body CounterAdjustmentDeleteParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -147,7 +147,7 @@ func (r *CounterAdjustmentService) Delete(ctx context.Context, orgID string, id 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counteradjustments/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/counteradjustments/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -212,6 +212,7 @@ func (r counterAdjustmentJSON) RawJSON() string {
 }
 
 type CounterAdjustmentNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The Account ID the CounterAdjustment is created for.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The ID of the Counter used for the CounterAdjustment on the Account.
@@ -247,7 +248,12 @@ func (r CounterAdjustmentNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type CounterAdjustmentGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CounterAdjustmentUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The Account ID the CounterAdjustment is created for.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The ID of the Counter used for the CounterAdjustment on the Account.
@@ -284,6 +290,7 @@ func (r CounterAdjustmentUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterAdjustmentListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List CounterAdjustment items for the Account UUID.
 	AccountID param.Field[string] `query:"accountId"`
 	// List CounterAdjustment items for the Counter UUID.
@@ -309,4 +316,8 @@ func (r CounterAdjustmentListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type CounterAdjustmentDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

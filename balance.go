@@ -43,23 +43,23 @@ func NewBalanceService(opts ...option.RequestOption) (r *BalanceService) {
 //
 // This endpoint allows you to create a new Balance for a specific end customer
 // Account. The Balance details should be provided in the request body.
-func (r *BalanceService) New(ctx context.Context, orgID string, body BalanceNewParams, opts ...option.RequestOption) (res *Balance, err error) {
+func (r *BalanceService) New(ctx context.Context, params BalanceNewParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/balances", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/balances", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a specific Balance.
 //
 // This endpoint returns the details of the specified Balance.
-func (r *BalanceService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Balance, err error) {
+func (r *BalanceService) Get(ctx context.Context, id string, query BalanceGetParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -67,7 +67,7 @@ func (r *BalanceService) Get(ctx context.Context, orgID string, id string, opts 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/balances/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/balances/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -76,9 +76,9 @@ func (r *BalanceService) Get(ctx context.Context, orgID string, id string, opts 
 //
 // This endpoint allows you to update the details of a specific Balance. The
 // updated Balance details should be provided in the request body.
-func (r *BalanceService) Update(ctx context.Context, orgID string, id string, body BalanceUpdateParams, opts ...option.RequestOption) (res *Balance, err error) {
+func (r *BalanceService) Update(ctx context.Context, id string, params BalanceUpdateParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -86,8 +86,8 @@ func (r *BalanceService) Update(ctx context.Context, orgID string, id string, bo
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/balances/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/balances/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -96,16 +96,16 @@ func (r *BalanceService) Update(ctx context.Context, orgID string, id string, bo
 // This endpoint returns a list of all Balances associated with your organization.
 // You can filter the Balances by the end customer's Account UUID and end dates,
 // and paginate through them using the `pageSize` and `nextToken` parameters.
-func (r *BalanceService) List(ctx context.Context, orgID string, query BalanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[Balance], err error) {
+func (r *BalanceService) List(ctx context.Context, params BalanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[Balance], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/balances", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/balances", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -122,16 +122,16 @@ func (r *BalanceService) List(ctx context.Context, orgID string, query BalanceLi
 // This endpoint returns a list of all Balances associated with your organization.
 // You can filter the Balances by the end customer's Account UUID and end dates,
 // and paginate through them using the `pageSize` and `nextToken` parameters.
-func (r *BalanceService) ListAutoPaging(ctx context.Context, orgID string, query BalanceListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Balance] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *BalanceService) ListAutoPaging(ctx context.Context, params BalanceListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Balance] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a specific Balance.
 //
 // This endpoint allows you to delete a specific Balance with the given UUID.
-func (r *BalanceService) Delete(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Balance, err error) {
+func (r *BalanceService) Delete(ctx context.Context, id string, body BalanceDeleteParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -139,7 +139,7 @@ func (r *BalanceService) Delete(ctx context.Context, orgID string, id string, op
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/balances/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/balances/%s", body.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -263,6 +263,7 @@ func (r BalanceLineItemType) IsKnown() bool {
 }
 
 type BalanceNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
@@ -374,7 +375,12 @@ func (r BalanceNewParamsLineItemType) IsKnown() bool {
 	return false
 }
 
+type BalanceGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type BalanceUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account.
 	AccountID param.Field[string] `json:"accountId,required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
@@ -487,6 +493,7 @@ func (r BalanceUpdateParamsLineItemType) IsKnown() bool {
 }
 
 type BalanceListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer's account.
 	AccountID param.Field[string] `query:"accountId"`
 	// Only include Balances with end dates earlier than this date.
@@ -506,4 +513,8 @@ func (r BalanceListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type BalanceDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

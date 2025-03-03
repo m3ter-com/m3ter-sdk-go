@@ -26,17 +26,15 @@ func TestTransactionTypeNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.TransactionTypes.New(
-		context.TODO(),
-		"orgId",
-		m3ter.TransactionTypeNewParams{
-			Name:     m3ter.F("x"),
-			Archived: m3ter.F(true),
-			Code:     m3ter.F("{1{}}_"),
-			Version:  m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.TransactionTypes.New(context.TODO(), m3ter.TransactionTypeNewParams{
+		OrgID:    m3ter.F("orgId"),
+		Name:     m3ter.F("x"),
+		Archived: m3ter.F(true),
+		Code:     m3ter.F("{1{}}_"),
+		Version:  m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -59,11 +57,14 @@ func TestTransactionTypeGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.TransactionTypeGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -87,12 +88,13 @@ func TestTransactionTypeUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.TransactionTypeUpdateParams{
+			OrgID:    m3ter.F("orgId"),
 			Name:     m3ter.F("x"),
 			Archived: m3ter.F(true),
 			Code:     m3ter.F("{1{}}_"),
@@ -121,18 +123,16 @@ func TestTransactionTypeListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.TransactionTypes.List(
-		context.TODO(),
-		"orgId",
-		m3ter.TransactionTypeListParams{
-			Archived:  m3ter.F(true),
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-		},
-	)
+	_, err := client.TransactionTypes.List(context.TODO(), m3ter.TransactionTypeListParams{
+		OrgID:     m3ter.F("orgId"),
+		Archived:  m3ter.F(true),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -155,11 +155,14 @@ func TestTransactionTypeDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.TransactionTypes.Delete(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.TransactionTypeDeleteParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
