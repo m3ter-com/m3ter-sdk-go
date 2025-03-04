@@ -259,8 +259,8 @@ type Commitment struct {
 	//   - `amount` - the billed amount.
 	//   - `servicePeriodStartDate` and `servicePeriodEndDate` - defines the service
 	//     period the bill covers _(in ISO-8601 format)_.
-	FeeDates                []CommitmentFeeDate `json:"feeDates"`
-	FeesAccountingProductID string              `json:"feesAccountingProductId"`
+	FeeDates                []CommitmentFee `json:"feeDates"`
+	FeesAccountingProductID string          `json:"feesAccountingProductId"`
 	// The unique identifier (UUID) of the user who last modified this Commitment.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Specifies the line item charge types that can draw-down at billing against the
@@ -370,33 +370,6 @@ func (r CommitmentChildBillingMode) IsKnown() bool {
 	return false
 }
 
-type CommitmentFeeDate struct {
-	Amount                 float64               `json:"amount,required"`
-	Date                   time.Time             `json:"date,required" format:"date"`
-	ServicePeriodEndDate   time.Time             `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate time.Time             `json:"servicePeriodStartDate,required" format:"date-time"`
-	JSON                   commitmentFeeDateJSON `json:"-"`
-}
-
-// commitmentFeeDateJSON contains the JSON metadata for the struct
-// [CommitmentFeeDate]
-type commitmentFeeDateJSON struct {
-	Amount                 apijson.Field
-	Date                   apijson.Field
-	ServicePeriodEndDate   apijson.Field
-	ServicePeriodStartDate apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *CommitmentFeeDate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitmentFeeDateJSON) RawJSON() string {
-	return r.raw
-}
-
 // Available line item types for Commitments
 type CommitmentLineItemType string
 
@@ -414,6 +387,43 @@ func (r CommitmentLineItemType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type CommitmentFee struct {
+	Amount                 float64           `json:"amount,required"`
+	Date                   time.Time         `json:"date,required" format:"date"`
+	ServicePeriodEndDate   time.Time         `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodStartDate time.Time         `json:"servicePeriodStartDate,required" format:"date-time"`
+	JSON                   commitmentFeeJSON `json:"-"`
+}
+
+// commitmentFeeJSON contains the JSON metadata for the struct [CommitmentFee]
+type commitmentFeeJSON struct {
+	Amount                 apijson.Field
+	Date                   apijson.Field
+	ServicePeriodEndDate   apijson.Field
+	ServicePeriodStartDate apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *CommitmentFee) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitmentFeeJSON) RawJSON() string {
+	return r.raw
+}
+
+type CommitmentFeeParam struct {
+	Amount                 param.Field[float64]   `json:"amount,required"`
+	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
+	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+}
+
+func (r CommitmentFeeParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type CommitmentSearchResponse struct {
@@ -535,7 +545,7 @@ type CommitmentNewParams struct {
 	//   - You can set `servicePeriodStartDate` and `servicePeriodEndDate` to the _same
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
-	FeeDates param.Field[[]CommitmentNewParamsFeeDate] `json:"feeDates"`
+	FeeDates param.Field[[]CommitmentFeeParam] `json:"feeDates"`
 	// Optional Product ID this Commitment fees should be attributed to for accounting
 	// purposes
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
@@ -626,17 +636,6 @@ func (r CommitmentNewParamsChildBillingMode) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type CommitmentNewParamsFeeDate struct {
-	Amount                 param.Field[float64]   `json:"amount,required"`
-	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
-	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
-}
-
-func (r CommitmentNewParamsFeeDate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // Available line item types for Commitments
@@ -755,7 +754,7 @@ type CommitmentUpdateParams struct {
 	//   - You can set `servicePeriodStartDate` and `servicePeriodEndDate` to the _same
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
-	FeeDates param.Field[[]CommitmentUpdateParamsFeeDate] `json:"feeDates"`
+	FeeDates param.Field[[]CommitmentFeeParam] `json:"feeDates"`
 	// Optional Product ID this Commitment fees should be attributed to for accounting
 	// purposes
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
@@ -846,17 +845,6 @@ func (r CommitmentUpdateParamsChildBillingMode) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type CommitmentUpdateParamsFeeDate struct {
-	Amount                 param.Field[float64]   `json:"amount,required"`
-	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
-	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
-}
-
-func (r CommitmentUpdateParamsFeeDate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // Available line item types for Commitments
