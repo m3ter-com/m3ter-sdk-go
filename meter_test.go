@@ -32,18 +32,20 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 	_, err := client.Meters.New(context.TODO(), m3ter.MeterNewParams{
 		OrgID: m3ter.F("orgId"),
 		Code:  m3ter.F("JS!?Q0]r] ]$]"),
-		DataFields: m3ter.F([]m3ter.MeterNewParamsDataField{{
-			Category: m3ter.F(m3ter.MeterNewParamsDataFieldsCategoryWho),
+		DataFields: m3ter.F([]m3ter.DataFieldParam{{
+			Category: m3ter.F(m3ter.DataFieldCategoryWho),
 			Code:     m3ter.F("{1{}}_"),
 			Name:     m3ter.F("x"),
 			Unit:     m3ter.F("x"),
 		}}),
 		DerivedFields: m3ter.F([]m3ter.MeterNewParamsDerivedField{{
+			DataFieldParam: m3ter.DataFieldParam{
+				Category: m3ter.F(m3ter.DataFieldCategoryWho),
+				Code:     m3ter.F("{1{}}_"),
+				Name:     m3ter.F("x"),
+				Unit:     m3ter.F("x"),
+			},
 			Calculation: m3ter.F("x"),
-			Category:    m3ter.F(m3ter.MeterNewParamsDerivedFieldsCategoryWho),
-			Code:        m3ter.F("{1{}}_"),
-			Name:        m3ter.F("x"),
-			Unit:        m3ter.F("x"),
 		}}),
 		Name: m3ter.F("x"),
 		CustomFields: m3ter.F(map[string]m3ter.MeterNewParamsCustomFieldsUnion{
@@ -114,18 +116,20 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 		m3ter.MeterUpdateParams{
 			OrgID: m3ter.F("orgId"),
 			Code:  m3ter.F("JS!?Q0]r] ]$]"),
-			DataFields: m3ter.F([]m3ter.MeterUpdateParamsDataField{{
-				Category: m3ter.F(m3ter.MeterUpdateParamsDataFieldsCategoryWho),
+			DataFields: m3ter.F([]m3ter.DataFieldParam{{
+				Category: m3ter.F(m3ter.DataFieldCategoryWho),
 				Code:     m3ter.F("{1{}}_"),
 				Name:     m3ter.F("x"),
 				Unit:     m3ter.F("x"),
 			}}),
 			DerivedFields: m3ter.F([]m3ter.MeterUpdateParamsDerivedField{{
+				DataFieldParam: m3ter.DataFieldParam{
+					Category: m3ter.F(m3ter.DataFieldCategoryWho),
+					Code:     m3ter.F("{1{}}_"),
+					Name:     m3ter.F("x"),
+					Unit:     m3ter.F("x"),
+				},
 				Calculation: m3ter.F("x"),
-				Category:    m3ter.F(m3ter.MeterUpdateParamsDerivedFieldsCategoryWho),
-				Code:        m3ter.F("{1{}}_"),
-				Name:        m3ter.F("x"),
-				Unit:        m3ter.F("x"),
 			}}),
 			Name: m3ter.F("x"),
 			CustomFields: m3ter.F(map[string]m3ter.MeterUpdateParamsCustomFieldsUnion{

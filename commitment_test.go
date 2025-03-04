@@ -49,7 +49,7 @@ func TestCommitmentNewWithOptionalParams(t *testing.T) {
 		CommitmentUsageDescription:   m3ter.F("commitmentUsageDescription"),
 		ContractID:                   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		DrawdownsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		FeeDates: m3ter.F([]m3ter.CommitmentNewParamsFeeDate{{
+		FeeDates: m3ter.F([]m3ter.CommitmentFeeParam{{
 			Amount:                 m3ter.F(1.000000),
 			Date:                   m3ter.F(time.Now()),
 			ServicePeriodEndDate:   m3ter.F(time.Now()),
@@ -141,7 +141,7 @@ func TestCommitmentUpdateWithOptionalParams(t *testing.T) {
 			CommitmentUsageDescription:   m3ter.F("commitmentUsageDescription"),
 			ContractID:                   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			DrawdownsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			FeeDates: m3ter.F([]m3ter.CommitmentUpdateParamsFeeDate{{
+			FeeDates: m3ter.F([]m3ter.CommitmentFeeParam{{
 				Amount:                 m3ter.F(1.000000),
 				Date:                   m3ter.F(time.Now()),
 				ServicePeriodEndDate:   m3ter.F(time.Now()),
