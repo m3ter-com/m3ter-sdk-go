@@ -479,6 +479,23 @@ func (r PermissionStatementParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type PrincipalPermissionRequestParam struct {
+	PrincipalID param.Field[string] `json:"principalId,required"`
+	// The version number of the entity:
+	//
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
+	Version param.Field[int64] `json:"version"`
+}
+
+func (r PrincipalPermissionRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type PermissionPolicyAddToServiceUserResponse struct {
 	ID string `json:"id"`
 	// The id of the user who created this principal permission.
@@ -1061,21 +1078,12 @@ type PermissionPolicyDeleteParams struct {
 }
 
 type PermissionPolicyAddToServiceUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principalPermissionRequest,required"`
 }
 
 func (r PermissionPolicyAddToServiceUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyAddToSupportUserParams struct {
@@ -1096,57 +1104,30 @@ func (r PermissionPolicyAddToSupportUserParams) MarshalJSON() (data []byte, err 
 }
 
 type PermissionPolicyAddToUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principalPermissionRequest,required"`
 }
 
 func (r PermissionPolicyAddToUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyAddToUserGroupParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principalPermissionRequest,required"`
 }
 
 func (r PermissionPolicyAddToUserGroupParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyRemoveFromServiceUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principalPermissionRequest,required"`
 }
 
 func (r PermissionPolicyRemoveFromServiceUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyRemoveFromSupportUserParams struct {
@@ -1154,37 +1135,19 @@ type PermissionPolicyRemoveFromSupportUserParams struct {
 }
 
 type PermissionPolicyRemoveFromUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principalPermissionRequest,required"`
 }
 
 func (r PermissionPolicyRemoveFromUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyRemoveFromUserGroupParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principalPermissionRequest,required"`
 }
 
 func (r PermissionPolicyRemoveFromUserGroupParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }

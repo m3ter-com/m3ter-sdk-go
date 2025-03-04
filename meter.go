@@ -160,6 +160,83 @@ func (r *MeterService) Delete(ctx context.Context, id string, body MeterDeletePa
 	return
 }
 
+type DataField struct {
+	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
+	Category DataFieldCategory `json:"category,required"`
+	// Short code to identify the field
+	//
+	// **NOTE:** Code has a maximum length of 80 characters and can only contain
+	// letters, numbers, underscore, and the dollar character, and must not start with
+	// a number.
+	Code string `json:"code,required"`
+	// Descriptive name of the field.
+	Name string `json:"name,required"`
+	// The units to measure the data with. Should conform to _Unified Code for Units of
+	// Measure_ (UCUM). Required only for numeric field categories.
+	Unit string        `json:"unit"`
+	JSON dataFieldJSON `json:"-"`
+}
+
+// dataFieldJSON contains the JSON metadata for the struct [DataField]
+type dataFieldJSON struct {
+	Category    apijson.Field
+	Code        apijson.Field
+	Name        apijson.Field
+	Unit        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DataField) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataFieldJSON) RawJSON() string {
+	return r.raw
+}
+
+// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
+type DataFieldCategory string
+
+const (
+	DataFieldCategoryWho      DataFieldCategory = "WHO"
+	DataFieldCategoryWhere    DataFieldCategory = "WHERE"
+	DataFieldCategoryWhat     DataFieldCategory = "WHAT"
+	DataFieldCategoryOther    DataFieldCategory = "OTHER"
+	DataFieldCategoryMetadata DataFieldCategory = "METADATA"
+	DataFieldCategoryMeasure  DataFieldCategory = "MEASURE"
+	DataFieldCategoryIncome   DataFieldCategory = "INCOME"
+	DataFieldCategoryCost     DataFieldCategory = "COST"
+)
+
+func (r DataFieldCategory) IsKnown() bool {
+	switch r {
+	case DataFieldCategoryWho, DataFieldCategoryWhere, DataFieldCategoryWhat, DataFieldCategoryOther, DataFieldCategoryMetadata, DataFieldCategoryMeasure, DataFieldCategoryIncome, DataFieldCategoryCost:
+		return true
+	}
+	return false
+}
+
+type DataFieldParam struct {
+	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
+	Category param.Field[DataFieldCategory] `json:"category,required"`
+	// Short code to identify the field
+	//
+	// **NOTE:** Code has a maximum length of 80 characters and can only contain
+	// letters, numbers, underscore, and the dollar character, and must not start with
+	// a number.
+	Code param.Field[string] `json:"code,required"`
+	// Descriptive name of the field.
+	Name param.Field[string] `json:"name,required"`
+	// The units to measure the data with. Should conform to _Unified Code for Units of
+	// Measure_ (UCUM). Required only for numeric field categories.
+	Unit param.Field[string] `json:"unit"`
+}
+
+func (r DataFieldParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type Meter struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -188,7 +265,7 @@ type Meter struct {
 	// Used to submit categorized raw usage data values for ingest into the platform -
 	// either numeric quantitative values or non-numeric data values. At least one
 	// required per Meter; maximum 15 per Meter.
-	DataFields []MeterDataField `json:"dataFields"`
+	DataFields []DataField `json:"dataFields"`
 	// Used to submit usage data values for ingest into the platform that are the
 	// result of a calculation performed on `dataFields`, `customFields`, or system
 	// `Timestamp` fields. Raw usage data is not submitted using `derivedFields`.
@@ -257,92 +334,19 @@ func init() {
 	)
 }
 
-type MeterDataField struct {
-	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category MeterDataFieldsCategory `json:"category,required"`
-	// Short code to identify the field
-	//
-	// **NOTE:** Code has a maximum length of 80 characters and can only contain
-	// letters, numbers, underscore, and the dollar character, and must not start with
-	// a number.
-	Code string `json:"code,required"`
-	// Descriptive name of the field.
-	Name string `json:"name,required"`
-	// The units to measure the data with. Should conform to _Unified Code for Units of
-	// Measure_ (UCUM). Required only for numeric field categories.
-	Unit string             `json:"unit"`
-	JSON meterDataFieldJSON `json:"-"`
-}
-
-// meterDataFieldJSON contains the JSON metadata for the struct [MeterDataField]
-type meterDataFieldJSON struct {
-	Category    apijson.Field
-	Code        apijson.Field
-	Name        apijson.Field
-	Unit        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *MeterDataField) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r meterDataFieldJSON) RawJSON() string {
-	return r.raw
-}
-
-// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-type MeterDataFieldsCategory string
-
-const (
-	MeterDataFieldsCategoryWho      MeterDataFieldsCategory = "WHO"
-	MeterDataFieldsCategoryWhere    MeterDataFieldsCategory = "WHERE"
-	MeterDataFieldsCategoryWhat     MeterDataFieldsCategory = "WHAT"
-	MeterDataFieldsCategoryOther    MeterDataFieldsCategory = "OTHER"
-	MeterDataFieldsCategoryMetadata MeterDataFieldsCategory = "METADATA"
-	MeterDataFieldsCategoryMeasure  MeterDataFieldsCategory = "MEASURE"
-	MeterDataFieldsCategoryIncome   MeterDataFieldsCategory = "INCOME"
-	MeterDataFieldsCategoryCost     MeterDataFieldsCategory = "COST"
-)
-
-func (r MeterDataFieldsCategory) IsKnown() bool {
-	switch r {
-	case MeterDataFieldsCategoryWho, MeterDataFieldsCategoryWhere, MeterDataFieldsCategoryWhat, MeterDataFieldsCategoryOther, MeterDataFieldsCategoryMetadata, MeterDataFieldsCategoryMeasure, MeterDataFieldsCategoryIncome, MeterDataFieldsCategoryCost:
-		return true
-	}
-	return false
-}
-
 type MeterDerivedField struct {
 	// The calculation used to transform the value of submitted `dataFields` in usage
 	// data. Calculation can reference `dataFields`, `customFields`, or system
 	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
-	Calculation string `json:"calculation,required"`
-	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category MeterDerivedFieldsCategory `json:"category,required"`
-	// Short code to identify the field
-	//
-	// **NOTE:** Code has a maximum length of 80 characters and can only contain
-	// letters, numbers, underscore, and the dollar character, and must not start with
-	// a number.
-	Code string `json:"code,required"`
-	// Descriptive name of the field.
-	Name string `json:"name,required"`
-	// The units to measure the data with. Should conform to _Unified Code for Units of
-	// Measure_ (UCUM). Required only for numeric field categories.
-	Unit string                `json:"unit"`
-	JSON meterDerivedFieldJSON `json:"-"`
+	Calculation string                `json:"calculation,required"`
+	JSON        meterDerivedFieldJSON `json:"-"`
+	DataField
 }
 
 // meterDerivedFieldJSON contains the JSON metadata for the struct
 // [MeterDerivedField]
 type meterDerivedFieldJSON struct {
 	Calculation apijson.Field
-	Category    apijson.Field
-	Code        apijson.Field
-	Name        apijson.Field
-	Unit        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -353,28 +357,6 @@ func (r *MeterDerivedField) UnmarshalJSON(data []byte) (err error) {
 
 func (r meterDerivedFieldJSON) RawJSON() string {
 	return r.raw
-}
-
-// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-type MeterDerivedFieldsCategory string
-
-const (
-	MeterDerivedFieldsCategoryWho      MeterDerivedFieldsCategory = "WHO"
-	MeterDerivedFieldsCategoryWhere    MeterDerivedFieldsCategory = "WHERE"
-	MeterDerivedFieldsCategoryWhat     MeterDerivedFieldsCategory = "WHAT"
-	MeterDerivedFieldsCategoryOther    MeterDerivedFieldsCategory = "OTHER"
-	MeterDerivedFieldsCategoryMetadata MeterDerivedFieldsCategory = "METADATA"
-	MeterDerivedFieldsCategoryMeasure  MeterDerivedFieldsCategory = "MEASURE"
-	MeterDerivedFieldsCategoryIncome   MeterDerivedFieldsCategory = "INCOME"
-	MeterDerivedFieldsCategoryCost     MeterDerivedFieldsCategory = "COST"
-)
-
-func (r MeterDerivedFieldsCategory) IsKnown() bool {
-	switch r {
-	case MeterDerivedFieldsCategoryWho, MeterDerivedFieldsCategoryWhere, MeterDerivedFieldsCategoryWhat, MeterDerivedFieldsCategoryOther, MeterDerivedFieldsCategoryMetadata, MeterDerivedFieldsCategoryMeasure, MeterDerivedFieldsCategoryIncome, MeterDerivedFieldsCategoryCost:
-		return true
-	}
-	return false
 }
 
 type MeterNewParams struct {
@@ -388,7 +370,7 @@ type MeterNewParams struct {
 	// Used to submit categorized raw usage data values for ingest into the platform -
 	// either numeric quantitative values or non-numeric data values. At least one
 	// required per Meter; maximum 15 per Meter.
-	DataFields param.Field[[]MeterNewParamsDataField] `json:"dataFields,required"`
+	DataFields param.Field[[]DataFieldParam] `json:"dataFields,required"`
 	// Used to submit usage data values for ingest into the platform that are the
 	// result of a calculation performed on `dataFields`, `customFields`, or system
 	// `Timestamp` fields. Raw usage data is not submitted using `derivedFields`.
@@ -430,92 +412,16 @@ func (r MeterNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type MeterNewParamsDataField struct {
-	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category param.Field[MeterNewParamsDataFieldsCategory] `json:"category,required"`
-	// Short code to identify the field
-	//
-	// **NOTE:** Code has a maximum length of 80 characters and can only contain
-	// letters, numbers, underscore, and the dollar character, and must not start with
-	// a number.
-	Code param.Field[string] `json:"code,required"`
-	// Descriptive name of the field.
-	Name param.Field[string] `json:"name,required"`
-	// The units to measure the data with. Should conform to _Unified Code for Units of
-	// Measure_ (UCUM). Required only for numeric field categories.
-	Unit param.Field[string] `json:"unit"`
-}
-
-func (r MeterNewParamsDataField) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-type MeterNewParamsDataFieldsCategory string
-
-const (
-	MeterNewParamsDataFieldsCategoryWho      MeterNewParamsDataFieldsCategory = "WHO"
-	MeterNewParamsDataFieldsCategoryWhere    MeterNewParamsDataFieldsCategory = "WHERE"
-	MeterNewParamsDataFieldsCategoryWhat     MeterNewParamsDataFieldsCategory = "WHAT"
-	MeterNewParamsDataFieldsCategoryOther    MeterNewParamsDataFieldsCategory = "OTHER"
-	MeterNewParamsDataFieldsCategoryMetadata MeterNewParamsDataFieldsCategory = "METADATA"
-	MeterNewParamsDataFieldsCategoryMeasure  MeterNewParamsDataFieldsCategory = "MEASURE"
-	MeterNewParamsDataFieldsCategoryIncome   MeterNewParamsDataFieldsCategory = "INCOME"
-	MeterNewParamsDataFieldsCategoryCost     MeterNewParamsDataFieldsCategory = "COST"
-)
-
-func (r MeterNewParamsDataFieldsCategory) IsKnown() bool {
-	switch r {
-	case MeterNewParamsDataFieldsCategoryWho, MeterNewParamsDataFieldsCategoryWhere, MeterNewParamsDataFieldsCategoryWhat, MeterNewParamsDataFieldsCategoryOther, MeterNewParamsDataFieldsCategoryMetadata, MeterNewParamsDataFieldsCategoryMeasure, MeterNewParamsDataFieldsCategoryIncome, MeterNewParamsDataFieldsCategoryCost:
-		return true
-	}
-	return false
-}
-
 type MeterNewParamsDerivedField struct {
 	// The calculation used to transform the value of submitted `dataFields` in usage
 	// data. Calculation can reference `dataFields`, `customFields`, or system
 	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
 	Calculation param.Field[string] `json:"calculation,required"`
-	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category param.Field[MeterNewParamsDerivedFieldsCategory] `json:"category,required"`
-	// Short code to identify the field
-	//
-	// **NOTE:** Code has a maximum length of 80 characters and can only contain
-	// letters, numbers, underscore, and the dollar character, and must not start with
-	// a number.
-	Code param.Field[string] `json:"code,required"`
-	// Descriptive name of the field.
-	Name param.Field[string] `json:"name,required"`
-	// The units to measure the data with. Should conform to _Unified Code for Units of
-	// Measure_ (UCUM). Required only for numeric field categories.
-	Unit param.Field[string] `json:"unit"`
+	DataFieldParam
 }
 
 func (r MeterNewParamsDerivedField) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-type MeterNewParamsDerivedFieldsCategory string
-
-const (
-	MeterNewParamsDerivedFieldsCategoryWho      MeterNewParamsDerivedFieldsCategory = "WHO"
-	MeterNewParamsDerivedFieldsCategoryWhere    MeterNewParamsDerivedFieldsCategory = "WHERE"
-	MeterNewParamsDerivedFieldsCategoryWhat     MeterNewParamsDerivedFieldsCategory = "WHAT"
-	MeterNewParamsDerivedFieldsCategoryOther    MeterNewParamsDerivedFieldsCategory = "OTHER"
-	MeterNewParamsDerivedFieldsCategoryMetadata MeterNewParamsDerivedFieldsCategory = "METADATA"
-	MeterNewParamsDerivedFieldsCategoryMeasure  MeterNewParamsDerivedFieldsCategory = "MEASURE"
-	MeterNewParamsDerivedFieldsCategoryIncome   MeterNewParamsDerivedFieldsCategory = "INCOME"
-	MeterNewParamsDerivedFieldsCategoryCost     MeterNewParamsDerivedFieldsCategory = "COST"
-)
-
-func (r MeterNewParamsDerivedFieldsCategory) IsKnown() bool {
-	switch r {
-	case MeterNewParamsDerivedFieldsCategoryWho, MeterNewParamsDerivedFieldsCategoryWhere, MeterNewParamsDerivedFieldsCategoryWhat, MeterNewParamsDerivedFieldsCategoryOther, MeterNewParamsDerivedFieldsCategoryMetadata, MeterNewParamsDerivedFieldsCategoryMeasure, MeterNewParamsDerivedFieldsCategoryIncome, MeterNewParamsDerivedFieldsCategoryCost:
-		return true
-	}
-	return false
 }
 
 // Satisfied by [shared.UnionString], [shared.UnionFloat].
@@ -538,7 +444,7 @@ type MeterUpdateParams struct {
 	// Used to submit categorized raw usage data values for ingest into the platform -
 	// either numeric quantitative values or non-numeric data values. At least one
 	// required per Meter; maximum 15 per Meter.
-	DataFields param.Field[[]MeterUpdateParamsDataField] `json:"dataFields,required"`
+	DataFields param.Field[[]DataFieldParam] `json:"dataFields,required"`
 	// Used to submit usage data values for ingest into the platform that are the
 	// result of a calculation performed on `dataFields`, `customFields`, or system
 	// `Timestamp` fields. Raw usage data is not submitted using `derivedFields`.
@@ -580,92 +486,16 @@ func (r MeterUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type MeterUpdateParamsDataField struct {
-	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category param.Field[MeterUpdateParamsDataFieldsCategory] `json:"category,required"`
-	// Short code to identify the field
-	//
-	// **NOTE:** Code has a maximum length of 80 characters and can only contain
-	// letters, numbers, underscore, and the dollar character, and must not start with
-	// a number.
-	Code param.Field[string] `json:"code,required"`
-	// Descriptive name of the field.
-	Name param.Field[string] `json:"name,required"`
-	// The units to measure the data with. Should conform to _Unified Code for Units of
-	// Measure_ (UCUM). Required only for numeric field categories.
-	Unit param.Field[string] `json:"unit"`
-}
-
-func (r MeterUpdateParamsDataField) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-type MeterUpdateParamsDataFieldsCategory string
-
-const (
-	MeterUpdateParamsDataFieldsCategoryWho      MeterUpdateParamsDataFieldsCategory = "WHO"
-	MeterUpdateParamsDataFieldsCategoryWhere    MeterUpdateParamsDataFieldsCategory = "WHERE"
-	MeterUpdateParamsDataFieldsCategoryWhat     MeterUpdateParamsDataFieldsCategory = "WHAT"
-	MeterUpdateParamsDataFieldsCategoryOther    MeterUpdateParamsDataFieldsCategory = "OTHER"
-	MeterUpdateParamsDataFieldsCategoryMetadata MeterUpdateParamsDataFieldsCategory = "METADATA"
-	MeterUpdateParamsDataFieldsCategoryMeasure  MeterUpdateParamsDataFieldsCategory = "MEASURE"
-	MeterUpdateParamsDataFieldsCategoryIncome   MeterUpdateParamsDataFieldsCategory = "INCOME"
-	MeterUpdateParamsDataFieldsCategoryCost     MeterUpdateParamsDataFieldsCategory = "COST"
-)
-
-func (r MeterUpdateParamsDataFieldsCategory) IsKnown() bool {
-	switch r {
-	case MeterUpdateParamsDataFieldsCategoryWho, MeterUpdateParamsDataFieldsCategoryWhere, MeterUpdateParamsDataFieldsCategoryWhat, MeterUpdateParamsDataFieldsCategoryOther, MeterUpdateParamsDataFieldsCategoryMetadata, MeterUpdateParamsDataFieldsCategoryMeasure, MeterUpdateParamsDataFieldsCategoryIncome, MeterUpdateParamsDataFieldsCategoryCost:
-		return true
-	}
-	return false
-}
-
 type MeterUpdateParamsDerivedField struct {
 	// The calculation used to transform the value of submitted `dataFields` in usage
 	// data. Calculation can reference `dataFields`, `customFields`, or system
 	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
 	Calculation param.Field[string] `json:"calculation,required"`
-	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category param.Field[MeterUpdateParamsDerivedFieldsCategory] `json:"category,required"`
-	// Short code to identify the field
-	//
-	// **NOTE:** Code has a maximum length of 80 characters and can only contain
-	// letters, numbers, underscore, and the dollar character, and must not start with
-	// a number.
-	Code param.Field[string] `json:"code,required"`
-	// Descriptive name of the field.
-	Name param.Field[string] `json:"name,required"`
-	// The units to measure the data with. Should conform to _Unified Code for Units of
-	// Measure_ (UCUM). Required only for numeric field categories.
-	Unit param.Field[string] `json:"unit"`
+	DataFieldParam
 }
 
 func (r MeterUpdateParamsDerivedField) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-type MeterUpdateParamsDerivedFieldsCategory string
-
-const (
-	MeterUpdateParamsDerivedFieldsCategoryWho      MeterUpdateParamsDerivedFieldsCategory = "WHO"
-	MeterUpdateParamsDerivedFieldsCategoryWhere    MeterUpdateParamsDerivedFieldsCategory = "WHERE"
-	MeterUpdateParamsDerivedFieldsCategoryWhat     MeterUpdateParamsDerivedFieldsCategory = "WHAT"
-	MeterUpdateParamsDerivedFieldsCategoryOther    MeterUpdateParamsDerivedFieldsCategory = "OTHER"
-	MeterUpdateParamsDerivedFieldsCategoryMetadata MeterUpdateParamsDerivedFieldsCategory = "METADATA"
-	MeterUpdateParamsDerivedFieldsCategoryMeasure  MeterUpdateParamsDerivedFieldsCategory = "MEASURE"
-	MeterUpdateParamsDerivedFieldsCategoryIncome   MeterUpdateParamsDerivedFieldsCategory = "INCOME"
-	MeterUpdateParamsDerivedFieldsCategoryCost     MeterUpdateParamsDerivedFieldsCategory = "COST"
-)
-
-func (r MeterUpdateParamsDerivedFieldsCategory) IsKnown() bool {
-	switch r {
-	case MeterUpdateParamsDerivedFieldsCategoryWho, MeterUpdateParamsDerivedFieldsCategoryWhere, MeterUpdateParamsDerivedFieldsCategoryWhat, MeterUpdateParamsDerivedFieldsCategoryOther, MeterUpdateParamsDerivedFieldsCategoryMetadata, MeterUpdateParamsDerivedFieldsCategoryMeasure, MeterUpdateParamsDerivedFieldsCategoryIncome, MeterUpdateParamsDerivedFieldsCategoryCost:
-		return true
-	}
-	return false
 }
 
 // Satisfied by [shared.UnionString], [shared.UnionFloat].

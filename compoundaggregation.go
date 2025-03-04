@@ -45,7 +45,7 @@ func NewCompoundAggregationService(opts ...option.RequestOption) (r *CompoundAgg
 // This endpoint allows you to create a new CompoundAggregation for a specific
 // Organization. The request body must include all the necessary details such as
 // the Calculation formula.
-func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAggregationNewParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAggregationNewParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -85,7 +85,7 @@ func (r *CompoundAggregationService) Get(ctx context.Context, id string, query C
 // use this endpoint to update the Compound Aggregation use the `customFields`
 // parameter to preserve those Custom Fields. If you omit them from the update
 // request, they will be lost.
-func (r *CompoundAggregationService) Update(ctx context.Context, id string, params CompoundAggregationUpdateParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *CompoundAggregationService) Update(ctx context.Context, id string, params CompoundAggregationUpdateParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")

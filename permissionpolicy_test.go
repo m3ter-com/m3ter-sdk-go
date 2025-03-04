@@ -195,9 +195,11 @@ func TestPermissionPolicyAddToServiceUserWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"permissionPolicyId",
 		m3ter.PermissionPolicyAddToServiceUserParams{
-			OrgID:       m3ter.F("orgId"),
-			PrincipalID: m3ter.F("x"),
-			Version:     m3ter.F(int64(0)),
+			OrgID: m3ter.F("orgId"),
+			PrincipalPermissionRequest: m3ter.PrincipalPermissionRequestParam{
+				PrincipalID: m3ter.F("x"),
+				Version:     m3ter.F(int64(0)),
+			},
 		},
 	)
 	if err != nil {
@@ -260,9 +262,11 @@ func TestPermissionPolicyAddToUserWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"permissionPolicyId",
 		m3ter.PermissionPolicyAddToUserParams{
-			OrgID:       m3ter.F("orgId"),
-			PrincipalID: m3ter.F("x"),
-			Version:     m3ter.F(int64(0)),
+			OrgID: m3ter.F("orgId"),
+			PrincipalPermissionRequest: m3ter.PrincipalPermissionRequestParam{
+				PrincipalID: m3ter.F("x"),
+				Version:     m3ter.F(int64(0)),
+			},
 		},
 	)
 	if err != nil {
@@ -293,9 +297,11 @@ func TestPermissionPolicyAddToUserGroupWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"permissionPolicyId",
 		m3ter.PermissionPolicyAddToUserGroupParams{
-			OrgID:       m3ter.F("orgId"),
-			PrincipalID: m3ter.F("x"),
-			Version:     m3ter.F(int64(0)),
+			OrgID: m3ter.F("orgId"),
+			PrincipalPermissionRequest: m3ter.PrincipalPermissionRequestParam{
+				PrincipalID: m3ter.F("x"),
+				Version:     m3ter.F(int64(0)),
+			},
 		},
 	)
 	if err != nil {
@@ -326,9 +332,11 @@ func TestPermissionPolicyRemoveFromServiceUserWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"permissionPolicyId",
 		m3ter.PermissionPolicyRemoveFromServiceUserParams{
-			OrgID:       m3ter.F("orgId"),
-			PrincipalID: m3ter.F("x"),
-			Version:     m3ter.F(int64(0)),
+			OrgID: m3ter.F("orgId"),
+			PrincipalPermissionRequest: m3ter.PrincipalPermissionRequestParam{
+				PrincipalID: m3ter.F("x"),
+				Version:     m3ter.F(int64(0)),
+			},
 		},
 	)
 	if err != nil {
@@ -390,9 +398,11 @@ func TestPermissionPolicyRemoveFromUserWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"permissionPolicyId",
 		m3ter.PermissionPolicyRemoveFromUserParams{
-			OrgID:       m3ter.F("orgId"),
-			PrincipalID: m3ter.F("x"),
-			Version:     m3ter.F(int64(0)),
+			OrgID: m3ter.F("orgId"),
+			PrincipalPermissionRequest: m3ter.PrincipalPermissionRequestParam{
+				PrincipalID: m3ter.F("x"),
+				Version:     m3ter.F(int64(0)),
+			},
 		},
 	)
 	if err != nil {
@@ -423,9 +433,11 @@ func TestPermissionPolicyRemoveFromUserGroupWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"permissionPolicyId",
 		m3ter.PermissionPolicyRemoveFromUserGroupParams{
-			OrgID:       m3ter.F("orgId"),
-			PrincipalID: m3ter.F("x"),
-			Version:     m3ter.F(int64(0)),
+			OrgID: m3ter.F("orgId"),
+			PrincipalPermissionRequest: m3ter.PrincipalPermissionRequestParam{
+				PrincipalID: m3ter.F("x"),
+				Version:     m3ter.F(int64(0)),
+			},
 		},
 	)
 	if err != nil {
