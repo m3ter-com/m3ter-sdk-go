@@ -30,9 +30,9 @@ func TestDataExportScheduleNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.DataExports.Schedules.New(context.TODO(), m3ter.DataExportScheduleNewParams{
 		OrgID: m3ter.F("orgId"),
-		Body: m3ter.DataExportScheduleNewParamsBodyObject{
-			OperationalDataTypes: m3ter.F([]m3ter.DataExportScheduleNewParamsBodyObjectOperationalDataType{m3ter.DataExportScheduleNewParamsBodyObjectOperationalDataTypeBills}),
-			SourceType:           m3ter.F(m3ter.DataExportScheduleNewParamsBodyObjectSourceTypeUsage),
+		Body: m3ter.OperationalDataExportScheduleRequestParam{
+			OperationalDataTypes: m3ter.F([]m3ter.OperationalDataExportScheduleRequestOperationalDataType{m3ter.OperationalDataExportScheduleRequestOperationalDataTypeBills}),
+			SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeUsage),
 			Version:              m3ter.F(int64(0)),
 		},
 	})
@@ -96,9 +96,9 @@ func TestDataExportScheduleUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		m3ter.DataExportScheduleUpdateParams{
 			OrgID: m3ter.F("orgId"),
-			Body: m3ter.DataExportScheduleUpdateParamsBodyObject{
-				OperationalDataTypes: m3ter.F([]m3ter.DataExportScheduleUpdateParamsBodyObjectOperationalDataType{m3ter.DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBills}),
-				SourceType:           m3ter.F(m3ter.DataExportScheduleUpdateParamsBodyObjectSourceTypeUsage),
+			Body: m3ter.OperationalDataExportScheduleRequestParam{
+				OperationalDataTypes: m3ter.F([]m3ter.OperationalDataExportScheduleRequestOperationalDataType{m3ter.OperationalDataExportScheduleRequestOperationalDataTypeBills}),
+				SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeUsage),
 				Version:              m3ter.F(int64(0)),
 			},
 		},

@@ -356,10 +356,15 @@ Methods:
 
 ## Schedules
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#OperationalDataExportScheduleRequestParam">OperationalDataExportScheduleRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#UsageDataExportScheduleRequestParam">UsageDataExportScheduleRequestParam</a>
+
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#OperationalDataExportSchedule">OperationalDataExportSchedule</a>
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#UsageDataExportSchedule">UsageDataExportSchedule</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#OperationalDataExportScheduleResponse">OperationalDataExportScheduleResponse</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#UsageDataExportScheduleResponse">UsageDataExportScheduleResponse</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExportScheduleNewResponse">DataExportScheduleNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExportScheduleGetResponse">DataExportScheduleGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExportScheduleUpdateResponse">DataExportScheduleUpdateResponse</a>
