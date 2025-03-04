@@ -188,7 +188,77 @@ func (r *DataExportScheduleService) Delete(ctx context.Context, id string, body 
 	return
 }
 
-type OperationalDataExportSchedule struct {
+type OperationalDataExportScheduleRequestParam struct {
+	// A list of the entities whose operational data is included in the data export.
+	OperationalDataTypes param.Field[[]OperationalDataExportScheduleRequestOperationalDataType] `json:"operationalDataTypes,required"`
+	SourceType           param.Field[OperationalDataExportScheduleRequestSourceType]            `json:"sourceType,required"`
+	// The version number of the entity:
+	//
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
+	Version param.Field[int64] `json:"version"`
+}
+
+func (r OperationalDataExportScheduleRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r OperationalDataExportScheduleRequestParam) implementsDataExportScheduleNewParamsBodyUnion() {}
+
+func (r OperationalDataExportScheduleRequestParam) implementsDataExportScheduleUpdateParamsBodyUnion() {
+}
+
+type OperationalDataExportScheduleRequestOperationalDataType string
+
+const (
+	OperationalDataExportScheduleRequestOperationalDataTypeBills                OperationalDataExportScheduleRequestOperationalDataType = "BILLS"
+	OperationalDataExportScheduleRequestOperationalDataTypeCommitments          OperationalDataExportScheduleRequestOperationalDataType = "COMMITMENTS"
+	OperationalDataExportScheduleRequestOperationalDataTypeAccounts             OperationalDataExportScheduleRequestOperationalDataType = "ACCOUNTS"
+	OperationalDataExportScheduleRequestOperationalDataTypeBalances             OperationalDataExportScheduleRequestOperationalDataType = "BALANCES"
+	OperationalDataExportScheduleRequestOperationalDataTypeContracts            OperationalDataExportScheduleRequestOperationalDataType = "CONTRACTS"
+	OperationalDataExportScheduleRequestOperationalDataTypeAccountPlans         OperationalDataExportScheduleRequestOperationalDataType = "ACCOUNT_PLANS"
+	OperationalDataExportScheduleRequestOperationalDataTypeAggregations         OperationalDataExportScheduleRequestOperationalDataType = "AGGREGATIONS"
+	OperationalDataExportScheduleRequestOperationalDataTypePlans                OperationalDataExportScheduleRequestOperationalDataType = "PLANS"
+	OperationalDataExportScheduleRequestOperationalDataTypePricing              OperationalDataExportScheduleRequestOperationalDataType = "PRICING"
+	OperationalDataExportScheduleRequestOperationalDataTypePricingBands         OperationalDataExportScheduleRequestOperationalDataType = "PRICING_BANDS"
+	OperationalDataExportScheduleRequestOperationalDataTypeBillLineItems        OperationalDataExportScheduleRequestOperationalDataType = "BILL_LINE_ITEMS"
+	OperationalDataExportScheduleRequestOperationalDataTypeMeters               OperationalDataExportScheduleRequestOperationalDataType = "METERS"
+	OperationalDataExportScheduleRequestOperationalDataTypeProducts             OperationalDataExportScheduleRequestOperationalDataType = "PRODUCTS"
+	OperationalDataExportScheduleRequestOperationalDataTypeCompoundAggregations OperationalDataExportScheduleRequestOperationalDataType = "COMPOUND_AGGREGATIONS"
+	OperationalDataExportScheduleRequestOperationalDataTypePlanGroups           OperationalDataExportScheduleRequestOperationalDataType = "PLAN_GROUPS"
+	OperationalDataExportScheduleRequestOperationalDataTypePlanGroupLinks       OperationalDataExportScheduleRequestOperationalDataType = "PLAN_GROUP_LINKS"
+	OperationalDataExportScheduleRequestOperationalDataTypePlanTemplates        OperationalDataExportScheduleRequestOperationalDataType = "PLAN_TEMPLATES"
+	OperationalDataExportScheduleRequestOperationalDataTypeBalanceTransactions  OperationalDataExportScheduleRequestOperationalDataType = "BALANCE_TRANSACTIONS"
+)
+
+func (r OperationalDataExportScheduleRequestOperationalDataType) IsKnown() bool {
+	switch r {
+	case OperationalDataExportScheduleRequestOperationalDataTypeBills, OperationalDataExportScheduleRequestOperationalDataTypeCommitments, OperationalDataExportScheduleRequestOperationalDataTypeAccounts, OperationalDataExportScheduleRequestOperationalDataTypeBalances, OperationalDataExportScheduleRequestOperationalDataTypeContracts, OperationalDataExportScheduleRequestOperationalDataTypeAccountPlans, OperationalDataExportScheduleRequestOperationalDataTypeAggregations, OperationalDataExportScheduleRequestOperationalDataTypePlans, OperationalDataExportScheduleRequestOperationalDataTypePricing, OperationalDataExportScheduleRequestOperationalDataTypePricingBands, OperationalDataExportScheduleRequestOperationalDataTypeBillLineItems, OperationalDataExportScheduleRequestOperationalDataTypeMeters, OperationalDataExportScheduleRequestOperationalDataTypeProducts, OperationalDataExportScheduleRequestOperationalDataTypeCompoundAggregations, OperationalDataExportScheduleRequestOperationalDataTypePlanGroups, OperationalDataExportScheduleRequestOperationalDataTypePlanGroupLinks, OperationalDataExportScheduleRequestOperationalDataTypePlanTemplates, OperationalDataExportScheduleRequestOperationalDataTypeBalanceTransactions:
+		return true
+	}
+	return false
+}
+
+type OperationalDataExportScheduleRequestSourceType string
+
+const (
+	OperationalDataExportScheduleRequestSourceTypeUsage       OperationalDataExportScheduleRequestSourceType = "USAGE"
+	OperationalDataExportScheduleRequestSourceTypeOperational OperationalDataExportScheduleRequestSourceType = "OPERATIONAL"
+)
+
+func (r OperationalDataExportScheduleRequestSourceType) IsKnown() bool {
+	switch r {
+	case OperationalDataExportScheduleRequestSourceTypeUsage, OperationalDataExportScheduleRequestSourceTypeOperational:
+		return true
+	}
+	return false
+}
+
+type OperationalDataExportScheduleResponse struct {
 	// The id of the schedule.
 	ID string `json:"id,required"`
 	// The version number:
@@ -199,13 +269,13 @@ type OperationalDataExportSchedule struct {
 	//     response.
 	Version int64 `json:"version,required"`
 	// A list of the entities whose operational data is included in the data export.
-	OperationalDataTypes []OperationalDataExportScheduleOperationalDataType `json:"operationalDataTypes"`
-	JSON                 operationalDataExportScheduleJSON                  `json:"-"`
+	OperationalDataTypes []OperationalDataExportScheduleResponseOperationalDataType `json:"operationalDataTypes"`
+	JSON                 operationalDataExportScheduleResponseJSON                  `json:"-"`
 }
 
-// operationalDataExportScheduleJSON contains the JSON metadata for the struct
-// [OperationalDataExportSchedule]
-type operationalDataExportScheduleJSON struct {
+// operationalDataExportScheduleResponseJSON contains the JSON metadata for the
+// struct [OperationalDataExportScheduleResponse]
+type operationalDataExportScheduleResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	OperationalDataTypes apijson.Field
@@ -213,77 +283,54 @@ type operationalDataExportScheduleJSON struct {
 	ExtraFields          map[string]apijson.Field
 }
 
-func (r *OperationalDataExportSchedule) UnmarshalJSON(data []byte) (err error) {
+func (r *OperationalDataExportScheduleResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r operationalDataExportScheduleJSON) RawJSON() string {
+func (r operationalDataExportScheduleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r OperationalDataExportSchedule) implementsDataExportScheduleNewResponse() {}
+func (r OperationalDataExportScheduleResponse) implementsDataExportScheduleNewResponse() {}
 
-func (r OperationalDataExportSchedule) implementsDataExportScheduleGetResponse() {}
+func (r OperationalDataExportScheduleResponse) implementsDataExportScheduleGetResponse() {}
 
-func (r OperationalDataExportSchedule) implementsDataExportScheduleUpdateResponse() {}
+func (r OperationalDataExportScheduleResponse) implementsDataExportScheduleUpdateResponse() {}
 
-func (r OperationalDataExportSchedule) implementsDataExportScheduleDeleteResponse() {}
+func (r OperationalDataExportScheduleResponse) implementsDataExportScheduleDeleteResponse() {}
 
-type OperationalDataExportScheduleOperationalDataType string
+type OperationalDataExportScheduleResponseOperationalDataType string
 
 const (
-	OperationalDataExportScheduleOperationalDataTypeBills                OperationalDataExportScheduleOperationalDataType = "BILLS"
-	OperationalDataExportScheduleOperationalDataTypeCommitments          OperationalDataExportScheduleOperationalDataType = "COMMITMENTS"
-	OperationalDataExportScheduleOperationalDataTypeAccounts             OperationalDataExportScheduleOperationalDataType = "ACCOUNTS"
-	OperationalDataExportScheduleOperationalDataTypeBalances             OperationalDataExportScheduleOperationalDataType = "BALANCES"
-	OperationalDataExportScheduleOperationalDataTypeContracts            OperationalDataExportScheduleOperationalDataType = "CONTRACTS"
-	OperationalDataExportScheduleOperationalDataTypeAccountPlans         OperationalDataExportScheduleOperationalDataType = "ACCOUNT_PLANS"
-	OperationalDataExportScheduleOperationalDataTypeAggregations         OperationalDataExportScheduleOperationalDataType = "AGGREGATIONS"
-	OperationalDataExportScheduleOperationalDataTypePlans                OperationalDataExportScheduleOperationalDataType = "PLANS"
-	OperationalDataExportScheduleOperationalDataTypePricing              OperationalDataExportScheduleOperationalDataType = "PRICING"
-	OperationalDataExportScheduleOperationalDataTypePricingBands         OperationalDataExportScheduleOperationalDataType = "PRICING_BANDS"
-	OperationalDataExportScheduleOperationalDataTypeBillLineItems        OperationalDataExportScheduleOperationalDataType = "BILL_LINE_ITEMS"
-	OperationalDataExportScheduleOperationalDataTypeMeters               OperationalDataExportScheduleOperationalDataType = "METERS"
-	OperationalDataExportScheduleOperationalDataTypeProducts             OperationalDataExportScheduleOperationalDataType = "PRODUCTS"
-	OperationalDataExportScheduleOperationalDataTypeCompoundAggregations OperationalDataExportScheduleOperationalDataType = "COMPOUND_AGGREGATIONS"
-	OperationalDataExportScheduleOperationalDataTypePlanGroups           OperationalDataExportScheduleOperationalDataType = "PLAN_GROUPS"
-	OperationalDataExportScheduleOperationalDataTypePlanGroupLinks       OperationalDataExportScheduleOperationalDataType = "PLAN_GROUP_LINKS"
-	OperationalDataExportScheduleOperationalDataTypePlanTemplates        OperationalDataExportScheduleOperationalDataType = "PLAN_TEMPLATES"
-	OperationalDataExportScheduleOperationalDataTypeBalanceTransactions  OperationalDataExportScheduleOperationalDataType = "BALANCE_TRANSACTIONS"
+	OperationalDataExportScheduleResponseOperationalDataTypeBills                OperationalDataExportScheduleResponseOperationalDataType = "BILLS"
+	OperationalDataExportScheduleResponseOperationalDataTypeCommitments          OperationalDataExportScheduleResponseOperationalDataType = "COMMITMENTS"
+	OperationalDataExportScheduleResponseOperationalDataTypeAccounts             OperationalDataExportScheduleResponseOperationalDataType = "ACCOUNTS"
+	OperationalDataExportScheduleResponseOperationalDataTypeBalances             OperationalDataExportScheduleResponseOperationalDataType = "BALANCES"
+	OperationalDataExportScheduleResponseOperationalDataTypeContracts            OperationalDataExportScheduleResponseOperationalDataType = "CONTRACTS"
+	OperationalDataExportScheduleResponseOperationalDataTypeAccountPlans         OperationalDataExportScheduleResponseOperationalDataType = "ACCOUNT_PLANS"
+	OperationalDataExportScheduleResponseOperationalDataTypeAggregations         OperationalDataExportScheduleResponseOperationalDataType = "AGGREGATIONS"
+	OperationalDataExportScheduleResponseOperationalDataTypePlans                OperationalDataExportScheduleResponseOperationalDataType = "PLANS"
+	OperationalDataExportScheduleResponseOperationalDataTypePricing              OperationalDataExportScheduleResponseOperationalDataType = "PRICING"
+	OperationalDataExportScheduleResponseOperationalDataTypePricingBands         OperationalDataExportScheduleResponseOperationalDataType = "PRICING_BANDS"
+	OperationalDataExportScheduleResponseOperationalDataTypeBillLineItems        OperationalDataExportScheduleResponseOperationalDataType = "BILL_LINE_ITEMS"
+	OperationalDataExportScheduleResponseOperationalDataTypeMeters               OperationalDataExportScheduleResponseOperationalDataType = "METERS"
+	OperationalDataExportScheduleResponseOperationalDataTypeProducts             OperationalDataExportScheduleResponseOperationalDataType = "PRODUCTS"
+	OperationalDataExportScheduleResponseOperationalDataTypeCompoundAggregations OperationalDataExportScheduleResponseOperationalDataType = "COMPOUND_AGGREGATIONS"
+	OperationalDataExportScheduleResponseOperationalDataTypePlanGroups           OperationalDataExportScheduleResponseOperationalDataType = "PLAN_GROUPS"
+	OperationalDataExportScheduleResponseOperationalDataTypePlanGroupLinks       OperationalDataExportScheduleResponseOperationalDataType = "PLAN_GROUP_LINKS"
+	OperationalDataExportScheduleResponseOperationalDataTypePlanTemplates        OperationalDataExportScheduleResponseOperationalDataType = "PLAN_TEMPLATES"
+	OperationalDataExportScheduleResponseOperationalDataTypeBalanceTransactions  OperationalDataExportScheduleResponseOperationalDataType = "BALANCE_TRANSACTIONS"
 )
 
-func (r OperationalDataExportScheduleOperationalDataType) IsKnown() bool {
+func (r OperationalDataExportScheduleResponseOperationalDataType) IsKnown() bool {
 	switch r {
-	case OperationalDataExportScheduleOperationalDataTypeBills, OperationalDataExportScheduleOperationalDataTypeCommitments, OperationalDataExportScheduleOperationalDataTypeAccounts, OperationalDataExportScheduleOperationalDataTypeBalances, OperationalDataExportScheduleOperationalDataTypeContracts, OperationalDataExportScheduleOperationalDataTypeAccountPlans, OperationalDataExportScheduleOperationalDataTypeAggregations, OperationalDataExportScheduleOperationalDataTypePlans, OperationalDataExportScheduleOperationalDataTypePricing, OperationalDataExportScheduleOperationalDataTypePricingBands, OperationalDataExportScheduleOperationalDataTypeBillLineItems, OperationalDataExportScheduleOperationalDataTypeMeters, OperationalDataExportScheduleOperationalDataTypeProducts, OperationalDataExportScheduleOperationalDataTypeCompoundAggregations, OperationalDataExportScheduleOperationalDataTypePlanGroups, OperationalDataExportScheduleOperationalDataTypePlanGroupLinks, OperationalDataExportScheduleOperationalDataTypePlanTemplates, OperationalDataExportScheduleOperationalDataTypeBalanceTransactions:
+	case OperationalDataExportScheduleResponseOperationalDataTypeBills, OperationalDataExportScheduleResponseOperationalDataTypeCommitments, OperationalDataExportScheduleResponseOperationalDataTypeAccounts, OperationalDataExportScheduleResponseOperationalDataTypeBalances, OperationalDataExportScheduleResponseOperationalDataTypeContracts, OperationalDataExportScheduleResponseOperationalDataTypeAccountPlans, OperationalDataExportScheduleResponseOperationalDataTypeAggregations, OperationalDataExportScheduleResponseOperationalDataTypePlans, OperationalDataExportScheduleResponseOperationalDataTypePricing, OperationalDataExportScheduleResponseOperationalDataTypePricingBands, OperationalDataExportScheduleResponseOperationalDataTypeBillLineItems, OperationalDataExportScheduleResponseOperationalDataTypeMeters, OperationalDataExportScheduleResponseOperationalDataTypeProducts, OperationalDataExportScheduleResponseOperationalDataTypeCompoundAggregations, OperationalDataExportScheduleResponseOperationalDataTypePlanGroups, OperationalDataExportScheduleResponseOperationalDataTypePlanGroupLinks, OperationalDataExportScheduleResponseOperationalDataTypePlanTemplates, OperationalDataExportScheduleResponseOperationalDataTypeBalanceTransactions:
 		return true
 	}
 	return false
 }
 
-type UsageDataExportSchedule struct {
-	// The id of the schedule
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
-	// List of account IDs for which the usage data will be exported.
-	AccountIDs []string `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation UsageDataExportScheduleAggregation `json:"aggregation"`
+type UsageDataExportScheduleRequestParam struct {
 	// Specifies the time period for the aggregation of usage data included each time
 	// the Data Export Schedule runs:
 	//
@@ -306,9 +353,8 @@ type UsageDataExportSchedule struct {
 	//
 	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
 	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency UsageDataExportScheduleAggregationFrequency `json:"aggregationFrequency"`
-	// List of meter IDs for which the usage data will be exported.
-	MeterIDs []string `json:"meterIds"`
+	AggregationFrequency param.Field[UsageDataExportScheduleRequestAggregationFrequency] `json:"aggregationFrequency,required"`
+	SourceType           param.Field[UsageDataExportScheduleRequestSourceType]           `json:"sourceType,required"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
@@ -331,69 +377,41 @@ type UsageDataExportSchedule struct {
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
-	TimePeriod UsageDataExportScheduleTimePeriod `json:"timePeriod"`
-	JSON       usageDataExportScheduleJSON       `json:"-"`
+	TimePeriod param.Field[UsageDataExportScheduleRequestTimePeriod] `json:"timePeriod,required"`
+	// List of account IDs for which the usage data will be exported.
+	AccountIDs param.Field[[]string] `json:"accountIds"`
+	// Specifies the aggregation method applied to usage data collected in the numeric
+	// Data Fields of Meters included for the Data Export Schedule - that is, Data
+	// Fields of type **MEASURE**, **INCOME**, or **COST**:
+	//
+	//   - **SUM**. Adds the values.
+	//   - **MIN**. Uses the minimum value.
+	//   - **MAX**. Uses the maximum value.
+	//   - **COUNT**. Counts the number of values.
+	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
+	//     value of usage data measurement submissions. If using this method, please
+	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
+	Aggregation param.Field[UsageDataExportScheduleRequestAggregation] `json:"aggregation"`
+	// List of meter IDs for which the usage data will be exported.
+	MeterIDs param.Field[[]string] `json:"meterIds"`
+	// The version number of the entity:
+	//
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
+	Version param.Field[int64] `json:"version"`
 }
 
-// usageDataExportScheduleJSON contains the JSON metadata for the struct
-// [UsageDataExportSchedule]
-type usageDataExportScheduleJSON struct {
-	ID                   apijson.Field
-	Version              apijson.Field
-	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
-	MeterIDs             apijson.Field
-	TimePeriod           apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
+func (r UsageDataExportScheduleRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
-func (r *UsageDataExportSchedule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
+func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleNewParamsBodyUnion() {}
 
-func (r usageDataExportScheduleJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r UsageDataExportSchedule) implementsDataExportScheduleNewResponse() {}
-
-func (r UsageDataExportSchedule) implementsDataExportScheduleGetResponse() {}
-
-func (r UsageDataExportSchedule) implementsDataExportScheduleUpdateResponse() {}
-
-func (r UsageDataExportSchedule) implementsDataExportScheduleDeleteResponse() {}
-
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type UsageDataExportScheduleAggregation string
-
-const (
-	UsageDataExportScheduleAggregationSum    UsageDataExportScheduleAggregation = "SUM"
-	UsageDataExportScheduleAggregationMin    UsageDataExportScheduleAggregation = "MIN"
-	UsageDataExportScheduleAggregationMax    UsageDataExportScheduleAggregation = "MAX"
-	UsageDataExportScheduleAggregationCount  UsageDataExportScheduleAggregation = "COUNT"
-	UsageDataExportScheduleAggregationLatest UsageDataExportScheduleAggregation = "LATEST"
-	UsageDataExportScheduleAggregationMean   UsageDataExportScheduleAggregation = "MEAN"
-)
-
-func (r UsageDataExportScheduleAggregation) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleAggregationSum, UsageDataExportScheduleAggregationMin, UsageDataExportScheduleAggregationMax, UsageDataExportScheduleAggregationCount, UsageDataExportScheduleAggregationLatest, UsageDataExportScheduleAggregationMean:
-		return true
-	}
-	return false
-}
+func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleUpdateParamsBodyUnion() {}
 
 // Specifies the time period for the aggregation of usage data included each time
 // the Data Export Schedule runs:
@@ -417,19 +435,34 @@ func (r UsageDataExportScheduleAggregation) IsKnown() bool {
 //
 // **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
 // not define an `aggregation` method, then you'll receive and error.
-type UsageDataExportScheduleAggregationFrequency string
+type UsageDataExportScheduleRequestAggregationFrequency string
 
 const (
-	UsageDataExportScheduleAggregationFrequencyOriginal UsageDataExportScheduleAggregationFrequency = "ORIGINAL"
-	UsageDataExportScheduleAggregationFrequencyHour     UsageDataExportScheduleAggregationFrequency = "HOUR"
-	UsageDataExportScheduleAggregationFrequencyDay      UsageDataExportScheduleAggregationFrequency = "DAY"
-	UsageDataExportScheduleAggregationFrequencyWeek     UsageDataExportScheduleAggregationFrequency = "WEEK"
-	UsageDataExportScheduleAggregationFrequencyMonth    UsageDataExportScheduleAggregationFrequency = "MONTH"
+	UsageDataExportScheduleRequestAggregationFrequencyOriginal UsageDataExportScheduleRequestAggregationFrequency = "ORIGINAL"
+	UsageDataExportScheduleRequestAggregationFrequencyHour     UsageDataExportScheduleRequestAggregationFrequency = "HOUR"
+	UsageDataExportScheduleRequestAggregationFrequencyDay      UsageDataExportScheduleRequestAggregationFrequency = "DAY"
+	UsageDataExportScheduleRequestAggregationFrequencyWeek     UsageDataExportScheduleRequestAggregationFrequency = "WEEK"
+	UsageDataExportScheduleRequestAggregationFrequencyMonth    UsageDataExportScheduleRequestAggregationFrequency = "MONTH"
 )
 
-func (r UsageDataExportScheduleAggregationFrequency) IsKnown() bool {
+func (r UsageDataExportScheduleRequestAggregationFrequency) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleAggregationFrequencyOriginal, UsageDataExportScheduleAggregationFrequencyHour, UsageDataExportScheduleAggregationFrequencyDay, UsageDataExportScheduleAggregationFrequencyWeek, UsageDataExportScheduleAggregationFrequencyMonth:
+	case UsageDataExportScheduleRequestAggregationFrequencyOriginal, UsageDataExportScheduleRequestAggregationFrequencyHour, UsageDataExportScheduleRequestAggregationFrequencyDay, UsageDataExportScheduleRequestAggregationFrequencyWeek, UsageDataExportScheduleRequestAggregationFrequencyMonth:
+		return true
+	}
+	return false
+}
+
+type UsageDataExportScheduleRequestSourceType string
+
+const (
+	UsageDataExportScheduleRequestSourceTypeUsage       UsageDataExportScheduleRequestSourceType = "USAGE"
+	UsageDataExportScheduleRequestSourceTypeOperational UsageDataExportScheduleRequestSourceType = "OPERATIONAL"
+)
+
+func (r UsageDataExportScheduleRequestSourceType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleRequestSourceTypeUsage, UsageDataExportScheduleRequestSourceTypeOperational:
 		return true
 	}
 	return false
@@ -457,22 +490,270 @@ func (r UsageDataExportScheduleAggregationFrequency) IsKnown() bool {
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 // section in our main User Documentation.
-type UsageDataExportScheduleTimePeriod string
+type UsageDataExportScheduleRequestTimePeriod string
 
 const (
-	UsageDataExportScheduleTimePeriodToday         UsageDataExportScheduleTimePeriod = "TODAY"
-	UsageDataExportScheduleTimePeriodYesterday     UsageDataExportScheduleTimePeriod = "YESTERDAY"
-	UsageDataExportScheduleTimePeriodWeekToDate    UsageDataExportScheduleTimePeriod = "WEEK_TO_DATE"
-	UsageDataExportScheduleTimePeriodCurrentMonth  UsageDataExportScheduleTimePeriod = "CURRENT_MONTH"
-	UsageDataExportScheduleTimePeriodLast30Days    UsageDataExportScheduleTimePeriod = "LAST_30_DAYS"
-	UsageDataExportScheduleTimePeriodLast35Days    UsageDataExportScheduleTimePeriod = "LAST_35_DAYS"
-	UsageDataExportScheduleTimePeriodPreviousWeek  UsageDataExportScheduleTimePeriod = "PREVIOUS_WEEK"
-	UsageDataExportScheduleTimePeriodPreviousMonth UsageDataExportScheduleTimePeriod = "PREVIOUS_MONTH"
+	UsageDataExportScheduleRequestTimePeriodToday         UsageDataExportScheduleRequestTimePeriod = "TODAY"
+	UsageDataExportScheduleRequestTimePeriodYesterday     UsageDataExportScheduleRequestTimePeriod = "YESTERDAY"
+	UsageDataExportScheduleRequestTimePeriodWeekToDate    UsageDataExportScheduleRequestTimePeriod = "WEEK_TO_DATE"
+	UsageDataExportScheduleRequestTimePeriodCurrentMonth  UsageDataExportScheduleRequestTimePeriod = "CURRENT_MONTH"
+	UsageDataExportScheduleRequestTimePeriodLast30Days    UsageDataExportScheduleRequestTimePeriod = "LAST_30_DAYS"
+	UsageDataExportScheduleRequestTimePeriodLast35Days    UsageDataExportScheduleRequestTimePeriod = "LAST_35_DAYS"
+	UsageDataExportScheduleRequestTimePeriodPreviousWeek  UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_WEEK"
+	UsageDataExportScheduleRequestTimePeriodPreviousMonth UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_MONTH"
 )
 
-func (r UsageDataExportScheduleTimePeriod) IsKnown() bool {
+func (r UsageDataExportScheduleRequestTimePeriod) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleTimePeriodToday, UsageDataExportScheduleTimePeriodYesterday, UsageDataExportScheduleTimePeriodWeekToDate, UsageDataExportScheduleTimePeriodCurrentMonth, UsageDataExportScheduleTimePeriodLast30Days, UsageDataExportScheduleTimePeriodLast35Days, UsageDataExportScheduleTimePeriodPreviousWeek, UsageDataExportScheduleTimePeriodPreviousMonth:
+	case UsageDataExportScheduleRequestTimePeriodToday, UsageDataExportScheduleRequestTimePeriodYesterday, UsageDataExportScheduleRequestTimePeriodWeekToDate, UsageDataExportScheduleRequestTimePeriodCurrentMonth, UsageDataExportScheduleRequestTimePeriodLast30Days, UsageDataExportScheduleRequestTimePeriodLast35Days, UsageDataExportScheduleRequestTimePeriodPreviousWeek, UsageDataExportScheduleRequestTimePeriodPreviousMonth:
+		return true
+	}
+	return false
+}
+
+// Specifies the aggregation method applied to usage data collected in the numeric
+// Data Fields of Meters included for the Data Export Schedule - that is, Data
+// Fields of type **MEASURE**, **INCOME**, or **COST**:
+//
+//   - **SUM**. Adds the values.
+//   - **MIN**. Uses the minimum value.
+//   - **MAX**. Uses the maximum value.
+//   - **COUNT**. Counts the number of values.
+//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
+//     value of usage data measurement submissions. If using this method, please
+//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
+type UsageDataExportScheduleRequestAggregation string
+
+const (
+	UsageDataExportScheduleRequestAggregationSum    UsageDataExportScheduleRequestAggregation = "SUM"
+	UsageDataExportScheduleRequestAggregationMin    UsageDataExportScheduleRequestAggregation = "MIN"
+	UsageDataExportScheduleRequestAggregationMax    UsageDataExportScheduleRequestAggregation = "MAX"
+	UsageDataExportScheduleRequestAggregationCount  UsageDataExportScheduleRequestAggregation = "COUNT"
+	UsageDataExportScheduleRequestAggregationLatest UsageDataExportScheduleRequestAggregation = "LATEST"
+	UsageDataExportScheduleRequestAggregationMean   UsageDataExportScheduleRequestAggregation = "MEAN"
+)
+
+func (r UsageDataExportScheduleRequestAggregation) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleRequestAggregationSum, UsageDataExportScheduleRequestAggregationMin, UsageDataExportScheduleRequestAggregationMax, UsageDataExportScheduleRequestAggregationCount, UsageDataExportScheduleRequestAggregationLatest, UsageDataExportScheduleRequestAggregationMean:
+		return true
+	}
+	return false
+}
+
+type UsageDataExportScheduleResponse struct {
+	// The id of the schedule
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// List of account IDs for which the usage data will be exported.
+	AccountIDs []string `json:"accountIds"`
+	// Specifies the aggregation method applied to usage data collected in the numeric
+	// Data Fields of Meters included for the Data Export Schedule - that is, Data
+	// Fields of type **MEASURE**, **INCOME**, or **COST**:
+	//
+	//   - **SUM**. Adds the values.
+	//   - **MIN**. Uses the minimum value.
+	//   - **MAX**. Uses the maximum value.
+	//   - **COUNT**. Counts the number of values.
+	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
+	//     value of usage data measurement submissions. If using this method, please
+	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
+	Aggregation UsageDataExportScheduleResponseAggregation `json:"aggregation"`
+	// Specifies the time period for the aggregation of usage data included each time
+	// the Data Export Schedule runs:
+	//
+	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
+	//     then raw usage data measurements collected by all Data Field types and any
+	//     Derived Fields on the selected Meters are included in the export. This is the
+	//     _Default_.
+	//
+	// If you want to aggregate usage data for the Export Schedule you must define an
+	// `aggregationFrequency`:
+	//
+	// - **HOUR**. Aggregated hourly.
+	// - **DAY**. Aggregated daily.
+	// - **WEEK**. Aggregated weekly.
+	// - **MONTH**. Aggregated monthly.
+	//
+	//   - If you select to aggregate usage data for a Export Schedule, then only the
+	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
+	//     **INCOME**, or **COST** on selected Meters are included in the export.
+	//
+	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
+	// not define an `aggregation` method, then you'll receive and error.
+	AggregationFrequency UsageDataExportScheduleResponseAggregationFrequency `json:"aggregationFrequency"`
+	// List of meter IDs for which the usage data will be exported.
+	MeterIDs []string `json:"meterIds"`
+	// Define a time period to control the range of usage data you want the data export
+	// to contain when it runs:
+	//
+	//   - **TODAY**. Data collected for the current day up until the time the export
+	//     runs.
+	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
+	//     the 24 hour period from midnight to midnight of the day before.
+	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
+	//     the date and time the export runs, and weeks run Monday to Monday.
+	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
+	//     ran up to and including the date and time the export runs.
+	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
+	//     is ran.
+	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
+	//     is ran.
+	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
+	//     run Monday to Monday.
+	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//
+	// For more details and examples, see the
+	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
+	// section in our main User Documentation.
+	TimePeriod UsageDataExportScheduleResponseTimePeriod `json:"timePeriod"`
+	JSON       usageDataExportScheduleResponseJSON       `json:"-"`
+}
+
+// usageDataExportScheduleResponseJSON contains the JSON metadata for the struct
+// [UsageDataExportScheduleResponse]
+type usageDataExportScheduleResponseJSON struct {
+	ID                   apijson.Field
+	Version              apijson.Field
+	AccountIDs           apijson.Field
+	Aggregation          apijson.Field
+	AggregationFrequency apijson.Field
+	MeterIDs             apijson.Field
+	TimePeriod           apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r UsageDataExportScheduleResponse) implementsDataExportScheduleNewResponse() {}
+
+func (r UsageDataExportScheduleResponse) implementsDataExportScheduleGetResponse() {}
+
+func (r UsageDataExportScheduleResponse) implementsDataExportScheduleUpdateResponse() {}
+
+func (r UsageDataExportScheduleResponse) implementsDataExportScheduleDeleteResponse() {}
+
+// Specifies the aggregation method applied to usage data collected in the numeric
+// Data Fields of Meters included for the Data Export Schedule - that is, Data
+// Fields of type **MEASURE**, **INCOME**, or **COST**:
+//
+//   - **SUM**. Adds the values.
+//   - **MIN**. Uses the minimum value.
+//   - **MAX**. Uses the maximum value.
+//   - **COUNT**. Counts the number of values.
+//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
+//     value of usage data measurement submissions. If using this method, please
+//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
+type UsageDataExportScheduleResponseAggregation string
+
+const (
+	UsageDataExportScheduleResponseAggregationSum    UsageDataExportScheduleResponseAggregation = "SUM"
+	UsageDataExportScheduleResponseAggregationMin    UsageDataExportScheduleResponseAggregation = "MIN"
+	UsageDataExportScheduleResponseAggregationMax    UsageDataExportScheduleResponseAggregation = "MAX"
+	UsageDataExportScheduleResponseAggregationCount  UsageDataExportScheduleResponseAggregation = "COUNT"
+	UsageDataExportScheduleResponseAggregationLatest UsageDataExportScheduleResponseAggregation = "LATEST"
+	UsageDataExportScheduleResponseAggregationMean   UsageDataExportScheduleResponseAggregation = "MEAN"
+)
+
+func (r UsageDataExportScheduleResponseAggregation) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseAggregationSum, UsageDataExportScheduleResponseAggregationMin, UsageDataExportScheduleResponseAggregationMax, UsageDataExportScheduleResponseAggregationCount, UsageDataExportScheduleResponseAggregationLatest, UsageDataExportScheduleResponseAggregationMean:
+		return true
+	}
+	return false
+}
+
+// Specifies the time period for the aggregation of usage data included each time
+// the Data Export Schedule runs:
+//
+//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
+//     then raw usage data measurements collected by all Data Field types and any
+//     Derived Fields on the selected Meters are included in the export. This is the
+//     _Default_.
+//
+// If you want to aggregate usage data for the Export Schedule you must define an
+// `aggregationFrequency`:
+//
+// - **HOUR**. Aggregated hourly.
+// - **DAY**. Aggregated daily.
+// - **WEEK**. Aggregated weekly.
+// - **MONTH**. Aggregated monthly.
+//
+//   - If you select to aggregate usage data for a Export Schedule, then only the
+//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
+//     **INCOME**, or **COST** on selected Meters are included in the export.
+//
+// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
+// not define an `aggregation` method, then you'll receive and error.
+type UsageDataExportScheduleResponseAggregationFrequency string
+
+const (
+	UsageDataExportScheduleResponseAggregationFrequencyOriginal UsageDataExportScheduleResponseAggregationFrequency = "ORIGINAL"
+	UsageDataExportScheduleResponseAggregationFrequencyHour     UsageDataExportScheduleResponseAggregationFrequency = "HOUR"
+	UsageDataExportScheduleResponseAggregationFrequencyDay      UsageDataExportScheduleResponseAggregationFrequency = "DAY"
+	UsageDataExportScheduleResponseAggregationFrequencyWeek     UsageDataExportScheduleResponseAggregationFrequency = "WEEK"
+	UsageDataExportScheduleResponseAggregationFrequencyMonth    UsageDataExportScheduleResponseAggregationFrequency = "MONTH"
+)
+
+func (r UsageDataExportScheduleResponseAggregationFrequency) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseAggregationFrequencyOriginal, UsageDataExportScheduleResponseAggregationFrequencyHour, UsageDataExportScheduleResponseAggregationFrequencyDay, UsageDataExportScheduleResponseAggregationFrequencyWeek, UsageDataExportScheduleResponseAggregationFrequencyMonth:
+		return true
+	}
+	return false
+}
+
+// Define a time period to control the range of usage data you want the data export
+// to contain when it runs:
+//
+//   - **TODAY**. Data collected for the current day up until the time the export
+//     runs.
+//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
+//     the 24 hour period from midnight to midnight of the day before.
+//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
+//     the date and time the export runs, and weeks run Monday to Monday.
+//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
+//     ran up to and including the date and time the export runs.
+//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
+//     is ran.
+//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
+//     is ran.
+//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
+//     run Monday to Monday.
+//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//
+// For more details and examples, see the
+// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
+// section in our main User Documentation.
+type UsageDataExportScheduleResponseTimePeriod string
+
+const (
+	UsageDataExportScheduleResponseTimePeriodToday         UsageDataExportScheduleResponseTimePeriod = "TODAY"
+	UsageDataExportScheduleResponseTimePeriodYesterday     UsageDataExportScheduleResponseTimePeriod = "YESTERDAY"
+	UsageDataExportScheduleResponseTimePeriodWeekToDate    UsageDataExportScheduleResponseTimePeriod = "WEEK_TO_DATE"
+	UsageDataExportScheduleResponseTimePeriodCurrentMonth  UsageDataExportScheduleResponseTimePeriod = "CURRENT_MONTH"
+	UsageDataExportScheduleResponseTimePeriodLast30Days    UsageDataExportScheduleResponseTimePeriod = "LAST_30_DAYS"
+	UsageDataExportScheduleResponseTimePeriodLast35Days    UsageDataExportScheduleResponseTimePeriod = "LAST_35_DAYS"
+	UsageDataExportScheduleResponseTimePeriodPreviousWeek  UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_WEEK"
+	UsageDataExportScheduleResponseTimePeriodPreviousMonth UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_MONTH"
+)
+
+func (r UsageDataExportScheduleResponseTimePeriod) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseTimePeriodToday, UsageDataExportScheduleResponseTimePeriodYesterday, UsageDataExportScheduleResponseTimePeriodWeekToDate, UsageDataExportScheduleResponseTimePeriodCurrentMonth, UsageDataExportScheduleResponseTimePeriodLast30Days, UsageDataExportScheduleResponseTimePeriodLast35Days, UsageDataExportScheduleResponseTimePeriodPreviousWeek, UsageDataExportScheduleResponseTimePeriodPreviousMonth:
 		return true
 	}
 	return false
@@ -529,7 +810,7 @@ type DataExportScheduleNewResponse struct {
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
-	// [[]OperationalDataExportScheduleOperationalDataType].
+	// [[]OperationalDataExportScheduleResponseOperationalDataType].
 	OperationalDataTypes interface{} `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
@@ -589,15 +870,16 @@ func (r *DataExportScheduleNewResponse) UnmarshalJSON(data []byte) (err error) {
 // AsUnion returns a [DataExportScheduleNewResponseUnion] interface which you can
 // cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [OperationalDataExportSchedule],
-// [UsageDataExportSchedule].
+// Possible runtime types of the union are [OperationalDataExportScheduleResponse],
+// [UsageDataExportScheduleResponse].
 func (r DataExportScheduleNewResponse) AsUnion() DataExportScheduleNewResponseUnion {
 	return r.union
 }
 
 // Response representing an operational data export configuration.
 //
-// Union satisfied by [OperationalDataExportSchedule] or [UsageDataExportSchedule].
+// Union satisfied by [OperationalDataExportScheduleResponse] or
+// [UsageDataExportScheduleResponse].
 type DataExportScheduleNewResponseUnion interface {
 	implementsDataExportScheduleNewResponse()
 }
@@ -608,11 +890,11 @@ func init() {
 		"sourceType",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(OperationalDataExportSchedule{}),
+			Type:       reflect.TypeOf(OperationalDataExportScheduleResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(UsageDataExportSchedule{}),
+			Type:       reflect.TypeOf(UsageDataExportScheduleResponse{}),
 		},
 	)
 }
@@ -781,7 +1063,7 @@ type DataExportScheduleGetResponse struct {
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
-	// [[]OperationalDataExportScheduleOperationalDataType].
+	// [[]OperationalDataExportScheduleResponseOperationalDataType].
 	OperationalDataTypes interface{} `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
@@ -841,15 +1123,16 @@ func (r *DataExportScheduleGetResponse) UnmarshalJSON(data []byte) (err error) {
 // AsUnion returns a [DataExportScheduleGetResponseUnion] interface which you can
 // cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [OperationalDataExportSchedule],
-// [UsageDataExportSchedule].
+// Possible runtime types of the union are [OperationalDataExportScheduleResponse],
+// [UsageDataExportScheduleResponse].
 func (r DataExportScheduleGetResponse) AsUnion() DataExportScheduleGetResponseUnion {
 	return r.union
 }
 
 // Response representing an operational data export configuration.
 //
-// Union satisfied by [OperationalDataExportSchedule] or [UsageDataExportSchedule].
+// Union satisfied by [OperationalDataExportScheduleResponse] or
+// [UsageDataExportScheduleResponse].
 type DataExportScheduleGetResponseUnion interface {
 	implementsDataExportScheduleGetResponse()
 }
@@ -860,11 +1143,11 @@ func init() {
 		"sourceType",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(OperationalDataExportSchedule{}),
+			Type:       reflect.TypeOf(OperationalDataExportScheduleResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(UsageDataExportSchedule{}),
+			Type:       reflect.TypeOf(UsageDataExportScheduleResponse{}),
 		},
 	)
 }
@@ -1033,7 +1316,7 @@ type DataExportScheduleUpdateResponse struct {
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
-	// [[]OperationalDataExportScheduleOperationalDataType].
+	// [[]OperationalDataExportScheduleResponseOperationalDataType].
 	OperationalDataTypes interface{} `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
@@ -1093,15 +1376,16 @@ func (r *DataExportScheduleUpdateResponse) UnmarshalJSON(data []byte) (err error
 // AsUnion returns a [DataExportScheduleUpdateResponseUnion] interface which you
 // can cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [OperationalDataExportSchedule],
-// [UsageDataExportSchedule].
+// Possible runtime types of the union are [OperationalDataExportScheduleResponse],
+// [UsageDataExportScheduleResponse].
 func (r DataExportScheduleUpdateResponse) AsUnion() DataExportScheduleUpdateResponseUnion {
 	return r.union
 }
 
 // Response representing an operational data export configuration.
 //
-// Union satisfied by [OperationalDataExportSchedule] or [UsageDataExportSchedule].
+// Union satisfied by [OperationalDataExportScheduleResponse] or
+// [UsageDataExportScheduleResponse].
 type DataExportScheduleUpdateResponseUnion interface {
 	implementsDataExportScheduleUpdateResponse()
 }
@@ -1112,11 +1396,11 @@ func init() {
 		"sourceType",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(OperationalDataExportSchedule{}),
+			Type:       reflect.TypeOf(OperationalDataExportScheduleResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(UsageDataExportSchedule{}),
+			Type:       reflect.TypeOf(UsageDataExportScheduleResponse{}),
 		},
 	)
 }
@@ -1392,7 +1676,7 @@ type DataExportScheduleDeleteResponse struct {
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
-	// [[]OperationalDataExportScheduleOperationalDataType].
+	// [[]OperationalDataExportScheduleResponseOperationalDataType].
 	OperationalDataTypes interface{} `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
@@ -1452,15 +1736,16 @@ func (r *DataExportScheduleDeleteResponse) UnmarshalJSON(data []byte) (err error
 // AsUnion returns a [DataExportScheduleDeleteResponseUnion] interface which you
 // can cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [OperationalDataExportSchedule],
-// [UsageDataExportSchedule].
+// Possible runtime types of the union are [OperationalDataExportScheduleResponse],
+// [UsageDataExportScheduleResponse].
 func (r DataExportScheduleDeleteResponse) AsUnion() DataExportScheduleDeleteResponseUnion {
 	return r.union
 }
 
 // Response representing an operational data export configuration.
 //
-// Union satisfied by [OperationalDataExportSchedule] or [UsageDataExportSchedule].
+// Union satisfied by [OperationalDataExportScheduleResponse] or
+// [UsageDataExportScheduleResponse].
 type DataExportScheduleDeleteResponseUnion interface {
 	implementsDataExportScheduleDeleteResponse()
 }
@@ -1471,11 +1756,11 @@ func init() {
 		"sourceType",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(OperationalDataExportSchedule{}),
+			Type:       reflect.TypeOf(OperationalDataExportScheduleResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(UsageDataExportSchedule{}),
+			Type:       reflect.TypeOf(UsageDataExportScheduleResponse{}),
 		},
 	)
 }
@@ -1594,14 +1879,16 @@ func (r DataExportScheduleDeleteResponseTimePeriod) IsKnown() bool {
 }
 
 type DataExportScheduleNewParams struct {
-	OrgID param.Field[string]                  `path:"orgId,required"`
-	Body  DataExportScheduleNewParamsBodyUnion `json:"body,required"`
+	OrgID param.Field[string] `path:"orgId,required"`
+	// Request representing an operational schedule configuration.
+	Body DataExportScheduleNewParamsBodyUnion `json:"body,required"`
 }
 
 func (r DataExportScheduleNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }
 
+// Request representing an operational schedule configuration.
 type DataExportScheduleNewParamsBody struct {
 	SourceType param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType,required"`
 	AccountIDs param.Field[interface{}]                               `json:"accountIds"`
@@ -1682,77 +1969,12 @@ func (r DataExportScheduleNewParamsBody) MarshalJSON() (data []byte, err error) 
 
 func (r DataExportScheduleNewParamsBody) implementsDataExportScheduleNewParamsBodyUnion() {}
 
-// Satisfied by [DataExportScheduleNewParamsBodyObject],
-// [DataExportScheduleNewParamsBodyObject], [DataExportScheduleNewParamsBody].
+// Request representing an operational schedule configuration.
+//
+// Satisfied by [OperationalDataExportScheduleRequestParam],
+// [UsageDataExportScheduleRequestParam], [DataExportScheduleNewParamsBody].
 type DataExportScheduleNewParamsBodyUnion interface {
 	implementsDataExportScheduleNewParamsBodyUnion()
-}
-
-type DataExportScheduleNewParamsBodyObject struct {
-	// A list of the entities whose operational data is included in the data export.
-	OperationalDataTypes param.Field[[]DataExportScheduleNewParamsBodyObjectOperationalDataType] `json:"operationalDataTypes,required"`
-	SourceType           param.Field[DataExportScheduleNewParamsBodyObjectSourceType]            `json:"sourceType,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
-}
-
-func (r DataExportScheduleNewParamsBodyObject) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r DataExportScheduleNewParamsBodyObject) implementsDataExportScheduleNewParamsBodyUnion() {}
-
-type DataExportScheduleNewParamsBodyObjectOperationalDataType string
-
-const (
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeBills                DataExportScheduleNewParamsBodyObjectOperationalDataType = "BILLS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeCommitments          DataExportScheduleNewParamsBodyObjectOperationalDataType = "COMMITMENTS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeAccounts             DataExportScheduleNewParamsBodyObjectOperationalDataType = "ACCOUNTS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeBalances             DataExportScheduleNewParamsBodyObjectOperationalDataType = "BALANCES"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeContracts            DataExportScheduleNewParamsBodyObjectOperationalDataType = "CONTRACTS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeAccountPlans         DataExportScheduleNewParamsBodyObjectOperationalDataType = "ACCOUNT_PLANS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeAggregations         DataExportScheduleNewParamsBodyObjectOperationalDataType = "AGGREGATIONS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypePlans                DataExportScheduleNewParamsBodyObjectOperationalDataType = "PLANS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypePricing              DataExportScheduleNewParamsBodyObjectOperationalDataType = "PRICING"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypePricingBands         DataExportScheduleNewParamsBodyObjectOperationalDataType = "PRICING_BANDS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeBillLineItems        DataExportScheduleNewParamsBodyObjectOperationalDataType = "BILL_LINE_ITEMS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeMeters               DataExportScheduleNewParamsBodyObjectOperationalDataType = "METERS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeProducts             DataExportScheduleNewParamsBodyObjectOperationalDataType = "PRODUCTS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeCompoundAggregations DataExportScheduleNewParamsBodyObjectOperationalDataType = "COMPOUND_AGGREGATIONS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypePlanGroups           DataExportScheduleNewParamsBodyObjectOperationalDataType = "PLAN_GROUPS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypePlanGroupLinks       DataExportScheduleNewParamsBodyObjectOperationalDataType = "PLAN_GROUP_LINKS"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypePlanTemplates        DataExportScheduleNewParamsBodyObjectOperationalDataType = "PLAN_TEMPLATES"
-	DataExportScheduleNewParamsBodyObjectOperationalDataTypeBalanceTransactions  DataExportScheduleNewParamsBodyObjectOperationalDataType = "BALANCE_TRANSACTIONS"
-)
-
-func (r DataExportScheduleNewParamsBodyObjectOperationalDataType) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewParamsBodyObjectOperationalDataTypeBills, DataExportScheduleNewParamsBodyObjectOperationalDataTypeCommitments, DataExportScheduleNewParamsBodyObjectOperationalDataTypeAccounts, DataExportScheduleNewParamsBodyObjectOperationalDataTypeBalances, DataExportScheduleNewParamsBodyObjectOperationalDataTypeContracts, DataExportScheduleNewParamsBodyObjectOperationalDataTypeAccountPlans, DataExportScheduleNewParamsBodyObjectOperationalDataTypeAggregations, DataExportScheduleNewParamsBodyObjectOperationalDataTypePlans, DataExportScheduleNewParamsBodyObjectOperationalDataTypePricing, DataExportScheduleNewParamsBodyObjectOperationalDataTypePricingBands, DataExportScheduleNewParamsBodyObjectOperationalDataTypeBillLineItems, DataExportScheduleNewParamsBodyObjectOperationalDataTypeMeters, DataExportScheduleNewParamsBodyObjectOperationalDataTypeProducts, DataExportScheduleNewParamsBodyObjectOperationalDataTypeCompoundAggregations, DataExportScheduleNewParamsBodyObjectOperationalDataTypePlanGroups, DataExportScheduleNewParamsBodyObjectOperationalDataTypePlanGroupLinks, DataExportScheduleNewParamsBodyObjectOperationalDataTypePlanTemplates, DataExportScheduleNewParamsBodyObjectOperationalDataTypeBalanceTransactions:
-		return true
-	}
-	return false
-}
-
-type DataExportScheduleNewParamsBodyObjectSourceType string
-
-const (
-	DataExportScheduleNewParamsBodyObjectSourceTypeUsage       DataExportScheduleNewParamsBodyObjectSourceType = "USAGE"
-	DataExportScheduleNewParamsBodyObjectSourceTypeOperational DataExportScheduleNewParamsBodyObjectSourceType = "OPERATIONAL"
-)
-
-func (r DataExportScheduleNewParamsBodyObjectSourceType) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewParamsBodyObjectSourceTypeUsage, DataExportScheduleNewParamsBodyObjectSourceTypeOperational:
-		return true
-	}
-	return false
 }
 
 type DataExportScheduleNewParamsBodySourceType string
@@ -1888,14 +2110,16 @@ type DataExportScheduleGetParams struct {
 }
 
 type DataExportScheduleUpdateParams struct {
-	OrgID param.Field[string]                     `path:"orgId,required"`
-	Body  DataExportScheduleUpdateParamsBodyUnion `json:"body,required"`
+	OrgID param.Field[string] `path:"orgId,required"`
+	// Request representing an operational schedule configuration.
+	Body DataExportScheduleUpdateParamsBodyUnion `json:"body,required"`
 }
 
 func (r DataExportScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }
 
+// Request representing an operational schedule configuration.
 type DataExportScheduleUpdateParamsBody struct {
 	SourceType param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType,required"`
 	AccountIDs param.Field[interface{}]                                  `json:"accountIds"`
@@ -1976,79 +2200,12 @@ func (r DataExportScheduleUpdateParamsBody) MarshalJSON() (data []byte, err erro
 
 func (r DataExportScheduleUpdateParamsBody) implementsDataExportScheduleUpdateParamsBodyUnion() {}
 
-// Satisfied by [DataExportScheduleUpdateParamsBodyObject],
-// [DataExportScheduleUpdateParamsBodyObject],
-// [DataExportScheduleUpdateParamsBody].
+// Request representing an operational schedule configuration.
+//
+// Satisfied by [OperationalDataExportScheduleRequestParam],
+// [UsageDataExportScheduleRequestParam], [DataExportScheduleUpdateParamsBody].
 type DataExportScheduleUpdateParamsBodyUnion interface {
 	implementsDataExportScheduleUpdateParamsBodyUnion()
-}
-
-type DataExportScheduleUpdateParamsBodyObject struct {
-	// A list of the entities whose operational data is included in the data export.
-	OperationalDataTypes param.Field[[]DataExportScheduleUpdateParamsBodyObjectOperationalDataType] `json:"operationalDataTypes,required"`
-	SourceType           param.Field[DataExportScheduleUpdateParamsBodyObjectSourceType]            `json:"sourceType,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
-}
-
-func (r DataExportScheduleUpdateParamsBodyObject) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r DataExportScheduleUpdateParamsBodyObject) implementsDataExportScheduleUpdateParamsBodyUnion() {
-}
-
-type DataExportScheduleUpdateParamsBodyObjectOperationalDataType string
-
-const (
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBills                DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "BILLS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeCommitments          DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "COMMITMENTS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeAccounts             DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "ACCOUNTS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBalances             DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "BALANCES"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeContracts            DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "CONTRACTS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeAccountPlans         DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "ACCOUNT_PLANS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeAggregations         DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "AGGREGATIONS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlans                DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "PLANS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePricing              DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "PRICING"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePricingBands         DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "PRICING_BANDS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBillLineItems        DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "BILL_LINE_ITEMS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeMeters               DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "METERS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeProducts             DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "PRODUCTS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeCompoundAggregations DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "COMPOUND_AGGREGATIONS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlanGroups           DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "PLAN_GROUPS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlanGroupLinks       DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "PLAN_GROUP_LINKS"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlanTemplates        DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "PLAN_TEMPLATES"
-	DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBalanceTransactions  DataExportScheduleUpdateParamsBodyObjectOperationalDataType = "BALANCE_TRANSACTIONS"
-)
-
-func (r DataExportScheduleUpdateParamsBodyObjectOperationalDataType) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBills, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeCommitments, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeAccounts, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBalances, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeContracts, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeAccountPlans, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeAggregations, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlans, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePricing, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePricingBands, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBillLineItems, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeMeters, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeProducts, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeCompoundAggregations, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlanGroups, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlanGroupLinks, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypePlanTemplates, DataExportScheduleUpdateParamsBodyObjectOperationalDataTypeBalanceTransactions:
-		return true
-	}
-	return false
-}
-
-type DataExportScheduleUpdateParamsBodyObjectSourceType string
-
-const (
-	DataExportScheduleUpdateParamsBodyObjectSourceTypeUsage       DataExportScheduleUpdateParamsBodyObjectSourceType = "USAGE"
-	DataExportScheduleUpdateParamsBodyObjectSourceTypeOperational DataExportScheduleUpdateParamsBodyObjectSourceType = "OPERATIONAL"
-)
-
-func (r DataExportScheduleUpdateParamsBodyObjectSourceType) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateParamsBodyObjectSourceTypeUsage, DataExportScheduleUpdateParamsBodyObjectSourceTypeOperational:
-		return true
-	}
-	return false
 }
 
 type DataExportScheduleUpdateParamsBodySourceType string
