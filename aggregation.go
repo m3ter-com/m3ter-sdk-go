@@ -41,21 +41,21 @@ func NewAggregationService(opts ...option.RequestOption) (r *AggregationService)
 }
 
 // Create a new Aggregation.
-func (r *AggregationService) New(ctx context.Context, orgID string, body AggregationNewParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *AggregationService) New(ctx context.Context, params AggregationNewParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/aggregations", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve the Aggregation with the given UUID.
-func (r *AggregationService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *AggregationService) Get(ctx context.Context, id string, query AggregationGetParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -63,7 +63,7 @@ func (r *AggregationService) Get(ctx context.Context, orgID string, id string, o
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/aggregations/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -74,9 +74,9 @@ func (r *AggregationService) Get(ctx context.Context, orgID string, id string, o
 // this endpoint to update the Aggregation use the `customFields` parameter to
 // preserve those Custom Fields. If you omit them from the update request, they
 // will be lost.
-func (r *AggregationService) Update(ctx context.Context, orgID string, id string, body AggregationUpdateParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+func (r *AggregationService) Update(ctx context.Context, id string, params AggregationUpdateParams, opts ...option.RequestOption) (res *Aggregation, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -84,23 +84,23 @@ func (r *AggregationService) Update(ctx context.Context, orgID string, id string
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/aggregations/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of Aggregations that can be filtered by Product, Aggregation ID,
 // or Code.
-func (r *AggregationService) List(ctx context.Context, orgID string, query AggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[Aggregation], err error) {
+func (r *AggregationService) List(ctx context.Context, params AggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[Aggregation], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/aggregations", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/aggregations", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,8 +114,24 @@ func (r *AggregationService) List(ctx context.Context, orgID string, query Aggre
 
 // Retrieve a list of Aggregations that can be filtered by Product, Aggregation ID,
 // or Code.
-func (r *AggregationService) ListAutoPaging(ctx context.Context, orgID string, query AggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Aggregation] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *AggregationService) ListAutoPaging(ctx context.Context, params AggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Aggregation] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
+}
+
+// Delete the Aggregation with the given UUID.
+func (r *AggregationService) Delete(ctx context.Context, id string, body AggregationDeleteParams, opts ...option.RequestOption) (res *Aggregation, err error) {
+	opts = append(r.Options[:], opts...)
+	if body.OrgID.Value == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/aggregations/%s", body.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
 }
 
 type Aggregation struct {
@@ -127,7 +143,8 @@ type Aggregation struct {
 	//     in the response.
 	//   - **Update:** On successful Update, the version is incremented by 1 in the
 	//     response.
-	Version int64 `json:"version,required"`
+	Version             int64  `json:"version,required"`
+	AccountingProductID string `json:"accountingProductId"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected targetField.
@@ -162,6 +179,7 @@ type Aggregation struct {
 	// The id of the user who created this aggregation.
 	CreatedBy    string                                  `json:"createdBy"`
 	CustomFields map[string]AggregationCustomFieldsUnion `json:"customFields"`
+	CustomSql    string                                  `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -234,26 +252,28 @@ type Aggregation struct {
 
 // aggregationJSON contains the JSON metadata for the struct [Aggregation]
 type aggregationJSON struct {
-	ID              apijson.Field
-	Version         apijson.Field
-	Aggregation     apijson.Field
-	Code            apijson.Field
-	CreatedBy       apijson.Field
-	CustomFields    apijson.Field
-	DefaultValue    apijson.Field
-	DtCreated       apijson.Field
-	DtLastModified  apijson.Field
-	LastModifiedBy  apijson.Field
-	MeterID         apijson.Field
-	Name            apijson.Field
-	QuantityPerUnit apijson.Field
-	Rounding        apijson.Field
-	SegmentedFields apijson.Field
-	Segments        apijson.Field
-	TargetField     apijson.Field
-	Unit            apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	ID                  apijson.Field
+	Version             apijson.Field
+	AccountingProductID apijson.Field
+	Aggregation         apijson.Field
+	Code                apijson.Field
+	CreatedBy           apijson.Field
+	CustomFields        apijson.Field
+	CustomSql           apijson.Field
+	DefaultValue        apijson.Field
+	DtCreated           apijson.Field
+	DtLastModified      apijson.Field
+	LastModifiedBy      apijson.Field
+	MeterID             apijson.Field
+	Name                apijson.Field
+	QuantityPerUnit     apijson.Field
+	Rounding            apijson.Field
+	SegmentedFields     apijson.Field
+	Segments            apijson.Field
+	TargetField         apijson.Field
+	Unit                apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
 }
 
 func (r *Aggregation) UnmarshalJSON(data []byte) (err error) {
@@ -295,18 +315,19 @@ func (r aggregationJSON) RawJSON() string {
 type AggregationAggregation string
 
 const (
-	AggregationAggregationSum    AggregationAggregation = "SUM"
-	AggregationAggregationMin    AggregationAggregation = "MIN"
-	AggregationAggregationMax    AggregationAggregation = "MAX"
-	AggregationAggregationCount  AggregationAggregation = "COUNT"
-	AggregationAggregationLatest AggregationAggregation = "LATEST"
-	AggregationAggregationMean   AggregationAggregation = "MEAN"
-	AggregationAggregationUnique AggregationAggregation = "UNIQUE"
+	AggregationAggregationSum       AggregationAggregation = "SUM"
+	AggregationAggregationMin       AggregationAggregation = "MIN"
+	AggregationAggregationMax       AggregationAggregation = "MAX"
+	AggregationAggregationCount     AggregationAggregation = "COUNT"
+	AggregationAggregationLatest    AggregationAggregation = "LATEST"
+	AggregationAggregationMean      AggregationAggregation = "MEAN"
+	AggregationAggregationUnique    AggregationAggregation = "UNIQUE"
+	AggregationAggregationCustomSql AggregationAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationAggregation) IsKnown() bool {
 	switch r {
-	case AggregationAggregationSum, AggregationAggregationMin, AggregationAggregationMax, AggregationAggregationCount, AggregationAggregationLatest, AggregationAggregationMean, AggregationAggregationUnique:
+	case AggregationAggregationSum, AggregationAggregationMin, AggregationAggregationMax, AggregationAggregationCount, AggregationAggregationLatest, AggregationAggregationMean, AggregationAggregationUnique, AggregationAggregationCustomSql:
 		return true
 	}
 	return false
@@ -366,6 +387,7 @@ func (r AggregationRounding) IsKnown() bool {
 }
 
 type AggregationNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected targetField.
@@ -432,9 +454,13 @@ type AggregationNewParams struct {
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                           `json:"code"`
 	CustomFields param.Field[map[string]AggregationNewParamsCustomFieldsUnion] `json:"customFields"`
+	CustomSql    param.Field[string]                                           `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -509,18 +535,19 @@ func (r AggregationNewParams) MarshalJSON() (data []byte, err error) {
 type AggregationNewParamsAggregation string
 
 const (
-	AggregationNewParamsAggregationSum    AggregationNewParamsAggregation = "SUM"
-	AggregationNewParamsAggregationMin    AggregationNewParamsAggregation = "MIN"
-	AggregationNewParamsAggregationMax    AggregationNewParamsAggregation = "MAX"
-	AggregationNewParamsAggregationCount  AggregationNewParamsAggregation = "COUNT"
-	AggregationNewParamsAggregationLatest AggregationNewParamsAggregation = "LATEST"
-	AggregationNewParamsAggregationMean   AggregationNewParamsAggregation = "MEAN"
-	AggregationNewParamsAggregationUnique AggregationNewParamsAggregation = "UNIQUE"
+	AggregationNewParamsAggregationSum       AggregationNewParamsAggregation = "SUM"
+	AggregationNewParamsAggregationMin       AggregationNewParamsAggregation = "MIN"
+	AggregationNewParamsAggregationMax       AggregationNewParamsAggregation = "MAX"
+	AggregationNewParamsAggregationCount     AggregationNewParamsAggregation = "COUNT"
+	AggregationNewParamsAggregationLatest    AggregationNewParamsAggregation = "LATEST"
+	AggregationNewParamsAggregationMean      AggregationNewParamsAggregation = "MEAN"
+	AggregationNewParamsAggregationUnique    AggregationNewParamsAggregation = "UNIQUE"
+	AggregationNewParamsAggregationCustomSql AggregationNewParamsAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationNewParamsAggregation) IsKnown() bool {
 	switch r {
-	case AggregationNewParamsAggregationSum, AggregationNewParamsAggregationMin, AggregationNewParamsAggregationMax, AggregationNewParamsAggregationCount, AggregationNewParamsAggregationLatest, AggregationNewParamsAggregationMean, AggregationNewParamsAggregationUnique:
+	case AggregationNewParamsAggregationSum, AggregationNewParamsAggregationMin, AggregationNewParamsAggregationMax, AggregationNewParamsAggregationCount, AggregationNewParamsAggregationLatest, AggregationNewParamsAggregationMean, AggregationNewParamsAggregationUnique, AggregationNewParamsAggregationCustomSql:
 		return true
 	}
 	return false
@@ -564,7 +591,12 @@ type AggregationNewParamsCustomFieldsUnion interface {
 	ImplementsAggregationNewParamsCustomFieldsUnion()
 }
 
+type AggregationGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type AggregationUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected targetField.
@@ -631,9 +663,13 @@ type AggregationUpdateParams struct {
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes
+	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                              `json:"code"`
 	CustomFields param.Field[map[string]AggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`
+	CustomSql    param.Field[string]                                              `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -708,18 +744,19 @@ func (r AggregationUpdateParams) MarshalJSON() (data []byte, err error) {
 type AggregationUpdateParamsAggregation string
 
 const (
-	AggregationUpdateParamsAggregationSum    AggregationUpdateParamsAggregation = "SUM"
-	AggregationUpdateParamsAggregationMin    AggregationUpdateParamsAggregation = "MIN"
-	AggregationUpdateParamsAggregationMax    AggregationUpdateParamsAggregation = "MAX"
-	AggregationUpdateParamsAggregationCount  AggregationUpdateParamsAggregation = "COUNT"
-	AggregationUpdateParamsAggregationLatest AggregationUpdateParamsAggregation = "LATEST"
-	AggregationUpdateParamsAggregationMean   AggregationUpdateParamsAggregation = "MEAN"
-	AggregationUpdateParamsAggregationUnique AggregationUpdateParamsAggregation = "UNIQUE"
+	AggregationUpdateParamsAggregationSum       AggregationUpdateParamsAggregation = "SUM"
+	AggregationUpdateParamsAggregationMin       AggregationUpdateParamsAggregation = "MIN"
+	AggregationUpdateParamsAggregationMax       AggregationUpdateParamsAggregation = "MAX"
+	AggregationUpdateParamsAggregationCount     AggregationUpdateParamsAggregation = "COUNT"
+	AggregationUpdateParamsAggregationLatest    AggregationUpdateParamsAggregation = "LATEST"
+	AggregationUpdateParamsAggregationMean      AggregationUpdateParamsAggregation = "MEAN"
+	AggregationUpdateParamsAggregationUnique    AggregationUpdateParamsAggregation = "UNIQUE"
+	AggregationUpdateParamsAggregationCustomSql AggregationUpdateParamsAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationUpdateParamsAggregation) IsKnown() bool {
 	switch r {
-	case AggregationUpdateParamsAggregationSum, AggregationUpdateParamsAggregationMin, AggregationUpdateParamsAggregationMax, AggregationUpdateParamsAggregationCount, AggregationUpdateParamsAggregationLatest, AggregationUpdateParamsAggregationMean, AggregationUpdateParamsAggregationUnique:
+	case AggregationUpdateParamsAggregationSum, AggregationUpdateParamsAggregationMin, AggregationUpdateParamsAggregationMax, AggregationUpdateParamsAggregationCount, AggregationUpdateParamsAggregationLatest, AggregationUpdateParamsAggregationMean, AggregationUpdateParamsAggregationUnique, AggregationUpdateParamsAggregationCustomSql:
 		return true
 	}
 	return false
@@ -764,6 +801,7 @@ type AggregationUpdateParamsCustomFieldsUnion interface {
 }
 
 type AggregationListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Aggregation codes to retrieve. These are unique short codes to identify
 	// each Aggregation.
 	Codes param.Field[[]string] `query:"codes"`
@@ -783,4 +821,8 @@ func (r AggregationListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type AggregationDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }

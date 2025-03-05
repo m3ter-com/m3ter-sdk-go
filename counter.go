@@ -38,21 +38,21 @@ func NewCounterService(opts ...option.RequestOption) (r *CounterService) {
 }
 
 // Create a new Counter.
-func (r *CounterService) New(ctx context.Context, orgID string, body CounterNewParams, opts ...option.RequestOption) (res *Counter, err error) {
+func (r *CounterService) New(ctx context.Context, params CounterNewParams, opts ...option.RequestOption) (res *Counter, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counters", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counters", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a Counter for the given UUID.
-func (r *CounterService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Counter, err error) {
+func (r *CounterService) Get(ctx context.Context, id string, query CounterGetParams, opts ...option.RequestOption) (res *Counter, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -60,15 +60,15 @@ func (r *CounterService) Get(ctx context.Context, orgID string, id string, opts 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counters/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/counters/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update Counter for the given UUID.
-func (r *CounterService) Update(ctx context.Context, orgID string, id string, body CounterUpdateParams, opts ...option.RequestOption) (res *Counter, err error) {
+func (r *CounterService) Update(ctx context.Context, id string, params CounterUpdateParams, opts ...option.RequestOption) (res *Counter, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -76,23 +76,23 @@ func (r *CounterService) Update(ctx context.Context, orgID string, id string, bo
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counters/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counters/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
 // Retrieve a list of Counter entities that can be filtered by Product, Counter ID,
 // or Codes.
-func (r *CounterService) List(ctx context.Context, orgID string, query CounterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Counter], err error) {
+func (r *CounterService) List(ctx context.Context, params CounterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Counter], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/counters", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/counters", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,8 +106,24 @@ func (r *CounterService) List(ctx context.Context, orgID string, query CounterLi
 
 // Retrieve a list of Counter entities that can be filtered by Product, Counter ID,
 // or Codes.
-func (r *CounterService) ListAutoPaging(ctx context.Context, orgID string, query CounterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Counter] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *CounterService) ListAutoPaging(ctx context.Context, params CounterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Counter] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
+}
+
+// Delete a Counter for the given UUID.
+func (r *CounterService) Delete(ctx context.Context, id string, body CounterDeleteParams, opts ...option.RequestOption) (res *Counter, err error) {
+	opts = append(r.Options[:], opts...)
+	if body.OrgID.Value == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/counters/%s", body.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
 }
 
 type Counter struct {
@@ -167,6 +183,7 @@ func (r counterJSON) RawJSON() string {
 }
 
 type CounterNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Descriptive name for the Counter.
 	Name param.Field[string] `json:"name,required"`
 	// User defined label for units shown on Bill line items, and indicating to your
@@ -193,7 +210,12 @@ func (r CounterNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type CounterGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type CounterUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// Descriptive name for the Counter.
 	Name param.Field[string] `json:"name,required"`
 	// User defined label for units shown on Bill line items, and indicating to your
@@ -221,6 +243,7 @@ func (r CounterUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Counter codes to retrieve. These are unique short codes to identify each
 	// Counter.
 	Codes param.Field[[]string] `query:"codes"`
@@ -240,4 +263,8 @@ func (r CounterListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type CounterDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }
