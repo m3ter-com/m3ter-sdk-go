@@ -52,7 +52,7 @@ func NewCommitmentService(opts ...option.RequestOption) (r *CommitmentService) {
 //   - Define a _schedule of billing dates_. Omit a `billingPlanId` and use the
 //     `feeDates` request parameter to define a precise schedule of bill dates and
 //     amounts.
-func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -68,7 +68,7 @@ func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams,
 // Retrieve the details of the Commitment with the given UUID. It provides
 // comprehensive information about the Commitment, such as the agreed amount,
 // overage surcharge percentage, and other related details.
-func (r *CommitmentService) Get(ctx context.Context, id string, query CommitmentGetParams, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) Get(ctx context.Context, id string, query CommitmentGetParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -88,7 +88,7 @@ func (r *CommitmentService) Get(ctx context.Context, id string, query Commitment
 // Update the details of the Commitment with the given UUID. Use this endpoint to
 // adjust Commitment parameters such as the fixed amount, overage surcharge
 // percentage, or associated contract details.
-func (r *CommitmentService) Update(ctx context.Context, id string, params CommitmentUpdateParams, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) Update(ctx context.Context, id string, params CommitmentUpdateParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -108,7 +108,7 @@ func (r *CommitmentService) Update(ctx context.Context, id string, params Commit
 // Retrieves a list of all Commitments associated with an Organization. This
 // endpoint supports pagination and includes various query parameters to filter the
 // Commitments based on Account, Product, date, and end dates.
-func (r *CommitmentService) List(ctx context.Context, params CommitmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[Commitment], err error) {
+func (r *CommitmentService) List(ctx context.Context, params CommitmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CommitmentResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -134,7 +134,7 @@ func (r *CommitmentService) List(ctx context.Context, params CommitmentListParam
 // Retrieves a list of all Commitments associated with an Organization. This
 // endpoint supports pagination and includes various query parameters to filter the
 // Commitments based on Account, Product, date, and end dates.
-func (r *CommitmentService) ListAutoPaging(ctx context.Context, params CommitmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Commitment] {
+func (r *CommitmentService) ListAutoPaging(ctx context.Context, params CommitmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CommitmentResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -142,7 +142,7 @@ func (r *CommitmentService) ListAutoPaging(ctx context.Context, params Commitmen
 //
 // Deletes the Commitment with the given UUID. Use this endpoint when a Commitment
 // is no longer valid or needs to be removed from the system.
-func (r *CommitmentService) Delete(ctx context.Context, id string, body CommitmentDeleteParams, opts ...option.RequestOption) (res *Commitment, err error) {
+func (r *CommitmentService) Delete(ctx context.Context, id string, body CommitmentDeleteParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -174,7 +174,44 @@ func (r *CommitmentService) Search(ctx context.Context, params CommitmentSearchP
 	return
 }
 
-type Commitment struct {
+type CommitmentFee struct {
+	Amount                 float64           `json:"amount,required"`
+	Date                   time.Time         `json:"date,required" format:"date"`
+	ServicePeriodEndDate   time.Time         `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodStartDate time.Time         `json:"servicePeriodStartDate,required" format:"date-time"`
+	JSON                   commitmentFeeJSON `json:"-"`
+}
+
+// commitmentFeeJSON contains the JSON metadata for the struct [CommitmentFee]
+type commitmentFeeJSON struct {
+	Amount                 apijson.Field
+	Date                   apijson.Field
+	ServicePeriodEndDate   apijson.Field
+	ServicePeriodStartDate apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *CommitmentFee) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r commitmentFeeJSON) RawJSON() string {
+	return r.raw
+}
+
+type CommitmentFeeParam struct {
+	Amount                 param.Field[float64]   `json:"amount,required"`
+	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
+	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+}
+
+func (r CommitmentFeeParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type CommitmentResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -225,7 +262,7 @@ type Commitment struct {
 	// - **Parent Summary** - single bill line item for all Accounts.
 	//
 	// - **Child** - the Child Account is billed.
-	ChildBillingMode CommitmentChildBillingMode `json:"childBillingMode"`
+	ChildBillingMode CommitmentResponseChildBillingMode `json:"childBillingMode"`
 	// A boolean value indicating whether the Commitment fee is billed in advance
 	// _(start of each billing period)_ or arrears _(end of each billing period)_.
 	//
@@ -259,8 +296,8 @@ type Commitment struct {
 	//   - `amount` - the billed amount.
 	//   - `servicePeriodStartDate` and `servicePeriodEndDate` - defines the service
 	//     period the bill covers _(in ISO-8601 format)_.
-	FeeDates                []CommitmentFeeDate `json:"feeDates"`
-	FeesAccountingProductID string              `json:"feesAccountingProductId"`
+	FeeDates                []CommitmentFee `json:"feeDates"`
+	FeesAccountingProductID string          `json:"feesAccountingProductId"`
 	// The unique identifier (UUID) of the user who last modified this Commitment.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Specifies the line item charge types that can draw-down at billing against the
@@ -271,7 +308,7 @@ type Commitment struct {
 	// - `USAGE`
 	// - `"COUNTER_RUNNING_TOTAL_CHARGE"`
 	// - `"COUNTER_ADJUSTMENT_DEBIT"`
-	LineItemTypes []CommitmentLineItemType `json:"lineItemTypes"`
+	LineItemTypes []CommitmentResponseLineItemType `json:"lineItemTypes"`
 	// A textual description of the overage charges.
 	OverageDescription string `json:"overageDescription"`
 	// The percentage surcharge applied to the usage charges that exceed the Commitment
@@ -294,12 +331,13 @@ type Commitment struct {
 	// - **FALSE** - billed together.
 	SeparateOverageUsage bool `json:"separateOverageUsage"`
 	// The start date of the Commitment period in ISO-8601 format.
-	StartDate time.Time      `json:"startDate" format:"date"`
-	JSON      commitmentJSON `json:"-"`
+	StartDate time.Time              `json:"startDate" format:"date"`
+	JSON      commitmentResponseJSON `json:"-"`
 }
 
-// commitmentJSON contains the JSON metadata for the struct [Commitment]
-type commitmentJSON struct {
+// commitmentResponseJSON contains the JSON metadata for the struct
+// [CommitmentResponse]
+type commitmentResponseJSON struct {
 	ID                           apijson.Field
 	Version                      apijson.Field
 	AccountID                    apijson.Field
@@ -336,11 +374,11 @@ type commitmentJSON struct {
 	ExtraFields                  map[string]apijson.Field
 }
 
-func (r *Commitment) UnmarshalJSON(data []byte) (err error) {
+func (r *CommitmentResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r commitmentJSON) RawJSON() string {
+func (r commitmentResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -354,63 +392,36 @@ func (r commitmentJSON) RawJSON() string {
 // - **Parent Summary** - single bill line item for all Accounts.
 //
 // - **Child** - the Child Account is billed.
-type CommitmentChildBillingMode string
+type CommitmentResponseChildBillingMode string
 
 const (
-	CommitmentChildBillingModeParentSummary   CommitmentChildBillingMode = "PARENT_SUMMARY"
-	CommitmentChildBillingModeParentBreakdown CommitmentChildBillingMode = "PARENT_BREAKDOWN"
-	CommitmentChildBillingModeChild           CommitmentChildBillingMode = "CHILD"
+	CommitmentResponseChildBillingModeParentSummary   CommitmentResponseChildBillingMode = "PARENT_SUMMARY"
+	CommitmentResponseChildBillingModeParentBreakdown CommitmentResponseChildBillingMode = "PARENT_BREAKDOWN"
+	CommitmentResponseChildBillingModeChild           CommitmentResponseChildBillingMode = "CHILD"
 )
 
-func (r CommitmentChildBillingMode) IsKnown() bool {
+func (r CommitmentResponseChildBillingMode) IsKnown() bool {
 	switch r {
-	case CommitmentChildBillingModeParentSummary, CommitmentChildBillingModeParentBreakdown, CommitmentChildBillingModeChild:
+	case CommitmentResponseChildBillingModeParentSummary, CommitmentResponseChildBillingModeParentBreakdown, CommitmentResponseChildBillingModeChild:
 		return true
 	}
 	return false
 }
 
-type CommitmentFeeDate struct {
-	Amount                 float64               `json:"amount,required"`
-	Date                   time.Time             `json:"date,required" format:"date"`
-	ServicePeriodEndDate   time.Time             `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate time.Time             `json:"servicePeriodStartDate,required" format:"date-time"`
-	JSON                   commitmentFeeDateJSON `json:"-"`
-}
-
-// commitmentFeeDateJSON contains the JSON metadata for the struct
-// [CommitmentFeeDate]
-type commitmentFeeDateJSON struct {
-	Amount                 apijson.Field
-	Date                   apijson.Field
-	ServicePeriodEndDate   apijson.Field
-	ServicePeriodStartDate apijson.Field
-	raw                    string
-	ExtraFields            map[string]apijson.Field
-}
-
-func (r *CommitmentFeeDate) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commitmentFeeDateJSON) RawJSON() string {
-	return r.raw
-}
-
 // Available line item types for Commitments
-type CommitmentLineItemType string
+type CommitmentResponseLineItemType string
 
 const (
-	CommitmentLineItemTypeStandingCharge            CommitmentLineItemType = "STANDING_CHARGE"
-	CommitmentLineItemTypeUsage                     CommitmentLineItemType = "USAGE"
-	CommitmentLineItemTypeMinimumSpend              CommitmentLineItemType = "MINIMUM_SPEND"
-	CommitmentLineItemTypeCounterRunningTotalCharge CommitmentLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
-	CommitmentLineItemTypeCounterAdjustmentDebit    CommitmentLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	CommitmentResponseLineItemTypeStandingCharge            CommitmentResponseLineItemType = "STANDING_CHARGE"
+	CommitmentResponseLineItemTypeUsage                     CommitmentResponseLineItemType = "USAGE"
+	CommitmentResponseLineItemTypeMinimumSpend              CommitmentResponseLineItemType = "MINIMUM_SPEND"
+	CommitmentResponseLineItemTypeCounterRunningTotalCharge CommitmentResponseLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
+	CommitmentResponseLineItemTypeCounterAdjustmentDebit    CommitmentResponseLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
 )
 
-func (r CommitmentLineItemType) IsKnown() bool {
+func (r CommitmentResponseLineItemType) IsKnown() bool {
 	switch r {
-	case CommitmentLineItemTypeStandingCharge, CommitmentLineItemTypeUsage, CommitmentLineItemTypeMinimumSpend, CommitmentLineItemTypeCounterRunningTotalCharge, CommitmentLineItemTypeCounterAdjustmentDebit:
+	case CommitmentResponseLineItemTypeStandingCharge, CommitmentResponseLineItemTypeUsage, CommitmentResponseLineItemTypeMinimumSpend, CommitmentResponseLineItemTypeCounterRunningTotalCharge, CommitmentResponseLineItemTypeCounterAdjustmentDebit:
 		return true
 	}
 	return false
@@ -418,7 +429,7 @@ func (r CommitmentLineItemType) IsKnown() bool {
 
 type CommitmentSearchResponse struct {
 	// The list of Commitments information.
-	Data []Commitment `json:"data"`
+	Data []CommitmentResponse `json:"data"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// Commitments in a paginated list.
 	NextToken string                       `json:"nextToken"`
@@ -535,7 +546,7 @@ type CommitmentNewParams struct {
 	//   - You can set `servicePeriodStartDate` and `servicePeriodEndDate` to the _same
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
-	FeeDates param.Field[[]CommitmentNewParamsFeeDate] `json:"feeDates"`
+	FeeDates param.Field[[]CommitmentFeeParam] `json:"feeDates"`
 	// Optional Product ID this Commitment fees should be attributed to for accounting
 	// purposes
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
@@ -626,17 +637,6 @@ func (r CommitmentNewParamsChildBillingMode) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type CommitmentNewParamsFeeDate struct {
-	Amount                 param.Field[float64]   `json:"amount,required"`
-	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
-	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
-}
-
-func (r CommitmentNewParamsFeeDate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // Available line item types for Commitments
@@ -755,7 +755,7 @@ type CommitmentUpdateParams struct {
 	//   - You can set `servicePeriodStartDate` and `servicePeriodEndDate` to the _same
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
-	FeeDates param.Field[[]CommitmentUpdateParamsFeeDate] `json:"feeDates"`
+	FeeDates param.Field[[]CommitmentFeeParam] `json:"feeDates"`
 	// Optional Product ID this Commitment fees should be attributed to for accounting
 	// purposes
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
@@ -846,17 +846,6 @@ func (r CommitmentUpdateParamsChildBillingMode) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type CommitmentUpdateParamsFeeDate struct {
-	Amount                 param.Field[float64]   `json:"amount,required"`
-	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
-	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
-}
-
-func (r CommitmentUpdateParamsFeeDate) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // Available line item types for Commitments

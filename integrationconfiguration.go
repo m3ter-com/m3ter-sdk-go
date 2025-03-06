@@ -54,7 +54,7 @@ func (r *IntegrationConfigurationService) New(ctx context.Context, params Integr
 // This endpoint retrieves the configuration details of a specific integration
 // within an organization. It is useful for obtaining the settings and parameters
 // of an integration.
-func (r *IntegrationConfigurationService) Get(ctx context.Context, id string, query IntegrationConfigurationGetParams, opts ...option.RequestOption) (res *IntegrationConfiguration, err error) {
+func (r *IntegrationConfigurationService) Get(ctx context.Context, id string, query IntegrationConfigurationGetParams, opts ...option.RequestOption) (res *IntegrationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -160,7 +160,7 @@ func (r *IntegrationConfigurationService) Enable(ctx context.Context, id string,
 }
 
 // Retrieve the integration configuration for the entity
-func (r *IntegrationConfigurationService) GetByEntity(ctx context.Context, entityType string, params IntegrationConfigurationGetByEntityParams, opts ...option.RequestOption) (res *IntegrationConfiguration, err error) {
+func (r *IntegrationConfigurationService) GetByEntity(ctx context.Context, entityType string, params IntegrationConfigurationGetByEntityParams, opts ...option.RequestOption) (res *IntegrationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -175,7 +175,7 @@ func (r *IntegrationConfigurationService) GetByEntity(ctx context.Context, entit
 	return
 }
 
-type IntegrationConfiguration struct {
+type IntegrationConfigurationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The destination system for the integration.
@@ -183,8 +183,8 @@ type IntegrationConfiguration struct {
 	// The unique identifier (UUID) of the entity the integration is for.
 	EntityID string `json:"entityId,required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
-	EntityType string                         `json:"entityType,required"`
-	Status     IntegrationConfigurationStatus `json:"status,required"`
+	EntityType string                                 `json:"entityType,required"`
+	Status     IntegrationConfigurationResponseStatus `json:"status,required"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
@@ -209,13 +209,13 @@ type IntegrationConfiguration struct {
 	// The ID of the user who last modified this item.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The URL of the entity in the destination system if available.
-	URL  string                       `json:"url"`
-	JSON integrationConfigurationJSON `json:"-"`
+	URL  string                               `json:"url"`
+	JSON integrationConfigurationResponseJSON `json:"-"`
 }
 
-// integrationConfigurationJSON contains the JSON metadata for the struct
-// [IntegrationConfiguration]
-type integrationConfigurationJSON struct {
+// integrationConfigurationResponseJSON contains the JSON metadata for the struct
+// [IntegrationConfigurationResponse]
+type integrationConfigurationResponseJSON struct {
 	ID             apijson.Field
 	Destination    apijson.Field
 	EntityID       apijson.Field
@@ -235,31 +235,31 @@ type integrationConfigurationJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *IntegrationConfiguration) UnmarshalJSON(data []byte) (err error) {
+func (r *IntegrationConfigurationResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r integrationConfigurationJSON) RawJSON() string {
+func (r integrationConfigurationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type IntegrationConfigurationStatus string
+type IntegrationConfigurationResponseStatus string
 
 const (
-	IntegrationConfigurationStatusWaiting                IntegrationConfigurationStatus = "WAITING"
-	IntegrationConfigurationStatusStarted                IntegrationConfigurationStatus = "STARTED"
-	IntegrationConfigurationStatusComplete               IntegrationConfigurationStatus = "COMPLETE"
-	IntegrationConfigurationStatusError                  IntegrationConfigurationStatus = "ERROR"
-	IntegrationConfigurationStatusAwaitingRetry          IntegrationConfigurationStatus = "AWAITING_RETRY"
-	IntegrationConfigurationStatusAuthFailed             IntegrationConfigurationStatus = "AUTH_FAILED"
-	IntegrationConfigurationStatusAccountingPeriodClosed IntegrationConfigurationStatus = "ACCOUNTING_PERIOD_CLOSED"
-	IntegrationConfigurationStatusInvoiceAlreadyPaid     IntegrationConfigurationStatus = "INVOICE_ALREADY_PAID"
-	IntegrationConfigurationStatusDisabled               IntegrationConfigurationStatus = "DISABLED"
+	IntegrationConfigurationResponseStatusWaiting                IntegrationConfigurationResponseStatus = "WAITING"
+	IntegrationConfigurationResponseStatusStarted                IntegrationConfigurationResponseStatus = "STARTED"
+	IntegrationConfigurationResponseStatusComplete               IntegrationConfigurationResponseStatus = "COMPLETE"
+	IntegrationConfigurationResponseStatusError                  IntegrationConfigurationResponseStatus = "ERROR"
+	IntegrationConfigurationResponseStatusAwaitingRetry          IntegrationConfigurationResponseStatus = "AWAITING_RETRY"
+	IntegrationConfigurationResponseStatusAuthFailed             IntegrationConfigurationResponseStatus = "AUTH_FAILED"
+	IntegrationConfigurationResponseStatusAccountingPeriodClosed IntegrationConfigurationResponseStatus = "ACCOUNTING_PERIOD_CLOSED"
+	IntegrationConfigurationResponseStatusInvoiceAlreadyPaid     IntegrationConfigurationResponseStatus = "INVOICE_ALREADY_PAID"
+	IntegrationConfigurationResponseStatusDisabled               IntegrationConfigurationResponseStatus = "DISABLED"
 )
 
-func (r IntegrationConfigurationStatus) IsKnown() bool {
+func (r IntegrationConfigurationResponseStatus) IsKnown() bool {
 	switch r {
-	case IntegrationConfigurationStatusWaiting, IntegrationConfigurationStatusStarted, IntegrationConfigurationStatusComplete, IntegrationConfigurationStatusError, IntegrationConfigurationStatusAwaitingRetry, IntegrationConfigurationStatusAuthFailed, IntegrationConfigurationStatusAccountingPeriodClosed, IntegrationConfigurationStatusInvoiceAlreadyPaid, IntegrationConfigurationStatusDisabled:
+	case IntegrationConfigurationResponseStatusWaiting, IntegrationConfigurationResponseStatusStarted, IntegrationConfigurationResponseStatusComplete, IntegrationConfigurationResponseStatusError, IntegrationConfigurationResponseStatusAwaitingRetry, IntegrationConfigurationResponseStatusAuthFailed, IntegrationConfigurationResponseStatusAccountingPeriodClosed, IntegrationConfigurationResponseStatusInvoiceAlreadyPaid, IntegrationConfigurationResponseStatusDisabled:
 		return true
 	}
 	return false

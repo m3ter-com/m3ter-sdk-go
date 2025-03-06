@@ -66,7 +66,7 @@ func NewPermissionPolicyService(opts ...option.RequestOption) (r *PermissionPoli
 // For more details and further examples, see
 // [Understanding, Creating, and Managing Permission Policies](https://www.m3ter.com/docs/guides/organization-and-access-management/creating-and-managing-permissions#permission-policy-statements---available-actions-and-resources)
 // in our main Documentation.
-func (r *PermissionPolicyService) New(ctx context.Context, params PermissionPolicyNewParams, opts ...option.RequestOption) (res *PermissionPolicy, err error) {
+func (r *PermissionPolicyService) New(ctx context.Context, params PermissionPolicyNewParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -78,7 +78,7 @@ func (r *PermissionPolicyService) New(ctx context.Context, params PermissionPoli
 }
 
 // Retrieve the permission policy for the UUID
-func (r *PermissionPolicyService) Get(ctx context.Context, id string, query PermissionPolicyGetParams, opts ...option.RequestOption) (res *PermissionPolicy, err error) {
+func (r *PermissionPolicyService) Get(ctx context.Context, id string, query PermissionPolicyGetParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -122,7 +122,7 @@ func (r *PermissionPolicyService) Get(ctx context.Context, id string, query Perm
 // For more details and further examples, see
 // [Understanding, Creating, and Managing Permission Policies](https://www.m3ter.com/docs/guides/organization-and-access-management/creating-and-managing-permissions#permission-policy-statements---available-actions-and-resources)
 // in our main Documentation.
-func (r *PermissionPolicyService) Update(ctx context.Context, id string, params PermissionPolicyUpdateParams, opts ...option.RequestOption) (res *PermissionPolicy, err error) {
+func (r *PermissionPolicyService) Update(ctx context.Context, id string, params PermissionPolicyUpdateParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -138,7 +138,7 @@ func (r *PermissionPolicyService) Update(ctx context.Context, id string, params 
 }
 
 // Retrieve a list of PermissionPolicy entities
-func (r *PermissionPolicyService) List(ctx context.Context, params PermissionPolicyListParams, opts ...option.RequestOption) (res *pagination.Cursor[PermissionPolicy], err error) {
+func (r *PermissionPolicyService) List(ctx context.Context, params PermissionPolicyListParams, opts ...option.RequestOption) (res *pagination.Cursor[PermissionPolicyResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -160,12 +160,12 @@ func (r *PermissionPolicyService) List(ctx context.Context, params PermissionPol
 }
 
 // Retrieve a list of PermissionPolicy entities
-func (r *PermissionPolicyService) ListAutoPaging(ctx context.Context, params PermissionPolicyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PermissionPolicy] {
+func (r *PermissionPolicyService) ListAutoPaging(ctx context.Context, params PermissionPolicyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PermissionPolicyResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the PermissionPolicy for the UUID
-func (r *PermissionPolicyService) Delete(ctx context.Context, id string, body PermissionPolicyDeleteParams, opts ...option.RequestOption) (res *PermissionPolicy, err error) {
+func (r *PermissionPolicyService) Delete(ctx context.Context, id string, body PermissionPolicyDeleteParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -308,7 +308,7 @@ func (r *PermissionPolicyService) RemoveFromUserGroup(ctx context.Context, permi
 	return
 }
 
-type PermissionPolicy struct {
+type PermissionPolicyResponse struct {
 	// The unique identifier (UUID) for this Permission Policy.
 	ID string `json:"id"`
 	// The unique identifier (UUID) of the user who created this Permission Policy.
@@ -326,15 +326,15 @@ type PermissionPolicy struct {
 	// The name of the Permission Policy.
 	Name string `json:"name"`
 	// Array containing the Permission Policies information.
-	PermissionPolicy []PermissionStatement `json:"permissionPolicy"`
+	PermissionPolicy []PermissionStatementResponse `json:"permissionPolicy"`
 	// The version number. Default value when newly created is one.
-	Version int64                `json:"version"`
-	JSON    permissionPolicyJSON `json:"-"`
+	Version int64                        `json:"version"`
+	JSON    permissionPolicyResponseJSON `json:"-"`
 }
 
-// permissionPolicyJSON contains the JSON metadata for the struct
-// [PermissionPolicy]
-type permissionPolicyJSON struct {
+// permissionPolicyResponseJSON contains the JSON metadata for the struct
+// [PermissionPolicyResponse]
+type permissionPolicyResponseJSON struct {
 	ID               apijson.Field
 	CreatedBy        apijson.Field
 	DtCreated        apijson.Field
@@ -348,15 +348,15 @@ type permissionPolicyJSON struct {
 	ExtraFields      map[string]apijson.Field
 }
 
-func (r *PermissionPolicy) UnmarshalJSON(data []byte) (err error) {
+func (r *PermissionPolicyResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r permissionPolicyJSON) RawJSON() string {
+func (r permissionPolicyResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type PermissionStatement struct {
+type PermissionStatementResponse struct {
 	// The actions available to users who are assigned the Permission Policy - what
 	// they can do or cannot do with respect to the specified resource.
 	//
@@ -369,23 +369,23 @@ type PermissionStatement struct {
 	// "config:retrieve",
 	// "config:update"
 	// ```
-	Action []PermissionStatementAction `json:"action,required"`
+	Action []PermissionStatementResponseAction `json:"action,required"`
 	// Specifies whether or not the user is allowed to perform the action on the
 	// resource.
 	//
 	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
 	// receive an error.
-	Effect PermissionStatementEffect `json:"effect,required"`
+	Effect PermissionStatementResponseEffect `json:"effect,required"`
 	// See
 	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
 	// for a listing of available resources for Permission Policy statements.
-	Resource []string                `json:"resource,required"`
-	JSON     permissionStatementJSON `json:"-"`
+	Resource []string                        `json:"resource,required"`
+	JSON     permissionStatementResponseJSON `json:"-"`
 }
 
-// permissionStatementJSON contains the JSON metadata for the struct
-// [PermissionStatement]
-type permissionStatementJSON struct {
+// permissionStatementResponseJSON contains the JSON metadata for the struct
+// [PermissionStatementResponse]
+type permissionStatementResponseJSON struct {
 	Action      apijson.Field
 	Effect      apijson.Field
 	Resource    apijson.Field
@@ -393,37 +393,37 @@ type permissionStatementJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *PermissionStatement) UnmarshalJSON(data []byte) (err error) {
+func (r *PermissionStatementResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r permissionStatementJSON) RawJSON() string {
+func (r permissionStatementResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type PermissionStatementAction string
+type PermissionStatementResponseAction string
 
 const (
-	PermissionStatementActionAll                    PermissionStatementAction = "ALL"
-	PermissionStatementActionConfigCreate           PermissionStatementAction = "CONFIG_CREATE"
-	PermissionStatementActionConfigRetrieve         PermissionStatementAction = "CONFIG_RETRIEVE"
-	PermissionStatementActionConfigUpdate           PermissionStatementAction = "CONFIG_UPDATE"
-	PermissionStatementActionConfigDelete           PermissionStatementAction = "CONFIG_DELETE"
-	PermissionStatementActionConfigExport           PermissionStatementAction = "CONFIG_EXPORT"
-	PermissionStatementActionAnalyticsQuery         PermissionStatementAction = "ANALYTICS_QUERY"
-	PermissionStatementActionMeasurementsUpload     PermissionStatementAction = "MEASUREMENTS_UPLOAD"
-	PermissionStatementActionMeasurementsFileupload PermissionStatementAction = "MEASUREMENTS_FILEUPLOAD"
-	PermissionStatementActionMeasurementsRetrieve   PermissionStatementAction = "MEASUREMENTS_RETRIEVE"
-	PermissionStatementActionMeasurementsExport     PermissionStatementAction = "MEASUREMENTS_EXPORT"
-	PermissionStatementActionForecastRetrieve       PermissionStatementAction = "FORECAST_RETRIEVE"
-	PermissionStatementActionHealthscoresRetrieve   PermissionStatementAction = "HEALTHSCORES_RETRIEVE"
-	PermissionStatementActionAnomaliesRetrieve      PermissionStatementAction = "ANOMALIES_RETRIEVE"
-	PermissionStatementActionExportsDownload        PermissionStatementAction = "EXPORTS_DOWNLOAD"
+	PermissionStatementResponseActionAll                    PermissionStatementResponseAction = "ALL"
+	PermissionStatementResponseActionConfigCreate           PermissionStatementResponseAction = "CONFIG_CREATE"
+	PermissionStatementResponseActionConfigRetrieve         PermissionStatementResponseAction = "CONFIG_RETRIEVE"
+	PermissionStatementResponseActionConfigUpdate           PermissionStatementResponseAction = "CONFIG_UPDATE"
+	PermissionStatementResponseActionConfigDelete           PermissionStatementResponseAction = "CONFIG_DELETE"
+	PermissionStatementResponseActionConfigExport           PermissionStatementResponseAction = "CONFIG_EXPORT"
+	PermissionStatementResponseActionAnalyticsQuery         PermissionStatementResponseAction = "ANALYTICS_QUERY"
+	PermissionStatementResponseActionMeasurementsUpload     PermissionStatementResponseAction = "MEASUREMENTS_UPLOAD"
+	PermissionStatementResponseActionMeasurementsFileupload PermissionStatementResponseAction = "MEASUREMENTS_FILEUPLOAD"
+	PermissionStatementResponseActionMeasurementsRetrieve   PermissionStatementResponseAction = "MEASUREMENTS_RETRIEVE"
+	PermissionStatementResponseActionMeasurementsExport     PermissionStatementResponseAction = "MEASUREMENTS_EXPORT"
+	PermissionStatementResponseActionForecastRetrieve       PermissionStatementResponseAction = "FORECAST_RETRIEVE"
+	PermissionStatementResponseActionHealthscoresRetrieve   PermissionStatementResponseAction = "HEALTHSCORES_RETRIEVE"
+	PermissionStatementResponseActionAnomaliesRetrieve      PermissionStatementResponseAction = "ANOMALIES_RETRIEVE"
+	PermissionStatementResponseActionExportsDownload        PermissionStatementResponseAction = "EXPORTS_DOWNLOAD"
 )
 
-func (r PermissionStatementAction) IsKnown() bool {
+func (r PermissionStatementResponseAction) IsKnown() bool {
 	switch r {
-	case PermissionStatementActionAll, PermissionStatementActionConfigCreate, PermissionStatementActionConfigRetrieve, PermissionStatementActionConfigUpdate, PermissionStatementActionConfigDelete, PermissionStatementActionConfigExport, PermissionStatementActionAnalyticsQuery, PermissionStatementActionMeasurementsUpload, PermissionStatementActionMeasurementsFileupload, PermissionStatementActionMeasurementsRetrieve, PermissionStatementActionMeasurementsExport, PermissionStatementActionForecastRetrieve, PermissionStatementActionHealthscoresRetrieve, PermissionStatementActionAnomaliesRetrieve, PermissionStatementActionExportsDownload:
+	case PermissionStatementResponseActionAll, PermissionStatementResponseActionConfigCreate, PermissionStatementResponseActionConfigRetrieve, PermissionStatementResponseActionConfigUpdate, PermissionStatementResponseActionConfigDelete, PermissionStatementResponseActionConfigExport, PermissionStatementResponseActionAnalyticsQuery, PermissionStatementResponseActionMeasurementsUpload, PermissionStatementResponseActionMeasurementsFileupload, PermissionStatementResponseActionMeasurementsRetrieve, PermissionStatementResponseActionMeasurementsExport, PermissionStatementResponseActionForecastRetrieve, PermissionStatementResponseActionHealthscoresRetrieve, PermissionStatementResponseActionAnomaliesRetrieve, PermissionStatementResponseActionExportsDownload:
 		return true
 	}
 	return false
@@ -434,22 +434,22 @@ func (r PermissionStatementAction) IsKnown() bool {
 //
 // **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
 // receive an error.
-type PermissionStatementEffect string
+type PermissionStatementResponseEffect string
 
 const (
-	PermissionStatementEffectAllow PermissionStatementEffect = "ALLOW"
-	PermissionStatementEffectDeny  PermissionStatementEffect = "DENY"
+	PermissionStatementResponseEffectAllow PermissionStatementResponseEffect = "ALLOW"
+	PermissionStatementResponseEffectDeny  PermissionStatementResponseEffect = "DENY"
 )
 
-func (r PermissionStatementEffect) IsKnown() bool {
+func (r PermissionStatementResponseEffect) IsKnown() bool {
 	switch r {
-	case PermissionStatementEffectAllow, PermissionStatementEffectDeny:
+	case PermissionStatementResponseEffectAllow, PermissionStatementResponseEffectDeny:
 		return true
 	}
 	return false
 }
 
-type PermissionStatementParam struct {
+type PermissionStatementResponseParam struct {
 	// The actions available to users who are assigned the Permission Policy - what
 	// they can do or cannot do with respect to the specified resource.
 	//
@@ -462,20 +462,37 @@ type PermissionStatementParam struct {
 	// "config:retrieve",
 	// "config:update"
 	// ```
-	Action param.Field[[]PermissionStatementAction] `json:"action,required"`
+	Action param.Field[[]PermissionStatementResponseAction] `json:"action,required"`
 	// Specifies whether or not the user is allowed to perform the action on the
 	// resource.
 	//
 	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
 	// receive an error.
-	Effect param.Field[PermissionStatementEffect] `json:"effect,required"`
+	Effect param.Field[PermissionStatementResponseEffect] `json:"effect,required"`
 	// See
 	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
 	// for a listing of available resources for Permission Policy statements.
 	Resource param.Field[[]string] `json:"resource,required"`
 }
 
-func (r PermissionStatementParam) MarshalJSON() (data []byte, err error) {
+func (r PermissionStatementResponseParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type PrincipalPermissionRequestParam struct {
+	PrincipalID param.Field[string] `json:"principalId,required"`
+	// The version number of the entity:
+	//
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
+	Version param.Field[int64] `json:"version"`
+}
+
+func (r PrincipalPermissionRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1000,9 +1017,9 @@ func (r PermissionPolicyRemoveFromUserGroupResponsePrincipalType) IsKnown() bool
 }
 
 type PermissionPolicyNewParams struct {
-	OrgID            param.Field[string]                     `path:"orgId,required"`
-	Name             param.Field[string]                     `json:"name,required"`
-	PermissionPolicy param.Field[[]PermissionStatementParam] `json:"permissionPolicy,required"`
+	OrgID            param.Field[string]                             `path:"orgId,required"`
+	Name             param.Field[string]                             `json:"name,required"`
+	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy,required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - do not use
@@ -1022,9 +1039,9 @@ type PermissionPolicyGetParams struct {
 }
 
 type PermissionPolicyUpdateParams struct {
-	OrgID            param.Field[string]                     `path:"orgId,required"`
-	Name             param.Field[string]                     `json:"name,required"`
-	PermissionPolicy param.Field[[]PermissionStatementParam] `json:"permissionPolicy,required"`
+	OrgID            param.Field[string]                             `path:"orgId,required"`
+	Name             param.Field[string]                             `json:"name,required"`
+	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy,required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - do not use
@@ -1061,21 +1078,12 @@ type PermissionPolicyDeleteParams struct {
 }
 
 type PermissionPolicyAddToServiceUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
 
 func (r PermissionPolicyAddToServiceUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyAddToSupportUserParams struct {
@@ -1096,57 +1104,30 @@ func (r PermissionPolicyAddToSupportUserParams) MarshalJSON() (data []byte, err 
 }
 
 type PermissionPolicyAddToUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
 
 func (r PermissionPolicyAddToUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyAddToUserGroupParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
 
 func (r PermissionPolicyAddToUserGroupParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyRemoveFromServiceUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
 
 func (r PermissionPolicyRemoveFromServiceUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyRemoveFromSupportUserParams struct {
@@ -1154,37 +1135,19 @@ type PermissionPolicyRemoveFromSupportUserParams struct {
 }
 
 type PermissionPolicyRemoveFromUserParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
 
 func (r PermissionPolicyRemoveFromUserParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }
 
 type PermissionPolicyRemoveFromUserGroupParams struct {
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PrincipalID param.Field[string] `json:"principalId,required"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version param.Field[int64] `json:"version"`
+	OrgID                      param.Field[string]             `path:"orgId,required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
 
 func (r PermissionPolicyRemoveFromUserGroupParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.PrincipalPermissionRequest)
 }

@@ -49,7 +49,7 @@ func NewAccountPlanService(opts ...option.RequestOption) (r *AccountPlanService)
 // **Note:** You cannot use this call to create _both_ an AccountPlan and
 // AccountPlanGroup for an Account at the same time. If you want to create both for
 // an Account, you must submit two separate calls.
-func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -62,7 +62,7 @@ func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParam
 
 // Retrieve the AccountPlan or AccountPlanGroup details corresponding to the given
 // UUID.
-func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPlanGetParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPlanGetParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -92,7 +92,7 @@ func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPl
 //     endpoint to update the AccountPlan use the `customFields` parameter to
 //     preserve those Custom Fields. If you omit them from the update request, they
 //     will be lost.
-func (r *AccountPlanService) Update(ctx context.Context, id string, params AccountPlanUpdateParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) Update(ctx context.Context, id string, params AccountPlanUpdateParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -117,7 +117,7 @@ func (r *AccountPlanService) Update(ctx context.Context, id string, params Accou
 // **NOTE:** You cannot use the `product` query parameter as a single filter
 // condition, but must always use it in combination with the `account` query
 // parameter.
-func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountPlan], err error) {
+func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountPlanResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -148,7 +148,7 @@ func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListPar
 // **NOTE:** You cannot use the `product` query parameter as a single filter
 // condition, but must always use it in combination with the `account` query
 // parameter.
-func (r *AccountPlanService) ListAutoPaging(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountPlan] {
+func (r *AccountPlanService) ListAutoPaging(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountPlanResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -156,7 +156,7 @@ func (r *AccountPlanService) ListAutoPaging(ctx context.Context, params AccountP
 //
 // This endpoint deletes an AccountPlan or AccountPlanGroup that has been attached
 // to a specific Account in your Organization.
-func (r *AccountPlanService) Delete(ctx context.Context, id string, body AccountPlanDeleteParams, opts ...option.RequestOption) (res *AccountPlan, err error) {
+func (r *AccountPlanService) Delete(ctx context.Context, id string, body AccountPlanDeleteParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -171,7 +171,7 @@ func (r *AccountPlanService) Delete(ctx context.Context, id string, body Account
 	return
 }
 
-type AccountPlan struct {
+type AccountPlanResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -199,7 +199,7 @@ type AccountPlan struct {
 	// - **Parent Summary** - single bill line item for all Accounts.
 	//
 	// - **Child** - the Child Account is billed.
-	ChildBillingMode AccountPlanChildBillingMode `json:"childBillingMode"`
+	ChildBillingMode AccountPlanResponseChildBillingMode `json:"childBillingMode"`
 	// The unique short code of the AccountPlan or AccountPlanGroup.
 	Code string `json:"code"`
 	// The unique identifier (UUID) for the Contract to which the Plan or Plan Group
@@ -218,7 +218,7 @@ type AccountPlan struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]AccountPlanCustomFieldsUnion `json:"customFields"`
+	CustomFields map[string]AccountPlanResponseCustomFieldsUnion `json:"customFields"`
 	// The date and time _(in ISO 8601 format)_ when the AccountPlan or
 	// AccountPlanGroup was first created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
@@ -245,12 +245,13 @@ type AccountPlan struct {
 	ProductID string `json:"productId"`
 	// The start date _(in ISO-8601 format)_ for the when the AccountPlan or
 	// AccountPlanGroup starts to be active for the Account.
-	StartDate time.Time       `json:"startDate" format:"date-time"`
-	JSON      accountPlanJSON `json:"-"`
+	StartDate time.Time               `json:"startDate" format:"date-time"`
+	JSON      accountPlanResponseJSON `json:"-"`
 }
 
-// accountPlanJSON contains the JSON metadata for the struct [AccountPlan]
-type accountPlanJSON struct {
+// accountPlanResponseJSON contains the JSON metadata for the struct
+// [AccountPlanResponse]
+type accountPlanResponseJSON struct {
 	ID               apijson.Field
 	Version          apijson.Field
 	AccountID        apijson.Field
@@ -272,11 +273,11 @@ type accountPlanJSON struct {
 	ExtraFields      map[string]apijson.Field
 }
 
-func (r *AccountPlan) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountPlanResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountPlanJSON) RawJSON() string {
+func (r accountPlanResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -290,30 +291,30 @@ func (r accountPlanJSON) RawJSON() string {
 // - **Parent Summary** - single bill line item for all Accounts.
 //
 // - **Child** - the Child Account is billed.
-type AccountPlanChildBillingMode string
+type AccountPlanResponseChildBillingMode string
 
 const (
-	AccountPlanChildBillingModeParentSummary   AccountPlanChildBillingMode = "PARENT_SUMMARY"
-	AccountPlanChildBillingModeParentBreakdown AccountPlanChildBillingMode = "PARENT_BREAKDOWN"
-	AccountPlanChildBillingModeChild           AccountPlanChildBillingMode = "CHILD"
+	AccountPlanResponseChildBillingModeParentSummary   AccountPlanResponseChildBillingMode = "PARENT_SUMMARY"
+	AccountPlanResponseChildBillingModeParentBreakdown AccountPlanResponseChildBillingMode = "PARENT_BREAKDOWN"
+	AccountPlanResponseChildBillingModeChild           AccountPlanResponseChildBillingMode = "CHILD"
 )
 
-func (r AccountPlanChildBillingMode) IsKnown() bool {
+func (r AccountPlanResponseChildBillingMode) IsKnown() bool {
 	switch r {
-	case AccountPlanChildBillingModeParentSummary, AccountPlanChildBillingModeParentBreakdown, AccountPlanChildBillingModeChild:
+	case AccountPlanResponseChildBillingModeParentSummary, AccountPlanResponseChildBillingModeParentBreakdown, AccountPlanResponseChildBillingModeChild:
 		return true
 	}
 	return false
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type AccountPlanCustomFieldsUnion interface {
-	ImplementsAccountPlanCustomFieldsUnion()
+type AccountPlanResponseCustomFieldsUnion interface {
+	ImplementsAccountPlanResponseCustomFieldsUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountPlanCustomFieldsUnion)(nil)).Elem(),
+		reflect.TypeOf((*AccountPlanResponseCustomFieldsUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,

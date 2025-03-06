@@ -43,7 +43,7 @@ func NewUserService(opts ...option.RequestOption) (r *UserService) {
 //
 // Retrieves detailed information for a specific user within an Organization, using
 // their unique identifier (UUID).
-func (r *UserService) Get(ctx context.Context, id string, query UserGetParams, opts ...option.RequestOption) (res *User, err error) {
+func (r *UserService) Get(ctx context.Context, id string, query UserGetParams, opts ...option.RequestOption) (res *UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -63,7 +63,7 @@ func (r *UserService) Get(ctx context.Context, id string, query UserGetParams, o
 // Updates the details for a specific user within an Organization using their
 // unique identifier (UUID). Use this endpoint when you need to modify user
 // information such as their permission policy.
-func (r *UserService) Update(ctx context.Context, id string, params UserUpdateParams, opts ...option.RequestOption) (res *User, err error) {
+func (r *UserService) Update(ctx context.Context, id string, params UserUpdateParams, opts ...option.RequestOption) (res *UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -83,7 +83,7 @@ func (r *UserService) Update(ctx context.Context, id string, params UserUpdatePa
 // Retrieves a list of all users within a specified Organization. Use this endpoint
 // to get an overview of all users and their basic details. The list can be
 // paginated for easier management.
-func (r *UserService) List(ctx context.Context, params UserListParams, opts ...option.RequestOption) (res *pagination.Cursor[User], err error) {
+func (r *UserService) List(ctx context.Context, params UserListParams, opts ...option.RequestOption) (res *pagination.Cursor[UserResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -109,7 +109,7 @@ func (r *UserService) List(ctx context.Context, params UserListParams, opts ...o
 // Retrieves a list of all users within a specified Organization. Use this endpoint
 // to get an overview of all users and their basic details. The list can be
 // paginated for easier management.
-func (r *UserService) ListAutoPaging(ctx context.Context, params UserListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[User] {
+func (r *UserService) ListAutoPaging(ctx context.Context, params UserListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[UserResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -117,7 +117,7 @@ func (r *UserService) ListAutoPaging(ctx context.Context, params UserListParams,
 //
 // Retrieves a list of all permissions associated with a specific user in an
 // Organization using their UUID. The list can be paginated for easier management.
-func (r *UserService) GetPermissions(ctx context.Context, id string, params UserGetPermissionsParams, opts ...option.RequestOption) (res *PermissionPolicy, err error) {
+func (r *UserService) GetPermissions(ctx context.Context, id string, params UserGetPermissionsParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -157,7 +157,7 @@ func (r *UserService) GetPermissions(ctx context.Context, id string, params User
 //     Groups those Groups belong to as nested Groups are returned.
 //   - If `inherited = FALSE`, then only those User Resource Groups to which the
 //     user belongs are returned.
-func (r *UserService) GetUserGroups(ctx context.Context, id string, params UserGetUserGroupsParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *UserService) GetUserGroups(ctx context.Context, id string, params UserGetUserGroupsParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -201,7 +201,7 @@ func (r *UserService) ResendPassword(ctx context.Context, id string, body UserRe
 	return
 }
 
-type User struct {
+type UserResponse struct {
 	// The unique identifier (UUID) of this user.
 	ID string `json:"id"`
 	// The user's contact telephone number.
@@ -233,7 +233,7 @@ type User struct {
 	Organizations []string `json:"organizations"`
 	// An array of permission statements for the user. Each permission statement
 	// defines a specific permission for the user.
-	PermissionPolicy []PermissionStatement `json:"permissionPolicy"`
+	PermissionPolicy []PermissionStatementResponse `json:"permissionPolicy"`
 	// Indicates whether this is a m3ter Support user.
 	SupportUser bool `json:"supportUser"`
 	// The version number:
@@ -242,12 +242,12 @@ type User struct {
 	//     in the response.
 	//   - **Update:** On successful Update, the version is incremented by 1 in the
 	//     response.
-	Version int64    `json:"version"`
-	JSON    userJSON `json:"-"`
+	Version int64            `json:"version"`
+	JSON    userResponseJSON `json:"-"`
 }
 
-// userJSON contains the JSON metadata for the struct [User]
-type userJSON struct {
+// userResponseJSON contains the JSON metadata for the struct [UserResponse]
+type userResponseJSON struct {
 	ID                              apijson.Field
 	ContactNumber                   apijson.Field
 	CreatedBy                       apijson.Field
@@ -268,11 +268,11 @@ type userJSON struct {
 	ExtraFields                     map[string]apijson.Field
 }
 
-func (r *User) UnmarshalJSON(data []byte) (err error) {
+func (r *UserResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userJSON) RawJSON() string {
+func (r userResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -532,7 +532,7 @@ type UserUpdateParams struct {
 	// See
 	// [Understanding, Creating, and Managing Permission Policies](https://www.m3ter.com/docs/guides/organization-and-access-management/creating-and-managing-permissions)
 	// for more information.
-	PermissionPolicy param.Field[[]PermissionStatementParam] `json:"permissionPolicy"`
+	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy"`
 	// The version number of the entity:
 	//
 	//   - **Newly created entity:** On initial Create, version is set at 1 and listed in

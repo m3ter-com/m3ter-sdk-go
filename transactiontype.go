@@ -39,7 +39,7 @@ func NewTransactionTypeService(opts ...option.RequestOption) (r *TransactionType
 
 // Create a new TransactionType for the specified Organization. Details of the new
 // TransactionType should be included in the request body.
-func (r *TransactionTypeService) New(ctx context.Context, params TransactionTypeNewParams, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) New(ctx context.Context, params TransactionTypeNewParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -52,7 +52,7 @@ func (r *TransactionTypeService) New(ctx context.Context, params TransactionType
 
 // Retrieves the TransactionType with the given UUID from the specified
 // Organization.
-func (r *TransactionTypeService) Get(ctx context.Context, id string, query TransactionTypeGetParams, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) Get(ctx context.Context, id string, query TransactionTypeGetParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -70,7 +70,7 @@ func (r *TransactionTypeService) Get(ctx context.Context, id string, query Trans
 // Updates the TransactionType with the specified UUID for the specified
 // Organization. Update details for the TransactionType should be included in the
 // request body.
-func (r *TransactionTypeService) Update(ctx context.Context, id string, params TransactionTypeUpdateParams, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) Update(ctx context.Context, id string, params TransactionTypeUpdateParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -88,7 +88,7 @@ func (r *TransactionTypeService) Update(ctx context.Context, id string, params T
 // Retrieves a list of TransactionType entities for the specified Organization. The
 // list can be paginated for easier management, and supports filtering by various
 // parameters.
-func (r *TransactionTypeService) List(ctx context.Context, params TransactionTypeListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionType], err error) {
+func (r *TransactionTypeService) List(ctx context.Context, params TransactionTypeListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionTypeResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -112,12 +112,12 @@ func (r *TransactionTypeService) List(ctx context.Context, params TransactionTyp
 // Retrieves a list of TransactionType entities for the specified Organization. The
 // list can be paginated for easier management, and supports filtering by various
 // parameters.
-func (r *TransactionTypeService) ListAutoPaging(ctx context.Context, params TransactionTypeListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TransactionType] {
+func (r *TransactionTypeService) ListAutoPaging(ctx context.Context, params TransactionTypeListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TransactionTypeResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Deletes the TransactionType with the given UUID from the specified Organization.
-func (r *TransactionTypeService) Delete(ctx context.Context, id string, body TransactionTypeDeleteParams, opts ...option.RequestOption) (res *TransactionType, err error) {
+func (r *TransactionTypeService) Delete(ctx context.Context, id string, body TransactionTypeDeleteParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -132,7 +132,7 @@ func (r *TransactionTypeService) Delete(ctx context.Context, id string, body Tra
 	return
 }
 
-type TransactionType struct {
+type TransactionTypeResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -157,12 +157,13 @@ type TransactionType struct {
 	// The unique identifier (UUID) of the user who last modified this TransactionType.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the data entity.
-	Name string              `json:"name"`
-	JSON transactionTypeJSON `json:"-"`
+	Name string                      `json:"name"`
+	JSON transactionTypeResponseJSON `json:"-"`
 }
 
-// transactionTypeJSON contains the JSON metadata for the struct [TransactionType]
-type transactionTypeJSON struct {
+// transactionTypeResponseJSON contains the JSON metadata for the struct
+// [TransactionTypeResponse]
+type transactionTypeResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	Archived       apijson.Field
@@ -176,11 +177,11 @@ type transactionTypeJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *TransactionType) UnmarshalJSON(data []byte) (err error) {
+func (r *TransactionTypeResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r transactionTypeJSON) RawJSON() string {
+func (r transactionTypeResponseJSON) RawJSON() string {
 	return r.raw
 }
 

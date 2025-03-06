@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/m3ter-com/m3ter-sdk-go@v0.1.0-alpha.6'
+go get -u 'github.com/m3ter-com/m3ter-sdk-go@v0.1.0-alpha.7'
 ```
 
 <!-- x-release-please-end -->
@@ -172,8 +172,8 @@ iter := client.Products.ListAutoPaging(context.TODO(), m3ter.ProductListParams{
 })
 // Automatically fetches more pages as needed.
 for iter.Next() {
-	product := iter.Current()
-	fmt.Printf("%+v\n", product)
+	productResponse := iter.Current()
+	fmt.Printf("%+v\n", productResponse)
 }
 if err := iter.Err(); err != nil {
 	panic(err.Error())

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-alpha.7 (2025-03-06)
+
+Full Changelog: [v0.1.0-alpha.6...v0.1.0-alpha.7](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.6...v0.1.0-alpha.7)
+
+### Features
+
+* **api:** fixing warnings ([#48](https://github.com/m3ter-com/m3ter-sdk-go/issues/48)) ([0146d5e](https://github.com/m3ter-com/m3ter-sdk-go/commit/0146d5e23bad37691e7ef7ed0ff7ac184c8bf601))
+* **api:** make response model names explicit ([#52](https://github.com/m3ter-com/m3ter-sdk-go/issues/52)) ([12b35c7](https://github.com/m3ter-com/m3ter-sdk-go/commit/12b35c702e365251ef0ee45e7a8d54b44339166f))
+* **api:** manual updates ([#50](https://github.com/m3ter-com/m3ter-sdk-go/issues/50)) ([858e0f1](https://github.com/m3ter-com/m3ter-sdk-go/commit/858e0f1c6280aeaaac21b448d1e96d3fcf23dc80))
+
 ## 0.1.0-alpha.6 (2025-03-03)
 
 Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)

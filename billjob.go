@@ -66,7 +66,7 @@ func NewBillJobService(opts ...option.RequestOption) (r *BillJobService) {
 //     running, and try to create another one, you'll get an HTTP 429 response (Too
 //     many requests). When one of the existing BillJobs has completed, you'll be
 //     able to submit another job
-func (r *BillJobService) New(ctx context.Context, params BillJobNewParams, opts ...option.RequestOption) (res *BillJob, err error) {
+func (r *BillJobService) New(ctx context.Context, params BillJobNewParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -78,7 +78,7 @@ func (r *BillJobService) New(ctx context.Context, params BillJobNewParams, opts 
 }
 
 // Retrieve a Bill Job for the given UUID.
-func (r *BillJobService) Get(ctx context.Context, id string, query BillJobGetParams, opts ...option.RequestOption) (res *BillJob, err error) {
+func (r *BillJobService) Get(ctx context.Context, id string, query BillJobGetParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -99,7 +99,7 @@ func (r *BillJobService) Get(ctx context.Context, id string, query BillJobGetPar
 // list can be paginated for easier management, and allows you to query and filter
 // based on various parameters, such as BillJob `status` and whether or not BillJob
 // remains `active`.
-func (r *BillJobService) List(ctx context.Context, params BillJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[BillJob], err error) {
+func (r *BillJobService) List(ctx context.Context, params BillJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[BillJobResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -126,7 +126,7 @@ func (r *BillJobService) List(ctx context.Context, params BillJobListParams, opt
 // list can be paginated for easier management, and allows you to query and filter
 // based on various parameters, such as BillJob `status` and whether or not BillJob
 // remains `active`.
-func (r *BillJobService) ListAutoPaging(ctx context.Context, params BillJobListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[BillJob] {
+func (r *BillJobService) ListAutoPaging(ctx context.Context, params BillJobListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[BillJobResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -135,7 +135,7 @@ func (r *BillJobService) ListAutoPaging(ctx context.Context, params BillJobListP
 // This endpoint allows you to halt the processing of a specific BillJob, which
 // might be necessary if there are changes in billing requirements or other
 // operational considerations.
-func (r *BillJobService) Cancel(ctx context.Context, id string, body BillJobCancelParams, opts ...option.RequestOption) (res *BillJob, err error) {
+func (r *BillJobService) Cancel(ctx context.Context, id string, body BillJobCancelParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -165,7 +165,7 @@ func (r *BillJobService) Cancel(ctx context.Context, id string, body BillJobCanc
 //     that the response might not contain all of the parameters listed. If set to
 //     null,the parameter is hidden to help simplify the output as well as to reduce
 //     its size and improve performance.
-func (r *BillJobService) Recalculate(ctx context.Context, params BillJobRecalculateParams, opts ...option.RequestOption) (res *BillJob, err error) {
+func (r *BillJobService) Recalculate(ctx context.Context, params BillJobRecalculateParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -176,7 +176,7 @@ func (r *BillJobService) Recalculate(ctx context.Context, params BillJobRecalcul
 	return
 }
 
-type BillJob struct {
+type BillJobResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -219,7 +219,7 @@ type BillJob struct {
 	//   - **Ad_Hoc**. Use this setting when a custom billing schedule is used for
 	//     billing an Account, such as for billing of Prepayment/Commitment fees using a
 	//     custom billing schedule.
-	BillingFrequency BillJobBillingFrequency `json:"billingFrequency"`
+	BillingFrequency BillJobResponseBillingFrequency `json:"billingFrequency"`
 	// The unique identifier (UUID) for the user who created the BillJob.
 	CreatedBy string `json:"createdBy"`
 	// An array of currency conversion rates from Bill currency to Organization
@@ -264,7 +264,7 @@ type BillJob struct {
 	// The number of pending actions or calculations within the BillJob.
 	Pending int64 `json:"pending"`
 	// The current status of the BillJob, indicating its progress or completion state.
-	Status BillJobStatus `json:"status"`
+	Status BillJobResponseStatus `json:"status"`
 	// The currency code used for the Bill, such as USD, GBP, or EUR.
 	TargetCurrency string `json:"targetCurrency"`
 	// Specifies the time zone used for the generated Bills, ensuring alignment with
@@ -276,18 +276,18 @@ type BillJob struct {
 	//
 	// - **CREATE** Returned for a _Create BillJob_ call.
 	// - **RECALCULATE** Returned for a successful _Create Recalculation BillJob_ call.
-	Type BillJobType `json:"type"`
+	Type BillJobResponseType `json:"type"`
 	// The starting date _(epoch)_ for Weekly billing frequency _(in ISO 8601 format)_,
 	// determining the first Bill date for weekly Bills.
 	WeekEpoch time.Time `json:"weekEpoch" format:"date"`
 	// The starting date _(epoch)_ for Yearly billing frequency _(in ISO 8601 format)_,
 	// determining the first Bill date for yearly Bills.
-	YearEpoch time.Time   `json:"yearEpoch" format:"date"`
-	JSON      billJobJSON `json:"-"`
+	YearEpoch time.Time           `json:"yearEpoch" format:"date"`
+	JSON      billJobResponseJSON `json:"-"`
 }
 
-// billJobJSON contains the JSON metadata for the struct [BillJob]
-type billJobJSON struct {
+// billJobResponseJSON contains the JSON metadata for the struct [BillJobResponse]
+type billJobResponseJSON struct {
 	ID                      apijson.Field
 	Version                 apijson.Field
 	AccountIDs              apijson.Field
@@ -317,11 +317,11 @@ type billJobJSON struct {
 	ExtraFields             map[string]apijson.Field
 }
 
-func (r *BillJob) UnmarshalJSON(data []byte) (err error) {
+func (r *BillJobResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r billJobJSON) RawJSON() string {
+func (r billJobResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -342,38 +342,38 @@ func (r billJobJSON) RawJSON() string {
 //   - **Ad_Hoc**. Use this setting when a custom billing schedule is used for
 //     billing an Account, such as for billing of Prepayment/Commitment fees using a
 //     custom billing schedule.
-type BillJobBillingFrequency string
+type BillJobResponseBillingFrequency string
 
 const (
-	BillJobBillingFrequencyDaily    BillJobBillingFrequency = "DAILY"
-	BillJobBillingFrequencyWeekly   BillJobBillingFrequency = "WEEKLY"
-	BillJobBillingFrequencyMonthly  BillJobBillingFrequency = "MONTHLY"
-	BillJobBillingFrequencyAnnually BillJobBillingFrequency = "ANNUALLY"
-	BillJobBillingFrequencyAdHoc    BillJobBillingFrequency = "AD_HOC"
+	BillJobResponseBillingFrequencyDaily    BillJobResponseBillingFrequency = "DAILY"
+	BillJobResponseBillingFrequencyWeekly   BillJobResponseBillingFrequency = "WEEKLY"
+	BillJobResponseBillingFrequencyMonthly  BillJobResponseBillingFrequency = "MONTHLY"
+	BillJobResponseBillingFrequencyAnnually BillJobResponseBillingFrequency = "ANNUALLY"
+	BillJobResponseBillingFrequencyAdHoc    BillJobResponseBillingFrequency = "AD_HOC"
 )
 
-func (r BillJobBillingFrequency) IsKnown() bool {
+func (r BillJobResponseBillingFrequency) IsKnown() bool {
 	switch r {
-	case BillJobBillingFrequencyDaily, BillJobBillingFrequencyWeekly, BillJobBillingFrequencyMonthly, BillJobBillingFrequencyAnnually, BillJobBillingFrequencyAdHoc:
+	case BillJobResponseBillingFrequencyDaily, BillJobResponseBillingFrequencyWeekly, BillJobResponseBillingFrequencyMonthly, BillJobResponseBillingFrequencyAnnually, BillJobResponseBillingFrequencyAdHoc:
 		return true
 	}
 	return false
 }
 
 // The current status of the BillJob, indicating its progress or completion state.
-type BillJobStatus string
+type BillJobResponseStatus string
 
 const (
-	BillJobStatusPending      BillJobStatus = "PENDING"
-	BillJobStatusInitializing BillJobStatus = "INITIALIZING"
-	BillJobStatusRunning      BillJobStatus = "RUNNING"
-	BillJobStatusComplete     BillJobStatus = "COMPLETE"
-	BillJobStatusCancelled    BillJobStatus = "CANCELLED"
+	BillJobResponseStatusPending      BillJobResponseStatus = "PENDING"
+	BillJobResponseStatusInitializing BillJobResponseStatus = "INITIALIZING"
+	BillJobResponseStatusRunning      BillJobResponseStatus = "RUNNING"
+	BillJobResponseStatusComplete     BillJobResponseStatus = "COMPLETE"
+	BillJobResponseStatusCancelled    BillJobResponseStatus = "CANCELLED"
 )
 
-func (r BillJobStatus) IsKnown() bool {
+func (r BillJobResponseStatus) IsKnown() bool {
 	switch r {
-	case BillJobStatusPending, BillJobStatusInitializing, BillJobStatusRunning, BillJobStatusComplete, BillJobStatusCancelled:
+	case BillJobResponseStatusPending, BillJobResponseStatusInitializing, BillJobResponseStatusRunning, BillJobResponseStatusComplete, BillJobResponseStatusCancelled:
 		return true
 	}
 	return false
@@ -383,16 +383,16 @@ func (r BillJobStatus) IsKnown() bool {
 //
 // - **CREATE** Returned for a _Create BillJob_ call.
 // - **RECALCULATE** Returned for a successful _Create Recalculation BillJob_ call.
-type BillJobType string
+type BillJobResponseType string
 
 const (
-	BillJobTypeCreate      BillJobType = "CREATE"
-	BillJobTypeRecalculate BillJobType = "RECALCULATE"
+	BillJobResponseTypeCreate      BillJobResponseType = "CREATE"
+	BillJobResponseTypeRecalculate BillJobResponseType = "RECALCULATE"
 )
 
-func (r BillJobType) IsKnown() bool {
+func (r BillJobResponseType) IsKnown() bool {
 	switch r {
-	case BillJobTypeCreate, BillJobTypeRecalculate:
+	case BillJobResponseTypeCreate, BillJobResponseTypeRecalculate:
 		return true
 	}
 	return false
