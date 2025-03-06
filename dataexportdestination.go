@@ -90,7 +90,7 @@ func (r *DataExportDestinationService) Update(ctx context.Context, id string, pa
 
 // Retrieve a list of Export Destination entities. You can filter the list of
 // Destinations returned by UUID.
-func (r *DataExportDestinationService) List(ctx context.Context, params DataExportDestinationListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataExportDestination], err error) {
+func (r *DataExportDestinationService) List(ctx context.Context, params DataExportDestinationListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataExportDestinationResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -113,7 +113,7 @@ func (r *DataExportDestinationService) List(ctx context.Context, params DataExpo
 
 // Retrieve a list of Export Destination entities. You can filter the list of
 // Destinations returned by UUID.
-func (r *DataExportDestinationService) ListAutoPaging(ctx context.Context, params DataExportDestinationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DataExportDestination] {
+func (r *DataExportDestinationService) ListAutoPaging(ctx context.Context, params DataExportDestinationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DataExportDestinationResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -137,7 +137,7 @@ func (r *DataExportDestinationService) Delete(ctx context.Context, id string, bo
 	return
 }
 
-type DataExportDestination struct {
+type DataExportDestinationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -158,13 +158,13 @@ type DataExportDestination struct {
 	// The id of the user who last modified the Export Destination.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the data Export Destination.
-	Name string                    `json:"name"`
-	JSON dataExportDestinationJSON `json:"-"`
+	Name string                            `json:"name"`
+	JSON dataExportDestinationResponseJSON `json:"-"`
 }
 
-// dataExportDestinationJSON contains the JSON metadata for the struct
-// [DataExportDestination]
-type dataExportDestinationJSON struct {
+// dataExportDestinationResponseJSON contains the JSON metadata for the struct
+// [DataExportDestinationResponse]
+type dataExportDestinationResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	Code           apijson.Field
@@ -177,11 +177,11 @@ type dataExportDestinationJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *DataExportDestination) UnmarshalJSON(data []byte) (err error) {
+func (r *DataExportDestinationResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r dataExportDestinationJSON) RawJSON() string {
+func (r dataExportDestinationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -220,7 +220,7 @@ type DataExportDestinationNewResponse struct {
 	// specified, then the root of the bucket is used.
 	Prefix string                               `json:"prefix"`
 	JSON   dataExportDestinationNewResponseJSON `json:"-"`
-	DataExportDestination
+	DataExportDestinationResponse
 }
 
 // dataExportDestinationNewResponseJSON contains the JSON metadata for the struct
@@ -309,7 +309,7 @@ type DataExportDestinationGetResponse struct {
 	// specified, then the root of the bucket is used.
 	Prefix string                               `json:"prefix"`
 	JSON   dataExportDestinationGetResponseJSON `json:"-"`
-	DataExportDestination
+	DataExportDestinationResponse
 }
 
 // dataExportDestinationGetResponseJSON contains the JSON metadata for the struct
@@ -398,7 +398,7 @@ type DataExportDestinationUpdateResponse struct {
 	// specified, then the root of the bucket is used.
 	Prefix string                                  `json:"prefix"`
 	JSON   dataExportDestinationUpdateResponseJSON `json:"-"`
-	DataExportDestination
+	DataExportDestinationResponse
 }
 
 // dataExportDestinationUpdateResponseJSON contains the JSON metadata for the
@@ -487,7 +487,7 @@ type DataExportDestinationDeleteResponse struct {
 	// specified, then the root of the bucket is used.
 	Prefix string                                  `json:"prefix"`
 	JSON   dataExportDestinationDeleteResponseJSON `json:"-"`
-	DataExportDestination
+	DataExportDestinationResponse
 }
 
 // dataExportDestinationDeleteResponseJSON contains the JSON metadata for the

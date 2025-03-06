@@ -36,7 +36,7 @@ func NewOrganizationConfigService(opts ...option.RequestOption) (r *Organization
 }
 
 // Retrieve the Organization-wide configuration details.
-func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationConfigGetParams, opts ...option.RequestOption) (res *OrganizationConfig, err error) {
+func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationConfigGetParams, opts ...option.RequestOption) (res *OrganizationConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -48,7 +48,7 @@ func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationC
 }
 
 // Update the Organization-wide configuration details.
-func (r *OrganizationConfigService) Update(ctx context.Context, params OrganizationConfigUpdateParams, opts ...option.RequestOption) (res *OrganizationConfig, err error) {
+func (r *OrganizationConfigService) Update(ctx context.Context, params OrganizationConfigUpdateParams, opts ...option.RequestOption) (res *OrganizationConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -59,7 +59,7 @@ func (r *OrganizationConfigService) Update(ctx context.Context, params Organizat
 	return
 }
 
-type OrganizationConfig struct {
+type OrganizationConfigResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -72,7 +72,7 @@ type OrganizationConfig struct {
 	// Grace period before bills are auto-approved. Used in combination with the field
 	// `autoApproveBillsGracePeriodUnit`.
 	AutoApproveBillsGracePeriod int64 `json:"autoApproveBillsGracePeriod"`
-	AutoApproveBillsGracePeriodUnit OrganizationConfigAutoApproveBillsGracePeriodUnit `json:"autoApproveBillsGracePeriodUnit"`
+	AutoApproveBillsGracePeriodUnit OrganizationConfigResponseAutoApproveBillsGracePeriodUnit `json:"autoApproveBillsGracePeriodUnit"`
 	// Specifies whether to auto-generate statements once Bills are _approved_ or
 	// _locked_. It will not auto-generate if a bill is in _pending_ state.
 	//
@@ -81,7 +81,7 @@ type OrganizationConfig struct {
 	// - **None**. Statements will not be auto-generated.
 	// - **JSON**. Statements are auto-generated in JSON format.
 	// - **JSON and CSV**. Statements are auto-generated in both JSON and CSV formats.
-	AutoGenerateStatementMode OrganizationConfigAutoGenerateStatementMode `json:"autoGenerateStatementMode"`
+	AutoGenerateStatementMode OrganizationConfigResponseAutoGenerateStatementMode `json:"autoGenerateStatementMode"`
 	// Prefix to be used for sequential invoice numbers. This will be combined with the
 	// `sequenceStartNumber`.
 	BillPrefix string `json:"billPrefix"`
@@ -108,7 +108,7 @@ type OrganizationConfig struct {
 	//     credit.
 	//   - `"PREPAYMENT"`. Only draw-down against Prepayment credit.
 	//   - `"BALANCE"`. Only draw-down against Balance credit.
-	CreditApplicationOrder []OrganizationConfigCreditApplicationOrder `json:"creditApplicationOrder"`
+	CreditApplicationOrder []OrganizationConfigResponseCreditApplicationOrder `json:"creditApplicationOrder"`
 	// The currency code for the currency used in this Organization. For example: USD,
 	// GBP, or EUR.
 	Currency string `json:"currency"`
@@ -133,8 +133,8 @@ type OrganizationConfig struct {
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The DateTime when the organization config was last modified _(in ISO-8601
 	// format)_.
-	DtLastModified      time.Time                             `json:"dtLastModified" format:"date-time"`
-	ExternalInvoiceDate OrganizationConfigExternalInvoiceDate `json:"externalInvoiceDate"`
+	DtLastModified      time.Time                                     `json:"dtLastModified" format:"date-time"`
+	ExternalInvoiceDate OrganizationConfigResponseExternalInvoiceDate `json:"externalInvoiceDate"`
 	// The id of the user who last modified this organization config.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Specifies whether minimum spend amounts are billed in advance at the start of
@@ -172,13 +172,13 @@ type OrganizationConfig struct {
 	// The first bill date _(in ISO-8601 format)_ for weekly billing periods.
 	WeekEpoch time.Time `json:"weekEpoch" format:"date"`
 	// The first bill date _(in ISO-8601 format)_ for yearly billing periods.
-	YearEpoch time.Time              `json:"yearEpoch" format:"date"`
-	JSON      organizationConfigJSON `json:"-"`
+	YearEpoch time.Time                      `json:"yearEpoch" format:"date"`
+	JSON      organizationConfigResponseJSON `json:"-"`
 }
 
-// organizationConfigJSON contains the JSON metadata for the struct
-// [OrganizationConfig]
-type organizationConfigJSON struct {
+// organizationConfigResponseJSON contains the JSON metadata for the struct
+// [OrganizationConfigResponse]
+type organizationConfigResponseJSON struct {
 	ID                              apijson.Field
 	Version                         apijson.Field
 	AutoApproveBillsGracePeriod     apijson.Field
@@ -211,25 +211,25 @@ type organizationConfigJSON struct {
 	ExtraFields                     map[string]apijson.Field
 }
 
-func (r *OrganizationConfig) UnmarshalJSON(data []byte) (err error) {
+func (r *OrganizationConfigResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r organizationConfigJSON) RawJSON() string {
+func (r organizationConfigResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type OrganizationConfigAutoApproveBillsGracePeriodUnit string
+type OrganizationConfigResponseAutoApproveBillsGracePeriodUnit string
 
 const (
-	OrganizationConfigAutoApproveBillsGracePeriodUnitMinutes OrganizationConfigAutoApproveBillsGracePeriodUnit = "MINUTES"
-	OrganizationConfigAutoApproveBillsGracePeriodUnitHours   OrganizationConfigAutoApproveBillsGracePeriodUnit = "HOURS"
-	OrganizationConfigAutoApproveBillsGracePeriodUnitDays    OrganizationConfigAutoApproveBillsGracePeriodUnit = "DAYS"
+	OrganizationConfigResponseAutoApproveBillsGracePeriodUnitMinutes OrganizationConfigResponseAutoApproveBillsGracePeriodUnit = "MINUTES"
+	OrganizationConfigResponseAutoApproveBillsGracePeriodUnitHours   OrganizationConfigResponseAutoApproveBillsGracePeriodUnit = "HOURS"
+	OrganizationConfigResponseAutoApproveBillsGracePeriodUnitDays    OrganizationConfigResponseAutoApproveBillsGracePeriodUnit = "DAYS"
 )
 
-func (r OrganizationConfigAutoApproveBillsGracePeriodUnit) IsKnown() bool {
+func (r OrganizationConfigResponseAutoApproveBillsGracePeriodUnit) IsKnown() bool {
 	switch r {
-	case OrganizationConfigAutoApproveBillsGracePeriodUnitMinutes, OrganizationConfigAutoApproveBillsGracePeriodUnitHours, OrganizationConfigAutoApproveBillsGracePeriodUnitDays:
+	case OrganizationConfigResponseAutoApproveBillsGracePeriodUnitMinutes, OrganizationConfigResponseAutoApproveBillsGracePeriodUnitHours, OrganizationConfigResponseAutoApproveBillsGracePeriodUnitDays:
 		return true
 	}
 	return false
@@ -243,47 +243,47 @@ func (r OrganizationConfigAutoApproveBillsGracePeriodUnit) IsKnown() bool {
 // - **None**. Statements will not be auto-generated.
 // - **JSON**. Statements are auto-generated in JSON format.
 // - **JSON and CSV**. Statements are auto-generated in both JSON and CSV formats.
-type OrganizationConfigAutoGenerateStatementMode string
+type OrganizationConfigResponseAutoGenerateStatementMode string
 
 const (
-	OrganizationConfigAutoGenerateStatementModeNone       OrganizationConfigAutoGenerateStatementMode = "NONE"
-	OrganizationConfigAutoGenerateStatementModeJson       OrganizationConfigAutoGenerateStatementMode = "JSON"
-	OrganizationConfigAutoGenerateStatementModeJsonAndCsv OrganizationConfigAutoGenerateStatementMode = "JSON_AND_CSV"
+	OrganizationConfigResponseAutoGenerateStatementModeNone       OrganizationConfigResponseAutoGenerateStatementMode = "NONE"
+	OrganizationConfigResponseAutoGenerateStatementModeJson       OrganizationConfigResponseAutoGenerateStatementMode = "JSON"
+	OrganizationConfigResponseAutoGenerateStatementModeJsonAndCsv OrganizationConfigResponseAutoGenerateStatementMode = "JSON_AND_CSV"
 )
 
-func (r OrganizationConfigAutoGenerateStatementMode) IsKnown() bool {
+func (r OrganizationConfigResponseAutoGenerateStatementMode) IsKnown() bool {
 	switch r {
-	case OrganizationConfigAutoGenerateStatementModeNone, OrganizationConfigAutoGenerateStatementModeJson, OrganizationConfigAutoGenerateStatementModeJsonAndCsv:
+	case OrganizationConfigResponseAutoGenerateStatementModeNone, OrganizationConfigResponseAutoGenerateStatementModeJson, OrganizationConfigResponseAutoGenerateStatementModeJsonAndCsv:
 		return true
 	}
 	return false
 }
 
-type OrganizationConfigCreditApplicationOrder string
+type OrganizationConfigResponseCreditApplicationOrder string
 
 const (
-	OrganizationConfigCreditApplicationOrderPrepayment OrganizationConfigCreditApplicationOrder = "PREPAYMENT"
-	OrganizationConfigCreditApplicationOrderBalance    OrganizationConfigCreditApplicationOrder = "BALANCE"
+	OrganizationConfigResponseCreditApplicationOrderPrepayment OrganizationConfigResponseCreditApplicationOrder = "PREPAYMENT"
+	OrganizationConfigResponseCreditApplicationOrderBalance    OrganizationConfigResponseCreditApplicationOrder = "BALANCE"
 )
 
-func (r OrganizationConfigCreditApplicationOrder) IsKnown() bool {
+func (r OrganizationConfigResponseCreditApplicationOrder) IsKnown() bool {
 	switch r {
-	case OrganizationConfigCreditApplicationOrderPrepayment, OrganizationConfigCreditApplicationOrderBalance:
+	case OrganizationConfigResponseCreditApplicationOrderPrepayment, OrganizationConfigResponseCreditApplicationOrderBalance:
 		return true
 	}
 	return false
 }
 
-type OrganizationConfigExternalInvoiceDate string
+type OrganizationConfigResponseExternalInvoiceDate string
 
 const (
-	OrganizationConfigExternalInvoiceDateLastDayOfArrears     OrganizationConfigExternalInvoiceDate = "LAST_DAY_OF_ARREARS"
-	OrganizationConfigExternalInvoiceDateFirstDayOfNextPeriod OrganizationConfigExternalInvoiceDate = "FIRST_DAY_OF_NEXT_PERIOD"
+	OrganizationConfigResponseExternalInvoiceDateLastDayOfArrears     OrganizationConfigResponseExternalInvoiceDate = "LAST_DAY_OF_ARREARS"
+	OrganizationConfigResponseExternalInvoiceDateFirstDayOfNextPeriod OrganizationConfigResponseExternalInvoiceDate = "FIRST_DAY_OF_NEXT_PERIOD"
 )
 
-func (r OrganizationConfigExternalInvoiceDate) IsKnown() bool {
+func (r OrganizationConfigResponseExternalInvoiceDate) IsKnown() bool {
 	switch r {
-	case OrganizationConfigExternalInvoiceDateLastDayOfArrears, OrganizationConfigExternalInvoiceDateFirstDayOfNextPeriod:
+	case OrganizationConfigResponseExternalInvoiceDateLastDayOfArrears, OrganizationConfigResponseExternalInvoiceDateFirstDayOfNextPeriod:
 		return true
 	}
 	return false

@@ -145,7 +145,7 @@ func (r *WebhookService) SetActive(ctx context.Context, id string, params Webhoo
 	return
 }
 
-type M3terSignedCredentialsReq struct {
+type M3terSignedCredentialsRequest struct {
 	// The API key provided by m3ter. This key is part of the credential set required
 	// for signing requests and authenticating with m3ter services.
 	APIKey string `json:"apiKey,required"`
@@ -154,7 +154,7 @@ type M3terSignedCredentialsReq struct {
 	Secret string `json:"secret,required"`
 	// Specifies the authorization type. For this schema, it is exclusively set to
 	// M3TER_SIGNED_REQUEST.
-	Type M3terSignedCredentialsReqType `json:"type,required"`
+	Type M3terSignedCredentialsRequestType `json:"type,required"`
 	// A flag to indicate whether the credentials are empty.
 	//
 	// - TRUE - empty credentials.
@@ -168,13 +168,13 @@ type M3terSignedCredentialsReq struct {
 	//   - **Update Entity:** On Update, version is required and must match the existing
 	//     version because a check is performed to ensure sequential versioning is
 	//     preserved. Version is incremented by 1 and listed in the response.
-	Version int64                         `json:"version"`
-	JSON    m3terSignedCredentialsReqJSON `json:"-"`
+	Version int64                             `json:"version"`
+	JSON    m3terSignedCredentialsRequestJSON `json:"-"`
 }
 
-// m3terSignedCredentialsReqJSON contains the JSON metadata for the struct
-// [M3terSignedCredentialsReq]
-type m3terSignedCredentialsReqJSON struct {
+// m3terSignedCredentialsRequestJSON contains the JSON metadata for the struct
+// [M3terSignedCredentialsRequest]
+type m3terSignedCredentialsRequestJSON struct {
 	APIKey      apijson.Field
 	Secret      apijson.Field
 	Type        apijson.Field
@@ -184,31 +184,31 @@ type m3terSignedCredentialsReqJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *M3terSignedCredentialsReq) UnmarshalJSON(data []byte) (err error) {
+func (r *M3terSignedCredentialsRequest) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r m3terSignedCredentialsReqJSON) RawJSON() string {
+func (r m3terSignedCredentialsRequestJSON) RawJSON() string {
 	return r.raw
 }
 
 // Specifies the authorization type. For this schema, it is exclusively set to
 // M3TER_SIGNED_REQUEST.
-type M3terSignedCredentialsReqType string
+type M3terSignedCredentialsRequestType string
 
 const (
-	M3terSignedCredentialsReqTypeM3TerSignedRequest M3terSignedCredentialsReqType = "M3TER_SIGNED_REQUEST"
+	M3terSignedCredentialsRequestTypeM3TerSignedRequest M3terSignedCredentialsRequestType = "M3TER_SIGNED_REQUEST"
 )
 
-func (r M3terSignedCredentialsReqType) IsKnown() bool {
+func (r M3terSignedCredentialsRequestType) IsKnown() bool {
 	switch r {
-	case M3terSignedCredentialsReqTypeM3TerSignedRequest:
+	case M3terSignedCredentialsRequestTypeM3TerSignedRequest:
 		return true
 	}
 	return false
 }
 
-type M3terSignedCredentialsReqParam struct {
+type M3terSignedCredentialsRequestParam struct {
 	// The API key provided by m3ter. This key is part of the credential set required
 	// for signing requests and authenticating with m3ter services.
 	APIKey param.Field[string] `json:"apiKey,required"`
@@ -217,7 +217,7 @@ type M3terSignedCredentialsReqParam struct {
 	Secret param.Field[string] `json:"secret,required"`
 	// Specifies the authorization type. For this schema, it is exclusively set to
 	// M3TER_SIGNED_REQUEST.
-	Type param.Field[M3terSignedCredentialsReqType] `json:"type,required"`
+	Type param.Field[M3terSignedCredentialsRequestType] `json:"type,required"`
 	// A flag to indicate whether the credentials are empty.
 	//
 	// - TRUE - empty credentials.
@@ -234,11 +234,11 @@ type M3terSignedCredentialsReqParam struct {
 	Version param.Field[int64] `json:"version"`
 }
 
-func (r M3terSignedCredentialsReqParam) MarshalJSON() (data []byte, err error) {
+func (r M3terSignedCredentialsRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type M3terSignedCredentialsResp struct {
+type M3terSignedCredentialsResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// the system the integration is for
@@ -269,13 +269,13 @@ type M3terSignedCredentialsResp struct {
 	Name string `json:"name"`
 	// The secret associated with the API key. This secret is used in conjunction with
 	// the API key to generate a signature for secure authentication.
-	Secret string                         `json:"secret"`
-	JSON   m3terSignedCredentialsRespJSON `json:"-"`
+	Secret string                             `json:"secret"`
+	JSON   m3terSignedCredentialsResponseJSON `json:"-"`
 }
 
-// m3terSignedCredentialsRespJSON contains the JSON metadata for the struct
-// [M3terSignedCredentialsResp]
-type m3terSignedCredentialsRespJSON struct {
+// m3terSignedCredentialsResponseJSON contains the JSON metadata for the struct
+// [M3terSignedCredentialsResponse]
+type m3terSignedCredentialsResponseJSON struct {
 	ID             apijson.Field
 	Destination    apijson.Field
 	Type           apijson.Field
@@ -292,11 +292,11 @@ type m3terSignedCredentialsRespJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *M3terSignedCredentialsResp) UnmarshalJSON(data []byte) (err error) {
+func (r *M3terSignedCredentialsResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r m3terSignedCredentialsRespJSON) RawJSON() string {
+func (r m3terSignedCredentialsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -315,8 +315,8 @@ type Webhook struct {
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// Response representing a set of credentials used for signing m3ter requests.
-	Credentials M3terSignedCredentialsResp `json:"credentials"`
-	Description string                     `json:"description"`
+	Credentials M3terSignedCredentialsResponse `json:"credentials"`
+	Description string                         `json:"description"`
 	// The DateTime when this item was created _(in ISO-8601 format)_.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The DateTime when this item was last modified _(in ISO-8601 format)_.
@@ -357,9 +357,9 @@ func (r webhookJSON) RawJSON() string {
 
 type WebhookNewResponse struct {
 	// This schema defines the credentials required for m3ter request signing.
-	Credentials M3terSignedCredentialsReq `json:"credentials,required"`
-	Description string                    `json:"description,required"`
-	Name        string                    `json:"name,required"`
+	Credentials M3terSignedCredentialsRequest `json:"credentials,required"`
+	Description string                        `json:"description,required"`
+	Name        string                        `json:"name,required"`
 	// The URL to which the webhook requests will be sent.
 	URL    string `json:"url,required"`
 	Active bool   `json:"active"`
@@ -400,9 +400,9 @@ func (r webhookNewResponseJSON) RawJSON() string {
 
 type WebhookUpdateResponse struct {
 	// This schema defines the credentials required for m3ter request signing.
-	Credentials M3terSignedCredentialsReq `json:"credentials,required"`
-	Description string                    `json:"description,required"`
-	Name        string                    `json:"name,required"`
+	Credentials M3terSignedCredentialsRequest `json:"credentials,required"`
+	Description string                        `json:"description,required"`
+	Name        string                        `json:"name,required"`
 	// The URL to which the webhook requests will be sent.
 	URL    string `json:"url,required"`
 	Active bool   `json:"active"`
@@ -443,9 +443,9 @@ func (r webhookUpdateResponseJSON) RawJSON() string {
 
 type WebhookSetActiveResponse struct {
 	// This schema defines the credentials required for m3ter request signing.
-	Credentials M3terSignedCredentialsReq `json:"credentials,required"`
-	Description string                    `json:"description,required"`
-	Name        string                    `json:"name,required"`
+	Credentials M3terSignedCredentialsRequest `json:"credentials,required"`
+	Description string                        `json:"description,required"`
+	Name        string                        `json:"name,required"`
 	// The URL to which the webhook requests will be sent.
 	URL    string `json:"url,required"`
 	Active bool   `json:"active"`
@@ -487,9 +487,9 @@ func (r webhookSetActiveResponseJSON) RawJSON() string {
 type WebhookNewParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// This schema defines the credentials required for m3ter request signing.
-	Credentials param.Field[M3terSignedCredentialsReqParam] `json:"credentials,required"`
-	Description param.Field[string]                         `json:"description,required"`
-	Name        param.Field[string]                         `json:"name,required"`
+	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials,required"`
+	Description param.Field[string]                             `json:"description,required"`
+	Name        param.Field[string]                             `json:"name,required"`
 	// The URL to which the webhook requests will be sent.
 	URL    param.Field[string] `json:"url,required"`
 	Active param.Field[bool]   `json:"active"`
@@ -516,9 +516,9 @@ type WebhookGetParams struct {
 type WebhookUpdateParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// This schema defines the credentials required for m3ter request signing.
-	Credentials param.Field[M3terSignedCredentialsReqParam] `json:"credentials,required"`
-	Description param.Field[string]                         `json:"description,required"`
-	Name        param.Field[string]                         `json:"name,required"`
+	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials,required"`
+	Description param.Field[string]                             `json:"description,required"`
+	Name        param.Field[string]                             `json:"name,required"`
 	// The URL to which the webhook requests will be sent.
 	URL    param.Field[string] `json:"url,required"`
 	Active param.Field[bool]   `json:"active"`

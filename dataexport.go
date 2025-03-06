@@ -95,7 +95,7 @@ func NewDataExportService(opts ...option.RequestOption) (r *DataExportService) {
 // triggered ad-hoc export. See the
 // [ExportJob](https://www.m3ter.com/docs/api#tag/ExportJob) section of this API
 // Reference.
-func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAdhocParams, opts ...option.RequestOption) (res *AdhocExport, err error) {
+func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAdhocParams, opts ...option.RequestOption) (res *AdHocResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -104,28 +104,6 @@ func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAd
 	path := fmt.Sprintf("organizations/%s/dataexports/adhoc", params.OrgID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
-}
-
-// Response containing data export ad-hoc jobId
-type AdhocExport struct {
-	// The id of the job
-	JobID string          `json:"jobId"`
-	JSON  adhocExportJSON `json:"-"`
-}
-
-// adhocExportJSON contains the JSON metadata for the struct [AdhocExport]
-type adhocExportJSON struct {
-	JobID       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AdhocExport) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r adhocExportJSON) RawJSON() string {
-	return r.raw
 }
 
 type AdHocOperationalDataRequestParam struct {
@@ -193,6 +171,28 @@ func (r AdHocOperationalDataRequestSourceType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Response containing data export ad-hoc jobId
+type AdHocResponse struct {
+	// The id of the job
+	JobID string            `json:"jobId"`
+	JSON  adHocResponseJSON `json:"-"`
+}
+
+// adHocResponseJSON contains the JSON metadata for the struct [AdHocResponse]
+type adHocResponseJSON struct {
+	JobID       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AdHocResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r adHocResponseJSON) RawJSON() string {
+	return r.raw
 }
 
 type AdHocUsageDataRequestParam struct {

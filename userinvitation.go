@@ -40,7 +40,7 @@ func NewUserInvitationService(opts ...option.RequestOption) (r *UserInvitationSe
 // Invite a new user to your Organization.
 //
 // This sends an email to someone inviting them to join your m3ter Organization.
-func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNewParams, opts ...option.RequestOption) (res *Invitation, err error) {
+func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNewParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -52,7 +52,7 @@ func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNe
 }
 
 // Retrieve the specified invitation with the given UUID.
-func (r *UserInvitationService) Get(ctx context.Context, id string, query UserInvitationGetParams, opts ...option.RequestOption) (res *Invitation, err error) {
+func (r *UserInvitationService) Get(ctx context.Context, id string, query UserInvitationGetParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -68,7 +68,7 @@ func (r *UserInvitationService) Get(ctx context.Context, id string, query UserIn
 }
 
 // Retrieve a list of all invitations in the Organization.
-func (r *UserInvitationService) List(ctx context.Context, params UserInvitationListParams, opts ...option.RequestOption) (res *pagination.Cursor[Invitation], err error) {
+func (r *UserInvitationService) List(ctx context.Context, params UserInvitationListParams, opts ...option.RequestOption) (res *pagination.Cursor[InvitationResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -90,11 +90,11 @@ func (r *UserInvitationService) List(ctx context.Context, params UserInvitationL
 }
 
 // Retrieve a list of all invitations in the Organization.
-func (r *UserInvitationService) ListAutoPaging(ctx context.Context, params UserInvitationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Invitation] {
+func (r *UserInvitationService) ListAutoPaging(ctx context.Context, params UserInvitationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[InvitationResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
-type Invitation struct {
+type InvitationResponse struct {
 	// The UUID of the invitation.
 	ID string `json:"id,required"`
 	// Boolean indicating whether the user has accepted the invitation.
@@ -131,12 +131,13 @@ type Invitation struct {
 	// The DateTime when the invitation was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The UUID of the user who last modified the invitation.
-	LastModifiedBy string         `json:"lastModifiedBy"`
-	JSON           invitationJSON `json:"-"`
+	LastModifiedBy string                 `json:"lastModifiedBy"`
+	JSON           invitationResponseJSON `json:"-"`
 }
 
-// invitationJSON contains the JSON metadata for the struct [Invitation]
-type invitationJSON struct {
+// invitationResponseJSON contains the JSON metadata for the struct
+// [InvitationResponse]
+type invitationResponseJSON struct {
 	ID                  apijson.Field
 	Accepted            apijson.Field
 	DtEndAccess         apijson.Field
@@ -155,11 +156,11 @@ type invitationJSON struct {
 	ExtraFields         map[string]apijson.Field
 }
 
-func (r *Invitation) UnmarshalJSON(data []byte) (err error) {
+func (r *InvitationResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r invitationJSON) RawJSON() string {
+func (r invitationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
