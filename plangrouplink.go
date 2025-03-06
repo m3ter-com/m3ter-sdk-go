@@ -38,7 +38,7 @@ func NewPlanGroupLinkService(opts ...option.RequestOption) (r *PlanGroupLinkServ
 }
 
 // Create a new PlanGroupLink.
-func (r *PlanGroupLinkService) New(ctx context.Context, params PlanGroupLinkNewParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) New(ctx context.Context, params PlanGroupLinkNewParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -50,7 +50,7 @@ func (r *PlanGroupLinkService) New(ctx context.Context, params PlanGroupLinkNewP
 }
 
 // Retrieve a PlanGroupLink for the given UUID.
-func (r *PlanGroupLinkService) Get(ctx context.Context, id string, query PlanGroupLinkGetParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) Get(ctx context.Context, id string, query PlanGroupLinkGetParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -66,7 +66,7 @@ func (r *PlanGroupLinkService) Get(ctx context.Context, id string, query PlanGro
 }
 
 // Update PlanGroupLink for the given UUID.
-func (r *PlanGroupLinkService) Update(ctx context.Context, id string, params PlanGroupLinkUpdateParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) Update(ctx context.Context, id string, params PlanGroupLinkUpdateParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -82,7 +82,7 @@ func (r *PlanGroupLinkService) Update(ctx context.Context, id string, params Pla
 }
 
 // Retrieve a list of PlanGroupLink entities
-func (r *PlanGroupLinkService) List(ctx context.Context, params PlanGroupLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroupLink], err error) {
+func (r *PlanGroupLinkService) List(ctx context.Context, params PlanGroupLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroupLinkResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -104,12 +104,12 @@ func (r *PlanGroupLinkService) List(ctx context.Context, params PlanGroupLinkLis
 }
 
 // Retrieve a list of PlanGroupLink entities
-func (r *PlanGroupLinkService) ListAutoPaging(ctx context.Context, params PlanGroupLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroupLink] {
+func (r *PlanGroupLinkService) ListAutoPaging(ctx context.Context, params PlanGroupLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroupLinkResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a PlanGroupLink for the given UUID.
-func (r *PlanGroupLinkService) Delete(ctx context.Context, id string, body PlanGroupLinkDeleteParams, opts ...option.RequestOption) (res *PlanGroupLink, err error) {
+func (r *PlanGroupLinkService) Delete(ctx context.Context, id string, body PlanGroupLinkDeleteParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -124,7 +124,7 @@ func (r *PlanGroupLinkService) Delete(ctx context.Context, id string, body PlanG
 	return
 }
 
-type PlanGroupLink struct {
+type PlanGroupLinkResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -145,12 +145,13 @@ type PlanGroupLink struct {
 	// ID of the linked PlanGroup
 	PlanGroupID string `json:"planGroupId"`
 	// ID of the linked Plan
-	PlanID string            `json:"planId"`
-	JSON   planGroupLinkJSON `json:"-"`
+	PlanID string                    `json:"planId"`
+	JSON   planGroupLinkResponseJSON `json:"-"`
 }
 
-// planGroupLinkJSON contains the JSON metadata for the struct [PlanGroupLink]
-type planGroupLinkJSON struct {
+// planGroupLinkResponseJSON contains the JSON metadata for the struct
+// [PlanGroupLinkResponse]
+type planGroupLinkResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	CreatedBy      apijson.Field
@@ -163,11 +164,11 @@ type planGroupLinkJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *PlanGroupLink) UnmarshalJSON(data []byte) (err error) {
+func (r *PlanGroupLinkResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r planGroupLinkJSON) RawJSON() string {
+func (r planGroupLinkResponseJSON) RawJSON() string {
 	return r.raw
 }
 

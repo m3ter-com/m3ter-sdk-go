@@ -48,7 +48,7 @@ func NewBillService(opts ...option.RequestOption) (r *BillService) {
 //
 // This endpoint retrieves the Bill with the given unique identifier (UUID) and
 // specific Organization.
-func (r *BillService) Get(ctx context.Context, id string, query BillGetParams, opts ...option.RequestOption) (res *Bill, err error) {
+func (r *BillService) Get(ctx context.Context, id string, query BillGetParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -69,7 +69,7 @@ func (r *BillService) Get(ctx context.Context, id string, query BillGetParams, o
 // specified Organization. Optional filters can be applied such as by date range,
 // lock status, or other attributes. The list can also be paginated for easier
 // management.
-func (r *BillService) List(ctx context.Context, params BillListParams, opts ...option.RequestOption) (res *pagination.Cursor[Bill], err error) {
+func (r *BillService) List(ctx context.Context, params BillListParams, opts ...option.RequestOption) (res *pagination.Cursor[BillResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -96,7 +96,7 @@ func (r *BillService) List(ctx context.Context, params BillListParams, opts ...o
 // specified Organization. Optional filters can be applied such as by date range,
 // lock status, or other attributes. The list can also be paginated for easier
 // management.
-func (r *BillService) ListAutoPaging(ctx context.Context, params BillListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Bill] {
+func (r *BillService) ListAutoPaging(ctx context.Context, params BillListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[BillResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -107,7 +107,7 @@ func (r *BillService) ListAutoPaging(ctx context.Context, params BillListParams,
 // incorrect or obsolete Bills, and for Bills that have not been sent to customers.
 // Where end-customer invoices for Bills have been sent to customers, Bills should
 // not be deleted to ensure you have an audit trail of how the invoice was created.
-func (r *BillService) Delete(ctx context.Context, id string, body BillDeleteParams, opts ...option.RequestOption) (res *Bill, err error) {
+func (r *BillService) Delete(ctx context.Context, id string, body BillDeleteParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -154,7 +154,7 @@ func (r *BillService) Approve(ctx context.Context, params BillApproveParams, opt
 // This endpoint retrieves the latest Bill for the given Account in the specified
 // Organization. It facilitates tracking of the most recent charges and consumption
 // details.
-func (r *BillService) LatestByAccount(ctx context.Context, accountID string, query BillLatestByAccountParams, opts ...option.RequestOption) (res *Bill, err error) {
+func (r *BillService) LatestByAccount(ctx context.Context, accountID string, query BillLatestByAccountParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -176,7 +176,7 @@ func (r *BillService) LatestByAccount(ctx context.Context, accountID string, que
 // receive an error message if you try to do this. You must first use the
 // [Approve Bills](https://www.m3ter.com/docs/api#tag/Bill/operation/ApproveBills)
 // call to approve a Bill before you can lock it.
-func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, opts ...option.RequestOption) (res *Bill, err error) {
+func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -212,7 +212,7 @@ func (r *BillService) Search(ctx context.Context, params BillSearchParams, opts 
 //
 // This endpoint allows you to transition a Bill's status through various stages,
 // such as from "Pending" to "Approved".
-func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUpdateStatusParams, opts ...option.RequestOption) (res *Bill, err error) {
+func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUpdateStatusParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -227,7 +227,7 @@ func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUp
 	return
 }
 
-type Bill struct {
+type BillResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -236,13 +236,13 @@ type Bill struct {
 	//     in the response.
 	//   - **Update:** On successful Update, the version is incremented by 1 in the
 	//     response.
-	Version               int64                `json:"version,required"`
-	AccountCode           string               `json:"accountCode"`
-	AccountID             string               `json:"accountId"`
-	BillDate              time.Time            `json:"billDate" format:"date"`
-	BillFrequencyInterval int64                `json:"billFrequencyInterval"`
-	BillingFrequency      BillBillingFrequency `json:"billingFrequency"`
-	BillJobID             string               `json:"billJobId"`
+	Version               int64                        `json:"version,required"`
+	AccountCode           string                       `json:"accountCode"`
+	AccountID             string                       `json:"accountId"`
+	BillDate              time.Time                    `json:"billDate" format:"date"`
+	BillFrequencyInterval int64                        `json:"billFrequencyInterval"`
+	BillingFrequency      BillResponseBillingFrequency `json:"billingFrequency"`
+	BillJobID             string                       `json:"billJobId"`
 	// The sum total for the Bill.
 	BillTotal float64 `json:"billTotal"`
 	// The unique identifier (UUID) for the user who created the Bill.
@@ -291,8 +291,8 @@ type Bill struct {
 	// The unique identifier (UUID) for the user who last modified this Bill.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// An array of the Bill line items.
-	LineItems []BillLineItem `json:"lineItems"`
-	Locked    bool           `json:"locked"`
+	LineItems []BillResponseLineItem `json:"lineItems"`
+	Locked    bool                   `json:"locked"`
 	// Purchase Order number linked to the Account the Bill is for.
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// The sequential invoice number of the Bill.
@@ -300,16 +300,16 @@ type Bill struct {
 	// **NOTE:** If you have not defined a `billPrefix` for your Organization, a
 	// `sequentialInvoiceNumber` is not returned in the response. See
 	// [Update OrganizationConfig](https://www.m3ter.com/docs/api#tag/OrganizationConfig/operation/UpdateOrganizationConfig)
-	SequentialInvoiceNumber string     `json:"sequentialInvoiceNumber"`
-	StartDate               time.Time  `json:"startDate" format:"date"`
-	StartDateTimeUtc        time.Time  `json:"startDateTimeUTC" format:"date-time"`
-	Status                  BillStatus `json:"status"`
-	Timezone                string     `json:"timezone"`
-	JSON                    billJSON   `json:"-"`
+	SequentialInvoiceNumber string             `json:"sequentialInvoiceNumber"`
+	StartDate               time.Time          `json:"startDate" format:"date"`
+	StartDateTimeUtc        time.Time          `json:"startDateTimeUTC" format:"date-time"`
+	Status                  BillResponseStatus `json:"status"`
+	Timezone                string             `json:"timezone"`
+	JSON                    billResponseJSON   `json:"-"`
 }
 
-// billJSON contains the JSON metadata for the struct [Bill]
-type billJSON struct {
+// billResponseJSON contains the JSON metadata for the struct [BillResponse]
+type billResponseJSON struct {
 	ID                       apijson.Field
 	Version                  apijson.Field
 	AccountCode              apijson.Field
@@ -346,34 +346,34 @@ type billJSON struct {
 	ExtraFields              map[string]apijson.Field
 }
 
-func (r *Bill) UnmarshalJSON(data []byte) (err error) {
+func (r *BillResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r billJSON) RawJSON() string {
+func (r billResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type BillBillingFrequency string
+type BillResponseBillingFrequency string
 
 const (
-	BillBillingFrequencyDaily    BillBillingFrequency = "DAILY"
-	BillBillingFrequencyWeekly   BillBillingFrequency = "WEEKLY"
-	BillBillingFrequencyMonthly  BillBillingFrequency = "MONTHLY"
-	BillBillingFrequencyAnnually BillBillingFrequency = "ANNUALLY"
-	BillBillingFrequencyAdHoc    BillBillingFrequency = "AD_HOC"
-	BillBillingFrequencyMixed    BillBillingFrequency = "MIXED"
+	BillResponseBillingFrequencyDaily    BillResponseBillingFrequency = "DAILY"
+	BillResponseBillingFrequencyWeekly   BillResponseBillingFrequency = "WEEKLY"
+	BillResponseBillingFrequencyMonthly  BillResponseBillingFrequency = "MONTHLY"
+	BillResponseBillingFrequencyAnnually BillResponseBillingFrequency = "ANNUALLY"
+	BillResponseBillingFrequencyAdHoc    BillResponseBillingFrequency = "AD_HOC"
+	BillResponseBillingFrequencyMixed    BillResponseBillingFrequency = "MIXED"
 )
 
-func (r BillBillingFrequency) IsKnown() bool {
+func (r BillResponseBillingFrequency) IsKnown() bool {
 	switch r {
-	case BillBillingFrequencyDaily, BillBillingFrequencyWeekly, BillBillingFrequencyMonthly, BillBillingFrequencyAnnually, BillBillingFrequencyAdHoc, BillBillingFrequencyMixed:
+	case BillResponseBillingFrequencyDaily, BillResponseBillingFrequencyWeekly, BillResponseBillingFrequencyMonthly, BillResponseBillingFrequencyAnnually, BillResponseBillingFrequencyAdHoc, BillResponseBillingFrequencyMixed:
 		return true
 	}
 	return false
 }
 
-type BillLineItem struct {
+type BillResponseLineItem struct {
 	// The average unit price across all tiers / pricing bands.
 	AverageUnitPrice float64 `json:"averageUnitPrice,required"`
 	// The currency conversion rate if currency conversion is required for the line
@@ -385,8 +385,8 @@ type BillLineItem struct {
 	// or EUR.
 	Currency string `json:"currency,required"`
 	// Line item description.
-	Description  string                    `json:"description,required"`
-	LineItemType BillLineItemsLineItemType `json:"lineItemType,required"`
+	Description  string                            `json:"description,required"`
+	LineItemType BillResponseLineItemsLineItemType `json:"lineItemType,required"`
 	// The amount of usage for the line item.
 	Quantity float64 `json:"quantity,required"`
 	// The subtotal amount for the line item, before any currency conversions.
@@ -445,12 +445,13 @@ type BillLineItem struct {
 	// The starting date _(inclusive)_ for the service period _(in ISO 8601 format)_.
 	ServicePeriodStartDate time.Time `json:"servicePeriodStartDate" format:"date-time"`
 	// Shows the usage by pricing band for tiered pricing structures.
-	UsagePerPricingBand []BillLineItemsUsagePerPricingBand `json:"usagePerPricingBand"`
-	JSON                billLineItemJSON                   `json:"-"`
+	UsagePerPricingBand []BillResponseLineItemsUsagePerPricingBand `json:"usagePerPricingBand"`
+	JSON                billResponseLineItemJSON                   `json:"-"`
 }
 
-// billLineItemJSON contains the JSON metadata for the struct [BillLineItem]
-type billLineItemJSON struct {
+// billResponseLineItemJSON contains the JSON metadata for the struct
+// [BillResponseLineItem]
+type billResponseLineItemJSON struct {
 	AverageUnitPrice       apijson.Field
 	ConversionRate         apijson.Field
 	ConvertedSubtotal      apijson.Field
@@ -492,40 +493,40 @@ type billLineItemJSON struct {
 	ExtraFields            map[string]apijson.Field
 }
 
-func (r *BillLineItem) UnmarshalJSON(data []byte) (err error) {
+func (r *BillResponseLineItem) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r billLineItemJSON) RawJSON() string {
+func (r billResponseLineItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type BillLineItemsLineItemType string
+type BillResponseLineItemsLineItemType string
 
 const (
-	BillLineItemsLineItemTypeStandingCharge            BillLineItemsLineItemType = "STANDING_CHARGE"
-	BillLineItemsLineItemTypeUsage                     BillLineItemsLineItemType = "USAGE"
-	BillLineItemsLineItemTypeCounterRunningTotalCharge BillLineItemsLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
-	BillLineItemsLineItemTypeCounterAdjustmentDebit    BillLineItemsLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
-	BillLineItemsLineItemTypeCounterAdjustmentCredit   BillLineItemsLineItemType = "COUNTER_ADJUSTMENT_CREDIT"
-	BillLineItemsLineItemTypeUsageCredit               BillLineItemsLineItemType = "USAGE_CREDIT"
-	BillLineItemsLineItemTypeMinimumSpend              BillLineItemsLineItemType = "MINIMUM_SPEND"
-	BillLineItemsLineItemTypeMinimumSpendRefund        BillLineItemsLineItemType = "MINIMUM_SPEND_REFUND"
-	BillLineItemsLineItemTypeCreditDeduction           BillLineItemsLineItemType = "CREDIT_DEDUCTION"
-	BillLineItemsLineItemTypeManualAdjustment          BillLineItemsLineItemType = "MANUAL_ADJUSTMENT"
-	BillLineItemsLineItemTypeCreditMemo                BillLineItemsLineItemType = "CREDIT_MEMO"
-	BillLineItemsLineItemTypeDebitMemo                 BillLineItemsLineItemType = "DEBIT_MEMO"
-	BillLineItemsLineItemTypeCommitmentConsumed        BillLineItemsLineItemType = "COMMITMENT_CONSUMED"
-	BillLineItemsLineItemTypeCommitmentFee             BillLineItemsLineItemType = "COMMITMENT_FEE"
-	BillLineItemsLineItemTypeOverageSurcharge          BillLineItemsLineItemType = "OVERAGE_SURCHARGE"
-	BillLineItemsLineItemTypeOverageUsage              BillLineItemsLineItemType = "OVERAGE_USAGE"
-	BillLineItemsLineItemTypeBalanceConsumed           BillLineItemsLineItemType = "BALANCE_CONSUMED"
-	BillLineItemsLineItemTypeBalanceFee                BillLineItemsLineItemType = "BALANCE_FEE"
+	BillResponseLineItemsLineItemTypeStandingCharge            BillResponseLineItemsLineItemType = "STANDING_CHARGE"
+	BillResponseLineItemsLineItemTypeUsage                     BillResponseLineItemsLineItemType = "USAGE"
+	BillResponseLineItemsLineItemTypeCounterRunningTotalCharge BillResponseLineItemsLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
+	BillResponseLineItemsLineItemTypeCounterAdjustmentDebit    BillResponseLineItemsLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	BillResponseLineItemsLineItemTypeCounterAdjustmentCredit   BillResponseLineItemsLineItemType = "COUNTER_ADJUSTMENT_CREDIT"
+	BillResponseLineItemsLineItemTypeUsageCredit               BillResponseLineItemsLineItemType = "USAGE_CREDIT"
+	BillResponseLineItemsLineItemTypeMinimumSpend              BillResponseLineItemsLineItemType = "MINIMUM_SPEND"
+	BillResponseLineItemsLineItemTypeMinimumSpendRefund        BillResponseLineItemsLineItemType = "MINIMUM_SPEND_REFUND"
+	BillResponseLineItemsLineItemTypeCreditDeduction           BillResponseLineItemsLineItemType = "CREDIT_DEDUCTION"
+	BillResponseLineItemsLineItemTypeManualAdjustment          BillResponseLineItemsLineItemType = "MANUAL_ADJUSTMENT"
+	BillResponseLineItemsLineItemTypeCreditMemo                BillResponseLineItemsLineItemType = "CREDIT_MEMO"
+	BillResponseLineItemsLineItemTypeDebitMemo                 BillResponseLineItemsLineItemType = "DEBIT_MEMO"
+	BillResponseLineItemsLineItemTypeCommitmentConsumed        BillResponseLineItemsLineItemType = "COMMITMENT_CONSUMED"
+	BillResponseLineItemsLineItemTypeCommitmentFee             BillResponseLineItemsLineItemType = "COMMITMENT_FEE"
+	BillResponseLineItemsLineItemTypeOverageSurcharge          BillResponseLineItemsLineItemType = "OVERAGE_SURCHARGE"
+	BillResponseLineItemsLineItemTypeOverageUsage              BillResponseLineItemsLineItemType = "OVERAGE_USAGE"
+	BillResponseLineItemsLineItemTypeBalanceConsumed           BillResponseLineItemsLineItemType = "BALANCE_CONSUMED"
+	BillResponseLineItemsLineItemTypeBalanceFee                BillResponseLineItemsLineItemType = "BALANCE_FEE"
 )
 
-func (r BillLineItemsLineItemType) IsKnown() bool {
+func (r BillResponseLineItemsLineItemType) IsKnown() bool {
 	switch r {
-	case BillLineItemsLineItemTypeStandingCharge, BillLineItemsLineItemTypeUsage, BillLineItemsLineItemTypeCounterRunningTotalCharge, BillLineItemsLineItemTypeCounterAdjustmentDebit, BillLineItemsLineItemTypeCounterAdjustmentCredit, BillLineItemsLineItemTypeUsageCredit, BillLineItemsLineItemTypeMinimumSpend, BillLineItemsLineItemTypeMinimumSpendRefund, BillLineItemsLineItemTypeCreditDeduction, BillLineItemsLineItemTypeManualAdjustment, BillLineItemsLineItemTypeCreditMemo, BillLineItemsLineItemTypeDebitMemo, BillLineItemsLineItemTypeCommitmentConsumed, BillLineItemsLineItemTypeCommitmentFee, BillLineItemsLineItemTypeOverageSurcharge, BillLineItemsLineItemTypeOverageUsage, BillLineItemsLineItemTypeBalanceConsumed, BillLineItemsLineItemTypeBalanceFee:
+	case BillResponseLineItemsLineItemTypeStandingCharge, BillResponseLineItemsLineItemTypeUsage, BillResponseLineItemsLineItemTypeCounterRunningTotalCharge, BillResponseLineItemsLineItemTypeCounterAdjustmentDebit, BillResponseLineItemsLineItemTypeCounterAdjustmentCredit, BillResponseLineItemsLineItemTypeUsageCredit, BillResponseLineItemsLineItemTypeMinimumSpend, BillResponseLineItemsLineItemTypeMinimumSpendRefund, BillResponseLineItemsLineItemTypeCreditDeduction, BillResponseLineItemsLineItemTypeManualAdjustment, BillResponseLineItemsLineItemTypeCreditMemo, BillResponseLineItemsLineItemTypeDebitMemo, BillResponseLineItemsLineItemTypeCommitmentConsumed, BillResponseLineItemsLineItemTypeCommitmentFee, BillResponseLineItemsLineItemTypeOverageSurcharge, BillResponseLineItemsLineItemTypeOverageUsage, BillResponseLineItemsLineItemTypeBalanceConsumed, BillResponseLineItemsLineItemTypeBalanceFee:
 		return true
 	}
 	return false
@@ -533,7 +534,7 @@ func (r BillLineItemsLineItemType) IsKnown() bool {
 
 // Array containing the pricing band information, which shows the details for each
 // pricing band or tier.
-type BillLineItemsUsagePerPricingBand struct {
+type BillResponseLineItemsUsagePerPricingBand struct {
 	// Usage amount within the band.
 	BandQuantity float64 `json:"bandQuantity"`
 	// Subtotal amount for the band.
@@ -552,13 +553,13 @@ type BillLineItemsUsagePerPricingBand struct {
 	// The price per unit in the band.
 	UnitPrice float64 `json:"unitPrice"`
 	// The subtotal of the unit usage.
-	UnitSubtotal float64                              `json:"unitSubtotal"`
-	JSON         billLineItemsUsagePerPricingBandJSON `json:"-"`
+	UnitSubtotal float64                                      `json:"unitSubtotal"`
+	JSON         billResponseLineItemsUsagePerPricingBandJSON `json:"-"`
 }
 
-// billLineItemsUsagePerPricingBandJSON contains the JSON metadata for the struct
-// [BillLineItemsUsagePerPricingBand]
-type billLineItemsUsagePerPricingBandJSON struct {
+// billResponseLineItemsUsagePerPricingBandJSON contains the JSON metadata for the
+// struct [BillResponseLineItemsUsagePerPricingBand]
+type billResponseLineItemsUsagePerPricingBandJSON struct {
 	BandQuantity  apijson.Field
 	BandSubtotal  apijson.Field
 	BandUnits     apijson.Field
@@ -572,24 +573,24 @@ type billLineItemsUsagePerPricingBandJSON struct {
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *BillLineItemsUsagePerPricingBand) UnmarshalJSON(data []byte) (err error) {
+func (r *BillResponseLineItemsUsagePerPricingBand) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r billLineItemsUsagePerPricingBandJSON) RawJSON() string {
+func (r billResponseLineItemsUsagePerPricingBandJSON) RawJSON() string {
 	return r.raw
 }
 
-type BillStatus string
+type BillResponseStatus string
 
 const (
-	BillStatusPending  BillStatus = "PENDING"
-	BillStatusApproved BillStatus = "APPROVED"
+	BillResponseStatusPending  BillResponseStatus = "PENDING"
+	BillResponseStatusApproved BillResponseStatus = "APPROVED"
 )
 
-func (r BillStatus) IsKnown() bool {
+func (r BillResponseStatus) IsKnown() bool {
 	switch r {
-	case BillStatusPending, BillStatusApproved:
+	case BillResponseStatusPending, BillResponseStatusApproved:
 		return true
 	}
 	return false
@@ -620,7 +621,7 @@ func (r billApproveResponseJSON) RawJSON() string {
 
 type BillSearchResponse struct {
 	// An array containing the list of requested Bills.
-	Data []Bill `json:"data"`
+	Data []BillResponse `json:"data"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// Bills in a paginated list.
 	NextToken string                 `json:"nextToken"`

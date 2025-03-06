@@ -42,7 +42,7 @@ func NewNotificationConfigurationService(opts ...option.RequestOption) (r *Notif
 // This endpoint enables you to create a new Event Notification for the specified
 // Organization. You need to supply a request body with the details of the new
 // Notification.
-func (r *NotificationConfigurationService) New(ctx context.Context, params NotificationConfigurationNewParams, opts ...option.RequestOption) (res *NotificationConfiguration, err error) {
+func (r *NotificationConfigurationService) New(ctx context.Context, params NotificationConfigurationNewParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -57,7 +57,7 @@ func (r *NotificationConfigurationService) New(ctx context.Context, params Notif
 // Event the Notification is based on, and any calculation referencing the Event's
 // field and which defines further conditions that must be met to trigger the
 // Notification when the Event occurs.
-func (r *NotificationConfigurationService) Get(ctx context.Context, id string, query NotificationConfigurationGetParams, opts ...option.RequestOption) (res *NotificationConfiguration, err error) {
+func (r *NotificationConfigurationService) Get(ctx context.Context, id string, query NotificationConfigurationGetParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -77,7 +77,7 @@ func (r *NotificationConfigurationService) Get(ctx context.Context, id string, q
 // This endpoint modifies the configuration details of an existing Notification.
 // You can change the Event that triggers the Notification and/or update the
 // conditions for sending the Notification.
-func (r *NotificationConfigurationService) Update(ctx context.Context, id string, params NotificationConfigurationUpdateParams, opts ...option.RequestOption) (res *NotificationConfiguration, err error) {
+func (r *NotificationConfigurationService) Update(ctx context.Context, id string, params NotificationConfigurationUpdateParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -97,7 +97,7 @@ func (r *NotificationConfigurationService) Update(ctx context.Context, id string
 // This endpoint retrieves a list of all Event Notifications for the Organization
 // identified by its UUID. The list can be paginated for easier management. The
 // list also supports filtering by parameters such as Notification UUID.
-func (r *NotificationConfigurationService) List(ctx context.Context, params NotificationConfigurationListParams, opts ...option.RequestOption) (res *pagination.Cursor[NotificationConfiguration], err error) {
+func (r *NotificationConfigurationService) List(ctx context.Context, params NotificationConfigurationListParams, opts ...option.RequestOption) (res *pagination.Cursor[NotificationConfigurationResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -123,7 +123,7 @@ func (r *NotificationConfigurationService) List(ctx context.Context, params Noti
 // This endpoint retrieves a list of all Event Notifications for the Organization
 // identified by its UUID. The list can be paginated for easier management. The
 // list also supports filtering by parameters such as Notification UUID.
-func (r *NotificationConfigurationService) ListAutoPaging(ctx context.Context, params NotificationConfigurationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[NotificationConfiguration] {
+func (r *NotificationConfigurationService) ListAutoPaging(ctx context.Context, params NotificationConfigurationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[NotificationConfigurationResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -131,7 +131,7 @@ func (r *NotificationConfigurationService) ListAutoPaging(ctx context.Context, p
 //
 // This endpoint permanently removes a specified Notification and its
 // configuration. This action cannot be undone.
-func (r *NotificationConfigurationService) Delete(ctx context.Context, id string, body NotificationConfigurationDeleteParams, opts ...option.RequestOption) (res *NotificationConfiguration, err error) {
+func (r *NotificationConfigurationService) Delete(ctx context.Context, id string, body NotificationConfigurationDeleteParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -146,7 +146,7 @@ func (r *NotificationConfigurationService) Delete(ctx context.Context, id string
 	return
 }
 
-type NotificationConfiguration struct {
+type NotificationConfigurationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The short code for the Notification.
@@ -203,13 +203,13 @@ type NotificationConfiguration struct {
 	// conditions defined by a calculation having to be met.
 	EventName string `json:"eventName"`
 	// The ID of the user who last modified this item.
-	LastModifiedBy string                        `json:"lastModifiedBy"`
-	JSON           notificationConfigurationJSON `json:"-"`
+	LastModifiedBy string                                `json:"lastModifiedBy"`
+	JSON           notificationConfigurationResponseJSON `json:"-"`
 }
 
-// notificationConfigurationJSON contains the JSON metadata for the struct
-// [NotificationConfiguration]
-type notificationConfigurationJSON struct {
+// notificationConfigurationResponseJSON contains the JSON metadata for the struct
+// [NotificationConfigurationResponse]
+type notificationConfigurationResponseJSON struct {
 	ID              apijson.Field
 	Code            apijson.Field
 	Description     apijson.Field
@@ -227,11 +227,11 @@ type notificationConfigurationJSON struct {
 	ExtraFields     map[string]apijson.Field
 }
 
-func (r *NotificationConfiguration) UnmarshalJSON(data []byte) (err error) {
+func (r *NotificationConfigurationResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r notificationConfigurationJSON) RawJSON() string {
+func (r notificationConfigurationResponseJSON) RawJSON() string {
 	return r.raw
 }
 

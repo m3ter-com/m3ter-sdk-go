@@ -44,7 +44,7 @@ func NewDataExportJobService(opts ...option.RequestOption) (r *DataExportJobServ
 //   - The source type for the data exported by the Export Job: one of USAGE or
 //     OPERATIONAL.
 //   - The status of the Export Job.
-func (r *DataExportJobService) Get(ctx context.Context, id string, query DataExportJobGetParams, opts ...option.RequestOption) (res *DataExportJob, err error) {
+func (r *DataExportJobService) Get(ctx context.Context, id string, query DataExportJobGetParams, opts ...option.RequestOption) (res *DataExportJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -60,7 +60,7 @@ func (r *DataExportJobService) Get(ctx context.Context, id string, query DataExp
 }
 
 // Retrieve a list of Export Job entities.
-func (r *DataExportJobService) List(ctx context.Context, params DataExportJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataExportJob], err error) {
+func (r *DataExportJobService) List(ctx context.Context, params DataExportJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataExportJobResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -82,7 +82,7 @@ func (r *DataExportJobService) List(ctx context.Context, params DataExportJobLis
 }
 
 // Retrieve a list of Export Job entities.
-func (r *DataExportJobService) ListAutoPaging(ctx context.Context, params DataExportJobListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DataExportJob] {
+func (r *DataExportJobService) ListAutoPaging(ctx context.Context, params DataExportJobListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DataExportJobResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -118,7 +118,7 @@ func (r *DataExportJobService) GetDownloadURL(ctx context.Context, jobID string,
 	return
 }
 
-type DataExportJob struct {
+type DataExportJobResponse struct {
 	// The id of the Export Job.
 	ID string `json:"id,required"`
 	// The version number:
@@ -131,16 +131,17 @@ type DataExportJob struct {
 	// When the data Export Job was created.
 	DateCreated time.Time `json:"dateCreated" format:"date-time"`
 	// The id of the data Export Schedule.
-	ScheduleID string                  `json:"scheduleId"`
-	SourceType DataExportJobSourceType `json:"sourceType"`
+	ScheduleID string                          `json:"scheduleId"`
+	SourceType DataExportJobResponseSourceType `json:"sourceType"`
 	// When the data Export Job started running
-	StartedAt time.Time           `json:"startedAt" format:"date-time"`
-	Status    DataExportJobStatus `json:"status"`
-	JSON      dataExportJobJSON   `json:"-"`
+	StartedAt time.Time                   `json:"startedAt" format:"date-time"`
+	Status    DataExportJobResponseStatus `json:"status"`
+	JSON      dataExportJobResponseJSON   `json:"-"`
 }
 
-// dataExportJobJSON contains the JSON metadata for the struct [DataExportJob]
-type dataExportJobJSON struct {
+// dataExportJobResponseJSON contains the JSON metadata for the struct
+// [DataExportJobResponse]
+type dataExportJobResponseJSON struct {
 	ID          apijson.Field
 	Version     apijson.Field
 	DateCreated apijson.Field
@@ -152,41 +153,41 @@ type dataExportJobJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *DataExportJob) UnmarshalJSON(data []byte) (err error) {
+func (r *DataExportJobResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r dataExportJobJSON) RawJSON() string {
+func (r dataExportJobResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type DataExportJobSourceType string
+type DataExportJobResponseSourceType string
 
 const (
-	DataExportJobSourceTypeUsage       DataExportJobSourceType = "USAGE"
-	DataExportJobSourceTypeOperational DataExportJobSourceType = "OPERATIONAL"
+	DataExportJobResponseSourceTypeUsage       DataExportJobResponseSourceType = "USAGE"
+	DataExportJobResponseSourceTypeOperational DataExportJobResponseSourceType = "OPERATIONAL"
 )
 
-func (r DataExportJobSourceType) IsKnown() bool {
+func (r DataExportJobResponseSourceType) IsKnown() bool {
 	switch r {
-	case DataExportJobSourceTypeUsage, DataExportJobSourceTypeOperational:
+	case DataExportJobResponseSourceTypeUsage, DataExportJobResponseSourceTypeOperational:
 		return true
 	}
 	return false
 }
 
-type DataExportJobStatus string
+type DataExportJobResponseStatus string
 
 const (
-	DataExportJobStatusPending   DataExportJobStatus = "PENDING"
-	DataExportJobStatusRunning   DataExportJobStatus = "RUNNING"
-	DataExportJobStatusSucceeded DataExportJobStatus = "SUCCEEDED"
-	DataExportJobStatusFailed    DataExportJobStatus = "FAILED"
+	DataExportJobResponseStatusPending   DataExportJobResponseStatus = "PENDING"
+	DataExportJobResponseStatusRunning   DataExportJobResponseStatus = "RUNNING"
+	DataExportJobResponseStatusSucceeded DataExportJobResponseStatus = "SUCCEEDED"
+	DataExportJobResponseStatusFailed    DataExportJobResponseStatus = "FAILED"
 )
 
-func (r DataExportJobStatus) IsKnown() bool {
+func (r DataExportJobResponseStatus) IsKnown() bool {
 	switch r {
-	case DataExportJobStatusPending, DataExportJobStatusRunning, DataExportJobStatusSucceeded, DataExportJobStatusFailed:
+	case DataExportJobResponseStatusPending, DataExportJobResponseStatusRunning, DataExportJobResponseStatusSucceeded, DataExportJobResponseStatusFailed:
 		return true
 	}
 	return false

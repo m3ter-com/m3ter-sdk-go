@@ -45,7 +45,7 @@ func NewPlanTemplateService(opts ...option.RequestOption) (r *PlanTemplateServic
 // This endpoint creates a new PlanTemplate within a specific Organization,
 // identified by its unique UUID. The request body should contain the necessary
 // information for the new PlanTemplate.
-func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -60,7 +60,7 @@ func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewPar
 //
 // This endpoint allows you to retrieve a specific PlanTemplate within a specific
 // Organization, both identified by their unique identifiers (UUIDs).
-func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemplateGetParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemplateGetParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -85,7 +85,7 @@ func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemp
 // this endpoint to update the Plan Template use the `customFields` parameter to
 // preserve those Custom Fields. If you omit them from the update request, they
 // will be lost.
-func (r *PlanTemplateService) Update(ctx context.Context, id string, params PlanTemplateUpdateParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) Update(ctx context.Context, id string, params PlanTemplateUpdateParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -105,7 +105,7 @@ func (r *PlanTemplateService) Update(ctx context.Context, id string, params Plan
 // This endpoint enables you to retrieve a paginated list of PlanTemplates
 // belonging to a specific Organization, identified by its UUID. You can filter the
 // list by PlanTemplate IDs or Product IDs for more focused retrieval.
-func (r *PlanTemplateService) List(ctx context.Context, params PlanTemplateListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanTemplate], err error) {
+func (r *PlanTemplateService) List(ctx context.Context, params PlanTemplateListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanTemplateResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -131,7 +131,7 @@ func (r *PlanTemplateService) List(ctx context.Context, params PlanTemplateListP
 // This endpoint enables you to retrieve a paginated list of PlanTemplates
 // belonging to a specific Organization, identified by its UUID. You can filter the
 // list by PlanTemplate IDs or Product IDs for more focused retrieval.
-func (r *PlanTemplateService) ListAutoPaging(ctx context.Context, params PlanTemplateListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanTemplate] {
+func (r *PlanTemplateService) ListAutoPaging(ctx context.Context, params PlanTemplateListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanTemplateResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -139,7 +139,7 @@ func (r *PlanTemplateService) ListAutoPaging(ctx context.Context, params PlanTem
 //
 // This endpoint enables you to delete a specific PlanTemplate within a specific
 // Organization, both identified by their unique identifiers (UUIDs).
-func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTemplateDeleteParams, opts ...option.RequestOption) (res *PlanTemplate, err error) {
+func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTemplateDeleteParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -154,7 +154,7 @@ func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTe
 	return
 }
 
-type PlanTemplate struct {
+type PlanTemplateResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -177,7 +177,7 @@ type PlanTemplate struct {
 	//
 	//   - **Annually**. Starting at midnight on first day of each year covering the
 	//     entire calendar year following.
-	BillFrequency PlanTemplateBillFrequency `json:"billFrequency"`
+	BillFrequency PlanTemplateResponseBillFrequency `json:"billFrequency"`
 	// How often bills are issued. For example, if `billFrequency` is Monthly and
 	// `billFrequencyInterval` is 3, bills are issued every three months.
 	BillFrequencyInterval int64 `json:"billFrequencyInterval"`
@@ -200,7 +200,7 @@ type PlanTemplate struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]PlanTemplateCustomFieldsUnion `json:"customFields"`
+	CustomFields map[string]PlanTemplateResponseCustomFieldsUnion `json:"customFields"`
 	// The date and time _(in ISO-8601 format)_ when the PlanTemplate was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the PlanTemplate was last
@@ -252,12 +252,13 @@ type PlanTemplate struct {
 	// the bill is issued every three months and the `standingChargeOfset` is 0, then
 	// the charge is applied to the first bill _(at three months)_; if 1, it would be
 	// applied to the second bill _(at six months)_, and so on.
-	StandingChargeOffset int64            `json:"standingChargeOffset"`
-	JSON                 planTemplateJSON `json:"-"`
+	StandingChargeOffset int64                    `json:"standingChargeOffset"`
+	JSON                 planTemplateResponseJSON `json:"-"`
 }
 
-// planTemplateJSON contains the JSON metadata for the struct [PlanTemplate]
-type planTemplateJSON struct {
+// planTemplateResponseJSON contains the JSON metadata for the struct
+// [PlanTemplateResponse]
+type planTemplateResponseJSON struct {
 	ID                          apijson.Field
 	Version                     apijson.Field
 	BillFrequency               apijson.Field
@@ -284,11 +285,11 @@ type planTemplateJSON struct {
 	ExtraFields                 map[string]apijson.Field
 }
 
-func (r *PlanTemplate) UnmarshalJSON(data []byte) (err error) {
+func (r *PlanTemplateResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r planTemplateJSON) RawJSON() string {
+func (r planTemplateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -305,33 +306,33 @@ func (r planTemplateJSON) RawJSON() string {
 //
 //   - **Annually**. Starting at midnight on first day of each year covering the
 //     entire calendar year following.
-type PlanTemplateBillFrequency string
+type PlanTemplateResponseBillFrequency string
 
 const (
-	PlanTemplateBillFrequencyDaily    PlanTemplateBillFrequency = "DAILY"
-	PlanTemplateBillFrequencyWeekly   PlanTemplateBillFrequency = "WEEKLY"
-	PlanTemplateBillFrequencyMonthly  PlanTemplateBillFrequency = "MONTHLY"
-	PlanTemplateBillFrequencyAnnually PlanTemplateBillFrequency = "ANNUALLY"
-	PlanTemplateBillFrequencyAdHoc    PlanTemplateBillFrequency = "AD_HOC"
-	PlanTemplateBillFrequencyMixed    PlanTemplateBillFrequency = "MIXED"
+	PlanTemplateResponseBillFrequencyDaily    PlanTemplateResponseBillFrequency = "DAILY"
+	PlanTemplateResponseBillFrequencyWeekly   PlanTemplateResponseBillFrequency = "WEEKLY"
+	PlanTemplateResponseBillFrequencyMonthly  PlanTemplateResponseBillFrequency = "MONTHLY"
+	PlanTemplateResponseBillFrequencyAnnually PlanTemplateResponseBillFrequency = "ANNUALLY"
+	PlanTemplateResponseBillFrequencyAdHoc    PlanTemplateResponseBillFrequency = "AD_HOC"
+	PlanTemplateResponseBillFrequencyMixed    PlanTemplateResponseBillFrequency = "MIXED"
 )
 
-func (r PlanTemplateBillFrequency) IsKnown() bool {
+func (r PlanTemplateResponseBillFrequency) IsKnown() bool {
 	switch r {
-	case PlanTemplateBillFrequencyDaily, PlanTemplateBillFrequencyWeekly, PlanTemplateBillFrequencyMonthly, PlanTemplateBillFrequencyAnnually, PlanTemplateBillFrequencyAdHoc, PlanTemplateBillFrequencyMixed:
+	case PlanTemplateResponseBillFrequencyDaily, PlanTemplateResponseBillFrequencyWeekly, PlanTemplateResponseBillFrequencyMonthly, PlanTemplateResponseBillFrequencyAnnually, PlanTemplateResponseBillFrequencyAdHoc, PlanTemplateResponseBillFrequencyMixed:
 		return true
 	}
 	return false
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type PlanTemplateCustomFieldsUnion interface {
-	ImplementsPlanTemplateCustomFieldsUnion()
+type PlanTemplateResponseCustomFieldsUnion interface {
+	ImplementsPlanTemplateResponseCustomFieldsUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*PlanTemplateCustomFieldsUnion)(nil)).Elem(),
+		reflect.TypeOf((*PlanTemplateResponseCustomFieldsUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,

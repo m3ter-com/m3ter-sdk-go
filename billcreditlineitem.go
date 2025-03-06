@@ -42,7 +42,7 @@ func NewBillCreditLineItemService(opts ...option.RequestOption) (r *BillCreditLi
 // When creating Credit line items for Bills, use the Credit Reasons created for
 // your Organization. See
 // [CreditReason](https://www.m3ter.com/docs/api#tag/CreditReason).
-func (r *BillCreditLineItemService) New(ctx context.Context, billID string, params BillCreditLineItemNewParams, opts ...option.RequestOption) (res *CreditLineItem, err error) {
+func (r *BillCreditLineItemService) New(ctx context.Context, billID string, params BillCreditLineItemNewParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -58,7 +58,7 @@ func (r *BillCreditLineItemService) New(ctx context.Context, billID string, para
 }
 
 // Retrieve the Credit line item with the given UUID.
-func (r *BillCreditLineItemService) Get(ctx context.Context, billID string, id string, query BillCreditLineItemGetParams, opts ...option.RequestOption) (res *CreditLineItem, err error) {
+func (r *BillCreditLineItemService) Get(ctx context.Context, billID string, id string, query BillCreditLineItemGetParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -78,7 +78,7 @@ func (r *BillCreditLineItemService) Get(ctx context.Context, billID string, id s
 }
 
 // Update the Credit line item with the given UUID.
-func (r *BillCreditLineItemService) Update(ctx context.Context, billID string, id string, params BillCreditLineItemUpdateParams, opts ...option.RequestOption) (res *CreditLineItem, err error) {
+func (r *BillCreditLineItemService) Update(ctx context.Context, billID string, id string, params BillCreditLineItemUpdateParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -98,7 +98,7 @@ func (r *BillCreditLineItemService) Update(ctx context.Context, billID string, i
 }
 
 // List the Credit line items for the given Bill.
-func (r *BillCreditLineItemService) List(ctx context.Context, billID string, params BillCreditLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditLineItem], err error) {
+func (r *BillCreditLineItemService) List(ctx context.Context, billID string, params BillCreditLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditLineItemResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -124,12 +124,12 @@ func (r *BillCreditLineItemService) List(ctx context.Context, billID string, par
 }
 
 // List the Credit line items for the given Bill.
-func (r *BillCreditLineItemService) ListAutoPaging(ctx context.Context, billID string, params BillCreditLineItemListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CreditLineItem] {
+func (r *BillCreditLineItemService) ListAutoPaging(ctx context.Context, billID string, params BillCreditLineItemListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CreditLineItemResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, billID, params, opts...))
 }
 
 // Delete the Credit line item with the given UUID.
-func (r *BillCreditLineItemService) Delete(ctx context.Context, billID string, id string, body BillCreditLineItemDeleteParams, opts ...option.RequestOption) (res *CreditLineItem, err error) {
+func (r *BillCreditLineItemService) Delete(ctx context.Context, billID string, id string, body BillCreditLineItemDeleteParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -148,7 +148,7 @@ func (r *BillCreditLineItemService) Delete(ctx context.Context, billID string, i
 	return
 }
 
-type CreditLineItem struct {
+type CreditLineItemResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The amount for the line item.
@@ -183,12 +183,13 @@ type CreditLineItem struct {
 	// The DateTime when the credit line item was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The id of the user who last modified this credit line item.
-	LastModifiedBy string             `json:"lastModifiedBy"`
-	JSON           creditLineItemJSON `json:"-"`
+	LastModifiedBy string                     `json:"lastModifiedBy"`
+	JSON           creditLineItemResponseJSON `json:"-"`
 }
 
-// creditLineItemJSON contains the JSON metadata for the struct [CreditLineItem]
-type creditLineItemJSON struct {
+// creditLineItemResponseJSON contains the JSON metadata for the struct
+// [CreditLineItemResponse]
+type creditLineItemResponseJSON struct {
 	ID                     apijson.Field
 	Amount                 apijson.Field
 	Description            apijson.Field
@@ -207,11 +208,11 @@ type creditLineItemJSON struct {
 	ExtraFields            map[string]apijson.Field
 }
 
-func (r *CreditLineItem) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditLineItemResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditLineItemJSON) RawJSON() string {
+func (r creditLineItemResponseJSON) RawJSON() string {
 	return r.raw
 }
 
