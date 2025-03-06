@@ -38,7 +38,7 @@ func NewScheduledEventConfigurationService(opts ...option.RequestOption) (r *Sch
 }
 
 // Create a new ScheduledEventConfiguration.
-func (r *ScheduledEventConfigurationService) New(ctx context.Context, params ScheduledEventConfigurationNewParams, opts ...option.RequestOption) (res *ScheduledEventConfiguration, err error) {
+func (r *ScheduledEventConfigurationService) New(ctx context.Context, params ScheduledEventConfigurationNewParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -50,7 +50,7 @@ func (r *ScheduledEventConfigurationService) New(ctx context.Context, params Sch
 }
 
 // Retrieve a ScheduledEventConfiguration for the given UUID.
-func (r *ScheduledEventConfigurationService) Get(ctx context.Context, id string, query ScheduledEventConfigurationGetParams, opts ...option.RequestOption) (res *ScheduledEventConfiguration, err error) {
+func (r *ScheduledEventConfigurationService) Get(ctx context.Context, id string, query ScheduledEventConfigurationGetParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -66,7 +66,7 @@ func (r *ScheduledEventConfigurationService) Get(ctx context.Context, id string,
 }
 
 // Update a ScheduledEventConfiguration for the given UUID.
-func (r *ScheduledEventConfigurationService) Update(ctx context.Context, id string, params ScheduledEventConfigurationUpdateParams, opts ...option.RequestOption) (res *ScheduledEventConfiguration, err error) {
+func (r *ScheduledEventConfigurationService) Update(ctx context.Context, id string, params ScheduledEventConfigurationUpdateParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -82,7 +82,7 @@ func (r *ScheduledEventConfigurationService) Update(ctx context.Context, id stri
 }
 
 // Retrieve a list of ScheduledEventConfiguration entities
-func (r *ScheduledEventConfigurationService) List(ctx context.Context, params ScheduledEventConfigurationListParams, opts ...option.RequestOption) (res *pagination.Cursor[ScheduledEventConfiguration], err error) {
+func (r *ScheduledEventConfigurationService) List(ctx context.Context, params ScheduledEventConfigurationListParams, opts ...option.RequestOption) (res *pagination.Cursor[ScheduledEventConfigurationResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -104,12 +104,12 @@ func (r *ScheduledEventConfigurationService) List(ctx context.Context, params Sc
 }
 
 // Retrieve a list of ScheduledEventConfiguration entities
-func (r *ScheduledEventConfigurationService) ListAutoPaging(ctx context.Context, params ScheduledEventConfigurationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ScheduledEventConfiguration] {
+func (r *ScheduledEventConfigurationService) ListAutoPaging(ctx context.Context, params ScheduledEventConfigurationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ScheduledEventConfigurationResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the ScheduledEventConfiguration for the given UUID.
-func (r *ScheduledEventConfigurationService) Delete(ctx context.Context, id string, body ScheduledEventConfigurationDeleteParams, opts ...option.RequestOption) (res *ScheduledEventConfiguration, err error) {
+func (r *ScheduledEventConfigurationService) Delete(ctx context.Context, id string, body ScheduledEventConfigurationDeleteParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -124,7 +124,7 @@ func (r *ScheduledEventConfigurationService) Delete(ctx context.Context, id stri
 	return
 }
 
-type ScheduledEventConfiguration struct {
+type ScheduledEventConfigurationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The referenced configuration or billing entity for which the desired scheduled
@@ -152,13 +152,13 @@ type ScheduledEventConfiguration struct {
 	// The DateTime when this item was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The ID of the user who last modified this item.
-	LastModifiedBy string                          `json:"lastModifiedBy"`
-	JSON           scheduledEventConfigurationJSON `json:"-"`
+	LastModifiedBy string                                  `json:"lastModifiedBy"`
+	JSON           scheduledEventConfigurationResponseJSON `json:"-"`
 }
 
-// scheduledEventConfigurationJSON contains the JSON metadata for the struct
-// [ScheduledEventConfiguration]
-type scheduledEventConfigurationJSON struct {
+// scheduledEventConfigurationResponseJSON contains the JSON metadata for the
+// struct [ScheduledEventConfigurationResponse]
+type scheduledEventConfigurationResponseJSON struct {
 	ID             apijson.Field
 	Entity         apijson.Field
 	Field          apijson.Field
@@ -173,11 +173,11 @@ type scheduledEventConfigurationJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *ScheduledEventConfiguration) UnmarshalJSON(data []byte) (err error) {
+func (r *ScheduledEventConfigurationResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r scheduledEventConfigurationJSON) RawJSON() string {
+func (r scheduledEventConfigurationResponseJSON) RawJSON() string {
 	return r.raw
 }
 

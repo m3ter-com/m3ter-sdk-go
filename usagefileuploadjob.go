@@ -39,7 +39,7 @@ func NewUsageFileUploadJobService(opts ...option.RequestOption) (r *UsageFileUpl
 // Get the file upload job response using the UUID of the file upload job.
 //
 // Part of the file upload service for measurements ingest.
-func (r *UsageFileUploadJobService) Get(ctx context.Context, id string, query UsageFileUploadJobGetParams, opts ...option.RequestOption) (res *FileUploadJob, err error) {
+func (r *UsageFileUploadJobService) Get(ctx context.Context, id string, query UsageFileUploadJobGetParams, opts ...option.RequestOption) (res *FileUploadJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -62,7 +62,7 @@ func (r *UsageFileUploadJobService) Get(ctx context.Context, id string, query Us
 //     this call.
 //   - If `dateCreatedStart` and `dateCreatedEnd` Query parameters are not used, then
 //     all File Upload jobs are returned.
-func (r *UsageFileUploadJobService) List(ctx context.Context, params UsageFileUploadJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[FileUploadJob], err error) {
+func (r *UsageFileUploadJobService) List(ctx context.Context, params UsageFileUploadJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[FileUploadJobResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,7 +91,7 @@ func (r *UsageFileUploadJobService) List(ctx context.Context, params UsageFileUp
 //     this call.
 //   - If `dateCreatedStart` and `dateCreatedEnd` Query parameters are not used, then
 //     all File Upload jobs are returned.
-func (r *UsageFileUploadJobService) ListAutoPaging(ctx context.Context, params UsageFileUploadJobListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[FileUploadJob] {
+func (r *UsageFileUploadJobService) ListAutoPaging(ctx context.Context, params UsageFileUploadJobListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[FileUploadJobResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -119,7 +119,7 @@ func (r *UsageFileUploadJobService) GetOriginalDownloadURL(ctx context.Context, 
 }
 
 // Response containing the upload job details.
-type FileUploadJob struct {
+type FileUploadJobResponse struct {
 	// UUID of the file upload job.
 	ID string `json:"id"`
 	// The size of the body in bytes. For example: `"contentLength": 485`, where 485 is
@@ -132,18 +132,19 @@ type FileUploadJob struct {
 	// The number of rows that were processed during ingest.
 	ProcessedRows int64 `json:"processedRows"`
 	// The status of the file upload job.
-	Status FileUploadJobStatus `json:"status"`
+	Status FileUploadJobResponseStatus `json:"status"`
 	// The total number of rows in the file.
 	TotalRows int64 `json:"totalRows"`
 	// The upload date for the upload job _(in ISO-8601 format)_.
 	UploadDate string `json:"uploadDate"`
 	// The version number. Default value when newly created is one.
-	Version int64             `json:"version"`
-	JSON    fileUploadJobJSON `json:"-"`
+	Version int64                     `json:"version"`
+	JSON    fileUploadJobResponseJSON `json:"-"`
 }
 
-// fileUploadJobJSON contains the JSON metadata for the struct [FileUploadJob]
-type fileUploadJobJSON struct {
+// fileUploadJobResponseJSON contains the JSON metadata for the struct
+// [FileUploadJobResponse]
+type fileUploadJobResponseJSON struct {
 	ID            apijson.Field
 	ContentLength apijson.Field
 	FailedRows    apijson.Field
@@ -157,27 +158,27 @@ type fileUploadJobJSON struct {
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *FileUploadJob) UnmarshalJSON(data []byte) (err error) {
+func (r *FileUploadJobResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r fileUploadJobJSON) RawJSON() string {
+func (r fileUploadJobResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // The status of the file upload job.
-type FileUploadJobStatus string
+type FileUploadJobResponseStatus string
 
 const (
-	FileUploadJobStatusNotUploaded FileUploadJobStatus = "notUploaded"
-	FileUploadJobStatusRunning     FileUploadJobStatus = "running"
-	FileUploadJobStatusFailed      FileUploadJobStatus = "failed"
-	FileUploadJobStatusSucceeded   FileUploadJobStatus = "succeeded"
+	FileUploadJobResponseStatusNotUploaded FileUploadJobResponseStatus = "notUploaded"
+	FileUploadJobResponseStatusRunning     FileUploadJobResponseStatus = "running"
+	FileUploadJobResponseStatusFailed      FileUploadJobResponseStatus = "failed"
+	FileUploadJobResponseStatusSucceeded   FileUploadJobResponseStatus = "succeeded"
 )
 
-func (r FileUploadJobStatus) IsKnown() bool {
+func (r FileUploadJobResponseStatus) IsKnown() bool {
 	switch r {
-	case FileUploadJobStatusNotUploaded, FileUploadJobStatusRunning, FileUploadJobStatusFailed, FileUploadJobStatusSucceeded:
+	case FileUploadJobResponseStatusNotUploaded, FileUploadJobResponseStatusRunning, FileUploadJobResponseStatusFailed, FileUploadJobResponseStatusSucceeded:
 		return true
 	}
 	return false

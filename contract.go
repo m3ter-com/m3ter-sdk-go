@@ -44,7 +44,7 @@ func NewContractService(opts ...option.RequestOption) (r *ContractService) {
 //
 // Creates a new Contract for the specified Account. The Contract includes
 // information such as the associated Account along with start and end dates.
-func (r *ContractService) New(ctx context.Context, params ContractNewParams, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) New(ctx context.Context, params ContractNewParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -57,7 +57,7 @@ func (r *ContractService) New(ctx context.Context, params ContractNewParams, opt
 
 // Retrieves the Contract with the given UUID. Used to obtain the details of a
 // Contract.
-func (r *ContractService) Get(ctx context.Context, id string, query ContractGetParams, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) Get(ctx context.Context, id string, query ContractGetParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -81,7 +81,7 @@ func (r *ContractService) Get(ctx context.Context, id string, query ContractGetP
 // endpoint to update the Contract use the `customFields` parameter to preserve
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
-func (r *ContractService) Update(ctx context.Context, id string, params ContractUpdateParams, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) Update(ctx context.Context, id string, params ContractUpdateParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -99,7 +99,7 @@ func (r *ContractService) Update(ctx context.Context, id string, params Contract
 // Retrieves a list of Contracts by Organization ID. Supports pagination and
 // includes various query parameters to filter the Contracts returned based on
 // Contract IDs or short codes.
-func (r *ContractService) List(ctx context.Context, params ContractListParams, opts ...option.RequestOption) (res *pagination.Cursor[Contract], err error) {
+func (r *ContractService) List(ctx context.Context, params ContractListParams, opts ...option.RequestOption) (res *pagination.Cursor[ContractResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -123,7 +123,7 @@ func (r *ContractService) List(ctx context.Context, params ContractListParams, o
 // Retrieves a list of Contracts by Organization ID. Supports pagination and
 // includes various query parameters to filter the Contracts returned based on
 // Contract IDs or short codes.
-func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Contract] {
+func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ContractResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -132,7 +132,7 @@ func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractLis
 //
 // **Note:** This call will fail if there are any AccountPlans or Commitments that
 // have been added to the Contract.
-func (r *ContractService) Delete(ctx context.Context, id string, body ContractDeleteParams, opts ...option.RequestOption) (res *Contract, err error) {
+func (r *ContractService) Delete(ctx context.Context, id string, body ContractDeleteParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -175,7 +175,7 @@ func (r *ContractService) EndDateBillingEntities(ctx context.Context, id string,
 	return
 }
 
-type Contract struct {
+type ContractResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -201,7 +201,7 @@ type Contract struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]ContractCustomFieldsUnion `json:"customFields"`
+	CustomFields map[string]ContractResponseCustomFieldsUnion `json:"customFields"`
 	// The description of the Contract, which provides context and information.
 	Description string `json:"description"`
 	// The date and time _(in ISO-8601 format)_ when the Contract was created.
@@ -219,12 +219,13 @@ type Contract struct {
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate time.Time    `json:"startDate" format:"date"`
-	JSON      contractJSON `json:"-"`
+	StartDate time.Time            `json:"startDate" format:"date"`
+	JSON      contractResponseJSON `json:"-"`
 }
 
-// contractJSON contains the JSON metadata for the struct [Contract]
-type contractJSON struct {
+// contractResponseJSON contains the JSON metadata for the struct
+// [ContractResponse]
+type contractResponseJSON struct {
 	ID                  apijson.Field
 	Version             apijson.Field
 	AccountID           apijson.Field
@@ -243,22 +244,22 @@ type contractJSON struct {
 	ExtraFields         map[string]apijson.Field
 }
 
-func (r *Contract) UnmarshalJSON(data []byte) (err error) {
+func (r *ContractResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r contractJSON) RawJSON() string {
+func (r contractResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type ContractCustomFieldsUnion interface {
-	ImplementsContractCustomFieldsUnion()
+type ContractResponseCustomFieldsUnion interface {
+	ImplementsContractResponseCustomFieldsUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*ContractCustomFieldsUnion)(nil)).Elem(),
+		reflect.TypeOf((*ContractResponseCustomFieldsUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,

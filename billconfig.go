@@ -35,7 +35,7 @@ func NewBillConfigService(opts ...option.RequestOption) (r *BillConfigService) {
 }
 
 // Retrieve the Organization-wide BillConfig.
-func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, opts ...option.RequestOption) (res *BillConfig, err error) {
+func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -51,7 +51,7 @@ func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, 
 // You can use this endpoint to set a global lock date for **all** Bills - any Bill
 // with a service period end date on or before the set date will be locked and
 // cannot be updated or recalculated.
-func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateParams, opts ...option.RequestOption) (res *BillConfig, err error) {
+func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -62,7 +62,7 @@ func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateP
 	return
 }
 
-type BillConfig struct {
+type BillConfigResponse struct {
 	// The Organization UUID. The Organization represents your company as a direct
 	// customer of the m3ter service.
 	ID string `json:"id"`
@@ -82,12 +82,13 @@ type BillConfig struct {
 	//
 	// - Default value when newly created is one.
 	// - Incremented by 1 each time it is updated.
-	Version int64          `json:"version"`
-	JSON    billConfigJSON `json:"-"`
+	Version int64                  `json:"version"`
+	JSON    billConfigResponseJSON `json:"-"`
 }
 
-// billConfigJSON contains the JSON metadata for the struct [BillConfig]
-type billConfigJSON struct {
+// billConfigResponseJSON contains the JSON metadata for the struct
+// [BillConfigResponse]
+type billConfigResponseJSON struct {
 	ID             apijson.Field
 	BillLockDate   apijson.Field
 	CreatedBy      apijson.Field
@@ -99,11 +100,11 @@ type billConfigJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *BillConfig) UnmarshalJSON(data []byte) (err error) {
+func (r *BillConfigResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r billConfigJSON) RawJSON() string {
+func (r billConfigResponseJSON) RawJSON() string {
 	return r.raw
 }
 

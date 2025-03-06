@@ -41,7 +41,7 @@ func NewBillDebitLineItemService(opts ...option.RequestOption) (r *BillDebitLine
 //
 // When creating Debit line items for Bills, use the Debit Reasons created for your
 // Organization. See [DebitReason](https://www.m3ter.com/docs/api#tag/DebitReason).
-func (r *BillDebitLineItemService) New(ctx context.Context, billID string, params BillDebitLineItemNewParams, opts ...option.RequestOption) (res *DebitLineItem, err error) {
+func (r *BillDebitLineItemService) New(ctx context.Context, billID string, params BillDebitLineItemNewParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -57,7 +57,7 @@ func (r *BillDebitLineItemService) New(ctx context.Context, billID string, param
 }
 
 // Retrieve the Debit line item with the given UUID.
-func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id string, query BillDebitLineItemGetParams, opts ...option.RequestOption) (res *DebitLineItem, err error) {
+func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id string, query BillDebitLineItemGetParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -77,7 +77,7 @@ func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id st
 }
 
 // Update the Debit line item with the given UUID.
-func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id string, params BillDebitLineItemUpdateParams, opts ...option.RequestOption) (res *DebitLineItem, err error) {
+func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id string, params BillDebitLineItemUpdateParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -97,7 +97,7 @@ func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id
 }
 
 // List the Debit line items for the given bill.
-func (r *BillDebitLineItemService) List(ctx context.Context, billID string, params BillDebitLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitLineItem], err error) {
+func (r *BillDebitLineItemService) List(ctx context.Context, billID string, params BillDebitLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitLineItemResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -123,12 +123,12 @@ func (r *BillDebitLineItemService) List(ctx context.Context, billID string, para
 }
 
 // List the Debit line items for the given bill.
-func (r *BillDebitLineItemService) ListAutoPaging(ctx context.Context, billID string, params BillDebitLineItemListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DebitLineItem] {
+func (r *BillDebitLineItemService) ListAutoPaging(ctx context.Context, billID string, params BillDebitLineItemListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DebitLineItemResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, billID, params, opts...))
 }
 
 // Delete the Debit line item with the given UUID.
-func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id string, body BillDebitLineItemDeleteParams, opts ...option.RequestOption) (res *DebitLineItem, err error) {
+func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id string, body BillDebitLineItemDeleteParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -147,7 +147,7 @@ func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id
 	return
 }
 
-type DebitLineItem struct {
+type DebitLineItemResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The amount for the line item.
@@ -182,12 +182,13 @@ type DebitLineItem struct {
 	// The DateTime when the debit line item was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The id of the user who last modified this debit line item.
-	LastModifiedBy string            `json:"lastModifiedBy"`
-	JSON           debitLineItemJSON `json:"-"`
+	LastModifiedBy string                    `json:"lastModifiedBy"`
+	JSON           debitLineItemResponseJSON `json:"-"`
 }
 
-// debitLineItemJSON contains the JSON metadata for the struct [DebitLineItem]
-type debitLineItemJSON struct {
+// debitLineItemResponseJSON contains the JSON metadata for the struct
+// [DebitLineItemResponse]
+type debitLineItemResponseJSON struct {
 	ID                     apijson.Field
 	Amount                 apijson.Field
 	Description            apijson.Field
@@ -206,11 +207,11 @@ type debitLineItemJSON struct {
 	ExtraFields            map[string]apijson.Field
 }
 
-func (r *DebitLineItem) UnmarshalJSON(data []byte) (err error) {
+func (r *DebitLineItemResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r debitLineItemJSON) RawJSON() string {
+func (r debitLineItemResponseJSON) RawJSON() string {
 	return r.raw
 }
 

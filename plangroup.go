@@ -42,7 +42,7 @@ func NewPlanGroupService(opts ...option.RequestOption) (r *PlanGroupService) {
 
 // Create a new PlanGroup. This endpoint creates a new PlanGroup within the
 // specified organization.
-func (r *PlanGroupService) New(ctx context.Context, params PlanGroupNewParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) New(ctx context.Context, params PlanGroupNewParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -57,7 +57,7 @@ func (r *PlanGroupService) New(ctx context.Context, params PlanGroupNewParams, o
 //
 // This endpoint retrieves detailed information about a specific PlanGroup
 // identified by the given UUID within a specific organization.
-func (r *PlanGroupService) Get(ctx context.Context, id string, query PlanGroupGetParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) Get(ctx context.Context, id string, query PlanGroupGetParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -82,7 +82,7 @@ func (r *PlanGroupService) Get(ctx context.Context, id string, query PlanGroupGe
 // endpoint to update the PlanGroup use the `customFields` parameter to preserve
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
-func (r *PlanGroupService) Update(ctx context.Context, id string, params PlanGroupUpdateParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) Update(ctx context.Context, id string, params PlanGroupUpdateParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -102,7 +102,7 @@ func (r *PlanGroupService) Update(ctx context.Context, id string, params PlanGro
 // Retrieves a list of PlanGroups within the specified organization. You can
 // optionally filter by Account IDs or PlanGroup IDs, and also paginate the results
 // for easier management.
-func (r *PlanGroupService) List(ctx context.Context, params PlanGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroup], err error) {
+func (r *PlanGroupService) List(ctx context.Context, params PlanGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroupResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -128,7 +128,7 @@ func (r *PlanGroupService) List(ctx context.Context, params PlanGroupListParams,
 // Retrieves a list of PlanGroups within the specified organization. You can
 // optionally filter by Account IDs or PlanGroup IDs, and also paginate the results
 // for easier management.
-func (r *PlanGroupService) ListAutoPaging(ctx context.Context, params PlanGroupListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroup] {
+func (r *PlanGroupService) ListAutoPaging(ctx context.Context, params PlanGroupListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PlanGroupResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -137,7 +137,7 @@ func (r *PlanGroupService) ListAutoPaging(ctx context.Context, params PlanGroupL
 // This endpoint deletes the PlanGroup identified by the given UUID within a
 // specific organization. This operation is irreversible and removes the PlanGroup
 // along with any associated settings.
-func (r *PlanGroupService) Delete(ctx context.Context, id string, body PlanGroupDeleteParams, opts ...option.RequestOption) (res *PlanGroup, err error) {
+func (r *PlanGroupService) Delete(ctx context.Context, id string, body PlanGroupDeleteParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -152,7 +152,7 @@ func (r *PlanGroupService) Delete(ctx context.Context, id string, body PlanGroup
 	return
 }
 
-type PlanGroup struct {
+type PlanGroupResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -181,7 +181,7 @@ type PlanGroup struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]PlanGroupCustomFieldsUnion `json:"customFields"`
+	CustomFields map[string]PlanGroupResponseCustomFieldsUnion `json:"customFields"`
 	// The date and time _(in ISO 8601 format)_ when the PlanGroup was first created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO 8601 format)_ when the PlanGroup was last modified.
@@ -217,12 +217,13 @@ type PlanGroup struct {
 	// - **FALSE** - standing charge is billed at the end of each billing period.
 	StandingChargeBillInAdvance bool `json:"standingChargeBillInAdvance"`
 	// Description of the standing charge, displayed on the bill line item.
-	StandingChargeDescription string        `json:"standingChargeDescription"`
-	JSON                      planGroupJSON `json:"-"`
+	StandingChargeDescription string                `json:"standingChargeDescription"`
+	JSON                      planGroupResponseJSON `json:"-"`
 }
 
-// planGroupJSON contains the JSON metadata for the struct [PlanGroup]
-type planGroupJSON struct {
+// planGroupResponseJSON contains the JSON metadata for the struct
+// [PlanGroupResponse]
+type planGroupResponseJSON struct {
 	ID                                apijson.Field
 	Version                           apijson.Field
 	AccountID                         apijson.Field
@@ -246,22 +247,22 @@ type planGroupJSON struct {
 	ExtraFields                       map[string]apijson.Field
 }
 
-func (r *PlanGroup) UnmarshalJSON(data []byte) (err error) {
+func (r *PlanGroupResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r planGroupJSON) RawJSON() string {
+func (r planGroupResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type PlanGroupCustomFieldsUnion interface {
-	ImplementsPlanGroupCustomFieldsUnion()
+type PlanGroupResponseCustomFieldsUnion interface {
+	ImplementsPlanGroupResponseCustomFieldsUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*PlanGroupCustomFieldsUnion)(nil)).Elem(),
+		reflect.TypeOf((*PlanGroupResponseCustomFieldsUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,

@@ -40,7 +40,7 @@ func NewDebitReasonService(opts ...option.RequestOption) (r *DebitReasonService)
 // Create a new Debit Reason for your Organization. When you've created a Debit
 // Reason, it becomes available as a debit type for adding Debit line items to
 // Bills. See [Debits](https://www.m3ter.com/docs/api#tag/Debits).
-func (r *DebitReasonService) New(ctx context.Context, params DebitReasonNewParams, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) New(ctx context.Context, params DebitReasonNewParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -52,7 +52,7 @@ func (r *DebitReasonService) New(ctx context.Context, params DebitReasonNewParam
 }
 
 // Retrieve the Debit Reason with the given UUID.
-func (r *DebitReasonService) Get(ctx context.Context, id string, query DebitReasonGetParams, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) Get(ctx context.Context, id string, query DebitReasonGetParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -68,7 +68,7 @@ func (r *DebitReasonService) Get(ctx context.Context, id string, query DebitReas
 }
 
 // Update the Debit Reason with the given UUID.
-func (r *DebitReasonService) Update(ctx context.Context, id string, params DebitReasonUpdateParams, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) Update(ctx context.Context, id string, params DebitReasonUpdateParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -86,7 +86,7 @@ func (r *DebitReasonService) Update(ctx context.Context, id string, params Debit
 // Retrieve a list of the Debit Reason entities created for your Organization. You
 // can filter the list returned for the call by Debit Reason ID, Debit Reason short
 // code, or by Archive status.
-func (r *DebitReasonService) List(ctx context.Context, params DebitReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitReason], err error) {
+func (r *DebitReasonService) List(ctx context.Context, params DebitReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitReasonResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -110,12 +110,12 @@ func (r *DebitReasonService) List(ctx context.Context, params DebitReasonListPar
 // Retrieve a list of the Debit Reason entities created for your Organization. You
 // can filter the list returned for the call by Debit Reason ID, Debit Reason short
 // code, or by Archive status.
-func (r *DebitReasonService) ListAutoPaging(ctx context.Context, params DebitReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DebitReason] {
+func (r *DebitReasonService) ListAutoPaging(ctx context.Context, params DebitReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DebitReasonResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Debit Reason with the given UUID.
-func (r *DebitReasonService) Delete(ctx context.Context, id string, body DebitReasonDeleteParams, opts ...option.RequestOption) (res *DebitReason, err error) {
+func (r *DebitReasonService) Delete(ctx context.Context, id string, body DebitReasonDeleteParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -130,7 +130,7 @@ func (r *DebitReasonService) Delete(ctx context.Context, id string, body DebitRe
 	return
 }
 
-type DebitReason struct {
+type DebitReasonResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -154,12 +154,13 @@ type DebitReason struct {
 	// The id of the user who last modified this debit reason.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the data entity.
-	Name string          `json:"name"`
-	JSON debitReasonJSON `json:"-"`
+	Name string                  `json:"name"`
+	JSON debitReasonResponseJSON `json:"-"`
 }
 
-// debitReasonJSON contains the JSON metadata for the struct [DebitReason]
-type debitReasonJSON struct {
+// debitReasonResponseJSON contains the JSON metadata for the struct
+// [DebitReasonResponse]
+type debitReasonResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	Archived       apijson.Field
@@ -173,11 +174,11 @@ type debitReasonJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *DebitReason) UnmarshalJSON(data []byte) (err error) {
+func (r *DebitReasonResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r debitReasonJSON) RawJSON() string {
+func (r debitReasonResponseJSON) RawJSON() string {
 	return r.raw
 }
 

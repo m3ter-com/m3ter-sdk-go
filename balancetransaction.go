@@ -53,7 +53,7 @@ func NewBalanceTransactionService(opts ...option.RequestOption) (r *BalanceTrans
 // to record the amount paid and alternative currency respectively. For example,
 // you might add a Transaction amount of 200 USD to a Balance on a customer Account
 // where the customer actually paid you 50 units in virtual currency X.
-func (r *BalanceTransactionService) New(ctx context.Context, balanceID string, params BalanceTransactionNewParams, opts ...option.RequestOption) (res *Transaction, err error) {
+func (r *BalanceTransactionService) New(ctx context.Context, balanceID string, params BalanceTransactionNewParams, opts ...option.RequestOption) (res *TransactionResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -73,7 +73,7 @@ func (r *BalanceTransactionService) New(ctx context.Context, balanceID string, p
 // This endpoint returns a list of all Transactions associated with a specific
 // Balance. You can paginate through the Transactions by using the `pageSize` and
 // `nextToken` parameters.
-func (r *BalanceTransactionService) List(ctx context.Context, balanceID string, params BalanceTransactionListParams, opts ...option.RequestOption) (res *pagination.Cursor[Transaction], err error) {
+func (r *BalanceTransactionService) List(ctx context.Context, balanceID string, params BalanceTransactionListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -103,7 +103,7 @@ func (r *BalanceTransactionService) List(ctx context.Context, balanceID string, 
 // This endpoint returns a list of all Transactions associated with a specific
 // Balance. You can paginate through the Transactions by using the `pageSize` and
 // `nextToken` parameters.
-func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, balanceID string, params BalanceTransactionListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Transaction] {
+func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, balanceID string, params BalanceTransactionListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TransactionResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, balanceID, params, opts...))
 }
 
@@ -123,7 +123,7 @@ func (r *BalanceTransactionService) Summary(ctx context.Context, balanceID strin
 	return
 }
 
-type Transaction struct {
+type TransactionResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -157,7 +157,7 @@ type Transaction struct {
 	// The type of entity associated with the Transaction - identifies who or what was
 	// responsible for the Transaction being added to the Balance - such as a **User**,
 	// a **Service User**, or a **Bill**.
-	EntityType TransactionEntityType `json:"entityType"`
+	EntityType TransactionResponseEntityType `json:"entityType"`
 	// The unique identifier (UUID) for the user who last modified the balance
 	// transaction.
 	LastModifiedBy string `json:"lastModifiedBy"`
@@ -168,12 +168,13 @@ type Transaction struct {
 	TransactionDate time.Time `json:"transactionDate" format:"date-time"`
 	// The unique identifier (UUID) for the Transaction type. This is obtained from the
 	// list of created Transaction Types within the Organization Configuration.
-	TransactionTypeID string          `json:"transactionTypeId"`
-	JSON              transactionJSON `json:"-"`
+	TransactionTypeID string                  `json:"transactionTypeId"`
+	JSON              transactionResponseJSON `json:"-"`
 }
 
-// transactionJSON contains the JSON metadata for the struct [Transaction]
-type transactionJSON struct {
+// transactionResponseJSON contains the JSON metadata for the struct
+// [TransactionResponse]
+type transactionResponseJSON struct {
 	ID                apijson.Field
 	Version           apijson.Field
 	Amount            apijson.Field
@@ -193,29 +194,29 @@ type transactionJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *Transaction) UnmarshalJSON(data []byte) (err error) {
+func (r *TransactionResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r transactionJSON) RawJSON() string {
+func (r transactionResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // The type of entity associated with the Transaction - identifies who or what was
 // responsible for the Transaction being added to the Balance - such as a **User**,
 // a **Service User**, or a **Bill**.
-type TransactionEntityType string
+type TransactionResponseEntityType string
 
 const (
-	TransactionEntityTypeBill        TransactionEntityType = "BILL"
-	TransactionEntityTypeCommitment  TransactionEntityType = "COMMITMENT"
-	TransactionEntityTypeUser        TransactionEntityType = "USER"
-	TransactionEntityTypeServiceUser TransactionEntityType = "SERVICE_USER"
+	TransactionResponseEntityTypeBill        TransactionResponseEntityType = "BILL"
+	TransactionResponseEntityTypeCommitment  TransactionResponseEntityType = "COMMITMENT"
+	TransactionResponseEntityTypeUser        TransactionResponseEntityType = "USER"
+	TransactionResponseEntityTypeServiceUser TransactionResponseEntityType = "SERVICE_USER"
 )
 
-func (r TransactionEntityType) IsKnown() bool {
+func (r TransactionResponseEntityType) IsKnown() bool {
 	switch r {
-	case TransactionEntityTypeBill, TransactionEntityTypeCommitment, TransactionEntityTypeUser, TransactionEntityTypeServiceUser:
+	case TransactionResponseEntityTypeBill, TransactionResponseEntityTypeCommitment, TransactionResponseEntityTypeUser, TransactionResponseEntityTypeServiceUser:
 		return true
 	}
 	return false

@@ -40,7 +40,7 @@ func NewCreditReasonService(opts ...option.RequestOption) (r *CreditReasonServic
 // Create a new Credit Reason for your Organization. When you've created a Credit
 // Reason, it becomes available as a credit type for adding Credit line items to
 // Bills. See [Credits](https://www.m3ter.com/docs/api#tag/Credits).
-func (r *CreditReasonService) New(ctx context.Context, params CreditReasonNewParams, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) New(ctx context.Context, params CreditReasonNewParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -52,7 +52,7 @@ func (r *CreditReasonService) New(ctx context.Context, params CreditReasonNewPar
 }
 
 // Retrieve the Credit Reason with the given UUID.
-func (r *CreditReasonService) Get(ctx context.Context, id string, query CreditReasonGetParams, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) Get(ctx context.Context, id string, query CreditReasonGetParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -68,7 +68,7 @@ func (r *CreditReasonService) Get(ctx context.Context, id string, query CreditRe
 }
 
 // Update the Credit Reason with the given UUID.
-func (r *CreditReasonService) Update(ctx context.Context, id string, params CreditReasonUpdateParams, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) Update(ctx context.Context, id string, params CreditReasonUpdateParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -86,7 +86,7 @@ func (r *CreditReasonService) Update(ctx context.Context, id string, params Cred
 // Retrieve a list of the Credit Reason entities created for your Organization. You
 // can filter the list returned for the call by Credit Reason ID, Credit Reason
 // short code, or by Archive status.
-func (r *CreditReasonService) List(ctx context.Context, params CreditReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditReason], err error) {
+func (r *CreditReasonService) List(ctx context.Context, params CreditReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditReasonResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -110,12 +110,12 @@ func (r *CreditReasonService) List(ctx context.Context, params CreditReasonListP
 // Retrieve a list of the Credit Reason entities created for your Organization. You
 // can filter the list returned for the call by Credit Reason ID, Credit Reason
 // short code, or by Archive status.
-func (r *CreditReasonService) ListAutoPaging(ctx context.Context, params CreditReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CreditReason] {
+func (r *CreditReasonService) ListAutoPaging(ctx context.Context, params CreditReasonListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CreditReasonResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Credit Reason with the given UUID.
-func (r *CreditReasonService) Delete(ctx context.Context, id string, body CreditReasonDeleteParams, opts ...option.RequestOption) (res *CreditReason, err error) {
+func (r *CreditReasonService) Delete(ctx context.Context, id string, body CreditReasonDeleteParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -130,7 +130,7 @@ func (r *CreditReasonService) Delete(ctx context.Context, id string, body Credit
 	return
 }
 
-type CreditReason struct {
+type CreditReasonResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -154,12 +154,13 @@ type CreditReason struct {
 	// The id of the user who last modified this credit reason.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the data entity.
-	Name string           `json:"name"`
-	JSON creditReasonJSON `json:"-"`
+	Name string                   `json:"name"`
+	JSON creditReasonResponseJSON `json:"-"`
 }
 
-// creditReasonJSON contains the JSON metadata for the struct [CreditReason]
-type creditReasonJSON struct {
+// creditReasonResponseJSON contains the JSON metadata for the struct
+// [CreditReasonResponse]
+type creditReasonResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	Archived       apijson.Field
@@ -173,11 +174,11 @@ type creditReasonJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *CreditReason) UnmarshalJSON(data []byte) (err error) {
+func (r *CreditReasonResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r creditReasonJSON) RawJSON() string {
+func (r creditReasonResponseJSON) RawJSON() string {
 	return r.raw
 }
 

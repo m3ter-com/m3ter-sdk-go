@@ -38,7 +38,7 @@ func NewResourceGroupService(opts ...option.RequestOption) (r *ResourceGroupServ
 }
 
 // Create a ResourceGroup for the UUID
-func (r *ResourceGroupService) New(ctx context.Context, type_ string, params ResourceGroupNewParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *ResourceGroupService) New(ctx context.Context, type_ string, params ResourceGroupNewParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -54,7 +54,7 @@ func (r *ResourceGroupService) New(ctx context.Context, type_ string, params Res
 }
 
 // Retrieve the ResourceGroup for the UUID
-func (r *ResourceGroupService) Get(ctx context.Context, type_ string, id string, query ResourceGroupGetParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *ResourceGroupService) Get(ctx context.Context, type_ string, id string, query ResourceGroupGetParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -74,7 +74,7 @@ func (r *ResourceGroupService) Get(ctx context.Context, type_ string, id string,
 }
 
 // Update the ResourceGroup for the UUID
-func (r *ResourceGroupService) Update(ctx context.Context, type_ string, id string, params ResourceGroupUpdateParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *ResourceGroupService) Update(ctx context.Context, type_ string, id string, params ResourceGroupUpdateParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -94,7 +94,7 @@ func (r *ResourceGroupService) Update(ctx context.Context, type_ string, id stri
 }
 
 // Retrieve a list of ResourceGroup entities
-func (r *ResourceGroupService) List(ctx context.Context, type_ string, params ResourceGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[ResourceGroup], err error) {
+func (r *ResourceGroupService) List(ctx context.Context, type_ string, params ResourceGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[ResourceGroupResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -120,12 +120,12 @@ func (r *ResourceGroupService) List(ctx context.Context, type_ string, params Re
 }
 
 // Retrieve a list of ResourceGroup entities
-func (r *ResourceGroupService) ListAutoPaging(ctx context.Context, type_ string, params ResourceGroupListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ResourceGroup] {
+func (r *ResourceGroupService) ListAutoPaging(ctx context.Context, type_ string, params ResourceGroupListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ResourceGroupResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, type_, params, opts...))
 }
 
 // Delete a ResourceGroup for the UUID
-func (r *ResourceGroupService) Delete(ctx context.Context, type_ string, id string, body ResourceGroupDeleteParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *ResourceGroupService) Delete(ctx context.Context, type_ string, id string, body ResourceGroupDeleteParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -145,7 +145,7 @@ func (r *ResourceGroupService) Delete(ctx context.Context, type_ string, id stri
 }
 
 // Add an item to a ResourceGroup.
-func (r *ResourceGroupService) AddResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupAddResourceParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *ResourceGroupService) AddResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupAddResourceParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -200,7 +200,7 @@ func (r *ResourceGroupService) ListContentsAutoPaging(ctx context.Context, type_
 }
 
 // Retrieve a list of permission policies for a ResourceGroup
-func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) (res *pagination.Cursor[PermissionPolicy], err error) {
+func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) (res *pagination.Cursor[PermissionPolicyResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -230,12 +230,12 @@ func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string
 }
 
 // Retrieve a list of permission policies for a ResourceGroup
-func (r *ResourceGroupService) ListPermissionsAutoPaging(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PermissionPolicy] {
+func (r *ResourceGroupService) ListPermissionsAutoPaging(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PermissionPolicyResponse] {
 	return pagination.NewCursorAutoPager(r.ListPermissions(ctx, type_, resourceGroupID, params, opts...))
 }
 
 // Remove an item from a ResourceGroup.
-func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupRemoveResourceParams, opts ...option.RequestOption) (res *ResourceGroup, err error) {
+func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupRemoveResourceParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -254,7 +254,7 @@ func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string,
 	return
 }
 
-type ResourceGroup struct {
+type ResourceGroupResponse struct {
 	// The unique identifier (UUID) of the Resource Group.
 	ID string `json:"id"`
 	// The unique identifier (UUID) of the user who created this Resource Group.
@@ -269,12 +269,13 @@ type ResourceGroup struct {
 	// The name of the Resource Group.
 	Name string `json:"name"`
 	// The version number. Default value when newly created is one.
-	Version int64             `json:"version"`
-	JSON    resourceGroupJSON `json:"-"`
+	Version int64                     `json:"version"`
+	JSON    resourceGroupResponseJSON `json:"-"`
 }
 
-// resourceGroupJSON contains the JSON metadata for the struct [ResourceGroup]
-type resourceGroupJSON struct {
+// resourceGroupResponseJSON contains the JSON metadata for the struct
+// [ResourceGroupResponse]
+type resourceGroupResponseJSON struct {
 	ID             apijson.Field
 	CreatedBy      apijson.Field
 	DtCreated      apijson.Field
@@ -286,11 +287,11 @@ type resourceGroupJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *ResourceGroup) UnmarshalJSON(data []byte) (err error) {
+func (r *ResourceGroupResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r resourceGroupJSON) RawJSON() string {
+func (r resourceGroupResponseJSON) RawJSON() string {
 	return r.raw
 }
 
