@@ -40,7 +40,7 @@ func NewCurrencyService(opts ...option.RequestOption) (r *CurrencyService) {
 // Creates a new Currency for the specified Organization.
 //
 // Used to create a Currency that your Organization will start to use.
-func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -53,7 +53,7 @@ func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opt
 
 // Retrieve the specified Currency with the given UUID. Used to obtain the details
 // of a specified existing Currency in your Organization.
-func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetParams, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -72,7 +72,7 @@ func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetP
 //
 // Used to update the attributes of the specified Currency for the specified
 // Organization.
-func (r *CurrencyService) Update(ctx context.Context, id string, params CurrencyUpdateParams, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) Update(ctx context.Context, id string, params CurrencyUpdateParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -92,7 +92,7 @@ func (r *CurrencyService) Update(ctx context.Context, id string, params Currency
 // Retrieves a list of Currencies for the specified Organization. This endpoint
 // supports pagination and includes various query parameters to filter the
 // Currencies based on Currency ID, and short codes.
-func (r *CurrencyService) List(ctx context.Context, params CurrencyListParams, opts ...option.RequestOption) (res *pagination.Cursor[Currency], err error) {
+func (r *CurrencyService) List(ctx context.Context, params CurrencyListParams, opts ...option.RequestOption) (res *pagination.Cursor[CurrencyResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -118,7 +118,7 @@ func (r *CurrencyService) List(ctx context.Context, params CurrencyListParams, o
 // Retrieves a list of Currencies for the specified Organization. This endpoint
 // supports pagination and includes various query parameters to filter the
 // Currencies based on Currency ID, and short codes.
-func (r *CurrencyService) ListAutoPaging(ctx context.Context, params CurrencyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Currency] {
+func (r *CurrencyService) ListAutoPaging(ctx context.Context, params CurrencyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CurrencyResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -126,7 +126,7 @@ func (r *CurrencyService) ListAutoPaging(ctx context.Context, params CurrencyLis
 //
 // Used to remove an existing Currency from your Organization that is no longer
 // required.
-func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDeleteParams, opts ...option.RequestOption) (res *Currency, err error) {
+func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDeleteParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -141,7 +141,7 @@ func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDe
 	return
 }
 
-type Currency struct {
+type CurrencyResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -167,13 +167,14 @@ type Currency struct {
 	// This indicates the maximum number of decimal places to use for this Currency.
 	MaxDecimalPlaces int64 `json:"maxDecimalPlaces"`
 	// The name of the data entity.
-	Name         string               `json:"name"`
-	RoundingMode CurrencyRoundingMode `json:"roundingMode"`
-	JSON         currencyJSON         `json:"-"`
+	Name         string                       `json:"name"`
+	RoundingMode CurrencyResponseRoundingMode `json:"roundingMode"`
+	JSON         currencyResponseJSON         `json:"-"`
 }
 
-// currencyJSON contains the JSON metadata for the struct [Currency]
-type currencyJSON struct {
+// currencyResponseJSON contains the JSON metadata for the struct
+// [CurrencyResponse]
+type currencyResponseJSON struct {
 	ID               apijson.Field
 	Version          apijson.Field
 	Archived         apijson.Field
@@ -189,30 +190,30 @@ type currencyJSON struct {
 	ExtraFields      map[string]apijson.Field
 }
 
-func (r *Currency) UnmarshalJSON(data []byte) (err error) {
+func (r *CurrencyResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r currencyJSON) RawJSON() string {
+func (r currencyResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type CurrencyRoundingMode string
+type CurrencyResponseRoundingMode string
 
 const (
-	CurrencyRoundingModeUp          CurrencyRoundingMode = "UP"
-	CurrencyRoundingModeDown        CurrencyRoundingMode = "DOWN"
-	CurrencyRoundingModeCeiling     CurrencyRoundingMode = "CEILING"
-	CurrencyRoundingModeFloor       CurrencyRoundingMode = "FLOOR"
-	CurrencyRoundingModeHalfUp      CurrencyRoundingMode = "HALF_UP"
-	CurrencyRoundingModeHalfDown    CurrencyRoundingMode = "HALF_DOWN"
-	CurrencyRoundingModeHalfEven    CurrencyRoundingMode = "HALF_EVEN"
-	CurrencyRoundingModeUnnecessary CurrencyRoundingMode = "UNNECESSARY"
+	CurrencyResponseRoundingModeUp          CurrencyResponseRoundingMode = "UP"
+	CurrencyResponseRoundingModeDown        CurrencyResponseRoundingMode = "DOWN"
+	CurrencyResponseRoundingModeCeiling     CurrencyResponseRoundingMode = "CEILING"
+	CurrencyResponseRoundingModeFloor       CurrencyResponseRoundingMode = "FLOOR"
+	CurrencyResponseRoundingModeHalfUp      CurrencyResponseRoundingMode = "HALF_UP"
+	CurrencyResponseRoundingModeHalfDown    CurrencyResponseRoundingMode = "HALF_DOWN"
+	CurrencyResponseRoundingModeHalfEven    CurrencyResponseRoundingMode = "HALF_EVEN"
+	CurrencyResponseRoundingModeUnnecessary CurrencyResponseRoundingMode = "UNNECESSARY"
 )
 
-func (r CurrencyRoundingMode) IsKnown() bool {
+func (r CurrencyResponseRoundingMode) IsKnown() bool {
 	switch r {
-	case CurrencyRoundingModeUp, CurrencyRoundingModeDown, CurrencyRoundingModeCeiling, CurrencyRoundingModeFloor, CurrencyRoundingModeHalfUp, CurrencyRoundingModeHalfDown, CurrencyRoundingModeHalfEven, CurrencyRoundingModeUnnecessary:
+	case CurrencyResponseRoundingModeUp, CurrencyResponseRoundingModeDown, CurrencyResponseRoundingModeCeiling, CurrencyResponseRoundingModeFloor, CurrencyResponseRoundingModeHalfUp, CurrencyResponseRoundingModeHalfDown, CurrencyResponseRoundingModeHalfEven, CurrencyResponseRoundingModeUnnecessary:
 		return true
 	}
 	return false

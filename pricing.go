@@ -43,7 +43,7 @@ func NewPricingService(opts ...option.RequestOption) (r *PricingService) {
 // **Note:** Either `planId` or `planTemplateId` request parameters are required
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
-func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -55,7 +55,7 @@ func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts 
 }
 
 // Retrieve the Pricing with the given UUID.
-func (r *PricingService) Get(ctx context.Context, id string, query PricingGetParams, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) Get(ctx context.Context, id string, query PricingGetParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -75,7 +75,7 @@ func (r *PricingService) Get(ctx context.Context, id string, query PricingGetPar
 // **Note:** Either `planId` or `planTemplateId` request parameters are required
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
-func (r *PricingService) Update(ctx context.Context, id string, params PricingUpdateParams, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) Update(ctx context.Context, id string, params PricingUpdateParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -92,7 +92,7 @@ func (r *PricingService) Update(ctx context.Context, id string, params PricingUp
 
 // Retrieve a list of Pricings filtered by date, Plan ID, PlanTemplate ID, or
 // Pricing ID.
-func (r *PricingService) List(ctx context.Context, params PricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[Pricing], err error) {
+func (r *PricingService) List(ctx context.Context, params PricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[PricingResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -115,12 +115,12 @@ func (r *PricingService) List(ctx context.Context, params PricingListParams, opt
 
 // Retrieve a list of Pricings filtered by date, Plan ID, PlanTemplate ID, or
 // Pricing ID.
-func (r *PricingService) ListAutoPaging(ctx context.Context, params PricingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Pricing] {
+func (r *PricingService) ListAutoPaging(ctx context.Context, params PricingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PricingResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Pricing with the given UUID.
-func (r *PricingService) Delete(ctx context.Context, id string, body PricingDeleteParams, opts ...option.RequestOption) (res *Pricing, err error) {
+func (r *PricingService) Delete(ctx context.Context, id string, body PricingDeleteParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -135,7 +135,7 @@ func (r *PricingService) Delete(ctx context.Context, id string, body PricingDele
 	return
 }
 
-type Pricing struct {
+type PricingResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -148,8 +148,8 @@ type Pricing struct {
 	AccountingProductID string `json:"accountingProductId"`
 	// UUID of the Aggregation used to create the Pricing. Use this when creating a
 	// Pricing for a segmented aggregation.
-	AggregationID   string                 `json:"aggregationId"`
-	AggregationType PricingAggregationType `json:"aggregationType"`
+	AggregationID   string                         `json:"aggregationId"`
+	AggregationType PricingResponseAggregationType `json:"aggregationType"`
 	// Unique short code for the Pricing.
 	Code string `json:"code"`
 	// UUID of the Compound Aggregation used to create the Pricing.
@@ -232,12 +232,12 @@ type Pricing struct {
 	//     bill as a credit _(negative amount)_. To prevent negative billing, the bill
 	//     will be capped at the total of other line items for the entire bill, which
 	//     might include other Products the Account consumes.
-	Type PricingType `json:"type"`
-	JSON pricingJSON `json:"-"`
+	Type PricingResponseType `json:"type"`
+	JSON pricingResponseJSON `json:"-"`
 }
 
-// pricingJSON contains the JSON metadata for the struct [Pricing]
-type pricingJSON struct {
+// pricingResponseJSON contains the JSON metadata for the struct [PricingResponse]
+type pricingResponseJSON struct {
 	ID                        apijson.Field
 	Version                   apijson.Field
 	AccountingProductID       apijson.Field
@@ -268,24 +268,24 @@ type pricingJSON struct {
 	ExtraFields               map[string]apijson.Field
 }
 
-func (r *Pricing) UnmarshalJSON(data []byte) (err error) {
+func (r *PricingResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r pricingJSON) RawJSON() string {
+func (r pricingResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type PricingAggregationType string
+type PricingResponseAggregationType string
 
 const (
-	PricingAggregationTypeSimple   PricingAggregationType = "SIMPLE"
-	PricingAggregationTypeCompound PricingAggregationType = "COMPOUND"
+	PricingResponseAggregationTypeSimple   PricingResponseAggregationType = "SIMPLE"
+	PricingResponseAggregationTypeCompound PricingResponseAggregationType = "COMPOUND"
 )
 
-func (r PricingAggregationType) IsKnown() bool {
+func (r PricingResponseAggregationType) IsKnown() bool {
 	switch r {
-	case PricingAggregationTypeSimple, PricingAggregationTypeCompound:
+	case PricingResponseAggregationTypeSimple, PricingResponseAggregationTypeCompound:
 		return true
 	}
 	return false
@@ -302,17 +302,17 @@ func (r PricingAggregationType) IsKnown() bool {
 //     bill as a credit _(negative amount)_. To prevent negative billing, the bill
 //     will be capped at the total of other line items for the entire bill, which
 //     might include other Products the Account consumes.
-type PricingType string
+type PricingResponseType string
 
 const (
-	PricingTypeDebit         PricingType = "DEBIT"
-	PricingTypeProductCredit PricingType = "PRODUCT_CREDIT"
-	PricingTypeGlobalCredit  PricingType = "GLOBAL_CREDIT"
+	PricingResponseTypeDebit         PricingResponseType = "DEBIT"
+	PricingResponseTypeProductCredit PricingResponseType = "PRODUCT_CREDIT"
+	PricingResponseTypeGlobalCredit  PricingResponseType = "GLOBAL_CREDIT"
 )
 
-func (r PricingType) IsKnown() bool {
+func (r PricingResponseType) IsKnown() bool {
 	switch r {
-	case PricingTypeDebit, PricingTypeProductCredit, PricingTypeGlobalCredit:
+	case PricingResponseTypeDebit, PricingResponseTypeProductCredit, PricingResponseTypeGlobalCredit:
 		return true
 	}
 	return false

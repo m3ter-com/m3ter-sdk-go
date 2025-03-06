@@ -38,7 +38,7 @@ func NewCounterService(opts ...option.RequestOption) (r *CounterService) {
 }
 
 // Create a new Counter.
-func (r *CounterService) New(ctx context.Context, params CounterNewParams, opts ...option.RequestOption) (res *Counter, err error) {
+func (r *CounterService) New(ctx context.Context, params CounterNewParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -50,7 +50,7 @@ func (r *CounterService) New(ctx context.Context, params CounterNewParams, opts 
 }
 
 // Retrieve a Counter for the given UUID.
-func (r *CounterService) Get(ctx context.Context, id string, query CounterGetParams, opts ...option.RequestOption) (res *Counter, err error) {
+func (r *CounterService) Get(ctx context.Context, id string, query CounterGetParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -66,7 +66,7 @@ func (r *CounterService) Get(ctx context.Context, id string, query CounterGetPar
 }
 
 // Update Counter for the given UUID.
-func (r *CounterService) Update(ctx context.Context, id string, params CounterUpdateParams, opts ...option.RequestOption) (res *Counter, err error) {
+func (r *CounterService) Update(ctx context.Context, id string, params CounterUpdateParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -83,7 +83,7 @@ func (r *CounterService) Update(ctx context.Context, id string, params CounterUp
 
 // Retrieve a list of Counter entities that can be filtered by Product, Counter ID,
 // or Codes.
-func (r *CounterService) List(ctx context.Context, params CounterListParams, opts ...option.RequestOption) (res *pagination.Cursor[Counter], err error) {
+func (r *CounterService) List(ctx context.Context, params CounterListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -106,12 +106,12 @@ func (r *CounterService) List(ctx context.Context, params CounterListParams, opt
 
 // Retrieve a list of Counter entities that can be filtered by Product, Counter ID,
 // or Codes.
-func (r *CounterService) ListAutoPaging(ctx context.Context, params CounterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Counter] {
+func (r *CounterService) ListAutoPaging(ctx context.Context, params CounterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a Counter for the given UUID.
-func (r *CounterService) Delete(ctx context.Context, id string, body CounterDeleteParams, opts ...option.RequestOption) (res *Counter, err error) {
+func (r *CounterService) Delete(ctx context.Context, id string, body CounterDeleteParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -126,7 +126,7 @@ func (r *CounterService) Delete(ctx context.Context, id string, body CounterDele
 	return
 }
 
-type Counter struct {
+type CounterResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -154,12 +154,12 @@ type Counter struct {
 	ProductID string `json:"productId"`
 	// Label for units shown on Bill line items, and indicating to customers what they
 	// are being charged for.
-	Unit string      `json:"unit"`
-	JSON counterJSON `json:"-"`
+	Unit string              `json:"unit"`
+	JSON counterResponseJSON `json:"-"`
 }
 
-// counterJSON contains the JSON metadata for the struct [Counter]
-type counterJSON struct {
+// counterResponseJSON contains the JSON metadata for the struct [CounterResponse]
+type counterResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	Code           apijson.Field
@@ -174,11 +174,11 @@ type counterJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *Counter) UnmarshalJSON(data []byte) (err error) {
+func (r *CounterResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r counterJSON) RawJSON() string {
+func (r counterResponseJSON) RawJSON() string {
 	return r.raw
 }
 

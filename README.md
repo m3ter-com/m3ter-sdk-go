@@ -172,8 +172,8 @@ iter := client.Products.ListAutoPaging(context.TODO(), m3ter.ProductListParams{
 })
 // Automatically fetches more pages as needed.
 for iter.Next() {
-	product := iter.Current()
-	fmt.Printf("%+v\n", product)
+	productResponse := iter.Current()
+	fmt.Printf("%+v\n", productResponse)
 }
 if err := iter.Err(); err != nil {
 	panic(err.Error())

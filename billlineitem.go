@@ -41,7 +41,7 @@ func NewBillLineItemService(opts ...option.RequestOption) (r *BillLineItemServic
 //
 // This endpoint retrieves the line item given by its unique identifier (UUID) from
 // a specific Bill.
-func (r *BillLineItemService) Get(ctx context.Context, billID string, id string, query BillLineItemGetParams, opts ...option.RequestOption) (res *LineItem, err error) {
+func (r *BillLineItemService) Get(ctx context.Context, billID string, id string, query BillLineItemGetParams, opts ...option.RequestOption) (res *LineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -66,7 +66,7 @@ func (r *BillLineItemService) Get(ctx context.Context, billID string, id string,
 // specified Organization. The list can also be paginated for easier management.
 // The line items returned in the list include individual charges, discounts, or
 // adjustments within a Bill.
-func (r *BillLineItemService) List(ctx context.Context, billID string, params BillLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[LineItem], err error) {
+func (r *BillLineItemService) List(ctx context.Context, billID string, params BillLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[LineItemResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -97,11 +97,11 @@ func (r *BillLineItemService) List(ctx context.Context, billID string, params Bi
 // specified Organization. The list can also be paginated for easier management.
 // The line items returned in the list include individual charges, discounts, or
 // adjustments within a Bill.
-func (r *BillLineItemService) ListAutoPaging(ctx context.Context, billID string, params BillLineItemListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[LineItem] {
+func (r *BillLineItemService) ListAutoPaging(ctx context.Context, billID string, params BillLineItemListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[LineItemResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, billID, params, opts...))
 }
 
-type LineItem struct {
+type LineItemResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -120,7 +120,7 @@ type LineItem struct {
 	BalanceID        string  `json:"balanceId"`
 	// Array containing the pricing band information, which shows the details for each
 	// pricing band or tier.
-	BandUsage []LineItemBandUsage `json:"bandUsage"`
+	BandUsage []LineItemResponseBandUsage `json:"bandUsage"`
 	// The unique identifier (UUID) for the Bill that includes this line item.
 	BillID string `json:"billId"`
 	// The unique identifier (UUID) of the Commitment _(if this is used)_.
@@ -159,8 +159,8 @@ type LineItem struct {
 	// for more information.
 	JsonUsageGenerated bool `json:"jsonUsageGenerated"`
 	// The unique identifier (UUID) for the user who last modified this Bill line item.
-	LastModifiedBy string               `json:"lastModifiedBy"`
-	LineItemType   LineItemLineItemType `json:"lineItemType"`
+	LastModifiedBy string                       `json:"lastModifiedBy"`
+	LineItemType   LineItemResponseLineItemType `json:"lineItemType"`
 	// The unique identifier (UUID) of the Meter responsible for tracking usage.
 	MeterID string `json:"meterId"`
 	// The UUID of the PlanGroup.
@@ -207,12 +207,13 @@ type LineItem struct {
 	// specified in the `unit` field. For example: 400 api_calls.
 	//
 	// In this example, the unit type of **api_calls** is read from the `unit` field.
-	Units float64      `json:"units"`
-	JSON  lineItemJSON `json:"-"`
+	Units float64              `json:"units"`
+	JSON  lineItemResponseJSON `json:"-"`
 }
 
-// lineItemJSON contains the JSON metadata for the struct [LineItem]
-type lineItemJSON struct {
+// lineItemResponseJSON contains the JSON metadata for the struct
+// [LineItemResponse]
+type lineItemResponseJSON struct {
 	ID                     apijson.Field
 	Version                apijson.Field
 	AggregationID          apijson.Field
@@ -258,17 +259,17 @@ type lineItemJSON struct {
 	ExtraFields            map[string]apijson.Field
 }
 
-func (r *LineItem) UnmarshalJSON(data []byte) (err error) {
+func (r *LineItemResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r lineItemJSON) RawJSON() string {
+func (r lineItemResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Array containing the pricing band information, which shows the details for each
 // pricing band or tier.
-type LineItemBandUsage struct {
+type LineItemResponseBandUsage struct {
 	// Usage amount within the band.
 	BandQuantity float64 `json:"bandQuantity"`
 	// Subtotal amount for the band.
@@ -287,13 +288,13 @@ type LineItemBandUsage struct {
 	// The price per unit in the band.
 	UnitPrice float64 `json:"unitPrice"`
 	// The subtotal of the unit usage.
-	UnitSubtotal float64               `json:"unitSubtotal"`
-	JSON         lineItemBandUsageJSON `json:"-"`
+	UnitSubtotal float64                       `json:"unitSubtotal"`
+	JSON         lineItemResponseBandUsageJSON `json:"-"`
 }
 
-// lineItemBandUsageJSON contains the JSON metadata for the struct
-// [LineItemBandUsage]
-type lineItemBandUsageJSON struct {
+// lineItemResponseBandUsageJSON contains the JSON metadata for the struct
+// [LineItemResponseBandUsage]
+type lineItemResponseBandUsageJSON struct {
 	BandQuantity  apijson.Field
 	BandSubtotal  apijson.Field
 	BandUnits     apijson.Field
@@ -307,40 +308,40 @@ type lineItemBandUsageJSON struct {
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *LineItemBandUsage) UnmarshalJSON(data []byte) (err error) {
+func (r *LineItemResponseBandUsage) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r lineItemBandUsageJSON) RawJSON() string {
+func (r lineItemResponseBandUsageJSON) RawJSON() string {
 	return r.raw
 }
 
-type LineItemLineItemType string
+type LineItemResponseLineItemType string
 
 const (
-	LineItemLineItemTypeStandingCharge            LineItemLineItemType = "STANDING_CHARGE"
-	LineItemLineItemTypeUsage                     LineItemLineItemType = "USAGE"
-	LineItemLineItemTypeCounterRunningTotalCharge LineItemLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
-	LineItemLineItemTypeCounterAdjustmentDebit    LineItemLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
-	LineItemLineItemTypeCounterAdjustmentCredit   LineItemLineItemType = "COUNTER_ADJUSTMENT_CREDIT"
-	LineItemLineItemTypeUsageCredit               LineItemLineItemType = "USAGE_CREDIT"
-	LineItemLineItemTypeMinimumSpend              LineItemLineItemType = "MINIMUM_SPEND"
-	LineItemLineItemTypeMinimumSpendRefund        LineItemLineItemType = "MINIMUM_SPEND_REFUND"
-	LineItemLineItemTypeCreditDeduction           LineItemLineItemType = "CREDIT_DEDUCTION"
-	LineItemLineItemTypeManualAdjustment          LineItemLineItemType = "MANUAL_ADJUSTMENT"
-	LineItemLineItemTypeCreditMemo                LineItemLineItemType = "CREDIT_MEMO"
-	LineItemLineItemTypeDebitMemo                 LineItemLineItemType = "DEBIT_MEMO"
-	LineItemLineItemTypeCommitmentConsumed        LineItemLineItemType = "COMMITMENT_CONSUMED"
-	LineItemLineItemTypeCommitmentFee             LineItemLineItemType = "COMMITMENT_FEE"
-	LineItemLineItemTypeOverageSurcharge          LineItemLineItemType = "OVERAGE_SURCHARGE"
-	LineItemLineItemTypeOverageUsage              LineItemLineItemType = "OVERAGE_USAGE"
-	LineItemLineItemTypeBalanceConsumed           LineItemLineItemType = "BALANCE_CONSUMED"
-	LineItemLineItemTypeBalanceFee                LineItemLineItemType = "BALANCE_FEE"
+	LineItemResponseLineItemTypeStandingCharge            LineItemResponseLineItemType = "STANDING_CHARGE"
+	LineItemResponseLineItemTypeUsage                     LineItemResponseLineItemType = "USAGE"
+	LineItemResponseLineItemTypeCounterRunningTotalCharge LineItemResponseLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
+	LineItemResponseLineItemTypeCounterAdjustmentDebit    LineItemResponseLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	LineItemResponseLineItemTypeCounterAdjustmentCredit   LineItemResponseLineItemType = "COUNTER_ADJUSTMENT_CREDIT"
+	LineItemResponseLineItemTypeUsageCredit               LineItemResponseLineItemType = "USAGE_CREDIT"
+	LineItemResponseLineItemTypeMinimumSpend              LineItemResponseLineItemType = "MINIMUM_SPEND"
+	LineItemResponseLineItemTypeMinimumSpendRefund        LineItemResponseLineItemType = "MINIMUM_SPEND_REFUND"
+	LineItemResponseLineItemTypeCreditDeduction           LineItemResponseLineItemType = "CREDIT_DEDUCTION"
+	LineItemResponseLineItemTypeManualAdjustment          LineItemResponseLineItemType = "MANUAL_ADJUSTMENT"
+	LineItemResponseLineItemTypeCreditMemo                LineItemResponseLineItemType = "CREDIT_MEMO"
+	LineItemResponseLineItemTypeDebitMemo                 LineItemResponseLineItemType = "DEBIT_MEMO"
+	LineItemResponseLineItemTypeCommitmentConsumed        LineItemResponseLineItemType = "COMMITMENT_CONSUMED"
+	LineItemResponseLineItemTypeCommitmentFee             LineItemResponseLineItemType = "COMMITMENT_FEE"
+	LineItemResponseLineItemTypeOverageSurcharge          LineItemResponseLineItemType = "OVERAGE_SURCHARGE"
+	LineItemResponseLineItemTypeOverageUsage              LineItemResponseLineItemType = "OVERAGE_USAGE"
+	LineItemResponseLineItemTypeBalanceConsumed           LineItemResponseLineItemType = "BALANCE_CONSUMED"
+	LineItemResponseLineItemTypeBalanceFee                LineItemResponseLineItemType = "BALANCE_FEE"
 )
 
-func (r LineItemLineItemType) IsKnown() bool {
+func (r LineItemResponseLineItemType) IsKnown() bool {
 	switch r {
-	case LineItemLineItemTypeStandingCharge, LineItemLineItemTypeUsage, LineItemLineItemTypeCounterRunningTotalCharge, LineItemLineItemTypeCounterAdjustmentDebit, LineItemLineItemTypeCounterAdjustmentCredit, LineItemLineItemTypeUsageCredit, LineItemLineItemTypeMinimumSpend, LineItemLineItemTypeMinimumSpendRefund, LineItemLineItemTypeCreditDeduction, LineItemLineItemTypeManualAdjustment, LineItemLineItemTypeCreditMemo, LineItemLineItemTypeDebitMemo, LineItemLineItemTypeCommitmentConsumed, LineItemLineItemTypeCommitmentFee, LineItemLineItemTypeOverageSurcharge, LineItemLineItemTypeOverageUsage, LineItemLineItemTypeBalanceConsumed, LineItemLineItemTypeBalanceFee:
+	case LineItemResponseLineItemTypeStandingCharge, LineItemResponseLineItemTypeUsage, LineItemResponseLineItemTypeCounterRunningTotalCharge, LineItemResponseLineItemTypeCounterAdjustmentDebit, LineItemResponseLineItemTypeCounterAdjustmentCredit, LineItemResponseLineItemTypeUsageCredit, LineItemResponseLineItemTypeMinimumSpend, LineItemResponseLineItemTypeMinimumSpendRefund, LineItemResponseLineItemTypeCreditDeduction, LineItemResponseLineItemTypeManualAdjustment, LineItemResponseLineItemTypeCreditMemo, LineItemResponseLineItemTypeDebitMemo, LineItemResponseLineItemTypeCommitmentConsumed, LineItemResponseLineItemTypeCommitmentFee, LineItemResponseLineItemTypeOverageSurcharge, LineItemResponseLineItemTypeOverageUsage, LineItemResponseLineItemTypeBalanceConsumed, LineItemResponseLineItemTypeBalanceFee:
 		return true
 	}
 	return false

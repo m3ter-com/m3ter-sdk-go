@@ -39,7 +39,7 @@ func NewCustomFieldService(opts ...option.RequestOption) (r *CustomFieldService)
 
 // Retrieve all Custom Fields added at Organizational level for the entities that
 // support them.
-func (r *CustomFieldService) Get(ctx context.Context, query CustomFieldGetParams, opts ...option.RequestOption) (res *CustomFields, err error) {
+func (r *CustomFieldService) Get(ctx context.Context, query CustomFieldGetParams, opts ...option.RequestOption) (res *CustomFieldsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -51,7 +51,7 @@ func (r *CustomFieldService) Get(ctx context.Context, query CustomFieldGetParams
 }
 
 // Update Custom Fields added at Organization level to entities that support them.
-func (r *CustomFieldService) Update(ctx context.Context, params CustomFieldUpdateParams, opts ...option.RequestOption) (res *CustomFields, err error) {
+func (r *CustomFieldService) Update(ctx context.Context, params CustomFieldUpdateParams, opts ...option.RequestOption) (res *CustomFieldsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -62,7 +62,7 @@ func (r *CustomFieldService) Update(ctx context.Context, params CustomFieldUpdat
 	return
 }
 
-type CustomFields struct {
+type CustomFieldsResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -73,13 +73,13 @@ type CustomFields struct {
 	//     response.
 	Version int64 `json:"version,required"`
 	// CustomFields added to Account entities.
-	Account map[string]CustomFieldsAccountUnion `json:"account"`
+	Account map[string]CustomFieldsResponseAccountUnion `json:"account"`
 	// CustomFields added to accountPlan entities.
-	AccountPlan map[string]CustomFieldsAccountPlanUnion `json:"accountPlan"`
+	AccountPlan map[string]CustomFieldsResponseAccountPlanUnion `json:"accountPlan"`
 	// CustomFields added to simple Aggregation entities.
-	Aggregation map[string]CustomFieldsAggregationUnion `json:"aggregation"`
+	Aggregation map[string]CustomFieldsResponseAggregationUnion `json:"aggregation"`
 	// CustomFields added to Compound Aggregation entities.
-	CompoundAggregation map[string]CustomFieldsCompoundAggregationUnion `json:"compoundAggregation"`
+	CompoundAggregation map[string]CustomFieldsResponseCompoundAggregationUnion `json:"compoundAggregation"`
 	// The id of the user who created this custom field.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Organization was created _(in ISO-8601 format)_.
@@ -90,20 +90,21 @@ type CustomFields struct {
 	// The id of the user who last modified this custom field.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// CustomFields added to Meter entities.
-	Meter map[string]CustomFieldsMeterUnion `json:"meter"`
+	Meter map[string]CustomFieldsResponseMeterUnion `json:"meter"`
 	// CustomFields added to the Organization.
-	Organization map[string]CustomFieldsOrganizationUnion `json:"organization"`
+	Organization map[string]CustomFieldsResponseOrganizationUnion `json:"organization"`
 	// CustomFields added to Plan entities.
-	Plan map[string]CustomFieldsPlanUnion `json:"plan"`
+	Plan map[string]CustomFieldsResponsePlanUnion `json:"plan"`
 	// CustomFields added to planTemplate entities.
-	PlanTemplate map[string]CustomFieldsPlanTemplateUnion `json:"planTemplate"`
+	PlanTemplate map[string]CustomFieldsResponsePlanTemplateUnion `json:"planTemplate"`
 	// CustomFields added to Product entities.
-	Product map[string]CustomFieldsProductUnion `json:"product"`
-	JSON    customFieldsJSON                    `json:"-"`
+	Product map[string]CustomFieldsResponseProductUnion `json:"product"`
+	JSON    customFieldsResponseJSON                    `json:"-"`
 }
 
-// customFieldsJSON contains the JSON metadata for the struct [CustomFields]
-type customFieldsJSON struct {
+// customFieldsResponseJSON contains the JSON metadata for the struct
+// [CustomFieldsResponse]
+type customFieldsResponseJSON struct {
 	ID                  apijson.Field
 	Version             apijson.Field
 	Account             apijson.Field
@@ -123,22 +124,22 @@ type customFieldsJSON struct {
 	ExtraFields         map[string]apijson.Field
 }
 
-func (r *CustomFields) UnmarshalJSON(data []byte) (err error) {
+func (r *CustomFieldsResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r customFieldsJSON) RawJSON() string {
+func (r customFieldsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsAccountUnion interface {
-	ImplementsCustomFieldsAccountUnion()
+type CustomFieldsResponseAccountUnion interface {
+	ImplementsCustomFieldsResponseAccountUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsAccountUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponseAccountUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -152,13 +153,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsAccountPlanUnion interface {
-	ImplementsCustomFieldsAccountPlanUnion()
+type CustomFieldsResponseAccountPlanUnion interface {
+	ImplementsCustomFieldsResponseAccountPlanUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsAccountPlanUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponseAccountPlanUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -172,13 +173,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsAggregationUnion interface {
-	ImplementsCustomFieldsAggregationUnion()
+type CustomFieldsResponseAggregationUnion interface {
+	ImplementsCustomFieldsResponseAggregationUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsAggregationUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponseAggregationUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -192,13 +193,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsCompoundAggregationUnion interface {
-	ImplementsCustomFieldsCompoundAggregationUnion()
+type CustomFieldsResponseCompoundAggregationUnion interface {
+	ImplementsCustomFieldsResponseCompoundAggregationUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsCompoundAggregationUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponseCompoundAggregationUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -212,13 +213,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsMeterUnion interface {
-	ImplementsCustomFieldsMeterUnion()
+type CustomFieldsResponseMeterUnion interface {
+	ImplementsCustomFieldsResponseMeterUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsMeterUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponseMeterUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -232,13 +233,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsOrganizationUnion interface {
-	ImplementsCustomFieldsOrganizationUnion()
+type CustomFieldsResponseOrganizationUnion interface {
+	ImplementsCustomFieldsResponseOrganizationUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsOrganizationUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponseOrganizationUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -252,13 +253,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsPlanUnion interface {
-	ImplementsCustomFieldsPlanUnion()
+type CustomFieldsResponsePlanUnion interface {
+	ImplementsCustomFieldsResponsePlanUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsPlanUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponsePlanUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -272,13 +273,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsPlanTemplateUnion interface {
-	ImplementsCustomFieldsPlanTemplateUnion()
+type CustomFieldsResponsePlanTemplateUnion interface {
+	ImplementsCustomFieldsResponsePlanTemplateUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsPlanTemplateUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponsePlanTemplateUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -292,13 +293,13 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CustomFieldsProductUnion interface {
-	ImplementsCustomFieldsProductUnion()
+type CustomFieldsResponseProductUnion interface {
+	ImplementsCustomFieldsResponseProductUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CustomFieldsProductUnion)(nil)).Elem(),
+		reflect.TypeOf((*CustomFieldsResponseProductUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,

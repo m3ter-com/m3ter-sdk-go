@@ -60,7 +60,7 @@ func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAgg
 //
 // This endpoint returns a specific CompoundAggregation associated with an
 // Organization. It provides detailed information about the CompoundAggregation.
-func (r *CompoundAggregationService) Get(ctx context.Context, id string, query CompoundAggregationGetParams, opts ...option.RequestOption) (res *CompoundAggregation, err error) {
+func (r *CompoundAggregationService) Get(ctx context.Context, id string, query CompoundAggregationGetParams, opts ...option.RequestOption) (res *CompoundAggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -107,7 +107,7 @@ func (r *CompoundAggregationService) Update(ctx context.Context, id string, para
 // measures based on simple Aggregations of usage data. It supports pagination, and
 // includes various query parameters to filter the CompoundAggregations based on
 // Product, CompoundAggregation IDs or short codes.
-func (r *CompoundAggregationService) List(ctx context.Context, params CompoundAggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[CompoundAggregation], err error) {
+func (r *CompoundAggregationService) List(ctx context.Context, params CompoundAggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[CompoundAggregationResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -135,7 +135,7 @@ func (r *CompoundAggregationService) List(ctx context.Context, params CompoundAg
 // measures based on simple Aggregations of usage data. It supports pagination, and
 // includes various query parameters to filter the CompoundAggregations based on
 // Product, CompoundAggregation IDs or short codes.
-func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, params CompoundAggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CompoundAggregation] {
+func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, params CompoundAggregationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CompoundAggregationResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -145,7 +145,7 @@ func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, params 
 // a specific Organization. Useful when you need to remove an existing
 // CompoundAggregation that is no longer required, such as when changing pricing or
 // planning models.
-func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body CompoundAggregationDeleteParams, opts ...option.RequestOption) (res *CompoundAggregation, err error) {
+func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body CompoundAggregationDeleteParams, opts ...option.RequestOption) (res *CompoundAggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -160,7 +160,7 @@ func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body
 	return
 }
 
-type CompoundAggregation struct {
+type CompoundAggregationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -178,8 +178,8 @@ type CompoundAggregation struct {
 	// Code of the Aggregation. A unique short code to identify the Aggregation.
 	Code string `json:"code"`
 	// The unique identifier (UUID) of the user who created this CompoundAggregation.
-	CreatedBy    string                                          `json:"createdBy"`
-	CustomFields map[string]CompoundAggregationCustomFieldsUnion `json:"customFields"`
+	CreatedBy    string                                                  `json:"createdBy"`
+	CustomFields map[string]CompoundAggregationResponseCustomFieldsUnion `json:"customFields"`
 	// The date and time _(in ISO-8601 format)_ when the CompoundAggregation was
 	// created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
@@ -223,7 +223,7 @@ type CompoundAggregation struct {
 	//     to 98 \* 0.25 = $2.45.
 	//
 	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
-	Rounding CompoundAggregationRounding `json:"rounding"`
+	Rounding CompoundAggregationResponseRounding `json:"rounding"`
 	// _(Optional)_. Used when creating a segmented Aggregation, which segments the
 	// usage data collected by a single Meter. Works together with `segmentedFields`.
 	//
@@ -234,13 +234,13 @@ type CompoundAggregation struct {
 	//
 	// Used as the label for billing, indicating to your customers what they are being
 	// charged for.
-	Unit string                  `json:"unit"`
-	JSON compoundAggregationJSON `json:"-"`
+	Unit string                          `json:"unit"`
+	JSON compoundAggregationResponseJSON `json:"-"`
 }
 
-// compoundAggregationJSON contains the JSON metadata for the struct
-// [CompoundAggregation]
-type compoundAggregationJSON struct {
+// compoundAggregationResponseJSON contains the JSON metadata for the struct
+// [CompoundAggregationResponse]
+type compoundAggregationResponseJSON struct {
 	ID                       apijson.Field
 	Version                  apijson.Field
 	AccountingProductID      apijson.Field
@@ -262,22 +262,22 @@ type compoundAggregationJSON struct {
 	ExtraFields              map[string]apijson.Field
 }
 
-func (r *CompoundAggregation) UnmarshalJSON(data []byte) (err error) {
+func (r *CompoundAggregationResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r compoundAggregationJSON) RawJSON() string {
+func (r compoundAggregationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type CompoundAggregationCustomFieldsUnion interface {
-	ImplementsCompoundAggregationCustomFieldsUnion()
+type CompoundAggregationResponseCustomFieldsUnion interface {
+	ImplementsCompoundAggregationResponseCustomFieldsUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*CompoundAggregationCustomFieldsUnion)(nil)).Elem(),
+		reflect.TypeOf((*CompoundAggregationResponseCustomFieldsUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -306,18 +306,18 @@ func init() {
 //     to 98 \* 0.25 = $2.45.
 //
 // Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
-type CompoundAggregationRounding string
+type CompoundAggregationResponseRounding string
 
 const (
-	CompoundAggregationRoundingUp      CompoundAggregationRounding = "UP"
-	CompoundAggregationRoundingDown    CompoundAggregationRounding = "DOWN"
-	CompoundAggregationRoundingNearest CompoundAggregationRounding = "NEAREST"
-	CompoundAggregationRoundingNone    CompoundAggregationRounding = "NONE"
+	CompoundAggregationResponseRoundingUp      CompoundAggregationResponseRounding = "UP"
+	CompoundAggregationResponseRoundingDown    CompoundAggregationResponseRounding = "DOWN"
+	CompoundAggregationResponseRoundingNearest CompoundAggregationResponseRounding = "NEAREST"
+	CompoundAggregationResponseRoundingNone    CompoundAggregationResponseRounding = "NONE"
 )
 
-func (r CompoundAggregationRounding) IsKnown() bool {
+func (r CompoundAggregationResponseRounding) IsKnown() bool {
 	switch r {
-	case CompoundAggregationRoundingUp, CompoundAggregationRoundingDown, CompoundAggregationRoundingNearest, CompoundAggregationRoundingNone:
+	case CompoundAggregationResponseRoundingUp, CompoundAggregationResponseRoundingDown, CompoundAggregationResponseRoundingNearest, CompoundAggregationResponseRoundingNone:
 		return true
 	}
 	return false

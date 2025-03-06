@@ -32,15 +32,15 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 	_, err := client.Meters.New(context.TODO(), m3ter.MeterNewParams{
 		OrgID: m3ter.F("orgId"),
 		Code:  m3ter.F("JS!?Q0]r] ]$]"),
-		DataFields: m3ter.F([]m3ter.DataFieldParam{{
-			Category: m3ter.F(m3ter.DataFieldCategoryWho),
+		DataFields: m3ter.F([]m3ter.DataFieldResponseParam{{
+			Category: m3ter.F(m3ter.DataFieldResponseCategoryWho),
 			Code:     m3ter.F("{1{}}_"),
 			Name:     m3ter.F("x"),
 			Unit:     m3ter.F("x"),
 		}}),
 		DerivedFields: m3ter.F([]m3ter.MeterNewParamsDerivedField{{
-			DataFieldParam: m3ter.DataFieldParam{
-				Category: m3ter.F(m3ter.DataFieldCategoryWho),
+			DataFieldResponseParam: m3ter.DataFieldResponseParam{
+				Category: m3ter.F(m3ter.DataFieldResponseCategoryWho),
 				Code:     m3ter.F("{1{}}_"),
 				Name:     m3ter.F("x"),
 				Unit:     m3ter.F("x"),
@@ -116,15 +116,15 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 		m3ter.MeterUpdateParams{
 			OrgID: m3ter.F("orgId"),
 			Code:  m3ter.F("JS!?Q0]r] ]$]"),
-			DataFields: m3ter.F([]m3ter.DataFieldParam{{
-				Category: m3ter.F(m3ter.DataFieldCategoryWho),
+			DataFields: m3ter.F([]m3ter.DataFieldResponseParam{{
+				Category: m3ter.F(m3ter.DataFieldResponseCategoryWho),
 				Code:     m3ter.F("{1{}}_"),
 				Name:     m3ter.F("x"),
 				Unit:     m3ter.F("x"),
 			}}),
 			DerivedFields: m3ter.F([]m3ter.MeterUpdateParamsDerivedField{{
-				DataFieldParam: m3ter.DataFieldParam{
-					Category: m3ter.F(m3ter.DataFieldCategoryWho),
+				DataFieldResponseParam: m3ter.DataFieldResponseParam{
+					Category: m3ter.F(m3ter.DataFieldResponseCategoryWho),
 					Code:     m3ter.F("{1{}}_"),
 					Name:     m3ter.F("x"),
 					Unit:     m3ter.F("x"),

@@ -41,7 +41,7 @@ func NewAccountService(opts ...option.RequestOption) (r *AccountService) {
 }
 
 // Create a new Account within the Organization.
-func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -53,7 +53,7 @@ func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts 
 }
 
 // Retrieve the Account with the given Account UUID.
-func (r *AccountService) Get(ctx context.Context, id string, query AccountGetParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) Get(ctx context.Context, id string, query AccountGetParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -74,7 +74,7 @@ func (r *AccountService) Get(ctx context.Context, id string, query AccountGetPar
 // endpoint to update the Account, use the `customFields` parameter to preserve
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
-func (r *AccountService) Update(ctx context.Context, id string, params AccountUpdateParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) Update(ctx context.Context, id string, params AccountUpdateParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -90,7 +90,7 @@ func (r *AccountService) Update(ctx context.Context, id string, params AccountUp
 }
 
 // Retrieve a list of Accounts that can be filtered by Account ID or Account Code.
-func (r *AccountService) List(ctx context.Context, params AccountListParams, opts ...option.RequestOption) (res *pagination.Cursor[Account], err error) {
+func (r *AccountService) List(ctx context.Context, params AccountListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -112,13 +112,13 @@ func (r *AccountService) List(ctx context.Context, params AccountListParams, opt
 }
 
 // Retrieve a list of Accounts that can be filtered by Account ID or Account Code.
-func (r *AccountService) ListAutoPaging(ctx context.Context, params AccountListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Account] {
+func (r *AccountService) ListAutoPaging(ctx context.Context, params AccountListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete the Account with the given UUID. This may fail if there are any
 // AccountPlans that reference the Account being deleted.
-func (r *AccountService) Delete(ctx context.Context, id string, body AccountDeleteParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) Delete(ctx context.Context, id string, body AccountDeleteParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -155,7 +155,7 @@ func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, 
 }
 
 // Retrieve a list of Accounts that are children of the specified Account.
-func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *Account, err error) {
+func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -187,7 +187,7 @@ func (r *AccountService) Search(ctx context.Context, params AccountSearchParams,
 	return
 }
 
-type Account struct {
+type AccountResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -204,7 +204,7 @@ type Account struct {
 	// - **None**. Statements will not be auto-generated.
 	// - **JSON**. Statements are auto-generated in JSON format.
 	// - **JSON and CSV**. Statements are auto-generated in both JSON and CSV formats.
-	AutoGenerateStatementMode AccountAutoGenerateStatementMode `json:"autoGenerateStatementMode"`
+	AutoGenerateStatementMode AccountResponseAutoGenerateStatementMode `json:"autoGenerateStatementMode"`
 	// Defines first bill date for Account Bills. For example, if the Plan attached to
 	// the Account is set for monthly billing frequency and you set the first bill date
 	// to be January 1st, Bills are created every month starting on that date.
@@ -227,7 +227,7 @@ type Account struct {
 	//     credit.
 	//   - `"PREPAYMENT"`. Only draw-down against Prepayment credit.
 	//   - `"BALANCE"`. Only draw-down against Balance credit.
-	CreditApplicationOrder []AccountCreditApplicationOrder `json:"creditApplicationOrder"`
+	CreditApplicationOrder []AccountResponseCreditApplicationOrder `json:"creditApplicationOrder"`
 	// Account level billing currency, such as USD or GBP. Optional attribute:
 	//
 	//   - If you define an Account currency, this will be used for bills.
@@ -251,7 +251,7 @@ type Account struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]AccountCustomFieldsUnion `json:"customFields"`
+	CustomFields map[string]AccountResponseCustomFieldsUnion `json:"customFields"`
 	// The number of days after the Bill generation date shown on Bills as the due
 	// date.
 	DaysBeforeBillDue int64 `json:"daysBeforeBillDue"`
@@ -285,12 +285,12 @@ type Account struct {
 	// See
 	// [Working with Bill Statements](https://www.m3ter.com/docs/guides/running-viewing-and-managing-bills/working-with-bill-statements)
 	// in the m3ter documentation for more details.
-	StatementDefinitionID string      `json:"statementDefinitionId"`
-	JSON                  accountJSON `json:"-"`
+	StatementDefinitionID string              `json:"statementDefinitionId"`
+	JSON                  accountResponseJSON `json:"-"`
 }
 
-// accountJSON contains the JSON metadata for the struct [Account]
-type accountJSON struct {
+// accountResponseJSON contains the JSON metadata for the struct [AccountResponse]
+type accountResponseJSON struct {
 	ID                        apijson.Field
 	Version                   apijson.Field
 	Address                   apijson.Field
@@ -315,11 +315,11 @@ type accountJSON struct {
 	ExtraFields               map[string]apijson.Field
 }
 
-func (r *Account) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountJSON) RawJSON() string {
+func (r accountResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -328,45 +328,45 @@ func (r accountJSON) RawJSON() string {
 // - **None**. Statements will not be auto-generated.
 // - **JSON**. Statements are auto-generated in JSON format.
 // - **JSON and CSV**. Statements are auto-generated in both JSON and CSV formats.
-type AccountAutoGenerateStatementMode string
+type AccountResponseAutoGenerateStatementMode string
 
 const (
-	AccountAutoGenerateStatementModeNone       AccountAutoGenerateStatementMode = "NONE"
-	AccountAutoGenerateStatementModeJson       AccountAutoGenerateStatementMode = "JSON"
-	AccountAutoGenerateStatementModeJsonAndCsv AccountAutoGenerateStatementMode = "JSON_AND_CSV"
+	AccountResponseAutoGenerateStatementModeNone       AccountResponseAutoGenerateStatementMode = "NONE"
+	AccountResponseAutoGenerateStatementModeJson       AccountResponseAutoGenerateStatementMode = "JSON"
+	AccountResponseAutoGenerateStatementModeJsonAndCsv AccountResponseAutoGenerateStatementMode = "JSON_AND_CSV"
 )
 
-func (r AccountAutoGenerateStatementMode) IsKnown() bool {
+func (r AccountResponseAutoGenerateStatementMode) IsKnown() bool {
 	switch r {
-	case AccountAutoGenerateStatementModeNone, AccountAutoGenerateStatementModeJson, AccountAutoGenerateStatementModeJsonAndCsv:
+	case AccountResponseAutoGenerateStatementModeNone, AccountResponseAutoGenerateStatementModeJson, AccountResponseAutoGenerateStatementModeJsonAndCsv:
 		return true
 	}
 	return false
 }
 
-type AccountCreditApplicationOrder string
+type AccountResponseCreditApplicationOrder string
 
 const (
-	AccountCreditApplicationOrderPrepayment AccountCreditApplicationOrder = "PREPAYMENT"
-	AccountCreditApplicationOrderBalance    AccountCreditApplicationOrder = "BALANCE"
+	AccountResponseCreditApplicationOrderPrepayment AccountResponseCreditApplicationOrder = "PREPAYMENT"
+	AccountResponseCreditApplicationOrderBalance    AccountResponseCreditApplicationOrder = "BALANCE"
 )
 
-func (r AccountCreditApplicationOrder) IsKnown() bool {
+func (r AccountResponseCreditApplicationOrder) IsKnown() bool {
 	switch r {
-	case AccountCreditApplicationOrderPrepayment, AccountCreditApplicationOrderBalance:
+	case AccountResponseCreditApplicationOrderPrepayment, AccountResponseCreditApplicationOrderBalance:
 		return true
 	}
 	return false
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type AccountCustomFieldsUnion interface {
-	ImplementsAccountCustomFieldsUnion()
+type AccountResponseCustomFieldsUnion interface {
+	ImplementsAccountResponseCustomFieldsUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountCustomFieldsUnion)(nil)).Elem(),
+		reflect.TypeOf((*AccountResponseCustomFieldsUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -523,7 +523,7 @@ func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() stri
 }
 
 type AccountSearchResponse struct {
-	Data      []Account                 `json:"data"`
+	Data      []AccountResponse         `json:"data"`
 	NextToken string                    `json:"nextToken"`
 	JSON      accountSearchResponseJSON `json:"-"`
 }

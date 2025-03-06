@@ -42,7 +42,7 @@ func NewEventService(opts ...option.RequestOption) (r *EventService) {
 // Retrieves detailed information about the specific Event with the given UUID. An
 // Event corresponds to a unique instance of a state change within the system,
 // classified under a specific Event Type.
-func (r *EventService) Get(ctx context.Context, id string, query EventGetParams, opts ...option.RequestOption) (res *Event, err error) {
+func (r *EventService) Get(ctx context.Context, id string, query EventGetParams, opts ...option.RequestOption) (res *EventResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -71,7 +71,7 @@ func (r *EventService) Get(ctx context.Context, id string, query EventGetParams,
 //   - Use the
 //     [List Notification Events](https://www.m3ter.com/docs/api#tag/Events/operation/ListEventTypes)
 //     endpoint in this section. The response lists the valid Query parameters.
-func (r *EventService) List(ctx context.Context, params EventListParams, opts ...option.RequestOption) (res *pagination.Cursor[Event], err error) {
+func (r *EventService) List(ctx context.Context, params EventListParams, opts ...option.RequestOption) (res *pagination.Cursor[EventResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -106,7 +106,7 @@ func (r *EventService) List(ctx context.Context, params EventListParams, opts ..
 //   - Use the
 //     [List Notification Events](https://www.m3ter.com/docs/api#tag/Events/operation/ListEventTypes)
 //     endpoint in this section. The response lists the valid Query parameters.
-func (r *EventService) ListAutoPaging(ctx context.Context, params EventListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Event] {
+func (r *EventService) ListAutoPaging(ctx context.Context, params EventListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[EventResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -162,7 +162,7 @@ func (r *EventService) GetTypes(ctx context.Context, query EventGetTypesParams, 
 }
 
 // Response containing an Event entity.
-type Event struct {
+type EventResponse struct {
 	// The uniqie identifier (UUID) of the Event.
 	ID string `json:"id,required"`
 	// When an Event was actioned. It follows the ISO 8601 date and time format.
@@ -177,12 +177,12 @@ type Event struct {
 	// The time when the Event was triggered, using the ISO 8601 date and time format.
 	EventTime time.Time `json:"eventTime,required" format:"date-time"`
 	// The Data Transfer Object (DTO) containing the details of the Event.
-	M3terEvent interface{} `json:"m3terEvent,required"`
-	JSON       eventJSON   `json:"-"`
+	M3terEvent interface{}       `json:"m3terEvent,required"`
+	JSON       eventResponseJSON `json:"-"`
 }
 
-// eventJSON contains the JSON metadata for the struct [Event]
-type eventJSON struct {
+// eventResponseJSON contains the JSON metadata for the struct [EventResponse]
+type eventResponseJSON struct {
 	ID          apijson.Field
 	DtActioned  apijson.Field
 	EventName   apijson.Field
@@ -192,11 +192,11 @@ type eventJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *Event) UnmarshalJSON(data []byte) (err error) {
+func (r *EventResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r eventJSON) RawJSON() string {
+func (r eventResponseJSON) RawJSON() string {
 	return r.raw
 }
 

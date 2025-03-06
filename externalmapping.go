@@ -42,7 +42,7 @@ func NewExternalMappingService(opts ...option.RequestOption) (r *ExternalMapping
 // This endpoint enables you to create a new External Mapping for the specified
 // Organization. You need to supply a request body with the details of the new
 // External Mapping.
-func (r *ExternalMappingService) New(ctx context.Context, params ExternalMappingNewParams, opts ...option.RequestOption) (res *ExternalMapping, err error) {
+func (r *ExternalMappingService) New(ctx context.Context, params ExternalMappingNewParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -57,7 +57,7 @@ func (r *ExternalMappingService) New(ctx context.Context, params ExternalMapping
 //
 // This endpoint enables you to retrieve the External Mapping with the specified
 // UUID for a specific Organization.
-func (r *ExternalMappingService) Get(ctx context.Context, id string, query ExternalMappingGetParams, opts ...option.RequestOption) (res *ExternalMapping, err error) {
+func (r *ExternalMappingService) Get(ctx context.Context, id string, query ExternalMappingGetParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -77,7 +77,7 @@ func (r *ExternalMappingService) Get(ctx context.Context, id string, query Exter
 // This endpoint enables you to update an existing External Mapping entity,
 // identified by its UUID. You must supply a request body with the new details for
 // the External Mapping.
-func (r *ExternalMappingService) Update(ctx context.Context, id string, params ExternalMappingUpdateParams, opts ...option.RequestOption) (res *ExternalMapping, err error) {
+func (r *ExternalMappingService) Update(ctx context.Context, id string, params ExternalMappingUpdateParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -97,7 +97,7 @@ func (r *ExternalMappingService) Update(ctx context.Context, id string, params E
 // This endpoint retrieves a list of all External Mapping entities for a specific
 // Organization. The list can be paginated for better management, and supports
 // filtering using the external system.
-func (r *ExternalMappingService) List(ctx context.Context, params ExternalMappingListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMapping], err error) {
+func (r *ExternalMappingService) List(ctx context.Context, params ExternalMappingListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMappingResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -123,12 +123,12 @@ func (r *ExternalMappingService) List(ctx context.Context, params ExternalMappin
 // This endpoint retrieves a list of all External Mapping entities for a specific
 // Organization. The list can be paginated for better management, and supports
 // filtering using the external system.
-func (r *ExternalMappingService) ListAutoPaging(ctx context.Context, params ExternalMappingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMapping] {
+func (r *ExternalMappingService) ListAutoPaging(ctx context.Context, params ExternalMappingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMappingResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete an External Mapping with the given UUID.
-func (r *ExternalMappingService) Delete(ctx context.Context, id string, body ExternalMappingDeleteParams, opts ...option.RequestOption) (res *ExternalMapping, err error) {
+func (r *ExternalMappingService) Delete(ctx context.Context, id string, body ExternalMappingDeleteParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -149,7 +149,7 @@ func (r *ExternalMappingService) Delete(ctx context.Context, id string, body Ext
 // Use this endpoint to retrieve a list of External Mapping entities associated
 // with a specific external system entity. The list can be paginated for easier
 // management.
-func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMapping], err error) {
+func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMappingResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -188,7 +188,7 @@ func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, syste
 // Use this endpoint to retrieve a list of External Mapping entities associated
 // with a specific external system entity. The list can be paginated for easier
 // management.
-func (r *ExternalMappingService) ListByExternalEntityAutoPaging(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMapping] {
+func (r *ExternalMappingService) ListByExternalEntityAutoPaging(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMappingResponse] {
 	return pagination.NewCursorAutoPager(r.ListByExternalEntity(ctx, system, externalTable, externalID, params, opts...))
 }
 
@@ -196,7 +196,7 @@ func (r *ExternalMappingService) ListByExternalEntityAutoPaging(ctx context.Cont
 //
 // Use this endpoint to retrieve a list of External Mapping entities associated
 // with a specific m3ter entity. The list can be paginated for easier management.
-func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMapping], err error) {
+func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMappingResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -229,11 +229,11 @@ func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity s
 //
 // Use this endpoint to retrieve a list of External Mapping entities associated
 // with a specific m3ter entity. The list can be paginated for easier management.
-func (r *ExternalMappingService) ListByM3terEntityAutoPaging(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMapping] {
+func (r *ExternalMappingService) ListByM3terEntityAutoPaging(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExternalMappingResponse] {
 	return pagination.NewCursorAutoPager(r.ListByM3terEntity(ctx, entity, m3terID, params, opts...))
 }
 
-type ExternalMapping struct {
+type ExternalMappingResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The unique identifier (UUID) of the entity in the external system.
@@ -263,12 +263,13 @@ type ExternalMapping struct {
 	// UUID of the configuration this mapping is for
 	IntegrationConfigID string `json:"integrationConfigId"`
 	// The ID of the user who last modified this item.
-	LastModifiedBy string              `json:"lastModifiedBy"`
-	JSON           externalMappingJSON `json:"-"`
+	LastModifiedBy string                      `json:"lastModifiedBy"`
+	JSON           externalMappingResponseJSON `json:"-"`
 }
 
-// externalMappingJSON contains the JSON metadata for the struct [ExternalMapping]
-type externalMappingJSON struct {
+// externalMappingResponseJSON contains the JSON metadata for the struct
+// [ExternalMappingResponse]
+type externalMappingResponseJSON struct {
 	ID                  apijson.Field
 	ExternalID          apijson.Field
 	ExternalSystem      apijson.Field
@@ -285,11 +286,11 @@ type externalMappingJSON struct {
 	ExtraFields         map[string]apijson.Field
 }
 
-func (r *ExternalMapping) UnmarshalJSON(data []byte) (err error) {
+func (r *ExternalMappingResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r externalMappingJSON) RawJSON() string {
+func (r externalMappingResponseJSON) RawJSON() string {
 	return r.raw
 }
 

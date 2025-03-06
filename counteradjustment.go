@@ -48,7 +48,7 @@ func NewCounterAdjustmentService(opts ...option.RequestOption) (r *CounterAdjust
 //   - CounterAdjustments on Accounts are supported down to a _specific day_ of
 //     granularity - you cannot create more than one CounterAdjustment for any given
 //     day using the same Counter and you'll receive an error if you try to do this.
-func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjustmentNewParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjustmentNewParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -60,7 +60,7 @@ func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjust
 }
 
 // Retrieve a CounterAdjustment for the given UUID.
-func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query CounterAdjustmentGetParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query CounterAdjustmentGetParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -76,7 +76,7 @@ func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query Cou
 }
 
 // Update a CounterAdjustment for an Account.
-func (r *CounterAdjustmentService) Update(ctx context.Context, id string, params CounterAdjustmentUpdateParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) Update(ctx context.Context, id string, params CounterAdjustmentUpdateParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -101,7 +101,7 @@ func (r *CounterAdjustmentService) Update(ctx context.Context, id string, params
 //     other query parameters.
 //   - If you want to use the `date`, `dateStart`, or `dateEnd` query parameters, you
 //     must also use the `accountId` query parameter.
-func (r *CounterAdjustmentService) List(ctx context.Context, params CounterAdjustmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterAdjustment], err error) {
+func (r *CounterAdjustmentService) List(ctx context.Context, params CounterAdjustmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterAdjustmentResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -132,12 +132,12 @@ func (r *CounterAdjustmentService) List(ctx context.Context, params CounterAdjus
 //     other query parameters.
 //   - If you want to use the `date`, `dateStart`, or `dateEnd` query parameters, you
 //     must also use the `accountId` query parameter.
-func (r *CounterAdjustmentService) ListAutoPaging(ctx context.Context, params CounterAdjustmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterAdjustment] {
+func (r *CounterAdjustmentService) ListAutoPaging(ctx context.Context, params CounterAdjustmentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[CounterAdjustmentResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a CounterAdjustment for the given UUID.
-func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body CounterAdjustmentDeleteParams, opts ...option.RequestOption) (res *CounterAdjustment, err error) {
+func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body CounterAdjustmentDeleteParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
@@ -152,7 +152,7 @@ func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body C
 	return
 }
 
-type CounterAdjustment struct {
+type CounterAdjustmentResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -181,13 +181,13 @@ type CounterAdjustment struct {
 	// Purchase Order Number for the Counter Adjustment. _(Optional)_
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// Integer Value of the Counter that was used to make the CounterAdjustment.
-	Value int64                 `json:"value"`
-	JSON  counterAdjustmentJSON `json:"-"`
+	Value int64                         `json:"value"`
+	JSON  counterAdjustmentResponseJSON `json:"-"`
 }
 
-// counterAdjustmentJSON contains the JSON metadata for the struct
-// [CounterAdjustment]
-type counterAdjustmentJSON struct {
+// counterAdjustmentResponseJSON contains the JSON metadata for the struct
+// [CounterAdjustmentResponse]
+type counterAdjustmentResponseJSON struct {
 	ID                  apijson.Field
 	Version             apijson.Field
 	AccountID           apijson.Field
@@ -203,11 +203,11 @@ type counterAdjustmentJSON struct {
 	ExtraFields         map[string]apijson.Field
 }
 
-func (r *CounterAdjustment) UnmarshalJSON(data []byte) (err error) {
+func (r *CounterAdjustmentResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r counterAdjustmentJSON) RawJSON() string {
+func (r counterAdjustmentResponseJSON) RawJSON() string {
 	return r.raw
 }
 
