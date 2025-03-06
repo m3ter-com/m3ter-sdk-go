@@ -259,10 +259,3 @@ func WithOrgID(value string) RequestOption {
     return nil
   } 
 }
-
-func WithBasicAuth(username, password string) RequestOption {
-	return func(r *requestconfig.RequestConfig) error {
-		r.Request.SetBasicAuth(username, password)
-		return nil
-	}
-}

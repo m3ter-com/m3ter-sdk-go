@@ -4,8 +4,6 @@ package m3ter
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -121,43 +119,6 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Webhooks = NewWebhookService(opts...)
 
 	return
-}
-
-// NewClientWithServiceUserAuth generates a new client with the default option read
-// from the environment (M3TER_API_KEY, M3TER_API_SECRET, M3TER_API_TOKEN). The
-// option passed in as arguments are applied after these default arguments, and all
-// option will be passed down to the services and requests that this client makes.
-//
-// Additionally, NewClientWithServiceUserAuth makes an API call to the oauth/token
-// endpoint to exchange the provided APIKey and APISecret for an access token.
-func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOption) (*Client, error) {
-	authClient := NewClient(opts...)
-
-	//create a dummy request so we can access the APIKey and APISecret properties
-	dummyReq, err := requestconfig.NewRequestConfig(context.Background(), "POST", "oauth/token", nil, nil, authClient.Options...)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to create request config: %w", err)
-	}
-
-	if dummyReq.APIKey == "" {
-		return nil, errors.New("An APIKey must be provided to perform service user auth")
-	}
-
-	if dummyReq.APISecret == "" {
-		return nil, errors.New("An APISecret must be provided to perform service user auth")
-	}
-
-	req := AuthenticationGetBearerTokenParams{
-		GrantType: F(AuthenticationGetBearerTokenParamsGrantTypeClientCredentials),
-	}
-	res, err := authClient.Authentication.GetBearerToken(ctx, req, option.WithBasicAuth(dummyReq.APIKey, dummyReq.APISecret))
-	if err != nil {
-		return nil, fmt.Errorf("Failed to retrieve a token using the specified API key and API secret: %w", err)
-	}
-
-	opts = append(opts, option.WithToken(res.AccessToken))
-
-	return NewClient(opts...), nil
 }
 
 // Execute makes a request with the given context, method, URL, request params,
