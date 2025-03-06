@@ -27,25 +27,24 @@ func TestCompoundAggregationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CompoundAggregations.New(
-		context.TODO(),
-		"orgId",
-		m3ter.CompoundAggregationNewParams{
-			Calculation:     m3ter.F("x"),
-			Name:            m3ter.F("x"),
-			QuantityPerUnit: m3ter.F(1.000000),
-			Rounding:        m3ter.F(m3ter.CompoundAggregationNewParamsRoundingUp),
-			Unit:            m3ter.F("x"),
-			Code:            m3ter.F("example_code"),
-			CustomFields: m3ter.F(map[string]m3ter.CompoundAggregationNewParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			EvaluateNullAggregations: m3ter.F(true),
-			ProductID:                m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Version:                  m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.CompoundAggregations.New(context.TODO(), m3ter.CompoundAggregationNewParams{
+		OrgID:               m3ter.F("orgId"),
+		Calculation:         m3ter.F("x"),
+		Name:                m3ter.F("x"),
+		QuantityPerUnit:     m3ter.F(1.000000),
+		Rounding:            m3ter.F(m3ter.CompoundAggregationNewParamsRoundingUp),
+		Unit:                m3ter.F("x"),
+		AccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Code:                m3ter.F("example_code"),
+		CustomFields: m3ter.F(map[string]m3ter.CompoundAggregationNewParamsCustomFieldsUnion{
+			"foo": shared.UnionString("string"),
+		}),
+		EvaluateNullAggregations: m3ter.F(true),
+		ProductID:                m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Version:                  m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -68,11 +67,14 @@ func TestCompoundAggregationGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.CompoundAggregationGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -96,18 +98,20 @@ func TestCompoundAggregationUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.CompoundAggregationUpdateParams{
-			Calculation:     m3ter.F("x"),
-			Name:            m3ter.F("x"),
-			QuantityPerUnit: m3ter.F(1.000000),
-			Rounding:        m3ter.F(m3ter.CompoundAggregationUpdateParamsRoundingUp),
-			Unit:            m3ter.F("x"),
-			Code:            m3ter.F("example_code"),
+			OrgID:               m3ter.F("orgId"),
+			Calculation:         m3ter.F("x"),
+			Name:                m3ter.F("x"),
+			QuantityPerUnit:     m3ter.F(1.000000),
+			Rounding:            m3ter.F(m3ter.CompoundAggregationUpdateParamsRoundingUp),
+			Unit:                m3ter.F("x"),
+			AccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			Code:                m3ter.F("example_code"),
 			CustomFields: m3ter.F(map[string]m3ter.CompoundAggregationUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),
@@ -138,16 +142,45 @@ func TestCompoundAggregationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CompoundAggregations.List(
+	_, err := client.CompoundAggregations.List(context.TODO(), m3ter.CompoundAggregationListParams{
+		OrgID:     m3ter.F("orgId"),
+		Codes:     m3ter.F([]string{"string"}),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+		ProductID: m3ter.F([]string{"string"}),
+	})
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestCompoundAggregationDelete(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.CompoundAggregations.Delete(
 		context.TODO(),
-		"orgId",
-		m3ter.CompoundAggregationListParams{
-			Codes:     m3ter.F([]string{"string"}),
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-			ProductID: m3ter.F([]string{"string"}),
+		"id",
+		m3ter.CompoundAggregationDeleteParams{
+			OrgID: m3ter.F("orgId"),
 		},
 	)
 	if err != nil {

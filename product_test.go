@@ -27,19 +27,17 @@ func TestProductNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Products.New(
-		context.TODO(),
-		"orgId",
-		m3ter.ProductNewParams{
-			Code: m3ter.F("JS!?Q0]r] ]$]"),
-			Name: m3ter.F("x"),
-			CustomFields: m3ter.F(map[string]m3ter.ProductNewParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			Version: m3ter.F(int64(0)),
-		},
-	)
+	_, err := client.Products.New(context.TODO(), m3ter.ProductNewParams{
+		OrgID: m3ter.F("orgId"),
+		Code:  m3ter.F("JS!?Q0]r] ]$]"),
+		Name:  m3ter.F("x"),
+		CustomFields: m3ter.F(map[string]m3ter.ProductNewParamsCustomFieldsUnion{
+			"foo": shared.UnionString("string"),
+		}),
+		Version: m3ter.F(int64(0)),
+	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -62,11 +60,14 @@ func TestProductGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.Get(
 		context.TODO(),
-		"orgId",
 		"id",
+		m3ter.ProductGetParams{
+			OrgID: m3ter.F("orgId"),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -90,14 +91,15 @@ func TestProductUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.Update(
 		context.TODO(),
-		"orgId",
 		"id",
 		m3ter.ProductUpdateParams{
-			Code: m3ter.F("JS!?Q0]r] ]$]"),
-			Name: m3ter.F("x"),
+			OrgID: m3ter.F("orgId"),
+			Code:  m3ter.F("JS!?Q0]r] ]$]"),
+			Name:  m3ter.F("x"),
 			CustomFields: m3ter.F(map[string]m3ter.ProductUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),
@@ -126,14 +128,43 @@ func TestProductListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 		option.WithAPISecret("My API Secret"),
 		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Products.List(
+	_, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
+		OrgID:     m3ter.F("orgId"),
+		IDs:       m3ter.F([]string{"string"}),
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
+	})
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestProductDelete(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.Products.Delete(
 		context.TODO(),
-		"orgId",
-		m3ter.ProductListParams{
-			IDs:       m3ter.F([]string{"string"}),
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
+		"id",
+		m3ter.ProductDeleteParams{
+			OrgID: m3ter.F("orgId"),
 		},
 	)
 	if err != nil {

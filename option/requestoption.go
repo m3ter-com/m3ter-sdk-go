@@ -251,3 +251,11 @@ func WithToken(value string) RequestOption {
 		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.Token)))
 	}
 }
+
+// WithOrgID returns a RequestOption that sets the client setting "org_id".
+func WithOrgID(value string) RequestOption {
+	return func(r *requestconfig.RequestConfig) error {
+		r.OrgID = value
+    return nil
+  } 
+}

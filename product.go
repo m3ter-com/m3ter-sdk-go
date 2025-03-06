@@ -44,14 +44,14 @@ func NewProductService(opts ...option.RequestOption) (r *ProductService) {
 //
 // This endpoint creates a new Product within the specified Organization. The
 // details of the Product are provided in the request body.
-func (r *ProductService) New(ctx context.Context, orgID string, body ProductNewParams, opts ...option.RequestOption) (res *Product, err error) {
+func (r *ProductService) New(ctx context.Context, params ProductNewParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/products", orgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/products", params.OrgID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -59,9 +59,9 @@ func (r *ProductService) New(ctx context.Context, orgID string, body ProductNewP
 //
 // This endpoint retrieves the details of a specific Product within a specified
 // Organization, using the Product UUID.
-func (r *ProductService) Get(ctx context.Context, orgID string, id string, opts ...option.RequestOption) (res *Product, err error) {
+func (r *ProductService) Get(ctx context.Context, id string, query ProductGetParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -69,7 +69,7 @@ func (r *ProductService) Get(ctx context.Context, orgID string, id string, opts 
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/products/%s", orgID, id)
+	path := fmt.Sprintf("organizations/%s/products/%s", query.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -84,9 +84,9 @@ func (r *ProductService) Get(ctx context.Context, orgID string, id string, opts 
 // endpoint to update the Product use the `customFields` parameter to preserve
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
-func (r *ProductService) Update(ctx context.Context, orgID string, id string, body ProductUpdateParams, opts ...option.RequestOption) (res *Product, err error) {
+func (r *ProductService) Update(ctx context.Context, id string, params ProductUpdateParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -94,8 +94,8 @@ func (r *ProductService) Update(ctx context.Context, orgID string, id string, bo
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/products/%s", orgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/products/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -104,16 +104,16 @@ func (r *ProductService) Update(ctx context.Context, orgID string, id string, bo
 // This endpoint retrieves a list of all the Products within a specified
 // Organization. The list can be paginated, and supports filtering by specific
 // Product IDs.
-func (r *ProductService) List(ctx context.Context, orgID string, query ProductListParams, opts ...option.RequestOption) (res *pagination.Cursor[Product], err error) {
+func (r *ProductService) List(ctx context.Context, params ProductListParams, opts ...option.RequestOption) (res *pagination.Cursor[ProductResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	if orgID == "" {
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/products", orgID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/products", params.OrgID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,11 +130,30 @@ func (r *ProductService) List(ctx context.Context, orgID string, query ProductLi
 // This endpoint retrieves a list of all the Products within a specified
 // Organization. The list can be paginated, and supports filtering by specific
 // Product IDs.
-func (r *ProductService) ListAutoPaging(ctx context.Context, orgID string, query ProductListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Product] {
-	return pagination.NewCursorAutoPager(r.List(ctx, orgID, query, opts...))
+func (r *ProductService) ListAutoPaging(ctx context.Context, params ProductListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ProductResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
 
-type Product struct {
+// Delete a Product with the given UUID.
+//
+// This endpoint deletes a specific Product within a specified Organization, using
+// the Product UUID.
+func (r *ProductService) Delete(ctx context.Context, id string, body ProductDeleteParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if body.OrgID.Value == "" {
+		err = errors.New("missing required orgId parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("organizations/%s/products/%s", body.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
+type ProductResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -159,7 +178,7 @@ type Product struct {
 	// See
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
-	CustomFields map[string]ProductCustomFieldsUnion `json:"customFields"`
+	CustomFields map[string]ProductResponseCustomFieldsUnion `json:"customFields"`
 	// The date and time _(in ISO-8601 format)_ when the Product was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the Product was last modified.
@@ -167,12 +186,12 @@ type Product struct {
 	// The unique identifier (UUID) of the user who last modified this Product.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Descriptive name for the Product providing context and information.
-	Name string      `json:"name"`
-	JSON productJSON `json:"-"`
+	Name string              `json:"name"`
+	JSON productResponseJSON `json:"-"`
 }
 
-// productJSON contains the JSON metadata for the struct [Product]
-type productJSON struct {
+// productResponseJSON contains the JSON metadata for the struct [ProductResponse]
+type productResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	Code           apijson.Field
@@ -186,22 +205,22 @@ type productJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *Product) UnmarshalJSON(data []byte) (err error) {
+func (r *ProductResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r productJSON) RawJSON() string {
+func (r productResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type ProductCustomFieldsUnion interface {
-	ImplementsProductCustomFieldsUnion()
+type ProductResponseCustomFieldsUnion interface {
+	ImplementsProductResponseCustomFieldsUnion()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*ProductCustomFieldsUnion)(nil)).Elem(),
+		reflect.TypeOf((*ProductResponseCustomFieldsUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.String,
@@ -215,6 +234,7 @@ func init() {
 }
 
 type ProductNewParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
 	Code param.Field[string] `json:"code,required"`
@@ -251,7 +271,12 @@ type ProductNewParamsCustomFieldsUnion interface {
 	ImplementsProductNewParamsCustomFieldsUnion()
 }
 
+type ProductGetParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
+}
+
 type ProductUpdateParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
 	Code param.Field[string] `json:"code,required"`
@@ -289,6 +314,7 @@ type ProductUpdateParamsCustomFieldsUnion interface {
 }
 
 type ProductListParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 	// List of specific Product UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
@@ -304,4 +330,8 @@ func (r ProductListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type ProductDeleteParams struct {
+	OrgID param.Field[string] `path:"orgId,required"`
 }
