@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.8 (2025-03-07)
+
+Full Changelog: [v0.1.0-alpha.7...v0.1.0-alpha.8](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.7...v0.1.0-alpha.8)
+
+### Features
+
+* **client:** allow custom baseurls without trailing slash ([#55](https://github.com/m3ter-com/m3ter-sdk-go/issues/55)) ([2be2e89](https://github.com/m3ter-com/m3ter-sdk-go/commit/2be2e8944b5cc9b0ae233dd87eb347478971a6a9))
+
 ## 0.1.0-alpha.7 (2025-03-06)
 
 Full Changelog: [v0.1.0-alpha.6...v0.1.0-alpha.7](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.6...v0.1.0-alpha.7)
