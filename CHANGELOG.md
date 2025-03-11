@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-alpha.9 (2025-03-11)
+
+Full Changelog: [v0.1.0-alpha.8...v0.1.0-alpha.9](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.8...v0.1.0-alpha.9)
+
+### Features
+
+* add SKIP_BREW env var to ./scripts/bootstrap ([#58](https://github.com/m3ter-com/m3ter-sdk-go/issues/58)) ([4d65d0e](https://github.com/m3ter-com/m3ter-sdk-go/commit/4d65d0e3e4418adb750b64dbb923d8f671ac23ce))
+* **client:** accept RFC6838 JSON content types ([#60](https://github.com/m3ter-com/m3ter-sdk-go/issues/60)) ([505eafe](https://github.com/m3ter-com/m3ter-sdk-go/commit/505eafe005e3833d4aacd27477ff0eff0705ae53))
+
+
+### Refactors
+
+* tidy up dependencies ([#61](https://github.com/m3ter-com/m3ter-sdk-go/issues/61)) ([605dc08](https://github.com/m3ter-com/m3ter-sdk-go/commit/605dc08c0466a0ca262bfe9089530d535967b0a7))
+
 ## 0.1.0-alpha.8 (2025-03-07)
 
 Full Changelog: [v0.1.0-alpha.7...v0.1.0-alpha.8](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.7...v0.1.0-alpha.8)
