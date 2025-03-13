@@ -319,6 +319,7 @@ func (r PricingResponseType) IsKnown() bool {
 }
 
 type PricingNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID        param.Field[string]                    `path:"orgId,required"`
 	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
@@ -458,10 +459,12 @@ func (r PricingNewParamsType) IsKnown() bool {
 }
 
 type PricingGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PricingUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID        param.Field[string]                    `path:"orgId,required"`
 	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
@@ -601,6 +604,7 @@ func (r PricingUpdateParamsType) IsKnown() bool {
 }
 
 type PricingListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Date on which to retrieve active Pricings.
 	Date param.Field[string] `query:"date"`
@@ -625,5 +629,6 @@ func (r PricingListParams) URLQuery() (v url.Values) {
 }
 
 type PricingDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

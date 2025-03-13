@@ -205,6 +205,7 @@ func (r usageQueryResponseJSON) RawJSON() string {
 }
 
 type UsageGetFailedIngestDownloadURLParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The file path
 	File param.Field[string] `query:"file"`
@@ -220,6 +221,7 @@ func (r UsageGetFailedIngestDownloadURLParams) URLQuery() (v url.Values) {
 }
 
 type UsageQueryParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// ISO 8601 formatted end date to filter by.
 	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
@@ -470,6 +472,7 @@ func (r UsageQueryParamsGroupsGroupType) IsKnown() bool {
 }
 
 type UsageSubmitParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Request containing the usage data measurements for submission.
 	Measurements param.Field[[]UsageSubmitParamsMeasurement] `json:"measurements,required"`

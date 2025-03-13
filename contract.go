@@ -365,6 +365,7 @@ func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() str
 }
 
 type ContractNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -414,10 +415,12 @@ type ContractNewParamsCustomFieldsUnion interface {
 }
 
 type ContractGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ContractUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -467,6 +470,7 @@ type ContractUpdateParamsCustomFieldsUnion interface {
 }
 
 type ContractListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID     param.Field[string] `path:"orgId,required"`
 	AccountID param.Field[string] `query:"accountId"`
 	// An optional parameter to retrieve specific Contracts based on their short codes.
@@ -490,10 +494,12 @@ func (r ContractListParams) URLQuery() (v url.Values) {
 }
 
 type ContractDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ContractEndDateBillingEntitiesParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Defines which billing entities associated with the Account will have the
 	// specified end-date applied. For example, if you want the specified end-date to

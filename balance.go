@@ -263,6 +263,7 @@ func (r BalanceLineItemType) IsKnown() bool {
 }
 
 type BalanceNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -376,10 +377,12 @@ func (r BalanceNewParamsLineItemType) IsKnown() bool {
 }
 
 type BalanceGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BalanceUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -493,6 +496,7 @@ func (r BalanceUpdateParamsLineItemType) IsKnown() bool {
 }
 
 type BalanceListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer's account.
 	AccountID param.Field[string] `query:"accountId"`
@@ -516,5 +520,6 @@ func (r BalanceListParams) URLQuery() (v url.Values) {
 }
 
 type BalanceDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

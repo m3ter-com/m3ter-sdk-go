@@ -756,6 +756,7 @@ func (r IntegrationConfigurationEnableResponseTriggerType) IsKnown() bool {
 }
 
 type IntegrationConfigurationNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// A flexible object to include any additional configuration data specific to the
 	// integration.
@@ -869,10 +870,12 @@ func (r IntegrationConfigurationNewParamsCredentialsDestination) IsKnown() bool 
 }
 
 type IntegrationConfigurationGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type IntegrationConfigurationUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// A flexible object to include any additional configuration data specific to the
 	// integration.
@@ -986,6 +989,7 @@ func (r IntegrationConfigurationUpdateParamsCredentialsDestination) IsKnown() bo
 }
 
 type IntegrationConfigurationListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// integration configurations in a paginated list.
@@ -1004,14 +1008,17 @@ func (r IntegrationConfigurationListParams) URLQuery() (v url.Values) {
 }
 
 type IntegrationConfigurationDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type IntegrationConfigurationEnableParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type IntegrationConfigurationGetByEntityParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// UUID of the entity to retrieve IntegrationConfigs for
 	EntityID param.Field[string] `query:"entityId"`

@@ -313,10 +313,12 @@ func init() {
 }
 
 type CustomFieldGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CustomFieldUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Updates to Account entity CustomFields.
 	Account param.Field[map[string]CustomFieldUpdateParamsAccountUnion] `json:"account"`

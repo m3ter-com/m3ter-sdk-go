@@ -347,6 +347,7 @@ func (r ResourceGroupListContentsResponseTargetType) IsKnown() bool {
 }
 
 type ResourceGroupNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID   param.Field[string] `path:"orgId,required"`
 	Name    param.Field[string] `json:"name,required"`
 	Version param.Field[int64]  `json:"version"`
@@ -357,10 +358,12 @@ func (r ResourceGroupNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ResourceGroupGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ResourceGroupUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID   param.Field[string] `path:"orgId,required"`
 	Name    param.Field[string] `json:"name,required"`
 	Version param.Field[int64]  `json:"version"`
@@ -371,6 +374,7 @@ func (r ResourceGroupUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ResourceGroupListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
@@ -388,10 +392,12 @@ func (r ResourceGroupListParams) URLQuery() (v url.Values) {
 }
 
 type ResourceGroupDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ResourceGroupAddResourceParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The id of the item or group you want to:
 	//
@@ -447,6 +453,7 @@ func (r ResourceGroupAddResourceParamsTargetType) IsKnown() bool {
 }
 
 type ResourceGroupListContentsParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
@@ -464,6 +471,7 @@ func (r ResourceGroupListContentsParams) URLQuery() (v url.Values) {
 }
 
 type ResourceGroupListPermissionsParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
@@ -481,6 +489,7 @@ func (r ResourceGroupListPermissionsParams) URLQuery() (v url.Values) {
 }
 
 type ResourceGroupRemoveResourceParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The id of the item or group you want to:
 	//

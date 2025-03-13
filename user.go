@@ -518,10 +518,12 @@ func (r userMeResponseUserJSON) RawJSON() string {
 }
 
 type UserGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type UserUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The date and time _(in ISO 8601 format)_ when the user's access will end. Use
 	// this to set or update the expiration of the user's access.
@@ -548,6 +550,7 @@ func (r UserUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type UserListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// list of ids to retrieve
 	IDs param.Field[[]string] `query:"ids"`
@@ -567,6 +570,7 @@ func (r UserListParams) URLQuery() (v url.Values) {
 }
 
 type UserGetPermissionsParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// Permission Policies in a paginated list.
@@ -585,6 +589,7 @@ func (r UserGetPermissionsParams) URLQuery() (v url.Values) {
 }
 
 type UserGetUserGroupsParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// User Groups in a paginated list.
@@ -603,9 +608,11 @@ func (r UserGetUserGroupsParams) URLQuery() (v url.Values) {
 }
 
 type UserMeParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type UserResendPasswordParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

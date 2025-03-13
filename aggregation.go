@@ -388,6 +388,7 @@ func (r AggregationResponseRounding) IsKnown() bool {
 }
 
 type AggregationNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
@@ -593,10 +594,12 @@ type AggregationNewParamsCustomFieldsUnion interface {
 }
 
 type AggregationGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type AggregationUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
@@ -802,6 +805,7 @@ type AggregationUpdateParamsCustomFieldsUnion interface {
 }
 
 type AggregationListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Aggregation codes to retrieve. These are unique short codes to identify
 	// each Aggregation.
@@ -825,5 +829,6 @@ func (r AggregationListParams) URLQuery() (v url.Values) {
 }
 
 type AggregationDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

@@ -173,6 +173,7 @@ func (r planGroupLinkResponseJSON) RawJSON() string {
 }
 
 type PlanGroupLinkNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID       param.Field[string] `path:"orgId,required"`
 	PlanGroupID param.Field[string] `json:"planGroupId,required"`
 	PlanID      param.Field[string] `json:"planId,required"`
@@ -192,10 +193,12 @@ func (r PlanGroupLinkNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type PlanGroupLinkGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PlanGroupLinkUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID       param.Field[string] `path:"orgId,required"`
 	PlanGroupID param.Field[string] `json:"planGroupId,required"`
 	PlanID      param.Field[string] `json:"planId,required"`
@@ -215,6 +218,7 @@ func (r PlanGroupLinkUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type PlanGroupLinkListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// list of IDs to retrieve
 	IDs param.Field[[]string] `query:"ids"`
@@ -238,5 +242,6 @@ func (r PlanGroupLinkListParams) URLQuery() (v url.Values) {
 }
 
 type PlanGroupLinkDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

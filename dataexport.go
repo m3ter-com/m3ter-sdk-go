@@ -405,6 +405,7 @@ func (r AdHocUsageDataRequestTimePeriod) IsKnown() bool {
 }
 
 type DataExportNewAdhocParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Request representing an operational data export configuration.
 	Body DataExportNewAdhocParamsBodyUnion `json:"body,required"`

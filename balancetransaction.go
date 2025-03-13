@@ -248,6 +248,7 @@ func (r balanceTransactionSummaryResponseJSON) RawJSON() string {
 }
 
 type BalanceTransactionNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The financial value of the transaction.
 	Amount param.Field[float64] `json:"amount,required"`
@@ -281,6 +282,7 @@ func (r BalanceTransactionNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type BalanceTransactionListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// `nextToken` for multi page retrievals. A token for retrieving the next page of
 	// transactions. You'll get this from the response to your request.
@@ -300,5 +302,6 @@ func (r BalanceTransactionListParams) URLQuery() (v url.Values) {
 }
 
 type BalanceTransactionSummaryParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

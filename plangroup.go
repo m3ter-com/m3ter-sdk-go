@@ -276,6 +276,7 @@ func init() {
 }
 
 type PlanGroupNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Currency code for the PlanGroup (For example, USD).
 	Currency param.Field[string] `json:"currency,required"`
@@ -346,10 +347,12 @@ type PlanGroupNewParamsCustomFieldsUnion interface {
 }
 
 type PlanGroupGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PlanGroupUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Currency code for the PlanGroup (For example, USD).
 	Currency param.Field[string] `json:"currency,required"`
@@ -420,6 +423,7 @@ type PlanGroupUpdateParamsCustomFieldsUnion interface {
 }
 
 type PlanGroupListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Optional filter. The list of Account IDs to which the PlanGroups belong.
 	AccountID param.Field[[]string] `query:"accountId"`
@@ -441,5 +445,6 @@ func (r PlanGroupListParams) URLQuery() (v url.Values) {
 }
 
 type PlanGroupDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
