@@ -295,6 +295,7 @@ func (r externalMappingResponseJSON) RawJSON() string {
 }
 
 type ExternalMappingNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) of the entity in the external system. This UUID
 	// should already exist in the external system.
@@ -326,10 +327,12 @@ func (r ExternalMappingNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ExternalMappingGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ExternalMappingUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) of the entity in the external system. This UUID
 	// should already exist in the external system.
@@ -361,6 +364,7 @@ func (r ExternalMappingUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ExternalMappingListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the external system to use as a filter.
 	//
@@ -390,10 +394,12 @@ func (r ExternalMappingListParams) URLQuery() (v url.Values) {
 }
 
 type ExternalMappingDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ExternalMappingListByExternalEntityParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// External Mappings in a paginated list.
@@ -412,6 +418,7 @@ func (r ExternalMappingListByExternalEntityParams) URLQuery() (v url.Values) {
 }
 
 type ExternalMappingListByM3terEntityParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// External Mappings in a paginated list.

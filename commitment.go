@@ -454,6 +454,7 @@ func (r commitmentSearchResponseJSON) RawJSON() string {
 }
 
 type CommitmentNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
@@ -659,10 +660,12 @@ func (r CommitmentNewParamsLineItemType) IsKnown() bool {
 }
 
 type CommitmentGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CommitmentUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
@@ -868,6 +871,7 @@ func (r CommitmentUpdateParamsLineItemType) IsKnown() bool {
 }
 
 type CommitmentListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account. This parameter helps filter the
 	// Commitments related to a specific end-customer Account.
@@ -904,10 +908,12 @@ func (r CommitmentListParams) URLQuery() (v url.Values) {
 }
 
 type CommitmentDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CommitmentSearchParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`

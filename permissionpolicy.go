@@ -1017,6 +1017,7 @@ func (r PermissionPolicyRemoveFromUserGroupResponsePrincipalType) IsKnown() bool
 }
 
 type PermissionPolicyNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID            param.Field[string]                             `path:"orgId,required"`
 	Name             param.Field[string]                             `json:"name,required"`
 	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy,required"`
@@ -1035,10 +1036,12 @@ func (r PermissionPolicyNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type PermissionPolicyGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PermissionPolicyUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID            param.Field[string]                             `path:"orgId,required"`
 	Name             param.Field[string]                             `json:"name,required"`
 	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy,required"`
@@ -1057,6 +1060,7 @@ func (r PermissionPolicyUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type PermissionPolicyListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
@@ -1074,10 +1078,12 @@ func (r PermissionPolicyListParams) URLQuery() (v url.Values) {
 }
 
 type PermissionPolicyDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PermissionPolicyAddToServiceUserParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID                      param.Field[string]             `path:"orgId,required"`
 	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
@@ -1087,6 +1093,7 @@ func (r PermissionPolicyAddToServiceUserParams) MarshalJSON() (data []byte, err 
 }
 
 type PermissionPolicyAddToSupportUserParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The version number of the entity:
 	//
@@ -1104,6 +1111,7 @@ func (r PermissionPolicyAddToSupportUserParams) MarshalJSON() (data []byte, err 
 }
 
 type PermissionPolicyAddToUserParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID                      param.Field[string]             `path:"orgId,required"`
 	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
@@ -1113,6 +1121,7 @@ func (r PermissionPolicyAddToUserParams) MarshalJSON() (data []byte, err error) 
 }
 
 type PermissionPolicyAddToUserGroupParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID                      param.Field[string]             `path:"orgId,required"`
 	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
@@ -1122,6 +1131,7 @@ func (r PermissionPolicyAddToUserGroupParams) MarshalJSON() (data []byte, err er
 }
 
 type PermissionPolicyRemoveFromServiceUserParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID                      param.Field[string]             `path:"orgId,required"`
 	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
@@ -1131,10 +1141,12 @@ func (r PermissionPolicyRemoveFromServiceUserParams) MarshalJSON() (data []byte,
 }
 
 type PermissionPolicyRemoveFromSupportUserParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PermissionPolicyRemoveFromUserParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID                      param.Field[string]             `path:"orgId,required"`
 	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }
@@ -1144,6 +1156,7 @@ func (r PermissionPolicyRemoveFromUserParams) MarshalJSON() (data []byte, err er
 }
 
 type PermissionPolicyRemoveFromUserGroupParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID                      param.Field[string]             `path:"orgId,required"`
 	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
 }

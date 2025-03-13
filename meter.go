@@ -361,6 +361,7 @@ func (r meterResponseDerivedFieldJSON) RawJSON() string {
 }
 
 type MeterNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	//
@@ -431,10 +432,12 @@ type MeterNewParamsCustomFieldsUnion interface {
 }
 
 type MeterGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type MeterUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	//
@@ -505,6 +508,7 @@ type MeterUpdateParamsCustomFieldsUnion interface {
 }
 
 type MeterListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Meter codes to retrieve. These are the unique short codes that identify
 	// each Meter.
@@ -528,5 +532,6 @@ func (r MeterListParams) URLQuery() (v url.Values) {
 }
 
 type MeterDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

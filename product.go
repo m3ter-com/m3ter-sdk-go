@@ -234,6 +234,7 @@ func init() {
 }
 
 type ProductNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
@@ -272,10 +273,12 @@ type ProductNewParamsCustomFieldsUnion interface {
 }
 
 type ProductGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ProductUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
@@ -314,6 +317,7 @@ type ProductUpdateParamsCustomFieldsUnion interface {
 }
 
 type ProductListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of specific Product UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
@@ -333,5 +337,6 @@ func (r ProductListParams) URLQuery() (v url.Values) {
 }
 
 type ProductDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

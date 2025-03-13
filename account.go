@@ -546,6 +546,7 @@ func (r accountSearchResponseJSON) RawJSON() string {
 }
 
 type AccountNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Account. This is a unique short code used for the Account.
 	Code param.Field[string] `json:"code,required"`
@@ -707,10 +708,12 @@ type AccountNewParamsCustomFieldsUnion interface {
 }
 
 type AccountGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type AccountUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Code of the Account. This is a unique short code used for the Account.
 	Code param.Field[string] `json:"code,required"`
@@ -872,6 +875,7 @@ type AccountUpdateParamsCustomFieldsUnion interface {
 }
 
 type AccountListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Account Codes to retrieve. These are unique short codes for each
 	// Account.
@@ -893,10 +897,12 @@ func (r AccountListParams) URLQuery() (v url.Values) {
 }
 
 type AccountDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type AccountEndDateBillingEntitiesParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Defines which billing entities associated with the Account will have the
 	// specified end-date applied. For example, if you want the specified end-date to
@@ -935,6 +941,7 @@ func (r AccountEndDateBillingEntitiesParamsBillingEntity) IsKnown() bool {
 }
 
 type AccountGetChildrenParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID     param.Field[string] `path:"orgId,required"`
 	NextToken param.Field[string] `query:"nextToken"`
 	PageSize  param.Field[int64]  `query:"pageSize"`
@@ -950,6 +957,7 @@ func (r AccountGetChildrenParams) URLQuery() (v url.Values) {
 }
 
 type AccountSearchParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`

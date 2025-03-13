@@ -290,10 +290,12 @@ func (r OrganizationConfigResponseExternalInvoiceDate) IsKnown() bool {
 }
 
 type OrganizationConfigGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type OrganizationConfigUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The currency code for the Organization. For example: USD, GBP, or EUR:
 	//

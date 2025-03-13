@@ -275,6 +275,7 @@ func init() {
 }
 
 type PlanNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Unique short code reference for the Plan.
 	Code param.Field[string] `json:"code,required"`
@@ -370,10 +371,12 @@ type PlanNewParamsCustomFieldsUnion interface {
 }
 
 type PlanGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PlanUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Unique short code reference for the Plan.
 	Code param.Field[string] `json:"code,required"`
@@ -469,6 +472,7 @@ type PlanUpdateParamsCustomFieldsUnion interface {
 }
 
 type PlanListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Account IDs the Plan belongs to.
 	AccountID param.Field[[]string] `query:"accountId"`
@@ -491,5 +495,6 @@ func (r PlanListParams) URLQuery() (v url.Values) {
 }
 
 type PlanDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

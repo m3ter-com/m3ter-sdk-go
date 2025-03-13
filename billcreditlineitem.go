@@ -217,6 +217,7 @@ func (r creditLineItemResponseJSON) RawJSON() string {
 }
 
 type BillCreditLineItemNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The amount for the line item.
 	Amount param.Field[float64] `json:"amount,required"`
@@ -285,10 +286,12 @@ func (r BillCreditLineItemNewParamsLineItemType) IsKnown() bool {
 }
 
 type BillCreditLineItemGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillCreditLineItemUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The amount for the line item.
 	Amount param.Field[float64] `json:"amount,required"`
@@ -357,6 +360,7 @@ func (r BillCreditLineItemUpdateParamsLineItemType) IsKnown() bool {
 }
 
 type BillCreditLineItemListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// `nextToken` for multi page retrievals.
 	NextToken param.Field[string] `query:"nextToken"`
@@ -374,5 +378,6 @@ func (r BillCreditLineItemListParams) URLQuery() (v url.Values) {
 }
 
 type BillCreditLineItemDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

@@ -254,6 +254,7 @@ func (r counterPricingResponseJSON) RawJSON() string {
 }
 
 type CounterPricingNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// UUID of the Counter used to create the pricing.
 	CounterID    param.Field[string]                    `json:"counterId,required"`
@@ -346,10 +347,12 @@ func (r CounterPricingNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterPricingGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CounterPricingUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// UUID of the Counter used to create the pricing.
 	CounterID    param.Field[string]                    `json:"counterId,required"`
@@ -442,6 +445,7 @@ func (r CounterPricingUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterPricingListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Date on which to retrieve active CounterPricings.
 	Date param.Field[string] `query:"date"`
@@ -467,5 +471,6 @@ func (r CounterPricingListParams) URLQuery() (v url.Values) {
 }
 
 type CounterPricingDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

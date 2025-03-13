@@ -183,6 +183,7 @@ func (r creditReasonResponseJSON) RawJSON() string {
 }
 
 type CreditReasonNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
@@ -210,10 +211,12 @@ func (r CreditReasonNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CreditReasonGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CreditReasonUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
@@ -241,6 +244,7 @@ func (r CreditReasonUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CreditReasonListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// TRUE / FALSE archived flag to filter the list. CreditReasons can be archived
 	// once they are obsolete.
@@ -267,5 +271,6 @@ func (r CreditReasonListParams) URLQuery() (v url.Values) {
 }
 
 type CreditReasonDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

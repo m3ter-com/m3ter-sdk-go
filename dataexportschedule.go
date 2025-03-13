@@ -1879,6 +1879,7 @@ func (r DataExportScheduleDeleteResponseTimePeriod) IsKnown() bool {
 }
 
 type DataExportScheduleNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Request representing an operational schedule configuration.
 	Body DataExportScheduleNewParamsBodyUnion `json:"body,required"`
@@ -2106,10 +2107,12 @@ func (r DataExportScheduleNewParamsBodyTimePeriod) IsKnown() bool {
 }
 
 type DataExportScheduleGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type DataExportScheduleUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Request representing an operational schedule configuration.
 	Body DataExportScheduleUpdateParamsBodyUnion `json:"body,required"`
@@ -2337,6 +2340,7 @@ func (r DataExportScheduleUpdateParamsBodyTimePeriod) IsKnown() bool {
 }
 
 type DataExportScheduleListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Data Export Schedule IDs to filter the returned list by.
 	IDs param.Field[[]string] `query:"ids"`
@@ -2356,5 +2360,6 @@ func (r DataExportScheduleListParams) URLQuery() (v url.Values) {
 }
 
 type DataExportScheduleDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
