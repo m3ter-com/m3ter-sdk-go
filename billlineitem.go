@@ -348,10 +348,12 @@ func (r LineItemResponseLineItemType) IsKnown() bool {
 }
 
 type BillLineItemGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillLineItemListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// line items in a paginated list.

@@ -254,10 +254,12 @@ func (r eventGetTypesResponseJSON) RawJSON() string {
 }
 
 type EventGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type EventListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The Account ID associated with the Event to filter the results. Returns the
 	// Events that have been generated for the Account.
@@ -302,6 +304,7 @@ func (r EventListParams) URLQuery() (v url.Values) {
 }
 
 type EventGetFieldsParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the specific Event Type to use as a list filter, for example
 	// `configuration.commitment.created`.
@@ -317,5 +320,6 @@ func (r EventGetFieldsParams) URLQuery() (v url.Values) {
 }
 
 type EventGetTypesParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

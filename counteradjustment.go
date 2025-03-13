@@ -212,6 +212,7 @@ func (r counterAdjustmentResponseJSON) RawJSON() string {
 }
 
 type CounterAdjustmentNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The Account ID the CounterAdjustment is created for.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -249,10 +250,12 @@ func (r CounterAdjustmentNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterAdjustmentGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CounterAdjustmentUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The Account ID the CounterAdjustment is created for.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -290,6 +293,7 @@ func (r CounterAdjustmentUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterAdjustmentListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List CounterAdjustment items for the Account UUID.
 	AccountID param.Field[string] `query:"accountId"`
@@ -319,5 +323,6 @@ func (r CounterAdjustmentListParams) URLQuery() (v url.Values) {
 }
 
 type CounterAdjustmentDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

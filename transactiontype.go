@@ -186,6 +186,7 @@ func (r transactionTypeResponseJSON) RawJSON() string {
 }
 
 type TransactionTypeNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
@@ -213,10 +214,12 @@ func (r TransactionTypeNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type TransactionTypeGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type TransactionTypeUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
@@ -244,6 +247,7 @@ func (r TransactionTypeUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type TransactionTypeListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Filter with this Boolean flag whether to include TransactionTypes that are
 	// archived.
@@ -272,5 +276,6 @@ func (r TransactionTypeListParams) URLQuery() (v url.Values) {
 }
 
 type TransactionTypeDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

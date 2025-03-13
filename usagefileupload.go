@@ -91,6 +91,7 @@ func (r usageFileUploadGenerateUploadURLResponseJSON) RawJSON() string {
 }
 
 type UsageFileUploadGenerateUploadURLParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The media type of the entity body sent, for example:
 	// `"contentType":"text/json"`.

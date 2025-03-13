@@ -646,10 +646,12 @@ func (r billSearchResponseJSON) RawJSON() string {
 }
 
 type BillGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Optional filter. An Account ID - returns the Bills for the single specified
 	// Account.
@@ -710,10 +712,12 @@ func (r BillListParamsStatus) IsKnown() bool {
 }
 
 type BillDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillApproveParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Use to specify a collection of Bills by their IDs for batch approval
 	BillIDs param.Field[[]string] `json:"billIds,required"`
@@ -741,14 +745,17 @@ func (r BillApproveParams) URLQuery() (v url.Values) {
 }
 
 type BillLatestByAccountParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillLockParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillSearchParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
@@ -826,6 +833,7 @@ func (r BillSearchParamsSortOrder) IsKnown() bool {
 }
 
 type BillUpdateStatusParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The new status you want to assign to the Bill. Must be one "Pending" or
 	// "Approved".

@@ -542,6 +542,7 @@ func (r DataExportDestinationDeleteResponsePartitionOrder) IsKnown() bool {
 }
 
 type DataExportDestinationNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName param.Field[string] `json:"bucketName,required"`
@@ -632,10 +633,12 @@ func (r DataExportDestinationNewParamsPartitionOrder) IsKnown() bool {
 }
 
 type DataExportDestinationGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type DataExportDestinationUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName param.Field[string] `json:"bucketName,required"`
@@ -726,6 +729,7 @@ func (r DataExportDestinationUpdateParamsPartitionOrder) IsKnown() bool {
 }
 
 type DataExportDestinationListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Export Destination UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
@@ -745,5 +749,6 @@ func (r DataExportDestinationListParams) URLQuery() (v url.Values) {
 }
 
 type DataExportDestinationDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
