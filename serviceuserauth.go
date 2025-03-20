@@ -29,10 +29,10 @@ func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOpt
 				GrantType: F(AuthenticationGetBearerTokenParamsGrantTypeClientCredentials),
 			}
 
-			basicAuthOption := func(r *requestconfig.RequestConfig) error {
+			basicAuthOption := requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 				r.Request.SetBasicAuth(r.APIKey, r.APISecret)
 				return nil
-			}
+			})
 
 			reqTime := time.Now()
 
