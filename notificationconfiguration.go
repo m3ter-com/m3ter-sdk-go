@@ -236,6 +236,7 @@ func (r notificationConfigurationResponseJSON) RawJSON() string {
 }
 
 type NotificationConfigurationNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The short code for the Notification.
 	Code param.Field[string] `json:"code,required"`
@@ -294,10 +295,12 @@ func (r NotificationConfigurationNewParams) MarshalJSON() (data []byte, err erro
 }
 
 type NotificationConfigurationGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type NotificationConfigurationUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The short code for the Notification.
 	Code param.Field[string] `json:"code,required"`
@@ -356,6 +359,7 @@ func (r NotificationConfigurationUpdateParams) MarshalJSON() (data []byte, err e
 }
 
 type NotificationConfigurationListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// A Boolean flag indicating whether to retrieve only active or only inactive
 	// Notifications.
@@ -385,5 +389,6 @@ func (r NotificationConfigurationListParams) URLQuery() (v url.Values) {
 }
 
 type NotificationConfigurationDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

@@ -485,6 +485,7 @@ func (r webhookSetActiveResponseJSON) RawJSON() string {
 }
 
 type WebhookNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// This schema defines the credentials required for m3ter request signing.
 	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials,required"`
@@ -510,10 +511,12 @@ func (r WebhookNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type WebhookGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type WebhookUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// This schema defines the credentials required for m3ter request signing.
 	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials,required"`
@@ -539,6 +542,7 @@ func (r WebhookUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type WebhookListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string]   `path:"orgId,required"`
 	IDs   param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
@@ -556,10 +560,12 @@ func (r WebhookListParams) URLQuery() (v url.Values) {
 }
 
 type WebhookDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type WebhookSetActiveParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// active status of the webhook
 	Active param.Field[bool] `query:"active"`

@@ -182,6 +182,7 @@ func (r scheduledEventConfigurationResponseJSON) RawJSON() string {
 }
 
 type ScheduledEventConfigurationNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The referenced configuration or billing entity for which the desired scheduled
 	// Event will trigger.
@@ -217,10 +218,12 @@ func (r ScheduledEventConfigurationNewParams) MarshalJSON() (data []byte, err er
 }
 
 type ScheduledEventConfigurationGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type ScheduledEventConfigurationUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The referenced configuration or billing entity for which the desired scheduled
 	// Event will trigger.
@@ -256,6 +259,7 @@ func (r ScheduledEventConfigurationUpdateParams) MarshalJSON() (data []byte, err
 }
 
 type ScheduledEventConfigurationListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// list of UUIDs to retrieve
 	IDs param.Field[[]string] `query:"ids"`
@@ -275,5 +279,6 @@ func (r ScheduledEventConfigurationListParams) URLQuery() (v url.Values) {
 }
 
 type ScheduledEventConfigurationDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

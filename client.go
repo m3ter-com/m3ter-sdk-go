@@ -56,12 +56,9 @@ type Client struct {
 	Webhooks                     *WebhookService
 }
 
-// NewClient generates a new client with the default option read from the
-// environment (M3TER_API_KEY, M3TER_API_SECRET, M3TER_API_TOKEN, M3TER_ORG_ID).
-// The option passed in as arguments are applied after these default arguments, and
-// all option will be passed down to the services and requests that this client
-// makes.
-func NewClient(opts ...option.RequestOption) (r *Client) {
+// DefaultClientOptions read from the environment (M3TER_API_KEY, M3TER_API_SECRET,
+// M3TER_API_TOKEN, M3TER_ORG_ID). This should be used to initialize new clients.
+func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("M3TER_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
@@ -75,7 +72,16 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	if o, ok := os.LookupEnv("M3TER_ORG_ID"); ok {
 		defaults = append(defaults, option.WithOrgID(o))
 	}
-	opts = append(defaults, opts...)
+	return defaults
+}
+
+// NewClient generates a new client with the default option read from the
+// environment (M3TER_API_KEY, M3TER_API_SECRET, M3TER_API_TOKEN, M3TER_ORG_ID).
+// The option passed in as arguments are applied after these default arguments, and
+// all option will be passed down to the services and requests that this client
+// makes.
+func NewClient(opts ...option.RequestOption) (r *Client) {
+	opts = append(DefaultClientOptions(), opts...)
 
 	r = &Client{Options: opts}
 

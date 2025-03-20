@@ -183,6 +183,7 @@ func (r debitReasonResponseJSON) RawJSON() string {
 }
 
 type DebitReasonNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
@@ -210,10 +211,12 @@ func (r DebitReasonNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type DebitReasonGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type DebitReasonUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The name of the entity.
 	Name param.Field[string] `json:"name,required"`
@@ -241,6 +244,7 @@ func (r DebitReasonUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type DebitReasonListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Filter using the boolean archived flag. DebitReasons can be archived if they are
 	// obsolete.
@@ -267,5 +271,6 @@ func (r DebitReasonListParams) URLQuery() (v url.Values) {
 }
 
 type DebitReasonDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

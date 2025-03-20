@@ -399,6 +399,7 @@ func (r BillJobResponseType) IsKnown() bool {
 }
 
 type BillJobNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// An array of UUIDs representing the end customer Accounts associated with the
 	// BillJob.
@@ -531,10 +532,12 @@ func (r BillJobNewParamsBillingFrequency) IsKnown() bool {
 }
 
 type BillJobGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillJobListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Boolean filter to retrieve only active BillJobs and exclude completed or
 	// cancelled BillJobs from the results.
@@ -569,10 +572,12 @@ func (r BillJobListParams) URLQuery() (v url.Values) {
 }
 
 type BillJobCancelParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillJobRecalculateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The array of unique identifiers (UUIDs) for the Bills which are to be
 	// recalculated.

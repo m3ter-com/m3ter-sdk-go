@@ -328,6 +328,7 @@ func init() {
 }
 
 type AccountPlanNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -438,10 +439,12 @@ type AccountPlanNewParamsCustomFieldsUnion interface {
 }
 
 type AccountPlanGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type AccountPlanUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account.
 	AccountID param.Field[string] `json:"accountId,required"`
@@ -552,6 +555,7 @@ type AccountPlanUpdateParamsCustomFieldsUnion interface {
 }
 
 type AccountPlanListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account whose AccountPlans and
 	// AccountPlanGroups you want to retrieve.
@@ -598,5 +602,6 @@ func (r AccountPlanListParams) URLQuery() (v url.Values) {
 }
 
 type AccountPlanDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

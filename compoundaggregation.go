@@ -324,6 +324,7 @@ func (r CompoundAggregationResponseRounding) IsKnown() bool {
 }
 
 type CompoundAggregationNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// String that represents the formula for the calculation. This formula determines
 	// how the CompoundAggregation value is calculated. The calculation can reference
@@ -445,10 +446,12 @@ type CompoundAggregationNewParamsCustomFieldsUnion interface {
 }
 
 type CompoundAggregationGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CompoundAggregationUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// String that represents the formula for the calculation. This formula determines
 	// how the CompoundAggregation value is calculated. The calculation can reference
@@ -570,6 +573,7 @@ type CompoundAggregationUpdateParamsCustomFieldsUnion interface {
 }
 
 type CompoundAggregationListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// An optional parameter to retrieve specific CompoundAggregations based on their
 	// short codes.
@@ -597,5 +601,6 @@ func (r CompoundAggregationListParams) URLQuery() (v url.Values) {
 }
 
 type CompoundAggregationDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

@@ -165,6 +165,7 @@ func (r invitationResponseJSON) RawJSON() string {
 }
 
 type UserInvitationNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID         param.Field[string] `path:"orgId,required"`
 	Email         param.Field[string] `json:"email,required" format:"email"`
 	FirstName     param.Field[string] `json:"firstName,required"`
@@ -190,10 +191,12 @@ func (r UserInvitationNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type UserInvitationGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type UserInvitationListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// `nextToken` for multi page retrievals.
 	NextToken param.Field[string] `query:"nextToken"`

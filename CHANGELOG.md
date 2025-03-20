@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.10 (2025-03-13)
+
+Full Changelog: [v0.1.0-alpha.9...v0.1.0-alpha.10](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.9...v0.1.0-alpha.10)
+
+### Features
+
+* **client:** improve default client options support ([#63](https://github.com/m3ter-com/m3ter-sdk-go/issues/63)) ([1726176](https://github.com/m3ter-com/m3ter-sdk-go/commit/172617602f6bbcda0b8dc0685f867e8a45657f90))
+
+
+### Chores
+
+* **internal:** remove extra empty newlines ([#65](https://github.com/m3ter-com/m3ter-sdk-go/issues/65)) ([6a78f1d](https://github.com/m3ter-com/m3ter-sdk-go/commit/6a78f1dc83a76ef865035711e084cc59acb3258c))
+
 ## 0.1.0-alpha.9 (2025-03-11)
 
 Full Changelog: [v0.1.0-alpha.8...v0.1.0-alpha.9](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.8...v0.1.0-alpha.9)

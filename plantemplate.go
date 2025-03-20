@@ -346,6 +346,7 @@ func init() {
 }
 
 type PlanTemplateNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Determines the frequency at which bills are generated.
 	//
@@ -494,10 +495,12 @@ type PlanTemplateNewParamsCustomFieldsUnion interface {
 }
 
 type PlanTemplateGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type PlanTemplateUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Determines the frequency at which bills are generated.
 	//
@@ -646,6 +649,7 @@ type PlanTemplateUpdateParamsCustomFieldsUnion interface {
 }
 
 type PlanTemplateListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of specific PlanTemplate UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
@@ -668,5 +672,6 @@ func (r PlanTemplateListParams) URLQuery() (v url.Values) {
 }
 
 type PlanTemplateDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

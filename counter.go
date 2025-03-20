@@ -183,6 +183,7 @@ func (r counterResponseJSON) RawJSON() string {
 }
 
 type CounterNewParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Descriptive name for the Counter.
 	Name param.Field[string] `json:"name,required"`
@@ -211,10 +212,12 @@ func (r CounterNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type CounterUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Descriptive name for the Counter.
 	Name param.Field[string] `json:"name,required"`
@@ -243,6 +246,7 @@ func (r CounterUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CounterListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// List of Counter codes to retrieve. These are unique short codes to identify each
 	// Counter.
@@ -266,5 +270,6 @@ func (r CounterListParams) URLQuery() (v url.Values) {
 }
 
 type CounterDeleteParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

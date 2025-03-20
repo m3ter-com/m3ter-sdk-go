@@ -214,10 +214,12 @@ func (r usageFileUploadJobGetOriginalDownloadURLResponseJSON) RawJSON() string {
 }
 
 type UsageFileUploadJobGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type UsageFileUploadJobListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Include only File Upload jobs created before this date. Required format is
 	// ISO-8601: yyyy-MM-dd'T'HH:mm:ss'Z'
@@ -243,5 +245,6 @@ func (r UsageFileUploadJobListParams) URLQuery() (v url.Values) {
 }
 
 type UsageFileUploadJobGetOriginalDownloadURLParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

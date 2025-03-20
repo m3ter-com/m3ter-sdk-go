@@ -220,10 +220,12 @@ func (r dataExportJobGetDownloadURLResponseJSON) RawJSON() string {
 }
 
 type DataExportJobGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type DataExportJobListParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Include only Job entities created before this date. Format:
 	// yyyy-MM-dd'T'HH:mm:ss'Z'
@@ -271,5 +273,6 @@ func (r DataExportJobListParamsStatus) IsKnown() bool {
 }
 
 type DataExportJobGetDownloadURLParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }

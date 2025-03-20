@@ -109,10 +109,12 @@ func (r billConfigResponseJSON) RawJSON() string {
 }
 
 type BillConfigGetParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 }
 
 type BillConfigUpdateParams struct {
+	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The global lock date when all Bills will be locked _(in ISO 8601 format)_.
 	//
