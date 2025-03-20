@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.11 (2025-03-20)
+
+Full Changelog: [v0.1.0-alpha.10...v0.1.0-alpha.11](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.10...v0.1.0-alpha.11)
+
+### Features
+
+* Fix service user auth for new Stainless request option type ([4e54877](https://github.com/m3ter-com/m3ter-sdk-go/commit/4e54877cc25b25f59aeebe7934449779aac4ed64))
+
 ## 0.1.0-alpha.10 (2025-03-13)
 
 Full Changelog: [v0.1.0-alpha.9...v0.1.0-alpha.10](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.9...v0.1.0-alpha.10)
