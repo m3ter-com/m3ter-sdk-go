@@ -26,6 +26,8 @@ type MiddlewareNext = func(*http.Request) (*http.Response, error)
 type Middleware = func(*http.Request, MiddlewareNext) (*http.Response, error)
 
 // WithBaseURL returns a RequestOption that sets the BaseURL for the client.
+//
+// For security reasons, ensure that the base URL is trusted.
 func WithBaseURL(base string) RequestOption {
 	u, err := url.Parse(base)
 	if err != nil {
