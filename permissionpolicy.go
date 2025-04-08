@@ -68,6 +68,11 @@ func NewPermissionPolicyService(opts ...option.RequestOption) (r *PermissionPoli
 // in our main Documentation.
 func (r *PermissionPolicyService) New(ctx context.Context, params PermissionPolicyNewParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -80,6 +85,11 @@ func (r *PermissionPolicyService) New(ctx context.Context, params PermissionPoli
 // Retrieve the permission policy for the UUID
 func (r *PermissionPolicyService) Get(ctx context.Context, id string, query PermissionPolicyGetParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -124,6 +134,11 @@ func (r *PermissionPolicyService) Get(ctx context.Context, id string, query Perm
 // in our main Documentation.
 func (r *PermissionPolicyService) Update(ctx context.Context, id string, params PermissionPolicyUpdateParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -142,6 +157,11 @@ func (r *PermissionPolicyService) List(ctx context.Context, params PermissionPol
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -167,6 +187,11 @@ func (r *PermissionPolicyService) ListAutoPaging(ctx context.Context, params Per
 // Delete the PermissionPolicy for the UUID
 func (r *PermissionPolicyService) Delete(ctx context.Context, id string, body PermissionPolicyDeleteParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -183,6 +208,11 @@ func (r *PermissionPolicyService) Delete(ctx context.Context, id string, body Pe
 // Add a permission policy to a service user.
 func (r *PermissionPolicyService) AddToServiceUser(ctx context.Context, permissionPolicyID string, params PermissionPolicyAddToServiceUserParams, opts ...option.RequestOption) (res *PermissionPolicyAddToServiceUserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -199,6 +229,11 @@ func (r *PermissionPolicyService) AddToServiceUser(ctx context.Context, permissi
 // Add a permission policy to support users for an organization.
 func (r *PermissionPolicyService) AddToSupportUser(ctx context.Context, permissionPolicyID string, params PermissionPolicyAddToSupportUserParams, opts ...option.RequestOption) (res *PermissionPolicyAddToSupportUserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -215,6 +250,11 @@ func (r *PermissionPolicyService) AddToSupportUser(ctx context.Context, permissi
 // Add a permission policy to a user.
 func (r *PermissionPolicyService) AddToUser(ctx context.Context, permissionPolicyID string, params PermissionPolicyAddToUserParams, opts ...option.RequestOption) (res *PermissionPolicyAddToUserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -231,6 +271,11 @@ func (r *PermissionPolicyService) AddToUser(ctx context.Context, permissionPolic
 // Add a permission Policy to a user group
 func (r *PermissionPolicyService) AddToUserGroup(ctx context.Context, permissionPolicyID string, params PermissionPolicyAddToUserGroupParams, opts ...option.RequestOption) (res *PermissionPolicyAddToUserGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -247,6 +292,11 @@ func (r *PermissionPolicyService) AddToUserGroup(ctx context.Context, permission
 // Remove a permission policy from a service user.
 func (r *PermissionPolicyService) RemoveFromServiceUser(ctx context.Context, permissionPolicyID string, params PermissionPolicyRemoveFromServiceUserParams, opts ...option.RequestOption) (res *PermissionPolicyRemoveFromServiceUserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -263,6 +313,11 @@ func (r *PermissionPolicyService) RemoveFromServiceUser(ctx context.Context, per
 // Remove a permission policy from support users for an organization.
 func (r *PermissionPolicyService) RemoveFromSupportUser(ctx context.Context, permissionPolicyID string, body PermissionPolicyRemoveFromSupportUserParams, opts ...option.RequestOption) (res *PermissionPolicyRemoveFromSupportUserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -279,6 +334,11 @@ func (r *PermissionPolicyService) RemoveFromSupportUser(ctx context.Context, per
 // Remove a permission policy from a user.
 func (r *PermissionPolicyService) RemoveFromUser(ctx context.Context, permissionPolicyID string, params PermissionPolicyRemoveFromUserParams, opts ...option.RequestOption) (res *PermissionPolicyRemoveFromUserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -295,6 +355,11 @@ func (r *PermissionPolicyService) RemoveFromUser(ctx context.Context, permission
 // Remove a permission policy from a user group.
 func (r *PermissionPolicyService) RemoveFromUserGroup(ctx context.Context, permissionPolicyID string, params PermissionPolicyRemoveFromUserGroupParams, opts ...option.RequestOption) (res *PermissionPolicyRemoveFromUserGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

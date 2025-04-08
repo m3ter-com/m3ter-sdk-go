@@ -68,6 +68,11 @@ func NewBillJobService(opts ...option.RequestOption) (r *BillJobService) {
 //     able to submit another job
 func (r *BillJobService) New(ctx context.Context, params BillJobNewParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -80,6 +85,11 @@ func (r *BillJobService) New(ctx context.Context, params BillJobNewParams, opts 
 // Retrieve a Bill Job for the given UUID.
 func (r *BillJobService) Get(ctx context.Context, id string, query BillJobGetParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -103,6 +113,11 @@ func (r *BillJobService) List(ctx context.Context, params BillJobListParams, opt
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -137,6 +152,11 @@ func (r *BillJobService) ListAutoPaging(ctx context.Context, params BillJobListP
 // operational considerations.
 func (r *BillJobService) Cancel(ctx context.Context, id string, body BillJobCancelParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -167,6 +187,11 @@ func (r *BillJobService) Cancel(ctx context.Context, id string, body BillJobCanc
 //     its size and improve performance.
 func (r *BillJobService) Recalculate(ctx context.Context, params BillJobRecalculateParams, opts ...option.RequestOption) (res *BillJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

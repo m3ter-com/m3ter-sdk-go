@@ -50,6 +50,11 @@ func NewCounterAdjustmentService(opts ...option.RequestOption) (r *CounterAdjust
 //     day using the same Counter and you'll receive an error if you try to do this.
 func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjustmentNewParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -62,6 +67,11 @@ func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjust
 // Retrieve a CounterAdjustment for the given UUID.
 func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query CounterAdjustmentGetParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -78,6 +88,11 @@ func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query Cou
 // Update a CounterAdjustment for an Account.
 func (r *CounterAdjustmentService) Update(ctx context.Context, id string, params CounterAdjustmentUpdateParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -105,6 +120,11 @@ func (r *CounterAdjustmentService) List(ctx context.Context, params CounterAdjus
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -139,6 +159,11 @@ func (r *CounterAdjustmentService) ListAutoPaging(ctx context.Context, params Co
 // Delete a CounterAdjustment for the given UUID.
 func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body CounterAdjustmentDeleteParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

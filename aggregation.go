@@ -43,6 +43,11 @@ func NewAggregationService(opts ...option.RequestOption) (r *AggregationService)
 // Create a new Aggregation.
 func (r *AggregationService) New(ctx context.Context, params AggregationNewParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -55,6 +60,11 @@ func (r *AggregationService) New(ctx context.Context, params AggregationNewParam
 // Retrieve the Aggregation with the given UUID.
 func (r *AggregationService) Get(ctx context.Context, id string, query AggregationGetParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -76,6 +86,11 @@ func (r *AggregationService) Get(ctx context.Context, id string, query Aggregati
 // will be lost.
 func (r *AggregationService) Update(ctx context.Context, id string, params AggregationUpdateParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -95,6 +110,11 @@ func (r *AggregationService) List(ctx context.Context, params AggregationListPar
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -121,6 +141,11 @@ func (r *AggregationService) ListAutoPaging(ctx context.Context, params Aggregat
 // Delete the Aggregation with the given UUID.
 func (r *AggregationService) Delete(ctx context.Context, id string, body AggregationDeleteParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

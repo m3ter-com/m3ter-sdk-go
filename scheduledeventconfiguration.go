@@ -40,6 +40,11 @@ func NewScheduledEventConfigurationService(opts ...option.RequestOption) (r *Sch
 // Create a new ScheduledEventConfiguration.
 func (r *ScheduledEventConfigurationService) New(ctx context.Context, params ScheduledEventConfigurationNewParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -52,6 +57,11 @@ func (r *ScheduledEventConfigurationService) New(ctx context.Context, params Sch
 // Retrieve a ScheduledEventConfiguration for the given UUID.
 func (r *ScheduledEventConfigurationService) Get(ctx context.Context, id string, query ScheduledEventConfigurationGetParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -68,6 +78,11 @@ func (r *ScheduledEventConfigurationService) Get(ctx context.Context, id string,
 // Update a ScheduledEventConfiguration for the given UUID.
 func (r *ScheduledEventConfigurationService) Update(ctx context.Context, id string, params ScheduledEventConfigurationUpdateParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -86,6 +101,11 @@ func (r *ScheduledEventConfigurationService) List(ctx context.Context, params Sc
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -111,6 +131,11 @@ func (r *ScheduledEventConfigurationService) ListAutoPaging(ctx context.Context,
 // Delete the ScheduledEventConfiguration for the given UUID.
 func (r *ScheduledEventConfigurationService) Delete(ctx context.Context, id string, body ScheduledEventConfigurationDeleteParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

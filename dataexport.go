@@ -97,6 +97,11 @@ func NewDataExportService(opts ...option.RequestOption) (r *DataExportService) {
 // Reference.
 func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAdhocParams, opts ...option.RequestOption) (res *AdHocResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

@@ -43,6 +43,11 @@ func NewAccountService(opts ...option.RequestOption) (r *AccountService) {
 // Create a new Account within the Organization.
 func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -55,6 +60,11 @@ func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts 
 // Retrieve the Account with the given Account UUID.
 func (r *AccountService) Get(ctx context.Context, id string, query AccountGetParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -76,6 +86,11 @@ func (r *AccountService) Get(ctx context.Context, id string, query AccountGetPar
 // lost.
 func (r *AccountService) Update(ctx context.Context, id string, params AccountUpdateParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -94,6 +109,11 @@ func (r *AccountService) List(ctx context.Context, params AccountListParams, opt
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -120,6 +140,11 @@ func (r *AccountService) ListAutoPaging(ctx context.Context, params AccountListP
 // AccountPlans that reference the Account being deleted.
 func (r *AccountService) Delete(ctx context.Context, id string, body AccountDeleteParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -141,6 +166,11 @@ func (r *AccountService) Delete(ctx context.Context, id string, body AccountDele
 //     entity is incremented.
 func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, params AccountEndDateBillingEntitiesParams, opts ...option.RequestOption) (res *AccountEndDateBillingEntitiesResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -157,6 +187,11 @@ func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, 
 // Retrieve a list of Accounts that are children of the specified Account.
 func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -178,6 +213,11 @@ func (r *AccountService) GetChildren(ctx context.Context, id string, params Acco
 // easier management.
 func (r *AccountService) Search(ctx context.Context, params AccountSearchParams, opts ...option.RequestOption) (res *AccountSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

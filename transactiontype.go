@@ -41,6 +41,11 @@ func NewTransactionTypeService(opts ...option.RequestOption) (r *TransactionType
 // TransactionType should be included in the request body.
 func (r *TransactionTypeService) New(ctx context.Context, params TransactionTypeNewParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -54,6 +59,11 @@ func (r *TransactionTypeService) New(ctx context.Context, params TransactionType
 // Organization.
 func (r *TransactionTypeService) Get(ctx context.Context, id string, query TransactionTypeGetParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -72,6 +82,11 @@ func (r *TransactionTypeService) Get(ctx context.Context, id string, query Trans
 // request body.
 func (r *TransactionTypeService) Update(ctx context.Context, id string, params TransactionTypeUpdateParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -92,6 +107,11 @@ func (r *TransactionTypeService) List(ctx context.Context, params TransactionTyp
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -119,6 +139,11 @@ func (r *TransactionTypeService) ListAutoPaging(ctx context.Context, params Tran
 // Deletes the TransactionType with the given UUID from the specified Organization.
 func (r *TransactionTypeService) Delete(ctx context.Context, id string, body TransactionTypeDeleteParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

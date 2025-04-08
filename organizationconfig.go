@@ -38,6 +38,11 @@ func NewOrganizationConfigService(opts ...option.RequestOption) (r *Organization
 // Retrieve the Organization-wide configuration details.
 func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationConfigGetParams, opts ...option.RequestOption) (res *OrganizationConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -50,6 +55,11 @@ func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationC
 // Update the Organization-wide configuration details.
 func (r *OrganizationConfigService) Update(ctx context.Context, params OrganizationConfigUpdateParams, opts ...option.RequestOption) (res *OrganizationConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

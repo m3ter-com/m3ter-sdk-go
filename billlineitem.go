@@ -43,6 +43,11 @@ func NewBillLineItemService(opts ...option.RequestOption) (r *BillLineItemServic
 // a specific Bill.
 func (r *BillLineItemService) Get(ctx context.Context, billID string, id string, query BillLineItemGetParams, opts ...option.RequestOption) (res *LineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -70,6 +75,11 @@ func (r *BillLineItemService) List(ctx context.Context, billID string, params Bi
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

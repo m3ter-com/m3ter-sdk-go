@@ -40,6 +40,11 @@ func NewResourceGroupService(opts ...option.RequestOption) (r *ResourceGroupServ
 // Create a ResourceGroup for the UUID
 func (r *ResourceGroupService) New(ctx context.Context, type_ string, params ResourceGroupNewParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -56,6 +61,11 @@ func (r *ResourceGroupService) New(ctx context.Context, type_ string, params Res
 // Retrieve the ResourceGroup for the UUID
 func (r *ResourceGroupService) Get(ctx context.Context, type_ string, id string, query ResourceGroupGetParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -76,6 +86,11 @@ func (r *ResourceGroupService) Get(ctx context.Context, type_ string, id string,
 // Update the ResourceGroup for the UUID
 func (r *ResourceGroupService) Update(ctx context.Context, type_ string, id string, params ResourceGroupUpdateParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -98,6 +113,11 @@ func (r *ResourceGroupService) List(ctx context.Context, type_ string, params Re
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -127,6 +147,11 @@ func (r *ResourceGroupService) ListAutoPaging(ctx context.Context, type_ string,
 // Delete a ResourceGroup for the UUID
 func (r *ResourceGroupService) Delete(ctx context.Context, type_ string, id string, body ResourceGroupDeleteParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -147,6 +172,11 @@ func (r *ResourceGroupService) Delete(ctx context.Context, type_ string, id stri
 // Add an item to a ResourceGroup.
 func (r *ResourceGroupService) AddResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupAddResourceParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -169,6 +199,11 @@ func (r *ResourceGroupService) ListContents(ctx context.Context, type_ string, r
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -204,6 +239,11 @@ func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -237,6 +277,11 @@ func (r *ResourceGroupService) ListPermissionsAutoPaging(ctx context.Context, ty
 // Remove an item from a ResourceGroup.
 func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupRemoveResourceParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

@@ -45,6 +45,11 @@ func NewBalanceService(opts ...option.RequestOption) (r *BalanceService) {
 // Account. The Balance details should be provided in the request body.
 func (r *BalanceService) New(ctx context.Context, params BalanceNewParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -59,6 +64,11 @@ func (r *BalanceService) New(ctx context.Context, params BalanceNewParams, opts 
 // This endpoint returns the details of the specified Balance.
 func (r *BalanceService) Get(ctx context.Context, id string, query BalanceGetParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -78,6 +88,11 @@ func (r *BalanceService) Get(ctx context.Context, id string, query BalanceGetPar
 // updated Balance details should be provided in the request body.
 func (r *BalanceService) Update(ctx context.Context, id string, params BalanceUpdateParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -100,6 +115,11 @@ func (r *BalanceService) List(ctx context.Context, params BalanceListParams, opt
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -131,6 +151,11 @@ func (r *BalanceService) ListAutoPaging(ctx context.Context, params BalanceListP
 // This endpoint allows you to delete a specific Balance with the given UUID.
 func (r *BalanceService) Delete(ctx context.Context, id string, body BalanceDeleteParams, opts ...option.RequestOption) (res *Balance, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

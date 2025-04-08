@@ -45,6 +45,11 @@ func NewCounterPricingService(opts ...option.RequestOption) (r *CounterPricingSe
 // error.
 func (r *CounterPricingService) New(ctx context.Context, params CounterPricingNewParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -57,6 +62,11 @@ func (r *CounterPricingService) New(ctx context.Context, params CounterPricingNe
 // Retrieve a CounterPricing for the given UUID.
 func (r *CounterPricingService) Get(ctx context.Context, id string, query CounterPricingGetParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -77,6 +87,11 @@ func (r *CounterPricingService) Get(ctx context.Context, id string, query Counte
 // error.
 func (r *CounterPricingService) Update(ctx context.Context, id string, params CounterPricingUpdateParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -96,6 +111,11 @@ func (r *CounterPricingService) List(ctx context.Context, params CounterPricingL
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -122,6 +142,11 @@ func (r *CounterPricingService) ListAutoPaging(ctx context.Context, params Count
 // Delete a CounterPricing for the given UUID.
 func (r *CounterPricingService) Delete(ctx context.Context, id string, body CounterPricingDeleteParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

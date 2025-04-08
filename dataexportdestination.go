@@ -44,6 +44,11 @@ func NewDataExportDestinationService(opts ...option.RequestOption) (r *DataExpor
 // on your AWS Account.
 func (r *DataExportDestinationService) New(ctx context.Context, params DataExportDestinationNewParams, opts ...option.RequestOption) (res *DataExportDestinationNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -56,6 +61,11 @@ func (r *DataExportDestinationService) New(ctx context.Context, params DataExpor
 // Retrieve an Export Destination for the given UUID.
 func (r *DataExportDestinationService) Get(ctx context.Context, id string, query DataExportDestinationGetParams, opts ...option.RequestOption) (res *DataExportDestinationGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -75,6 +85,11 @@ func (r *DataExportDestinationService) Get(ctx context.Context, id string, query
 // Account are supported.
 func (r *DataExportDestinationService) Update(ctx context.Context, id string, params DataExportDestinationUpdateParams, opts ...option.RequestOption) (res *DataExportDestinationUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -94,6 +109,11 @@ func (r *DataExportDestinationService) List(ctx context.Context, params DataExpo
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -124,6 +144,11 @@ func (r *DataExportDestinationService) ListAutoPaging(ctx context.Context, param
 // able to delete the Destination.
 func (r *DataExportDestinationService) Delete(ctx context.Context, id string, body DataExportDestinationDeleteParams, opts ...option.RequestOption) (res *DataExportDestinationDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

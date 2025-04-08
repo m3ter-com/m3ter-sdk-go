@@ -45,6 +45,11 @@ func NewUserService(opts ...option.RequestOption) (r *UserService) {
 // their unique identifier (UUID).
 func (r *UserService) Get(ctx context.Context, id string, query UserGetParams, opts ...option.RequestOption) (res *UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -65,6 +70,11 @@ func (r *UserService) Get(ctx context.Context, id string, query UserGetParams, o
 // information such as their permission policy.
 func (r *UserService) Update(ctx context.Context, id string, params UserUpdateParams, opts ...option.RequestOption) (res *UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -87,6 +97,11 @@ func (r *UserService) List(ctx context.Context, params UserListParams, opts ...o
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -119,6 +134,11 @@ func (r *UserService) ListAutoPaging(ctx context.Context, params UserListParams,
 // Organization using their UUID. The list can be paginated for easier management.
 func (r *UserService) GetPermissions(ctx context.Context, id string, params UserGetPermissionsParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -159,6 +179,11 @@ func (r *UserService) GetPermissions(ctx context.Context, id string, params User
 //     user belongs are returned.
 func (r *UserService) GetUserGroups(ctx context.Context, id string, params UserGetUserGroupsParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -175,6 +200,11 @@ func (r *UserService) GetUserGroups(ctx context.Context, id string, params UserG
 // Retrieve information about the current user
 func (r *UserService) Me(ctx context.Context, query UserMeParams, opts ...option.RequestOption) (res *UserMeResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -188,6 +218,11 @@ func (r *UserService) Me(ctx context.Context, query UserMeParams, opts ...option
 func (r *UserService) ResendPassword(ctx context.Context, id string, body UserResendPasswordParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
