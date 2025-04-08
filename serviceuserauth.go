@@ -17,7 +17,7 @@ import (
 //
 // Additionally, NewClientWithServiceUserAuth makes an API call to the oauth/token
 // endpoint to exchange the provided APIKey and APISecret for an access token.
-func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOption) (*Client, error) {
+func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOption) *Client {
 	var client *Client
 	token := new(string)
 	expiry := new(time.Time)
@@ -54,5 +54,5 @@ func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOpt
 	//don't use the token refresh middleware on the token refresh endpoint
 	client.Authentication.Options = opts
 
-	return client, nil
+	return client
 }
