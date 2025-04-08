@@ -20,7 +20,7 @@ or products provided by M3ter please follow the respective company's security re
 
 ### M3ter Terms and Policies
 
-Please contact dev-feedback@m3ter.com for any questions or concerns regarding security of our services.
+Please contact sdks@m3ter.com for any questions or concerns regarding security of our services.
 
 ---
 
