@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.13 (2025-04-08)
+
+Full Changelog: [v0.1.0-alpha.12...v0.1.0-alpha.13](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.12...v0.1.0-alpha.13)
+
+### Features
+
+* Update README.md with service user auth ([9794f5f](https://github.com/m3ter-com/m3ter-sdk-go/commit/9794f5fede0d1fa872682b2613fd513a5b13aa38))
+
 ## 0.1.0-alpha.12 (2025-04-08)
 
 Full Changelog: [v0.1.0-alpha.11...v0.1.0-alpha.12](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.11...v0.1.0-alpha.12)
