@@ -49,10 +49,9 @@ import (
 )
 
 func main() {
-	client := m3ter.NewClient(
+	client := m3ter.NewClientWithServiceUserAuth(
 		option.WithAPIKey("My API Key"),       // defaults to os.LookupEnv("M3TER_API_KEY")
 		option.WithAPISecret("My API Secret"), // defaults to os.LookupEnv("M3TER_API_SECRET")
-		option.WithToken("My Token"),          // defaults to os.LookupEnv("M3TER_API_TOKEN")
 		option.WithOrgID("My Org ID"),         // defaults to os.LookupEnv("M3TER_ORG_ID")
 	)
 	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
