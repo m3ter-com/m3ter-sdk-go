@@ -44,6 +44,11 @@ func NewNotificationConfigurationService(opts ...option.RequestOption) (r *Notif
 // Notification.
 func (r *NotificationConfigurationService) New(ctx context.Context, params NotificationConfigurationNewParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -59,6 +64,11 @@ func (r *NotificationConfigurationService) New(ctx context.Context, params Notif
 // Notification when the Event occurs.
 func (r *NotificationConfigurationService) Get(ctx context.Context, id string, query NotificationConfigurationGetParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -79,6 +89,11 @@ func (r *NotificationConfigurationService) Get(ctx context.Context, id string, q
 // conditions for sending the Notification.
 func (r *NotificationConfigurationService) Update(ctx context.Context, id string, params NotificationConfigurationUpdateParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -101,6 +116,11 @@ func (r *NotificationConfigurationService) List(ctx context.Context, params Noti
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -133,6 +153,11 @@ func (r *NotificationConfigurationService) ListAutoPaging(ctx context.Context, p
 // configuration. This action cannot be undone.
 func (r *NotificationConfigurationService) Delete(ctx context.Context, id string, body NotificationConfigurationDeleteParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

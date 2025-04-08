@@ -41,6 +41,11 @@ func NewUsageFileUploadJobService(opts ...option.RequestOption) (r *UsageFileUpl
 // Part of the file upload service for measurements ingest.
 func (r *UsageFileUploadJobService) Get(ctx context.Context, id string, query UsageFileUploadJobGetParams, opts ...option.RequestOption) (res *FileUploadJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -66,6 +71,11 @@ func (r *UsageFileUploadJobService) List(ctx context.Context, params UsageFileUp
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -105,6 +115,11 @@ func (r *UsageFileUploadJobService) ListAutoPaging(ctx context.Context, params U
 // Part of the file upload service for submitting measurements data files.
 func (r *UsageFileUploadJobService) GetOriginalDownloadURL(ctx context.Context, id string, query UsageFileUploadJobGetOriginalDownloadURLParams, opts ...option.RequestOption) (res *UsageFileUploadJobGetOriginalDownloadURLResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

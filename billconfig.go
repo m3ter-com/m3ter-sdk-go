@@ -37,6 +37,11 @@ func NewBillConfigService(opts ...option.RequestOption) (r *BillConfigService) {
 // Retrieve the Organization-wide BillConfig.
 func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -53,6 +58,11 @@ func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, 
 // cannot be updated or recalculated.
 func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

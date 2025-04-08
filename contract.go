@@ -46,6 +46,11 @@ func NewContractService(opts ...option.RequestOption) (r *ContractService) {
 // information such as the associated Account along with start and end dates.
 func (r *ContractService) New(ctx context.Context, params ContractNewParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -59,6 +64,11 @@ func (r *ContractService) New(ctx context.Context, params ContractNewParams, opt
 // Contract.
 func (r *ContractService) Get(ctx context.Context, id string, query ContractGetParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -83,6 +93,11 @@ func (r *ContractService) Get(ctx context.Context, id string, query ContractGetP
 // lost.
 func (r *ContractService) Update(ctx context.Context, id string, params ContractUpdateParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -103,6 +118,11 @@ func (r *ContractService) List(ctx context.Context, params ContractListParams, o
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -134,6 +154,11 @@ func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractLis
 // have been added to the Contract.
 func (r *ContractService) Delete(ctx context.Context, id string, body ContractDeleteParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -162,6 +187,11 @@ func (r *ContractService) Delete(ctx context.Context, id string, body ContractDe
 //     entity is incremented.
 func (r *ContractService) EndDateBillingEntities(ctx context.Context, id string, params ContractEndDateBillingEntitiesParams, opts ...option.RequestOption) (res *ContractEndDateBillingEntitiesResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

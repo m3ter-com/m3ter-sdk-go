@@ -47,6 +47,11 @@ func NewPlanTemplateService(opts ...option.RequestOption) (r *PlanTemplateServic
 // information for the new PlanTemplate.
 func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -62,6 +67,11 @@ func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewPar
 // Organization, both identified by their unique identifiers (UUIDs).
 func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemplateGetParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -87,6 +97,11 @@ func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemp
 // will be lost.
 func (r *PlanTemplateService) Update(ctx context.Context, id string, params PlanTemplateUpdateParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -109,6 +124,11 @@ func (r *PlanTemplateService) List(ctx context.Context, params PlanTemplateListP
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -141,6 +161,11 @@ func (r *PlanTemplateService) ListAutoPaging(ctx context.Context, params PlanTem
 // Organization, both identified by their unique identifiers (UUIDs).
 func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTemplateDeleteParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

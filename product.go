@@ -46,6 +46,11 @@ func NewProductService(opts ...option.RequestOption) (r *ProductService) {
 // details of the Product are provided in the request body.
 func (r *ProductService) New(ctx context.Context, params ProductNewParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -61,6 +66,11 @@ func (r *ProductService) New(ctx context.Context, params ProductNewParams, opts 
 // Organization, using the Product UUID.
 func (r *ProductService) Get(ctx context.Context, id string, query ProductGetParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -86,6 +96,11 @@ func (r *ProductService) Get(ctx context.Context, id string, query ProductGetPar
 // lost.
 func (r *ProductService) Update(ctx context.Context, id string, params ProductUpdateParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -108,6 +123,11 @@ func (r *ProductService) List(ctx context.Context, params ProductListParams, opt
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -140,6 +160,11 @@ func (r *ProductService) ListAutoPaging(ctx context.Context, params ProductListP
 // the Product UUID.
 func (r *ProductService) Delete(ctx context.Context, id string, body ProductDeleteParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
