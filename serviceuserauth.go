@@ -1,7 +1,6 @@
 package m3ter
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -17,7 +16,7 @@ import (
 //
 // Additionally, NewClientWithServiceUserAuth makes an API call to the oauth/token
 // endpoint to exchange the provided APIKey and APISecret for an access token.
-func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOption) *Client {
+func NewClientWithServiceUserAuth(opts ...option.RequestOption) *Client {
 	var client *Client
 	token := new(string)
 	expiry := new(time.Time)
@@ -36,7 +35,7 @@ func NewClientWithServiceUserAuth(ctx context.Context, opts ...option.RequestOpt
 
 			reqTime := time.Now()
 
-			tokenRes, tokenErr := (client).Authentication.GetBearerToken(ctx, tokenReq, basicAuthOption)
+			tokenRes, tokenErr := (client).Authentication.GetBearerToken(req.Context(), tokenReq, basicAuthOption)
 			if tokenErr != nil {
 				return nil, fmt.Errorf("Failed to retrieve a token using the specified API key and API secret: %w", tokenErr)
 			}
