@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.1.0-alpha.12 (2025-04-08)
+
+Full Changelog: [v0.1.0-alpha.11...v0.1.0-alpha.12](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.11...v0.1.0-alpha.12)
+
+### Features
+
+* **api:** update contact email and package name ([#77](https://github.com/m3ter-com/m3ter-sdk-go/issues/77)) ([f9a46c8](https://github.com/m3ter-com/m3ter-sdk-go/commit/f9a46c8f3277cbb424dc736493fe7ab9f075eeda))
+* **client:** support custom http clients ([#76](https://github.com/m3ter-com/m3ter-sdk-go/issues/76)) ([884f854](https://github.com/m3ter-com/m3ter-sdk-go/commit/884f854fed5b67464fe96ae44d8c6257e2687ca8))
+
+
+### Bug Fixes
+
+* **client:** return error on bad custom url instead of panic ([#75](https://github.com/m3ter-com/m3ter-sdk-go/issues/75)) ([5a8a739](https://github.com/m3ter-com/m3ter-sdk-go/commit/5a8a739e5678ad5cb79149084005e75ece1da566))
+* **test:** return early after test failure ([#73](https://github.com/m3ter-com/m3ter-sdk-go/issues/73)) ([cf33469](https://github.com/m3ter-com/m3ter-sdk-go/commit/cf334697d087323b8ba5c3425ad3cb6439d12b12))
+
+
+### Chores
+
+* add request options to client tests ([#72](https://github.com/m3ter-com/m3ter-sdk-go/issues/72)) ([aa3684a](https://github.com/m3ter-com/m3ter-sdk-go/commit/aa3684a8b29e9a14bd0bf3e360b12dabc4a8f6bb))
+* **docs:** improve security documentation ([#70](https://github.com/m3ter-com/m3ter-sdk-go/issues/70)) ([ccd5ec4](https://github.com/m3ter-com/m3ter-sdk-go/commit/ccd5ec43e2319514cc27ee50f1dd3c2a0a2e1575))
+* fix typos ([#74](https://github.com/m3ter-com/m3ter-sdk-go/issues/74)) ([17197ef](https://github.com/m3ter-com/m3ter-sdk-go/commit/17197ef06dcbe33ee4541c67bba950fdc9c8473d))
+
 ## 0.1.0-alpha.11 (2025-03-20)
 
 Full Changelog: [v0.1.0-alpha.10...v0.1.0-alpha.11](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.10...v0.1.0-alpha.11)
