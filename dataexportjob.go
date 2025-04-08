@@ -46,6 +46,11 @@ func NewDataExportJobService(opts ...option.RequestOption) (r *DataExportJobServ
 //   - The status of the Export Job.
 func (r *DataExportJobService) Get(ctx context.Context, id string, query DataExportJobGetParams, opts ...option.RequestOption) (res *DataExportJobResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -64,6 +69,11 @@ func (r *DataExportJobService) List(ctx context.Context, params DataExportJobLis
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -105,6 +115,11 @@ func (r *DataExportJobService) ListAutoPaging(ctx context.Context, params DataEx
 // commitment at this stage to particular functionality or timelines.
 func (r *DataExportJobService) GetDownloadURL(ctx context.Context, jobID string, query DataExportJobGetDownloadURLParams, opts ...option.RequestOption) (res *DataExportJobGetDownloadURLResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

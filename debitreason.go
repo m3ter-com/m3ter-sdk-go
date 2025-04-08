@@ -42,6 +42,11 @@ func NewDebitReasonService(opts ...option.RequestOption) (r *DebitReasonService)
 // Bills. See [Debits](https://www.m3ter.com/docs/api#tag/Debits).
 func (r *DebitReasonService) New(ctx context.Context, params DebitReasonNewParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -54,6 +59,11 @@ func (r *DebitReasonService) New(ctx context.Context, params DebitReasonNewParam
 // Retrieve the Debit Reason with the given UUID.
 func (r *DebitReasonService) Get(ctx context.Context, id string, query DebitReasonGetParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -70,6 +80,11 @@ func (r *DebitReasonService) Get(ctx context.Context, id string, query DebitReas
 // Update the Debit Reason with the given UUID.
 func (r *DebitReasonService) Update(ctx context.Context, id string, params DebitReasonUpdateParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -90,6 +105,11 @@ func (r *DebitReasonService) List(ctx context.Context, params DebitReasonListPar
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -117,6 +137,11 @@ func (r *DebitReasonService) ListAutoPaging(ctx context.Context, params DebitRea
 // Delete the Debit Reason with the given UUID.
 func (r *DebitReasonService) Delete(ctx context.Context, id string, body DebitReasonDeleteParams, opts ...option.RequestOption) (res *DebitReasonResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

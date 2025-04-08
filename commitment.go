@@ -54,6 +54,11 @@ func NewCommitmentService(opts ...option.RequestOption) (r *CommitmentService) {
 //     amounts.
 func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -70,6 +75,11 @@ func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams,
 // overage surcharge percentage, and other related details.
 func (r *CommitmentService) Get(ctx context.Context, id string, query CommitmentGetParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -90,6 +100,11 @@ func (r *CommitmentService) Get(ctx context.Context, id string, query Commitment
 // percentage, or associated contract details.
 func (r *CommitmentService) Update(ctx context.Context, id string, params CommitmentUpdateParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -112,6 +127,11 @@ func (r *CommitmentService) List(ctx context.Context, params CommitmentListParam
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -144,6 +164,11 @@ func (r *CommitmentService) ListAutoPaging(ctx context.Context, params Commitmen
 // is no longer valid or needs to be removed from the system.
 func (r *CommitmentService) Delete(ctx context.Context, id string, body CommitmentDeleteParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -165,6 +190,11 @@ func (r *CommitmentService) Delete(ctx context.Context, id string, body Commitme
 // paginated for easier management.
 func (r *CommitmentService) Search(ctx context.Context, params CommitmentSearchParams, opts ...option.RequestOption) (res *CommitmentSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

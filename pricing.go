@@ -45,6 +45,11 @@ func NewPricingService(opts ...option.RequestOption) (r *PricingService) {
 // error.
 func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -57,6 +62,11 @@ func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts 
 // Retrieve the Pricing with the given UUID.
 func (r *PricingService) Get(ctx context.Context, id string, query PricingGetParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -77,6 +87,11 @@ func (r *PricingService) Get(ctx context.Context, id string, query PricingGetPar
 // error.
 func (r *PricingService) Update(ctx context.Context, id string, params PricingUpdateParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -96,6 +111,11 @@ func (r *PricingService) List(ctx context.Context, params PricingListParams, opt
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -122,6 +142,11 @@ func (r *PricingService) ListAutoPaging(ctx context.Context, params PricingListP
 // Delete the Pricing with the given UUID.
 func (r *PricingService) Delete(ctx context.Context, id string, body PricingDeleteParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

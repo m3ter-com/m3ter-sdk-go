@@ -51,6 +51,11 @@ func NewAccountPlanService(opts ...option.RequestOption) (r *AccountPlanService)
 // an Account, you must submit two separate calls.
 func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -64,6 +69,11 @@ func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParam
 // UUID.
 func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPlanGetParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -94,6 +104,11 @@ func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPl
 //     will be lost.
 func (r *AccountPlanService) Update(ctx context.Context, id string, params AccountPlanUpdateParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -121,6 +136,11 @@ func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListPar
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -158,6 +178,11 @@ func (r *AccountPlanService) ListAutoPaging(ctx context.Context, params AccountP
 // to a specific Account in your Organization.
 func (r *AccountPlanService) Delete(ctx context.Context, id string, body AccountPlanDeleteParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

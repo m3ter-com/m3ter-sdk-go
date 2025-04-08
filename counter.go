@@ -40,6 +40,11 @@ func NewCounterService(opts ...option.RequestOption) (r *CounterService) {
 // Create a new Counter.
 func (r *CounterService) New(ctx context.Context, params CounterNewParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -52,6 +57,11 @@ func (r *CounterService) New(ctx context.Context, params CounterNewParams, opts 
 // Retrieve a Counter for the given UUID.
 func (r *CounterService) Get(ctx context.Context, id string, query CounterGetParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -68,6 +78,11 @@ func (r *CounterService) Get(ctx context.Context, id string, query CounterGetPar
 // Update Counter for the given UUID.
 func (r *CounterService) Update(ctx context.Context, id string, params CounterUpdateParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -87,6 +102,11 @@ func (r *CounterService) List(ctx context.Context, params CounterListParams, opt
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -113,6 +133,11 @@ func (r *CounterService) ListAutoPaging(ctx context.Context, params CounterListP
 // Delete a Counter for the given UUID.
 func (r *CounterService) Delete(ctx context.Context, id string, body CounterDeleteParams, opts ...option.RequestOption) (res *CounterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
