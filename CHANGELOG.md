@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-alpha.14 (2025-04-09)
+
+Full Changelog: [v0.1.0-alpha.13...v0.1.0-alpha.14](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.13...v0.1.0-alpha.14)
+
+### Features
+
+* Remove context parameter from NewClientWithServiceUserAuth ([e5b62f4](https://github.com/m3ter-com/m3ter-sdk-go/commit/e5b62f4de744a2c99e7d5249796c17c038c65bdb))
+* Remove error from NewClientWithServiceUserAuth ([b9e595a](https://github.com/m3ter-com/m3ter-sdk-go/commit/b9e595a0a9cbb777839733866d66b4bf92d05a43))
+
+
+### Bug Fixes
+
+* **client:** use default params ([#81](https://github.com/m3ter-com/m3ter-sdk-go/issues/81)) ([95fa0b8](https://github.com/m3ter-com/m3ter-sdk-go/commit/95fa0b88953f2b23ec2dc2dcf3d1b47bfca17bc3))
+
 ## 0.1.0-alpha.13 (2025-04-08)
 
 Full Changelog: [v0.1.0-alpha.12...v0.1.0-alpha.13](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.12...v0.1.0-alpha.13)
