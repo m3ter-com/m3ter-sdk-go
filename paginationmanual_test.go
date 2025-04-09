@@ -28,7 +28,7 @@ func TestManualPagination(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
-		OrgID: m3ter.F("ORG_ID"),
+		OrgID: m3ter.F("My Org ID"),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
