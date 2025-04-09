@@ -56,7 +56,7 @@ func main() {
 		option.WithOrgID("My Org ID"),         // defaults to os.LookupEnv("M3TER_ORG_ID")
 	)
 	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
-		OrgID: m3ter.F("ORG_ID"),
+		OrgID: m3ter.F("My Org ID"),
 	})
 	if err != nil {
 		panic(err.Error())
@@ -168,7 +168,7 @@ You can use `.ListAutoPaging()` methods to iterate through items across all page
 
 ```go
 iter := client.Products.ListAutoPaging(context.TODO(), m3ter.ProductListParams{
-	OrgID: m3ter.F("ORG_ID"),
+	OrgID: m3ter.F("My Org ID"),
 })
 // Automatically fetches more pages as needed.
 for iter.Next() {
@@ -185,7 +185,7 @@ with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
 page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
-	OrgID: m3ter.F("ORG_ID"),
+	OrgID: m3ter.F("My Org ID"),
 })
 for page != nil {
 	for _, product := range page.Data {
@@ -209,7 +209,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
-	OrgID: m3ter.F("ORG_ID"),
+	OrgID: m3ter.F("My Org ID"),
 })
 if err != nil {
 	var apierr *m3ter.Error
@@ -238,7 +238,7 @@ defer cancel()
 client.Products.List(
 	ctx,
 	m3ter.ProductListParams{
-		OrgID: m3ter.F("ORG_ID"),
+		OrgID: m3ter.F("My Org ID"),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -276,7 +276,7 @@ client := m3ter.NewClient(
 client.Products.List(
 	context.TODO(),
 	m3ter.ProductListParams{
-		OrgID: m3ter.F("ORG_ID"),
+		OrgID: m3ter.F("My Org ID"),
 	},
 	option.WithMaxRetries(5),
 )
@@ -293,7 +293,7 @@ var response *http.Response
 page, err := client.Products.List(
 	context.TODO(),
 	m3ter.ProductListParams{
-		OrgID: m3ter.F("ORG_ID"),
+		OrgID: m3ter.F("My Org ID"),
 	},
 	option.WithResponseInto(&response),
 )
