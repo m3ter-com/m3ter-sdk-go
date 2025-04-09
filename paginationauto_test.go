@@ -28,7 +28,7 @@ func TestAutoPagination(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	iter := client.Products.ListAutoPaging(context.TODO(), m3ter.ProductListParams{
-		OrgID: m3ter.F("ORG_ID"),
+		OrgID: m3ter.F("My Org ID"),
 	})
 	// Prism mock isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
