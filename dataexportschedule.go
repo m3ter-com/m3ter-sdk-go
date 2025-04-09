@@ -68,6 +68,11 @@ func NewDataExportScheduleService(opts ...option.RequestOption) (r *DataExportSc
 //     included in the export each time the Export Schedule runs.
 func (r *DataExportScheduleService) New(ctx context.Context, params DataExportScheduleNewParams, opts ...option.RequestOption) (res *DataExportScheduleNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -81,6 +86,11 @@ func (r *DataExportScheduleService) New(ctx context.Context, params DataExportSc
 // configured for exporting _only one_ of either Usage or Operational data.
 func (r *DataExportScheduleService) Get(ctx context.Context, id string, query DataExportScheduleGetParams, opts ...option.RequestOption) (res *DataExportScheduleGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -123,6 +133,11 @@ func (r *DataExportScheduleService) Get(ctx context.Context, id string, query Da
 //     included in the export each time the Export Schedule runs.
 func (r *DataExportScheduleService) Update(ctx context.Context, id string, params DataExportScheduleUpdateParams, opts ...option.RequestOption) (res *DataExportScheduleUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -145,6 +160,11 @@ func (r *DataExportScheduleService) List(ctx context.Context, params DataExportS
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -175,6 +195,11 @@ func (r *DataExportScheduleService) ListAutoPaging(ctx context.Context, params D
 // configured for exporting _only one_ of either Usage or Operational data.
 func (r *DataExportScheduleService) Delete(ctx context.Context, id string, body DataExportScheduleDeleteParams, opts ...option.RequestOption) (res *DataExportScheduleDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

@@ -52,6 +52,11 @@ func NewUsageFileUploadService(opts ...option.RequestOption) (r *UsageFileUpload
 // Part of the file upload service for submitting measurements data files.
 func (r *UsageFileUploadService) GenerateUploadURL(ctx context.Context, params UsageFileUploadGenerateUploadURLParams, opts ...option.RequestOption) (res *UsageFileUploadGenerateUploadURLResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

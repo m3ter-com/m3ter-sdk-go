@@ -70,6 +70,11 @@ func NewMeterService(opts ...option.RequestOption) (r *MeterService) {
 // - [Reviewing Meter Options](https://www.m3ter.com/docs/guides/setting-up-usage-data-meters-and-aggregations/reviewing-meter-options).
 func (r *MeterService) New(ctx context.Context, params MeterNewParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -82,6 +87,11 @@ func (r *MeterService) New(ctx context.Context, params MeterNewParams, opts ...o
 // Retrieve the Meter with the given UUID.
 func (r *MeterService) Get(ctx context.Context, id string, query MeterGetParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -102,6 +112,11 @@ func (r *MeterService) Get(ctx context.Context, id string, query MeterGetParams,
 // Custom Fields. If you omit them from the update request, they will be lost.
 func (r *MeterService) Update(ctx context.Context, id string, params MeterUpdateParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -121,6 +136,11 @@ func (r *MeterService) List(ctx context.Context, params MeterListParams, opts ..
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -147,6 +167,11 @@ func (r *MeterService) ListAutoPaging(ctx context.Context, params MeterListParam
 // Delete the Meter with the given UUID.
 func (r *MeterService) Delete(ctx context.Context, id string, body MeterDeleteParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

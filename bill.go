@@ -50,6 +50,11 @@ func NewBillService(opts ...option.RequestOption) (r *BillService) {
 // specific Organization.
 func (r *BillService) Get(ctx context.Context, id string, query BillGetParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -73,6 +78,11 @@ func (r *BillService) List(ctx context.Context, params BillListParams, opts ...o
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -109,6 +119,11 @@ func (r *BillService) ListAutoPaging(ctx context.Context, params BillListParams,
 // not be deleted to ensure you have an audit trail of how the invoice was created.
 func (r *BillService) Delete(ctx context.Context, id string, body BillDeleteParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -140,6 +155,11 @@ func (r *BillService) Delete(ctx context.Context, id string, body BillDeletePara
 // parameters you might have also used are ignored when the call is processed.
 func (r *BillService) Approve(ctx context.Context, params BillApproveParams, opts ...option.RequestOption) (res *BillApproveResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -156,6 +176,11 @@ func (r *BillService) Approve(ctx context.Context, params BillApproveParams, opt
 // details.
 func (r *BillService) LatestByAccount(ctx context.Context, accountID string, query BillLatestByAccountParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -178,6 +203,11 @@ func (r *BillService) LatestByAccount(ctx context.Context, accountID string, que
 // call to approve a Bill before you can lock it.
 func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -199,6 +229,11 @@ func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, 
 // management.
 func (r *BillService) Search(ctx context.Context, params BillSearchParams, opts ...option.RequestOption) (res *BillSearchResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -214,6 +249,11 @@ func (r *BillService) Search(ctx context.Context, params BillSearchParams, opts 
 // such as from "Pending" to "Approved".
 func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUpdateStatusParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

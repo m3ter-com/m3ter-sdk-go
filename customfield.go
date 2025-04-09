@@ -41,6 +41,11 @@ func NewCustomFieldService(opts ...option.RequestOption) (r *CustomFieldService)
 // support them.
 func (r *CustomFieldService) Get(ctx context.Context, query CustomFieldGetParams, opts ...option.RequestOption) (res *CustomFieldsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -53,6 +58,11 @@ func (r *CustomFieldService) Get(ctx context.Context, query CustomFieldGetParams
 // Update Custom Fields added at Organization level to entities that support them.
 func (r *CustomFieldService) Update(ctx context.Context, params CustomFieldUpdateParams, opts ...option.RequestOption) (res *CustomFieldsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

@@ -47,6 +47,11 @@ func NewCompoundAggregationService(opts ...option.RequestOption) (r *CompoundAgg
 // the Calculation formula.
 func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAggregationNewParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -62,6 +67,11 @@ func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAgg
 // Organization. It provides detailed information about the CompoundAggregation.
 func (r *CompoundAggregationService) Get(ctx context.Context, id string, query CompoundAggregationGetParams, opts ...option.RequestOption) (res *CompoundAggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -87,6 +97,11 @@ func (r *CompoundAggregationService) Get(ctx context.Context, id string, query C
 // request, they will be lost.
 func (r *CompoundAggregationService) Update(ctx context.Context, id string, params CompoundAggregationUpdateParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -111,6 +126,11 @@ func (r *CompoundAggregationService) List(ctx context.Context, params CompoundAg
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -147,6 +167,11 @@ func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, params 
 // planning models.
 func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body CompoundAggregationDeleteParams, opts ...option.RequestOption) (res *CompoundAggregationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

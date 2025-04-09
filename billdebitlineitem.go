@@ -43,6 +43,11 @@ func NewBillDebitLineItemService(opts ...option.RequestOption) (r *BillDebitLine
 // Organization. See [DebitReason](https://www.m3ter.com/docs/api#tag/DebitReason).
 func (r *BillDebitLineItemService) New(ctx context.Context, billID string, params BillDebitLineItemNewParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -59,6 +64,11 @@ func (r *BillDebitLineItemService) New(ctx context.Context, billID string, param
 // Retrieve the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id string, query BillDebitLineItemGetParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -79,6 +89,11 @@ func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id st
 // Update the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id string, params BillDebitLineItemUpdateParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -101,6 +116,11 @@ func (r *BillDebitLineItemService) List(ctx context.Context, billID string, para
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -130,6 +150,11 @@ func (r *BillDebitLineItemService) ListAutoPaging(ctx context.Context, billID st
 // Delete the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id string, body BillDebitLineItemDeleteParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

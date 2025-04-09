@@ -40,6 +40,11 @@ func NewPlanGroupLinkService(opts ...option.RequestOption) (r *PlanGroupLinkServ
 // Create a new PlanGroupLink.
 func (r *PlanGroupLinkService) New(ctx context.Context, params PlanGroupLinkNewParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -52,6 +57,11 @@ func (r *PlanGroupLinkService) New(ctx context.Context, params PlanGroupLinkNewP
 // Retrieve a PlanGroupLink for the given UUID.
 func (r *PlanGroupLinkService) Get(ctx context.Context, id string, query PlanGroupLinkGetParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -68,6 +78,11 @@ func (r *PlanGroupLinkService) Get(ctx context.Context, id string, query PlanGro
 // Update PlanGroupLink for the given UUID.
 func (r *PlanGroupLinkService) Update(ctx context.Context, id string, params PlanGroupLinkUpdateParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -86,6 +101,11 @@ func (r *PlanGroupLinkService) List(ctx context.Context, params PlanGroupLinkLis
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -111,6 +131,11 @@ func (r *PlanGroupLinkService) ListAutoPaging(ctx context.Context, params PlanGr
 // Delete a PlanGroupLink for the given UUID.
 func (r *PlanGroupLinkService) Delete(ctx context.Context, id string, body PlanGroupLinkDeleteParams, opts ...option.RequestOption) (res *PlanGroupLinkResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

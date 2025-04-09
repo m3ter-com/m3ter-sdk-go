@@ -42,6 +42,11 @@ func NewUserInvitationService(opts ...option.RequestOption) (r *UserInvitationSe
 // This sends an email to someone inviting them to join your m3ter Organization.
 func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNewParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -54,6 +59,11 @@ func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNe
 // Retrieve the specified invitation with the given UUID.
 func (r *UserInvitationService) Get(ctx context.Context, id string, query UserInvitationGetParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -72,6 +82,11 @@ func (r *UserInvitationService) List(ctx context.Context, params UserInvitationL
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

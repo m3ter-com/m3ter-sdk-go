@@ -44,6 +44,11 @@ func NewEventService(opts ...option.RequestOption) (r *EventService) {
 // classified under a specific Event Type.
 func (r *EventService) Get(ctx context.Context, id string, query EventGetParams, opts ...option.RequestOption) (res *EventResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -75,6 +80,11 @@ func (r *EventService) List(ctx context.Context, params EventListParams, opts ..
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -137,6 +147,11 @@ func (r *EventService) ListAutoPaging(ctx context.Context, params EventListParam
 //     implemented for them
 func (r *EventService) GetFields(ctx context.Context, params EventGetFieldsParams, opts ...option.RequestOption) (res *EventGetFieldsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -152,6 +167,11 @@ func (r *EventService) GetFields(ctx context.Context, params EventGetFieldsParam
 // configured.
 func (r *EventService) GetTypes(ctx context.Context, query EventGetTypesParams, opts ...option.RequestOption) (res *EventGetTypesResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

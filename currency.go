@@ -42,6 +42,11 @@ func NewCurrencyService(opts ...option.RequestOption) (r *CurrencyService) {
 // Used to create a Currency that your Organization will start to use.
 func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -55,6 +60,11 @@ func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opt
 // of a specified existing Currency in your Organization.
 func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -74,6 +84,11 @@ func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetP
 // Organization.
 func (r *CurrencyService) Update(ctx context.Context, id string, params CurrencyUpdateParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -96,6 +111,11 @@ func (r *CurrencyService) List(ctx context.Context, params CurrencyListParams, o
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -128,6 +148,11 @@ func (r *CurrencyService) ListAutoPaging(ctx context.Context, params CurrencyLis
 // required.
 func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDeleteParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

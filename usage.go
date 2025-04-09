@@ -65,6 +65,11 @@ func NewUsageService(opts ...option.RequestOption) (r *UsageService) {
 //     URL for the Event.
 func (r *UsageService) GetFailedIngestDownloadURL(ctx context.Context, params UsageGetFailedIngestDownloadURLParams, opts ...option.RequestOption) (res *DownloadURLResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -77,6 +82,11 @@ func (r *UsageService) GetFailedIngestDownloadURL(ctx context.Context, params Us
 // Query and filter usage data
 func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts ...option.RequestOption) (res *UsageQueryResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -126,6 +136,11 @@ func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts 
 // above for more details.
 func (r *UsageService) Submit(ctx context.Context, params UsageSubmitParams, opts ...option.RequestOption) (res *SubmitMeasurementsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

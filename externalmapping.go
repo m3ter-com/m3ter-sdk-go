@@ -44,6 +44,11 @@ func NewExternalMappingService(opts ...option.RequestOption) (r *ExternalMapping
 // External Mapping.
 func (r *ExternalMappingService) New(ctx context.Context, params ExternalMappingNewParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -59,6 +64,11 @@ func (r *ExternalMappingService) New(ctx context.Context, params ExternalMapping
 // UUID for a specific Organization.
 func (r *ExternalMappingService) Get(ctx context.Context, id string, query ExternalMappingGetParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -79,6 +89,11 @@ func (r *ExternalMappingService) Get(ctx context.Context, id string, query Exter
 // the External Mapping.
 func (r *ExternalMappingService) Update(ctx context.Context, id string, params ExternalMappingUpdateParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -101,6 +116,11 @@ func (r *ExternalMappingService) List(ctx context.Context, params ExternalMappin
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -130,6 +150,11 @@ func (r *ExternalMappingService) ListAutoPaging(ctx context.Context, params Exte
 // Delete an External Mapping with the given UUID.
 func (r *ExternalMappingService) Delete(ctx context.Context, id string, body ExternalMappingDeleteParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.OrgID, precfg.OrgID)
 	if body.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -153,6 +178,11 @@ func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, syste
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -200,6 +230,11 @@ func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity s
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return

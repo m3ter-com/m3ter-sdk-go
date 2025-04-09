@@ -55,6 +55,11 @@ func NewBalanceTransactionService(opts ...option.RequestOption) (r *BalanceTrans
 // where the customer actually paid you 50 units in virtual currency X.
 func (r *BalanceTransactionService) New(ctx context.Context, balanceID string, params BalanceTransactionNewParams, opts ...option.RequestOption) (res *TransactionResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -77,6 +82,11 @@ func (r *BalanceTransactionService) List(ctx context.Context, balanceID string, 
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
 	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
@@ -110,6 +120,11 @@ func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, balanceI
 // Retrieves the Balance Transactions Summary for a given Balance.
 func (r *BalanceTransactionService) Summary(ctx context.Context, balanceID string, query BalanceTransactionSummaryParams, opts ...option.RequestOption) (res *BalanceTransactionSummaryResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
 	if query.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
