@@ -173,6 +173,51 @@ func (r downloadURLResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type MeasurementRequestParam struct {
+	// Code of the Account the measurement is for.
+	Account param.Field[string] `json:"account,required"`
+	// Short code identifying the Meter the measurement is for.
+	Meter param.Field[string] `json:"meter,required"`
+	// Timestamp for the measurement _(in ISO 8601 format)_.
+	Ts param.Field[time.Time] `json:"ts,required" format:"date-time"`
+	// 'cost' values
+	Cost param.Field[map[string]float64] `json:"cost"`
+	// End timestamp for the measurement _(in ISO 8601 format)_. _(Optional)_.
+	//
+	// Can be used in the case a usage event needs to have an explicit start and end
+	// rather than being instantaneous.
+	Ets param.Field[time.Time] `json:"ets" format:"date-time"`
+	// 'income' values
+	Income param.Field[map[string]float64] `json:"income"`
+	// 'measure' values
+	Measure param.Field[map[string]float64] `json:"measure"`
+	// 'metadata' values
+	Metadata param.Field[map[string]string] `json:"metadata"`
+	// 'other' values
+	Other param.Field[map[string]string] `json:"other"`
+	// Unique ID for this measurement.
+	Uid param.Field[string] `json:"uid"`
+	// 'what' values
+	What param.Field[map[string]string] `json:"what"`
+	// 'where' values
+	Where param.Field[map[string]string] `json:"where"`
+	// 'who' values
+	Who param.Field[map[string]string] `json:"who"`
+}
+
+func (r MeasurementRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type SubmitMeasurementsRequestParam struct {
+	// Request containing the usage data measurements for submission.
+	Measurements param.Field[[]MeasurementRequestParam] `json:"measurements,required"`
+}
+
+func (r SubmitMeasurementsRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type SubmitMeasurementsResponse struct {
 	// `accepted` is returned when successful.
 	Result string                         `json:"result"`
@@ -488,47 +533,10 @@ func (r UsageQueryParamsGroupsGroupType) IsKnown() bool {
 
 type UsageSubmitParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
-	// Request containing the usage data measurements for submission.
-	Measurements param.Field[[]UsageSubmitParamsMeasurement] `json:"measurements,required"`
+	OrgID                     param.Field[string]            `path:"orgId,required"`
+	SubmitMeasurementsRequest SubmitMeasurementsRequestParam `json:"submit_measurements_request,required"`
 }
 
 func (r UsageSubmitParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type UsageSubmitParamsMeasurement struct {
-	// Code of the Account the measurement is for.
-	Account param.Field[string] `json:"account,required"`
-	// Short code identifying the Meter the measurement is for.
-	Meter param.Field[string] `json:"meter,required"`
-	// Timestamp for the measurement _(in ISO 8601 format)_.
-	Ts param.Field[time.Time] `json:"ts,required" format:"date-time"`
-	// 'cost' values
-	Cost param.Field[map[string]float64] `json:"cost"`
-	// End timestamp for the measurement _(in ISO 8601 format)_. _(Optional)_.
-	//
-	// Can be used in the case a usage event needs to have an explicit start and end
-	// rather than being instantaneous.
-	Ets param.Field[time.Time] `json:"ets" format:"date-time"`
-	// 'income' values
-	Income param.Field[map[string]float64] `json:"income"`
-	// 'measure' values
-	Measure param.Field[map[string]float64] `json:"measure"`
-	// 'metadata' values
-	Metadata param.Field[map[string]string] `json:"metadata"`
-	// 'other' values
-	Other param.Field[map[string]string] `json:"other"`
-	// Unique ID for this measurement.
-	Uid param.Field[string] `json:"uid"`
-	// 'what' values
-	What param.Field[map[string]string] `json:"what"`
-	// 'where' values
-	Where param.Field[map[string]string] `json:"where"`
-	// 'who' values
-	Who param.Field[map[string]string] `json:"who"`
-}
-
-func (r UsageSubmitParamsMeasurement) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.SubmitMeasurementsRequest)
 }
