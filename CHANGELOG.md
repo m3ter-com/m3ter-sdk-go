@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0-alpha (2025-04-10)
+
+Full Changelog: [v0.2.0-alpha...v0.3.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.2.0-alpha...v0.3.0-alpha)
+
+### Features
+
+* **api:** add measurement request model ([a163e11](https://github.com/m3ter-com/m3ter-sdk-go/commit/a163e11c5dacaf9784d070b7addbec58a7914653))
+* fixup! Use ingest.m3ter.com hostname for usage ingest endpoint ([33f9176](https://github.com/m3ter-com/m3ter-sdk-go/commit/33f91763a8ef929940eed9b2816199d6d52aa919))
+* Use ingest.m3ter.com hostname for usage ingest endpoint ([00a9573](https://github.com/m3ter-com/m3ter-sdk-go/commit/00a95732fabcc4cc2f8a1fc90053c8cbadec28fb))
+
 ## 0.2.0-alpha (2025-04-10)
 
 Full Changelog: [v0.1.0-alpha...v0.2.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha...v0.2.0-alpha)

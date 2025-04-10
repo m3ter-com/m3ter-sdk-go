@@ -105,45 +105,47 @@ func TestUsageSubmit(t *testing.T) {
 	)
 	_, err := client.Usage.Submit(context.TODO(), m3ter.UsageSubmitParams{
 		OrgID: m3ter.F("orgId"),
-		Measurements: m3ter.F([]m3ter.UsageSubmitParamsMeasurement{{
-			Account: m3ter.F("Acme Corp"),
-			Meter:   m3ter.F("string"),
-			Ts:      m3ter.F(time.Now()),
-			Cost: m3ter.F(map[string]float64{
-				"property1": 0.000000,
-				"property2": 0.000000,
-			}),
-			Ets: m3ter.F(time.Now()),
-			Income: m3ter.F(map[string]float64{
-				"property1": 0.000000,
-				"property2": 0.000000,
-			}),
-			Measure: m3ter.F(map[string]float64{
-				"property1": 0.000000,
-				"property2": 0.000000,
-			}),
-			Metadata: m3ter.F(map[string]string{
-				"property1": "string",
-				"property2": "string",
-			}),
-			Other: m3ter.F(map[string]string{
-				"property1": "string",
-				"property2": "string",
-			}),
-			Uid: m3ter.F("string"),
-			What: m3ter.F(map[string]string{
-				"property1": "string",
-				"property2": "string",
-			}),
-			Where: m3ter.F(map[string]string{
-				"property1": "string",
-				"property2": "string",
-			}),
-			Who: m3ter.F(map[string]string{
-				"property1": "string",
-				"property2": "string",
-			}),
-		}}),
+		SubmitMeasurementsRequest: m3ter.SubmitMeasurementsRequestParam{
+			Measurements: m3ter.F([]m3ter.MeasurementRequestParam{{
+				Account: m3ter.F("Acme Corp"),
+				Meter:   m3ter.F("string"),
+				Ts:      m3ter.F(time.Now()),
+				Cost: m3ter.F(map[string]float64{
+					"property1": 0.000000,
+					"property2": 0.000000,
+				}),
+				Ets: m3ter.F(time.Now()),
+				Income: m3ter.F(map[string]float64{
+					"property1": 0.000000,
+					"property2": 0.000000,
+				}),
+				Measure: m3ter.F(map[string]float64{
+					"property1": 0.000000,
+					"property2": 0.000000,
+				}),
+				Metadata: m3ter.F(map[string]string{
+					"property1": "string",
+					"property2": "string",
+				}),
+				Other: m3ter.F(map[string]string{
+					"property1": "string",
+					"property2": "string",
+				}),
+				Uid: m3ter.F("string"),
+				What: m3ter.F(map[string]string{
+					"property1": "string",
+					"property2": "string",
+				}),
+				Where: m3ter.F(map[string]string{
+					"property1": "string",
+					"property2": "string",
+				}),
+				Who: m3ter.F(map[string]string{
+					"property1": "string",
+					"property2": "string",
+				}),
+			}}),
+		},
 	})
 	if err != nil {
 		var apierr *m3ter.Error
