@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -145,8 +146,15 @@ func (r *UsageService) Submit(ctx context.Context, params UsageSubmitParams, opt
 		err = errors.New("missing required orgId parameter")
 		return
 	}
+	//This endpoint exists on a different domain: ingest.m3ter.com in production
+	useIngestBaseUrlOption := requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		ingestBaseUrl := *r.BaseURL
+		ingestBaseUrl.Host = strings.Replace(r.BaseURL.Host, "api", "ingest", 1)
+		r.BaseURL = &ingestBaseUrl
+		return nil
+	})
 	path := fmt.Sprintf("organizations/%s/measurements", params.OrgID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, append(opts, useIngestBaseUrlOption)...)
 	return
 }
 
