@@ -454,11 +454,13 @@ Methods:
 
 Params Types:
 
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataFieldResponseParam">DataFieldResponseParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataFieldParam">DataFieldParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DerivedFieldParam">DerivedFieldParam</a>
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataFieldResponse">DataFieldResponse</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataField">DataField</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DerivedField">DerivedField</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#MeterResponse">MeterResponse</a>
 
 Methods:
