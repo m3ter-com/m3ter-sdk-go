@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0-alpha (2025-04-10)
+
+Full Changelog: [v0.1.0-alpha...v0.2.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha...v0.2.0-alpha)
+
+### Features
+
+* **api:** rename DataFieldResponse to DataField and add DerivedField as a model ([58049ea](https://github.com/m3ter-com/m3ter-sdk-go/commit/58049eaf9100a189c841eb0cdbfbeeca10d5ade3))
+
+
+### Chores
+
+* **internal:** expand CI branch coverage ([#85](https://github.com/m3ter-com/m3ter-sdk-go/issues/85)) ([c9b3f9f](https://github.com/m3ter-com/m3ter-sdk-go/commit/c9b3f9fc66efc7a93d5ff9bf3d3373e860504ac5))
+* **internal:** reduce CI branch coverage ([86fcb85](https://github.com/m3ter-com/m3ter-sdk-go/commit/86fcb85b80b28f28f6df8cd4552f8bbffb136acf))
+
 ## 0.1.0-alpha (2025-04-09)
 
 Full Changelog: [v0.1.0-alpha.14...v0.1.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.1.0-alpha.14...v0.1.0-alpha)
