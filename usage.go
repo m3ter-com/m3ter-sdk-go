@@ -148,7 +148,9 @@ func (r *UsageService) Submit(ctx context.Context, params UsageSubmitParams, opt
 	}
 	//This endpoint exists on a different domain: ingest.m3ter.com in production
 	useIngestBaseUrlOption := requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.BaseURL.Host = strings.Replace(r.BaseURL.Host, "api", "ingest", 1)
+		ingestBaseUrl := *r.BaseURL
+		ingestBaseUrl.Host = strings.Replace(r.BaseURL.Host, "api", "ingest", 1)
+		r.BaseURL = &ingestBaseUrl
 		return nil
 	})
 	path := fmt.Sprintf("organizations/%s/measurements", params.OrgID)
