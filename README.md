@@ -2,8 +2,8 @@
 
 <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go"><img src="https://pkg.go.dev/badge/github.com/m3ter-com/m3ter-sdk-go.svg" alt="Go Reference"></a>
 
-The M3ter Go library provides convenient access to [the M3ter REST
-API](https://www.m3ter.com) from applications written in Go. The full API of this library can be found in [api.md](api.md).
+The M3ter Go library provides convenient access to the [M3ter REST API](https://www.m3ter.com)
+from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
