@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.0-alpha (2025-04-15)
+
+Full Changelog: [v0.3.0-alpha...v0.4.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.3.0-alpha...v0.4.0-alpha)
+
+### Features
+
+* **client:** add support for reading base URL from environment variable ([6ba1213](https://github.com/m3ter-com/m3ter-sdk-go/commit/6ba1213335259211eb748076bdccf385763928fd))
+
+
+### Chores
+
+* **docs:** document pre-request options ([60fc814](https://github.com/m3ter-com/m3ter-sdk-go/commit/60fc81418b06ab0732397a253fca0114d7e22c00))
+
+
+### Documentation
+
+* update documentation links to be more uniform ([b65641e](https://github.com/m3ter-com/m3ter-sdk-go/commit/b65641eda07a4404729d6c9c2665cb5cbaec16c9))
+
 ## 0.3.0-alpha (2025-04-10)
 
 Full Changelog: [v0.2.0-alpha...v0.3.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.2.0-alpha...v0.3.0-alpha)
