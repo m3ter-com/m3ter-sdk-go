@@ -336,6 +336,8 @@ type CounterAdjustmentListParams struct {
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of CounterAdjustments to retrieve per page
 	PageSize param.Field[int64] `query:"pageSize"`
+	// Sort order for the results
+	SortOrder param.Field[string] `query:"sortOrder"`
 }
 
 // URLQuery serializes [CounterAdjustmentListParams]'s query parameters as

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -16,6 +17,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/tidwall/gjson"
 )
 
 // DataExportDestinationService contains methods and other services that help with
@@ -162,6 +164,86 @@ func (r *DataExportDestinationService) Delete(ctx context.Context, id string, bo
 	return
 }
 
+type DataExportDestinationGoogleCloudStorageRequestParam struct {
+	// The export destination bucket name.
+	BucketName param.Field[string] `json:"bucketName,required"`
+	// The export destination Web Identity Federation poolId.
+	PoolID param.Field[string] `json:"poolId,required"`
+	// The export destination GCP projectNumber.
+	ProjectNumber param.Field[string] `json:"projectNumber,required"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID param.Field[string] `json:"providerId,required"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder param.Field[DataExportDestinationGoogleCloudStorageRequestPartitionOrder] `json:"partitionOrder"`
+	// The export destination prefix.
+	Prefix param.Field[string] `json:"prefix"`
+	// The export destination service account email.
+	ServiceAccountEmail param.Field[string] `json:"serviceAccountEmail"`
+	// The version number of the entity:
+	//
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
+	Version param.Field[int64] `json:"version"`
+}
+
+func (r DataExportDestinationGoogleCloudStorageRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r DataExportDestinationGoogleCloudStorageRequestParam) implementsDataExportDestinationNewParamsBodyUnion() {
+}
+
+func (r DataExportDestinationGoogleCloudStorageRequestParam) implementsDataExportDestinationUpdateParamsBodyUnion() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationGoogleCloudStorageRequestPartitionOrder string
+
+const (
+	DataExportDestinationGoogleCloudStorageRequestPartitionOrderTypeFirst DataExportDestinationGoogleCloudStorageRequestPartitionOrder = "TYPE_FIRST"
+	DataExportDestinationGoogleCloudStorageRequestPartitionOrderTimeFirst DataExportDestinationGoogleCloudStorageRequestPartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationGoogleCloudStorageRequestPartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationGoogleCloudStorageRequestPartitionOrderTypeFirst, DataExportDestinationGoogleCloudStorageRequestPartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
 type DataExportDestinationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -175,7 +257,8 @@ type DataExportDestinationResponse struct {
 	// The code of the data Export Destination.
 	Code string `json:"code"`
 	// The id of the user who created the Export Destination.
-	CreatedBy string `json:"createdBy"`
+	CreatedBy       string                                       `json:"createdBy"`
+	DestinationType DataExportDestinationResponseDestinationType `json:"destinationType"`
 	// The DateTime when the Export Destination was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The DateTime when the Export Destination was last modified.
@@ -190,16 +273,17 @@ type DataExportDestinationResponse struct {
 // dataExportDestinationResponseJSON contains the JSON metadata for the struct
 // [DataExportDestinationResponse]
 type dataExportDestinationResponseJSON struct {
-	ID             apijson.Field
-	Version        apijson.Field
-	Code           apijson.Field
-	CreatedBy      apijson.Field
-	DtCreated      apijson.Field
-	DtLastModified apijson.Field
-	LastModifiedBy apijson.Field
-	Name           apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
+	ID              apijson.Field
+	Version         apijson.Field
+	Code            apijson.Field
+	CreatedBy       apijson.Field
+	DestinationType apijson.Field
+	DtCreated       apijson.Field
+	DtLastModified  apijson.Field
+	LastModifiedBy  apijson.Field
+	Name            apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
 }
 
 func (r *DataExportDestinationResponse) UnmarshalJSON(data []byte) (err error) {
@@ -210,7 +294,256 @@ func (r dataExportDestinationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type DataExportDestinationResponseDestinationType string
+
+const (
+	DataExportDestinationResponseDestinationTypeS3  DataExportDestinationResponseDestinationType = "S3"
+	DataExportDestinationResponseDestinationTypeGcs DataExportDestinationResponseDestinationType = "GCS"
+)
+
+func (r DataExportDestinationResponseDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationResponseDestinationTypeS3, DataExportDestinationResponseDestinationTypeGcs:
+		return true
+	}
+	return false
+}
+
+type DataExportDestinationS3RequestParam struct {
+	// Name of the S3 bucket for the Export Destination.
+	BucketName param.Field[string] `json:"bucketName,required"`
+	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
+	// assume an IAM role with PutObject permission for the specified `bucketName`.
+	// Create a suitable IAM role in your AWS account and enter ARN:
+	//
+	// **Formatting Constraints:**
+	//
+	//   - The IAM role ARN must begin with "arn:aws:iam".
+	//   - The general format required is:
+	//     "arn:aws:iam::<aws account id>:role/<role name>". For example:
+	//     "arn:aws:iam::922609978421:role/IAMRole636".
+	//   - If the `iamRoleArn` used doesn't comply with this format, then an error
+	//     message will be returned.
+	//
+	// **More Details:** For more details and examples of the Permission and Trust
+	// Policies you can use to create the required IAM Role ARN, see
+	// [Creating Data Export Destinations](https://www.m3ter.com/docs/guides/data-exports/creating-data-export-destinations)
+	// in our main User documentation.
+	IamRoleArn param.Field[string] `json:"iamRoleArn,required"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder param.Field[DataExportDestinationS3RequestPartitionOrder] `json:"partitionOrder"`
+	// Location in specified S3 bucket for the Export Destination. If you omit a
+	// `prefix`, then the root of the bucket will be used.
+	Prefix param.Field[string] `json:"prefix"`
+	// The version number of the entity:
+	//
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
+	Version param.Field[int64] `json:"version"`
+}
+
+func (r DataExportDestinationS3RequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r DataExportDestinationS3RequestParam) implementsDataExportDestinationNewParamsBodyUnion() {}
+
+func (r DataExportDestinationS3RequestParam) implementsDataExportDestinationUpdateParamsBodyUnion() {}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationS3RequestPartitionOrder string
+
+const (
+	DataExportDestinationS3RequestPartitionOrderTypeFirst DataExportDestinationS3RequestPartitionOrder = "TYPE_FIRST"
+	DataExportDestinationS3RequestPartitionOrderTimeFirst DataExportDestinationS3RequestPartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationS3RequestPartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationS3RequestPartitionOrderTypeFirst, DataExportDestinationS3RequestPartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
 type DataExportDestinationNewResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// Name of the S3 bucket for the Export Destination.
+	BucketName string `json:"bucketName"`
+	// The code of the data Export Destination.
+	Code string `json:"code"`
+	// The id of the user who created the Export Destination.
+	CreatedBy       string                                          `json:"createdBy"`
+	DestinationType DataExportDestinationNewResponseDestinationType `json:"destinationType"`
+	// The DateTime when the Export Destination was created.
+	DtCreated time.Time `json:"dtCreated" format:"date-time"`
+	// The DateTime when the Export Destination was last modified.
+	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	// The specified IAM role ARN with PutObject permission for the specified
+	// `bucketName`, which allows the service to upload Data Exports to your S3 bucket.
+	IamRoleArn string `json:"iamRoleArn"`
+	// The id of the user who last modified the Export Destination.
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The name of the data Export Destination.
+	Name string `json:"name"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationNewResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
+	// specified, then the root of the bucket is used.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                               `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationNewResponseJSON `json:"-"`
+	union               DataExportDestinationNewResponseUnion
+}
+
+// dataExportDestinationNewResponseJSON contains the JSON metadata for the struct
+// [DataExportDestinationNewResponse]
+type dataExportDestinationNewResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	Code                apijson.Field
+	CreatedBy           apijson.Field
+	DestinationType     apijson.Field
+	DtCreated           apijson.Field
+	DtLastModified      apijson.Field
+	IamRoleArn          apijson.Field
+	LastModifiedBy      apijson.Field
+	Name                apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r dataExportDestinationNewResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *DataExportDestinationNewResponse) UnmarshalJSON(data []byte) (err error) {
+	*r = DataExportDestinationNewResponse{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [DataExportDestinationNewResponseUnion] interface which you
+// can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [DataExportDestinationNewResponseExportDestinationS3Response],
+// [DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse].
+func (r DataExportDestinationNewResponse) AsUnion() DataExportDestinationNewResponseUnion {
+	return r.union
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+//
+// Union satisfied by [DataExportDestinationNewResponseExportDestinationS3Response]
+// or
+// [DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse].
+type DataExportDestinationNewResponseUnion interface {
+	implementsDataExportDestinationNewResponse()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*DataExportDestinationNewResponseUnion)(nil)).Elem(),
+		"destinationType",
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationNewResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationNewResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "GCS",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "GCS",
+		},
+	)
+}
+
+type DataExportDestinationNewResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -240,17 +573,18 @@ type DataExportDestinationNewResponse struct {
 	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 	//   - Type first:
 	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-	PartitionOrder DataExportDestinationNewResponsePartitionOrder `json:"partitionOrder"`
+	PartitionOrder DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                               `json:"prefix"`
-	JSON   dataExportDestinationNewResponseJSON `json:"-"`
+	Prefix string                                                          `json:"prefix"`
+	JSON   dataExportDestinationNewResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
-// dataExportDestinationNewResponseJSON contains the JSON metadata for the struct
-// [DataExportDestinationNewResponse]
-type dataExportDestinationNewResponseJSON struct {
+// dataExportDestinationNewResponseExportDestinationS3ResponseJSON contains the
+// JSON metadata for the struct
+// [DataExportDestinationNewResponseExportDestinationS3Response]
+type dataExportDestinationNewResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	BucketName     apijson.Field
@@ -261,12 +595,162 @@ type dataExportDestinationNewResponseJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *DataExportDestinationNewResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *DataExportDestinationNewResponseExportDestinationS3Response) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r dataExportDestinationNewResponseJSON) RawJSON() string {
+func (r dataExportDestinationNewResponseExportDestinationS3ResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+func (r DataExportDestinationNewResponseExportDestinationS3Response) implementsDataExportDestinationNewResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrder string
+
+const (
+	DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrderTypeFirst DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrderTimeFirst DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrderTypeFirst, DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+type DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// The bucket name.
+	BucketName string `json:"bucketName"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// The prefix.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                                                                          `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	DataExportDestinationResponse
+}
+
+// dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponseJSON
+// contains the JSON metadata for the struct
+// [DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse]
+type dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse) implementsDataExportDestinationNewResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrder string
+
+const (
+	DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst, DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+type DataExportDestinationNewResponseDestinationType string
+
+const (
+	DataExportDestinationNewResponseDestinationTypeS3  DataExportDestinationNewResponseDestinationType = "S3"
+	DataExportDestinationNewResponseDestinationTypeGcs DataExportDestinationNewResponseDestinationType = "GCS"
+)
+
+func (r DataExportDestinationNewResponseDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationNewResponseDestinationTypeS3, DataExportDestinationNewResponseDestinationTypeGcs:
+		return true
+	}
+	return false
 }
 
 // Specify how you want the file path to be structured in your bucket destination -
@@ -299,7 +783,152 @@ func (r DataExportDestinationNewResponsePartitionOrder) IsKnown() bool {
 	return false
 }
 
+// The response containing the details of an Google Cloud Storage export
+// destination.
 type DataExportDestinationGetResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// Name of the S3 bucket for the Export Destination.
+	BucketName string `json:"bucketName"`
+	// The code of the data Export Destination.
+	Code string `json:"code"`
+	// The id of the user who created the Export Destination.
+	CreatedBy       string                                          `json:"createdBy"`
+	DestinationType DataExportDestinationGetResponseDestinationType `json:"destinationType"`
+	// The DateTime when the Export Destination was created.
+	DtCreated time.Time `json:"dtCreated" format:"date-time"`
+	// The DateTime when the Export Destination was last modified.
+	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	// The specified IAM role ARN with PutObject permission for the specified
+	// `bucketName`, which allows the service to upload Data Exports to your S3 bucket.
+	IamRoleArn string `json:"iamRoleArn"`
+	// The id of the user who last modified the Export Destination.
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The name of the data Export Destination.
+	Name string `json:"name"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationGetResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
+	// specified, then the root of the bucket is used.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                               `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationGetResponseJSON `json:"-"`
+	union               DataExportDestinationGetResponseUnion
+}
+
+// dataExportDestinationGetResponseJSON contains the JSON metadata for the struct
+// [DataExportDestinationGetResponse]
+type dataExportDestinationGetResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	Code                apijson.Field
+	CreatedBy           apijson.Field
+	DestinationType     apijson.Field
+	DtCreated           apijson.Field
+	DtLastModified      apijson.Field
+	IamRoleArn          apijson.Field
+	LastModifiedBy      apijson.Field
+	Name                apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r dataExportDestinationGetResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *DataExportDestinationGetResponse) UnmarshalJSON(data []byte) (err error) {
+	*r = DataExportDestinationGetResponse{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [DataExportDestinationGetResponseUnion] interface which you
+// can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [DataExportDestinationGetResponseExportDestinationS3Response],
+// [DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse].
+func (r DataExportDestinationGetResponse) AsUnion() DataExportDestinationGetResponseUnion {
+	return r.union
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+//
+// Union satisfied by [DataExportDestinationGetResponseExportDestinationS3Response]
+// or
+// [DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse].
+type DataExportDestinationGetResponseUnion interface {
+	implementsDataExportDestinationGetResponse()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*DataExportDestinationGetResponseUnion)(nil)).Elem(),
+		"destinationType",
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationGetResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationGetResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "GCS",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "GCS",
+		},
+	)
+}
+
+type DataExportDestinationGetResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -329,17 +958,18 @@ type DataExportDestinationGetResponse struct {
 	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 	//   - Type first:
 	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-	PartitionOrder DataExportDestinationGetResponsePartitionOrder `json:"partitionOrder"`
+	PartitionOrder DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                               `json:"prefix"`
-	JSON   dataExportDestinationGetResponseJSON `json:"-"`
+	Prefix string                                                          `json:"prefix"`
+	JSON   dataExportDestinationGetResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
-// dataExportDestinationGetResponseJSON contains the JSON metadata for the struct
-// [DataExportDestinationGetResponse]
-type dataExportDestinationGetResponseJSON struct {
+// dataExportDestinationGetResponseExportDestinationS3ResponseJSON contains the
+// JSON metadata for the struct
+// [DataExportDestinationGetResponseExportDestinationS3Response]
+type dataExportDestinationGetResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	BucketName     apijson.Field
@@ -350,12 +980,162 @@ type dataExportDestinationGetResponseJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *DataExportDestinationGetResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *DataExportDestinationGetResponseExportDestinationS3Response) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r dataExportDestinationGetResponseJSON) RawJSON() string {
+func (r dataExportDestinationGetResponseExportDestinationS3ResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+func (r DataExportDestinationGetResponseExportDestinationS3Response) implementsDataExportDestinationGetResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrder string
+
+const (
+	DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrderTypeFirst DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrderTimeFirst DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrderTypeFirst, DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+type DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// The bucket name.
+	BucketName string `json:"bucketName"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// The prefix.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                                                                          `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	DataExportDestinationResponse
+}
+
+// dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponseJSON
+// contains the JSON metadata for the struct
+// [DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse]
+type dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse) implementsDataExportDestinationGetResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrder string
+
+const (
+	DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst, DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+type DataExportDestinationGetResponseDestinationType string
+
+const (
+	DataExportDestinationGetResponseDestinationTypeS3  DataExportDestinationGetResponseDestinationType = "S3"
+	DataExportDestinationGetResponseDestinationTypeGcs DataExportDestinationGetResponseDestinationType = "GCS"
+)
+
+func (r DataExportDestinationGetResponseDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationGetResponseDestinationTypeS3, DataExportDestinationGetResponseDestinationTypeGcs:
+		return true
+	}
+	return false
 }
 
 // Specify how you want the file path to be structured in your bucket destination -
@@ -388,7 +1168,152 @@ func (r DataExportDestinationGetResponsePartitionOrder) IsKnown() bool {
 	return false
 }
 
+// The response containing the details of an Google Cloud Storage export
+// destination.
 type DataExportDestinationUpdateResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// Name of the S3 bucket for the Export Destination.
+	BucketName string `json:"bucketName"`
+	// The code of the data Export Destination.
+	Code string `json:"code"`
+	// The id of the user who created the Export Destination.
+	CreatedBy       string                                             `json:"createdBy"`
+	DestinationType DataExportDestinationUpdateResponseDestinationType `json:"destinationType"`
+	// The DateTime when the Export Destination was created.
+	DtCreated time.Time `json:"dtCreated" format:"date-time"`
+	// The DateTime when the Export Destination was last modified.
+	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	// The specified IAM role ARN with PutObject permission for the specified
+	// `bucketName`, which allows the service to upload Data Exports to your S3 bucket.
+	IamRoleArn string `json:"iamRoleArn"`
+	// The id of the user who last modified the Export Destination.
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The name of the data Export Destination.
+	Name string `json:"name"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationUpdateResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
+	// specified, then the root of the bucket is used.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                                  `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationUpdateResponseJSON `json:"-"`
+	union               DataExportDestinationUpdateResponseUnion
+}
+
+// dataExportDestinationUpdateResponseJSON contains the JSON metadata for the
+// struct [DataExportDestinationUpdateResponse]
+type dataExportDestinationUpdateResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	Code                apijson.Field
+	CreatedBy           apijson.Field
+	DestinationType     apijson.Field
+	DtCreated           apijson.Field
+	DtLastModified      apijson.Field
+	IamRoleArn          apijson.Field
+	LastModifiedBy      apijson.Field
+	Name                apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r dataExportDestinationUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *DataExportDestinationUpdateResponse) UnmarshalJSON(data []byte) (err error) {
+	*r = DataExportDestinationUpdateResponse{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [DataExportDestinationUpdateResponseUnion] interface which you
+// can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [DataExportDestinationUpdateResponseExportDestinationS3Response],
+// [DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse].
+func (r DataExportDestinationUpdateResponse) AsUnion() DataExportDestinationUpdateResponseUnion {
+	return r.union
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+//
+// Union satisfied by
+// [DataExportDestinationUpdateResponseExportDestinationS3Response] or
+// [DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse].
+type DataExportDestinationUpdateResponseUnion interface {
+	implementsDataExportDestinationUpdateResponse()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*DataExportDestinationUpdateResponseUnion)(nil)).Elem(),
+		"destinationType",
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationUpdateResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationUpdateResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "GCS",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "GCS",
+		},
+	)
+}
+
+type DataExportDestinationUpdateResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -418,17 +1343,18 @@ type DataExportDestinationUpdateResponse struct {
 	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 	//   - Type first:
 	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-	PartitionOrder DataExportDestinationUpdateResponsePartitionOrder `json:"partitionOrder"`
+	PartitionOrder DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                                  `json:"prefix"`
-	JSON   dataExportDestinationUpdateResponseJSON `json:"-"`
+	Prefix string                                                             `json:"prefix"`
+	JSON   dataExportDestinationUpdateResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
-// dataExportDestinationUpdateResponseJSON contains the JSON metadata for the
-// struct [DataExportDestinationUpdateResponse]
-type dataExportDestinationUpdateResponseJSON struct {
+// dataExportDestinationUpdateResponseExportDestinationS3ResponseJSON contains the
+// JSON metadata for the struct
+// [DataExportDestinationUpdateResponseExportDestinationS3Response]
+type dataExportDestinationUpdateResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	BucketName     apijson.Field
@@ -439,12 +1365,162 @@ type dataExportDestinationUpdateResponseJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *DataExportDestinationUpdateResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *DataExportDestinationUpdateResponseExportDestinationS3Response) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r dataExportDestinationUpdateResponseJSON) RawJSON() string {
+func (r dataExportDestinationUpdateResponseExportDestinationS3ResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+func (r DataExportDestinationUpdateResponseExportDestinationS3Response) implementsDataExportDestinationUpdateResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrder string
+
+const (
+	DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrderTypeFirst DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrderTimeFirst DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrderTypeFirst, DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+type DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// The bucket name.
+	BucketName string `json:"bucketName"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// The prefix.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                                                                             `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	DataExportDestinationResponse
+}
+
+// dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponseJSON
+// contains the JSON metadata for the struct
+// [DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse]
+type dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse) implementsDataExportDestinationUpdateResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrder string
+
+const (
+	DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst, DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+type DataExportDestinationUpdateResponseDestinationType string
+
+const (
+	DataExportDestinationUpdateResponseDestinationTypeS3  DataExportDestinationUpdateResponseDestinationType = "S3"
+	DataExportDestinationUpdateResponseDestinationTypeGcs DataExportDestinationUpdateResponseDestinationType = "GCS"
+)
+
+func (r DataExportDestinationUpdateResponseDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationUpdateResponseDestinationTypeS3, DataExportDestinationUpdateResponseDestinationTypeGcs:
+		return true
+	}
+	return false
 }
 
 // Specify how you want the file path to be structured in your bucket destination -
@@ -477,7 +1553,152 @@ func (r DataExportDestinationUpdateResponsePartitionOrder) IsKnown() bool {
 	return false
 }
 
+// The response containing the details of an Google Cloud Storage export
+// destination.
 type DataExportDestinationDeleteResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// Name of the S3 bucket for the Export Destination.
+	BucketName string `json:"bucketName"`
+	// The code of the data Export Destination.
+	Code string `json:"code"`
+	// The id of the user who created the Export Destination.
+	CreatedBy       string                                             `json:"createdBy"`
+	DestinationType DataExportDestinationDeleteResponseDestinationType `json:"destinationType"`
+	// The DateTime when the Export Destination was created.
+	DtCreated time.Time `json:"dtCreated" format:"date-time"`
+	// The DateTime when the Export Destination was last modified.
+	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	// The specified IAM role ARN with PutObject permission for the specified
+	// `bucketName`, which allows the service to upload Data Exports to your S3 bucket.
+	IamRoleArn string `json:"iamRoleArn"`
+	// The id of the user who last modified the Export Destination.
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The name of the data Export Destination.
+	Name string `json:"name"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationDeleteResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
+	// specified, then the root of the bucket is used.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                                  `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationDeleteResponseJSON `json:"-"`
+	union               DataExportDestinationDeleteResponseUnion
+}
+
+// dataExportDestinationDeleteResponseJSON contains the JSON metadata for the
+// struct [DataExportDestinationDeleteResponse]
+type dataExportDestinationDeleteResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	Code                apijson.Field
+	CreatedBy           apijson.Field
+	DestinationType     apijson.Field
+	DtCreated           apijson.Field
+	DtLastModified      apijson.Field
+	IamRoleArn          apijson.Field
+	LastModifiedBy      apijson.Field
+	Name                apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r dataExportDestinationDeleteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *DataExportDestinationDeleteResponse) UnmarshalJSON(data []byte) (err error) {
+	*r = DataExportDestinationDeleteResponse{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [DataExportDestinationDeleteResponseUnion] interface which you
+// can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [DataExportDestinationDeleteResponseExportDestinationS3Response],
+// [DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse].
+func (r DataExportDestinationDeleteResponse) AsUnion() DataExportDestinationDeleteResponseUnion {
+	return r.union
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+//
+// Union satisfied by
+// [DataExportDestinationDeleteResponseExportDestinationS3Response] or
+// [DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse].
+type DataExportDestinationDeleteResponseUnion interface {
+	implementsDataExportDestinationDeleteResponse()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*DataExportDestinationDeleteResponseUnion)(nil)).Elem(),
+		"destinationType",
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationDeleteResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationDeleteResponseExportDestinationS3Response{}),
+			DiscriminatorValue: "GCS",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "S3",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse{}),
+			DiscriminatorValue: "GCS",
+		},
+	)
+}
+
+type DataExportDestinationDeleteResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The version number:
@@ -507,17 +1728,18 @@ type DataExportDestinationDeleteResponse struct {
 	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 	//   - Type first:
 	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-	PartitionOrder DataExportDestinationDeleteResponsePartitionOrder `json:"partitionOrder"`
+	PartitionOrder DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                                  `json:"prefix"`
-	JSON   dataExportDestinationDeleteResponseJSON `json:"-"`
+	Prefix string                                                             `json:"prefix"`
+	JSON   dataExportDestinationDeleteResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
-// dataExportDestinationDeleteResponseJSON contains the JSON metadata for the
-// struct [DataExportDestinationDeleteResponse]
-type dataExportDestinationDeleteResponseJSON struct {
+// dataExportDestinationDeleteResponseExportDestinationS3ResponseJSON contains the
+// JSON metadata for the struct
+// [DataExportDestinationDeleteResponseExportDestinationS3Response]
+type dataExportDestinationDeleteResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
 	Version        apijson.Field
 	BucketName     apijson.Field
@@ -528,12 +1750,162 @@ type dataExportDestinationDeleteResponseJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *DataExportDestinationDeleteResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *DataExportDestinationDeleteResponseExportDestinationS3Response) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r dataExportDestinationDeleteResponseJSON) RawJSON() string {
+func (r dataExportDestinationDeleteResponseExportDestinationS3ResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+func (r DataExportDestinationDeleteResponseExportDestinationS3Response) implementsDataExportDestinationDeleteResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrder string
+
+const (
+	DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrderTypeFirst DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrderTimeFirst DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrderTypeFirst, DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+// The response containing the details of an Google Cloud Storage export
+// destination.
+type DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version,required"`
+	// The bucket name.
+	BucketName string `json:"bucketName"`
+	// Specify how you want the file path to be structured in your bucket destination -
+	// by Time first (Default) or Type first.
+	//
+	// Type is dependent on whether the Export is for Usage data or Operational data:
+	//
+	//   - **Usage.** Type is `measurements`.
+	//   - **Operational.** Type is one of the entities for which operational data
+	//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+	//
+	// Example for Usage Data Export using .CSV format:
+	//
+	//   - Time first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	//   - Type first:
+	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+	PartitionOrder DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrder `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID string `json:"poolId"`
+	// The prefix.
+	Prefix string `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber string `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID string `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail string                                                                             `json:"serviceAccountEmail"`
+	JSON                dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	DataExportDestinationResponse
+}
+
+// dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponseJSON
+// contains the JSON metadata for the struct
+// [DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse]
+type dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponseJSON struct {
+	ID                  apijson.Field
+	Version             apijson.Field
+	BucketName          apijson.Field
+	PartitionOrder      apijson.Field
+	PoolID              apijson.Field
+	Prefix              apijson.Field
+	ProjectNumber       apijson.Field
+	ProviderID          apijson.Field
+	ServiceAccountEmail apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse) implementsDataExportDestinationDeleteResponse() {
+}
+
+// Specify how you want the file path to be structured in your bucket destination -
+// by Time first (Default) or Type first.
+//
+// Type is dependent on whether the Export is for Usage data or Operational data:
+//
+//   - **Usage.** Type is `measurements`.
+//   - **Operational.** Type is one of the entities for which operational data
+//     exports are available, such as `account`, `commitment`, `meter`, and so on.
+//
+// Example for Usage Data Export using .CSV format:
+//
+//   - Time first:
+//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+//   - Type first:
+//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
+type DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrder string
+
+const (
+	DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TYPE_FIRST"
+	DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrder = "TIME_FIRST"
+)
+
+func (r DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrder) IsKnown() bool {
+	switch r {
+	case DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTypeFirst, DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponsePartitionOrderTimeFirst:
+		return true
+	}
+	return false
+}
+
+type DataExportDestinationDeleteResponseDestinationType string
+
+const (
+	DataExportDestinationDeleteResponseDestinationTypeS3  DataExportDestinationDeleteResponseDestinationType = "S3"
+	DataExportDestinationDeleteResponseDestinationTypeGcs DataExportDestinationDeleteResponseDestinationType = "GCS"
+)
+
+func (r DataExportDestinationDeleteResponseDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationDeleteResponseDestinationTypeS3, DataExportDestinationDeleteResponseDestinationTypeGcs:
+		return true
+	}
+	return false
 }
 
 // Specify how you want the file path to be structured in your bucket destination -
@@ -568,11 +1940,17 @@ func (r DataExportDestinationDeleteResponsePartitionOrder) IsKnown() bool {
 
 type DataExportDestinationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string]                     `path:"orgId,required"`
+	Body  DataExportDestinationNewParamsBodyUnion `json:"body,required"`
+}
+
+func (r DataExportDestinationNewParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.Body)
+}
+
+type DataExportDestinationNewParamsBody struct {
 	// Name of the S3 bucket for the Export Destination.
 	BucketName param.Field[string] `json:"bucketName,required"`
-	// The code of the Export Destination.
-	Code param.Field[string] `json:"code,required"`
 	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
 	// assume an IAM role with PutObject permission for the specified `bucketName`.
 	// Create a suitable IAM role in your AWS account and enter ARN:
@@ -590,9 +1968,7 @@ type DataExportDestinationNewParams struct {
 	// Policies you can use to create the required IAM Role ARN, see
 	// [Creating Data Export Destinations](https://www.m3ter.com/docs/guides/data-exports/creating-data-export-destinations)
 	// in our main User documentation.
-	IamRoleArn param.Field[string] `json:"iamRoleArn,required"`
-	// The name of the Export Destination.
-	Name param.Field[string] `json:"name,required"`
+	IamRoleArn param.Field[string] `json:"iamRoleArn"`
 	// Specify how you want the file path to be structured in your bucket destination -
 	// by Time first (Default) or Type first.
 	//
@@ -608,10 +1984,18 @@ type DataExportDestinationNewParams struct {
 	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 	//   - Type first:
 	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-	PartitionOrder param.Field[DataExportDestinationNewParamsPartitionOrder] `json:"partitionOrder"`
+	PartitionOrder param.Field[DataExportDestinationNewParamsBodyPartitionOrder] `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID param.Field[string] `json:"poolId"`
 	// Location in specified S3 bucket for the Export Destination. If you omit a
 	// `prefix`, then the root of the bucket will be used.
 	Prefix param.Field[string] `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber param.Field[string] `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID param.Field[string] `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail param.Field[string] `json:"serviceAccountEmail"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -623,8 +2007,17 @@ type DataExportDestinationNewParams struct {
 	Version param.Field[int64] `json:"version"`
 }
 
-func (r DataExportDestinationNewParams) MarshalJSON() (data []byte, err error) {
+func (r DataExportDestinationNewParamsBody) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+func (r DataExportDestinationNewParamsBody) implementsDataExportDestinationNewParamsBodyUnion() {}
+
+// Satisfied by [DataExportDestinationS3RequestParam],
+// [DataExportDestinationGoogleCloudStorageRequestParam],
+// [DataExportDestinationNewParamsBody].
+type DataExportDestinationNewParamsBodyUnion interface {
+	implementsDataExportDestinationNewParamsBodyUnion()
 }
 
 // Specify how you want the file path to be structured in your bucket destination -
@@ -642,16 +2035,16 @@ func (r DataExportDestinationNewParams) MarshalJSON() (data []byte, err error) {
 //     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 //   - Type first:
 //     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-type DataExportDestinationNewParamsPartitionOrder string
+type DataExportDestinationNewParamsBodyPartitionOrder string
 
 const (
-	DataExportDestinationNewParamsPartitionOrderTypeFirst DataExportDestinationNewParamsPartitionOrder = "TYPE_FIRST"
-	DataExportDestinationNewParamsPartitionOrderTimeFirst DataExportDestinationNewParamsPartitionOrder = "TIME_FIRST"
+	DataExportDestinationNewParamsBodyPartitionOrderTypeFirst DataExportDestinationNewParamsBodyPartitionOrder = "TYPE_FIRST"
+	DataExportDestinationNewParamsBodyPartitionOrderTimeFirst DataExportDestinationNewParamsBodyPartitionOrder = "TIME_FIRST"
 )
 
-func (r DataExportDestinationNewParamsPartitionOrder) IsKnown() bool {
+func (r DataExportDestinationNewParamsBodyPartitionOrder) IsKnown() bool {
 	switch r {
-	case DataExportDestinationNewParamsPartitionOrderTypeFirst, DataExportDestinationNewParamsPartitionOrderTimeFirst:
+	case DataExportDestinationNewParamsBodyPartitionOrderTypeFirst, DataExportDestinationNewParamsBodyPartitionOrderTimeFirst:
 		return true
 	}
 	return false
@@ -664,11 +2057,17 @@ type DataExportDestinationGetParams struct {
 
 type DataExportDestinationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string]                        `path:"orgId,required"`
+	Body  DataExportDestinationUpdateParamsBodyUnion `json:"body,required"`
+}
+
+func (r DataExportDestinationUpdateParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.Body)
+}
+
+type DataExportDestinationUpdateParamsBody struct {
 	// Name of the S3 bucket for the Export Destination.
 	BucketName param.Field[string] `json:"bucketName,required"`
-	// The code of the Export Destination.
-	Code param.Field[string] `json:"code,required"`
 	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
 	// assume an IAM role with PutObject permission for the specified `bucketName`.
 	// Create a suitable IAM role in your AWS account and enter ARN:
@@ -686,9 +2085,7 @@ type DataExportDestinationUpdateParams struct {
 	// Policies you can use to create the required IAM Role ARN, see
 	// [Creating Data Export Destinations](https://www.m3ter.com/docs/guides/data-exports/creating-data-export-destinations)
 	// in our main User documentation.
-	IamRoleArn param.Field[string] `json:"iamRoleArn,required"`
-	// The name of the Export Destination.
-	Name param.Field[string] `json:"name,required"`
+	IamRoleArn param.Field[string] `json:"iamRoleArn"`
 	// Specify how you want the file path to be structured in your bucket destination -
 	// by Time first (Default) or Type first.
 	//
@@ -704,10 +2101,18 @@ type DataExportDestinationUpdateParams struct {
 	//     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 	//   - Type first:
 	//     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-	PartitionOrder param.Field[DataExportDestinationUpdateParamsPartitionOrder] `json:"partitionOrder"`
+	PartitionOrder param.Field[DataExportDestinationUpdateParamsBodyPartitionOrder] `json:"partitionOrder"`
+	// The export destination Web Identity Federation poolId.
+	PoolID param.Field[string] `json:"poolId"`
 	// Location in specified S3 bucket for the Export Destination. If you omit a
 	// `prefix`, then the root of the bucket will be used.
 	Prefix param.Field[string] `json:"prefix"`
+	// The export destination GCP projectNumber.
+	ProjectNumber param.Field[string] `json:"projectNumber"`
+	// The export destination Web Identity Federation identity providerId.
+	ProviderID param.Field[string] `json:"providerId"`
+	// The export destination service account email.
+	ServiceAccountEmail param.Field[string] `json:"serviceAccountEmail"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -719,8 +2124,18 @@ type DataExportDestinationUpdateParams struct {
 	Version param.Field[int64] `json:"version"`
 }
 
-func (r DataExportDestinationUpdateParams) MarshalJSON() (data []byte, err error) {
+func (r DataExportDestinationUpdateParamsBody) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+func (r DataExportDestinationUpdateParamsBody) implementsDataExportDestinationUpdateParamsBodyUnion() {
+}
+
+// Satisfied by [DataExportDestinationS3RequestParam],
+// [DataExportDestinationGoogleCloudStorageRequestParam],
+// [DataExportDestinationUpdateParamsBody].
+type DataExportDestinationUpdateParamsBodyUnion interface {
+	implementsDataExportDestinationUpdateParamsBodyUnion()
 }
 
 // Specify how you want the file path to be structured in your bucket destination -
@@ -738,16 +2153,16 @@ func (r DataExportDestinationUpdateParams) MarshalJSON() (data []byte, err error
 //     `{bucketName}/{prefix}/orgId={orgId}/date=2025-01-27/hour=10/type=measurements/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
 //   - Type first:
 //     `{bucketName}/{prefix}/orgId={orgId}/type=measurements/date=2025-01-27/hour=10/b9a317a6-860a-40f9-9bf4-e65c44c72c94_measurements.csv.gz`
-type DataExportDestinationUpdateParamsPartitionOrder string
+type DataExportDestinationUpdateParamsBodyPartitionOrder string
 
 const (
-	DataExportDestinationUpdateParamsPartitionOrderTypeFirst DataExportDestinationUpdateParamsPartitionOrder = "TYPE_FIRST"
-	DataExportDestinationUpdateParamsPartitionOrderTimeFirst DataExportDestinationUpdateParamsPartitionOrder = "TIME_FIRST"
+	DataExportDestinationUpdateParamsBodyPartitionOrderTypeFirst DataExportDestinationUpdateParamsBodyPartitionOrder = "TYPE_FIRST"
+	DataExportDestinationUpdateParamsBodyPartitionOrderTimeFirst DataExportDestinationUpdateParamsBodyPartitionOrder = "TIME_FIRST"
 )
 
-func (r DataExportDestinationUpdateParamsPartitionOrder) IsKnown() bool {
+func (r DataExportDestinationUpdateParamsBodyPartitionOrder) IsKnown() bool {
 	switch r {
-	case DataExportDestinationUpdateParamsPartitionOrderTypeFirst, DataExportDestinationUpdateParamsPartitionOrderTimeFirst:
+	case DataExportDestinationUpdateParamsBodyPartitionOrderTypeFirst, DataExportDestinationUpdateParamsBodyPartitionOrderTimeFirst:
 		return true
 	}
 	return false

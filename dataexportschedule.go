@@ -356,30 +356,7 @@ func (r OperationalDataExportScheduleResponseOperationalDataType) IsKnown() bool
 }
 
 type UsageDataExportScheduleRequestParam struct {
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[UsageDataExportScheduleRequestAggregationFrequency] `json:"aggregationFrequency,required"`
-	SourceType           param.Field[UsageDataExportScheduleRequestSourceType]           `json:"sourceType,required"`
+	SourceType param.Field[UsageDataExportScheduleRequestSourceType] `json:"sourceType,required"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
@@ -403,21 +380,15 @@ type UsageDataExportScheduleRequestParam struct {
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
 	TimePeriod param.Field[UsageDataExportScheduleRequestTimePeriod] `json:"timePeriod,required"`
-	// List of account IDs for which the usage data will be exported.
+	// List of account IDs to export
 	AccountIDs param.Field[[]string] `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[UsageDataExportScheduleRequestAggregation] `json:"aggregation"`
-	// List of meter IDs for which the usage data will be exported.
+	// List of aggregations to apply
+	Aggregations param.Field[[]UsageDataExportScheduleRequestAggregationParam] `json:"aggregations"`
+	// List of dimension filters to apply
+	DimensionFilters param.Field[[]UsageDataExportScheduleRequestDimensionFilterParam] `json:"dimensionFilters"`
+	// List of groups to apply
+	Groups param.Field[[]UsageDataExportScheduleRequestGroupsUnionParam] `json:"groups"`
+	// List of meter IDs to export
 	MeterIDs param.Field[[]string] `json:"meterIds"`
 	// The version number of the entity:
 	//
@@ -437,46 +408,6 @@ func (r UsageDataExportScheduleRequestParam) MarshalJSON() (data []byte, err err
 func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleNewParamsBodyUnion() {}
 
 func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleUpdateParamsBodyUnion() {}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type UsageDataExportScheduleRequestAggregationFrequency string
-
-const (
-	UsageDataExportScheduleRequestAggregationFrequencyOriginal UsageDataExportScheduleRequestAggregationFrequency = "ORIGINAL"
-	UsageDataExportScheduleRequestAggregationFrequencyHour     UsageDataExportScheduleRequestAggregationFrequency = "HOUR"
-	UsageDataExportScheduleRequestAggregationFrequencyDay      UsageDataExportScheduleRequestAggregationFrequency = "DAY"
-	UsageDataExportScheduleRequestAggregationFrequencyWeek     UsageDataExportScheduleRequestAggregationFrequency = "WEEK"
-	UsageDataExportScheduleRequestAggregationFrequencyMonth    UsageDataExportScheduleRequestAggregationFrequency = "MONTH"
-)
-
-func (r UsageDataExportScheduleRequestAggregationFrequency) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleRequestAggregationFrequencyOriginal, UsageDataExportScheduleRequestAggregationFrequencyHour, UsageDataExportScheduleRequestAggregationFrequencyDay, UsageDataExportScheduleRequestAggregationFrequencyWeek, UsageDataExportScheduleRequestAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
 
 type UsageDataExportScheduleRequestSourceType string
 
@@ -518,6 +449,7 @@ func (r UsageDataExportScheduleRequestSourceType) IsKnown() bool {
 type UsageDataExportScheduleRequestTimePeriod string
 
 const (
+	UsageDataExportScheduleRequestTimePeriodLast12Hours   UsageDataExportScheduleRequestTimePeriod = "LAST_12_HOURS"
 	UsageDataExportScheduleRequestTimePeriodToday         UsageDataExportScheduleRequestTimePeriod = "TODAY"
 	UsageDataExportScheduleRequestTimePeriodYesterday     UsageDataExportScheduleRequestTimePeriod = "YESTERDAY"
 	UsageDataExportScheduleRequestTimePeriodWeekToDate    UsageDataExportScheduleRequestTimePeriod = "WEEK_TO_DATE"
@@ -530,44 +462,176 @@ const (
 
 func (r UsageDataExportScheduleRequestTimePeriod) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleRequestTimePeriodToday, UsageDataExportScheduleRequestTimePeriodYesterday, UsageDataExportScheduleRequestTimePeriodWeekToDate, UsageDataExportScheduleRequestTimePeriodCurrentMonth, UsageDataExportScheduleRequestTimePeriodLast30Days, UsageDataExportScheduleRequestTimePeriodLast35Days, UsageDataExportScheduleRequestTimePeriodPreviousWeek, UsageDataExportScheduleRequestTimePeriodPreviousMonth:
+	case UsageDataExportScheduleRequestTimePeriodLast12Hours, UsageDataExportScheduleRequestTimePeriodToday, UsageDataExportScheduleRequestTimePeriodYesterday, UsageDataExportScheduleRequestTimePeriodWeekToDate, UsageDataExportScheduleRequestTimePeriodCurrentMonth, UsageDataExportScheduleRequestTimePeriodLast30Days, UsageDataExportScheduleRequestTimePeriodLast35Days, UsageDataExportScheduleRequestTimePeriodPreviousWeek, UsageDataExportScheduleRequestTimePeriodPreviousMonth:
 		return true
 	}
 	return false
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type UsageDataExportScheduleRequestAggregation string
+type UsageDataExportScheduleRequestAggregationParam struct {
+	// Field code
+	FieldCode param.Field[string] `json:"fieldCode,required"`
+	// Type of field
+	FieldType param.Field[UsageDataExportScheduleRequestAggregationsFieldType] `json:"fieldType,required"`
+	// Aggregation function
+	Function param.Field[UsageDataExportScheduleRequestAggregationsFunction] `json:"function,required"`
+	// Meter ID
+	MeterID param.Field[string] `json:"meterId,required"`
+}
+
+func (r UsageDataExportScheduleRequestAggregationParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Type of field
+type UsageDataExportScheduleRequestAggregationsFieldType string
 
 const (
-	UsageDataExportScheduleRequestAggregationSum    UsageDataExportScheduleRequestAggregation = "SUM"
-	UsageDataExportScheduleRequestAggregationMin    UsageDataExportScheduleRequestAggregation = "MIN"
-	UsageDataExportScheduleRequestAggregationMax    UsageDataExportScheduleRequestAggregation = "MAX"
-	UsageDataExportScheduleRequestAggregationCount  UsageDataExportScheduleRequestAggregation = "COUNT"
-	UsageDataExportScheduleRequestAggregationLatest UsageDataExportScheduleRequestAggregation = "LATEST"
-	UsageDataExportScheduleRequestAggregationMean   UsageDataExportScheduleRequestAggregation = "MEAN"
+	UsageDataExportScheduleRequestAggregationsFieldTypeDimension UsageDataExportScheduleRequestAggregationsFieldType = "DIMENSION"
+	UsageDataExportScheduleRequestAggregationsFieldTypeMeasure   UsageDataExportScheduleRequestAggregationsFieldType = "MEASURE"
 )
 
-func (r UsageDataExportScheduleRequestAggregation) IsKnown() bool {
+func (r UsageDataExportScheduleRequestAggregationsFieldType) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleRequestAggregationSum, UsageDataExportScheduleRequestAggregationMin, UsageDataExportScheduleRequestAggregationMax, UsageDataExportScheduleRequestAggregationCount, UsageDataExportScheduleRequestAggregationLatest, UsageDataExportScheduleRequestAggregationMean:
+	case UsageDataExportScheduleRequestAggregationsFieldTypeDimension, UsageDataExportScheduleRequestAggregationsFieldTypeMeasure:
+		return true
+	}
+	return false
+}
+
+// Aggregation function
+type UsageDataExportScheduleRequestAggregationsFunction string
+
+const (
+	UsageDataExportScheduleRequestAggregationsFunctionSum    UsageDataExportScheduleRequestAggregationsFunction = "SUM"
+	UsageDataExportScheduleRequestAggregationsFunctionMin    UsageDataExportScheduleRequestAggregationsFunction = "MIN"
+	UsageDataExportScheduleRequestAggregationsFunctionMax    UsageDataExportScheduleRequestAggregationsFunction = "MAX"
+	UsageDataExportScheduleRequestAggregationsFunctionCount  UsageDataExportScheduleRequestAggregationsFunction = "COUNT"
+	UsageDataExportScheduleRequestAggregationsFunctionLatest UsageDataExportScheduleRequestAggregationsFunction = "LATEST"
+	UsageDataExportScheduleRequestAggregationsFunctionMean   UsageDataExportScheduleRequestAggregationsFunction = "MEAN"
+	UsageDataExportScheduleRequestAggregationsFunctionUnique UsageDataExportScheduleRequestAggregationsFunction = "UNIQUE"
+)
+
+func (r UsageDataExportScheduleRequestAggregationsFunction) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleRequestAggregationsFunctionSum, UsageDataExportScheduleRequestAggregationsFunctionMin, UsageDataExportScheduleRequestAggregationsFunctionMax, UsageDataExportScheduleRequestAggregationsFunctionCount, UsageDataExportScheduleRequestAggregationsFunctionLatest, UsageDataExportScheduleRequestAggregationsFunctionMean, UsageDataExportScheduleRequestAggregationsFunctionUnique:
+		return true
+	}
+	return false
+}
+
+type UsageDataExportScheduleRequestDimensionFilterParam struct {
+	// Field code
+	FieldCode param.Field[string] `json:"fieldCode,required"`
+	// Meter ID
+	MeterID param.Field[string] `json:"meterId,required"`
+	// Values to filter by
+	Values param.Field[[]string] `json:"values,required"`
+}
+
+func (r UsageDataExportScheduleRequestDimensionFilterParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Group by a field
+//
+// Satisfied by
+// [UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam],
+// [UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam],
+// [UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam].
+type UsageDataExportScheduleRequestGroupsUnionParam interface {
+	implementsUsageDataExportScheduleRequestGroupsUnionParam()
+}
+
+// Group by account
+type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam struct {
+	GroupType param.Field[UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType] `json:"groupType"`
+	DataExplorerAccountGroupParam
+}
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam) implementsUsageDataExportScheduleRequestGroupsUnionParam() {
+}
+
+type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType string
+
+const (
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount   UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "ACCOUNT"
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "DIMENSION"
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime      UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "TIME"
+)
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by dimension
+type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam struct {
+	GroupType param.Field[UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType] `json:"groupType"`
+	DataExplorerDimensionGroupParam
+}
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam) implementsUsageDataExportScheduleRequestGroupsUnionParam() {
+}
+
+type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType string
+
+const (
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount   UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "ACCOUNT"
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "DIMENSION"
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime      UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "TIME"
+)
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by time
+type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam struct {
+	GroupType param.Field[UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType] `json:"groupType"`
+	DataExplorerTimeGroupParam
+}
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam) implementsUsageDataExportScheduleRequestGroupsUnionParam() {
+}
+
+type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType string
+
+const (
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount   UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "ACCOUNT"
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "DIMENSION"
+	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime      UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "TIME"
+)
+
+func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime:
 		return true
 	}
 	return false
 }
 
 type UsageDataExportScheduleResponse struct {
-	// The id of the schedule
+	// The id of the schedule configuration.
 	ID string `json:"id,required"`
 	// The version number:
 	//
@@ -578,41 +642,12 @@ type UsageDataExportScheduleResponse struct {
 	Version int64 `json:"version,required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs []string `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation UsageDataExportScheduleResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency UsageDataExportScheduleResponseAggregationFrequency `json:"aggregationFrequency"`
+	// List of aggregations to apply
+	Aggregations []UsageDataExportScheduleResponseAggregation `json:"aggregations"`
+	// List of dimension filters to apply
+	DimensionFilters []UsageDataExportScheduleResponseDimensionFilter `json:"dimensionFilters"`
+	// List of groups to apply
+	Groups []UsageDataExportScheduleResponseGroup `json:"groups"`
 	// List of meter IDs for which the usage data will be exported.
 	MeterIDs []string `json:"meterIds"`
 	// Define a time period to control the range of usage data you want the data export
@@ -644,15 +679,16 @@ type UsageDataExportScheduleResponse struct {
 // usageDataExportScheduleResponseJSON contains the JSON metadata for the struct
 // [UsageDataExportScheduleResponse]
 type usageDataExportScheduleResponseJSON struct {
-	ID                   apijson.Field
-	Version              apijson.Field
-	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
-	MeterIDs             apijson.Field
-	TimePeriod           apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
+	ID               apijson.Field
+	Version          apijson.Field
+	AccountIDs       apijson.Field
+	Aggregations     apijson.Field
+	DimensionFilters apijson.Field
+	Groups           apijson.Field
+	MeterIDs         apijson.Field
+	TimePeriod       apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *UsageDataExportScheduleResponse) UnmarshalJSON(data []byte) (err error) {
@@ -671,71 +707,338 @@ func (r UsageDataExportScheduleResponse) implementsDataExportScheduleUpdateRespo
 
 func (r UsageDataExportScheduleResponse) implementsDataExportScheduleDeleteResponse() {}
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type UsageDataExportScheduleResponseAggregation string
+type UsageDataExportScheduleResponseAggregation struct {
+	// Field code
+	FieldCode string `json:"fieldCode,required"`
+	// Type of field
+	FieldType UsageDataExportScheduleResponseAggregationsFieldType `json:"fieldType,required"`
+	// Aggregation function
+	Function UsageDataExportScheduleResponseAggregationsFunction `json:"function,required"`
+	// Meter ID
+	MeterID string                                         `json:"meterId,required"`
+	JSON    usageDataExportScheduleResponseAggregationJSON `json:"-"`
+}
+
+// usageDataExportScheduleResponseAggregationJSON contains the JSON metadata for
+// the struct [UsageDataExportScheduleResponseAggregation]
+type usageDataExportScheduleResponseAggregationJSON struct {
+	FieldCode   apijson.Field
+	FieldType   apijson.Field
+	Function    apijson.Field
+	MeterID     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponseAggregation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseAggregationJSON) RawJSON() string {
+	return r.raw
+}
+
+// Type of field
+type UsageDataExportScheduleResponseAggregationsFieldType string
 
 const (
-	UsageDataExportScheduleResponseAggregationSum    UsageDataExportScheduleResponseAggregation = "SUM"
-	UsageDataExportScheduleResponseAggregationMin    UsageDataExportScheduleResponseAggregation = "MIN"
-	UsageDataExportScheduleResponseAggregationMax    UsageDataExportScheduleResponseAggregation = "MAX"
-	UsageDataExportScheduleResponseAggregationCount  UsageDataExportScheduleResponseAggregation = "COUNT"
-	UsageDataExportScheduleResponseAggregationLatest UsageDataExportScheduleResponseAggregation = "LATEST"
-	UsageDataExportScheduleResponseAggregationMean   UsageDataExportScheduleResponseAggregation = "MEAN"
+	UsageDataExportScheduleResponseAggregationsFieldTypeDimension UsageDataExportScheduleResponseAggregationsFieldType = "DIMENSION"
+	UsageDataExportScheduleResponseAggregationsFieldTypeMeasure   UsageDataExportScheduleResponseAggregationsFieldType = "MEASURE"
 )
 
-func (r UsageDataExportScheduleResponseAggregation) IsKnown() bool {
+func (r UsageDataExportScheduleResponseAggregationsFieldType) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleResponseAggregationSum, UsageDataExportScheduleResponseAggregationMin, UsageDataExportScheduleResponseAggregationMax, UsageDataExportScheduleResponseAggregationCount, UsageDataExportScheduleResponseAggregationLatest, UsageDataExportScheduleResponseAggregationMean:
+	case UsageDataExportScheduleResponseAggregationsFieldTypeDimension, UsageDataExportScheduleResponseAggregationsFieldTypeMeasure:
 		return true
 	}
 	return false
 }
 
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type UsageDataExportScheduleResponseAggregationFrequency string
+// Aggregation function
+type UsageDataExportScheduleResponseAggregationsFunction string
 
 const (
-	UsageDataExportScheduleResponseAggregationFrequencyOriginal UsageDataExportScheduleResponseAggregationFrequency = "ORIGINAL"
-	UsageDataExportScheduleResponseAggregationFrequencyHour     UsageDataExportScheduleResponseAggregationFrequency = "HOUR"
-	UsageDataExportScheduleResponseAggregationFrequencyDay      UsageDataExportScheduleResponseAggregationFrequency = "DAY"
-	UsageDataExportScheduleResponseAggregationFrequencyWeek     UsageDataExportScheduleResponseAggregationFrequency = "WEEK"
-	UsageDataExportScheduleResponseAggregationFrequencyMonth    UsageDataExportScheduleResponseAggregationFrequency = "MONTH"
+	UsageDataExportScheduleResponseAggregationsFunctionSum    UsageDataExportScheduleResponseAggregationsFunction = "SUM"
+	UsageDataExportScheduleResponseAggregationsFunctionMin    UsageDataExportScheduleResponseAggregationsFunction = "MIN"
+	UsageDataExportScheduleResponseAggregationsFunctionMax    UsageDataExportScheduleResponseAggregationsFunction = "MAX"
+	UsageDataExportScheduleResponseAggregationsFunctionCount  UsageDataExportScheduleResponseAggregationsFunction = "COUNT"
+	UsageDataExportScheduleResponseAggregationsFunctionLatest UsageDataExportScheduleResponseAggregationsFunction = "LATEST"
+	UsageDataExportScheduleResponseAggregationsFunctionMean   UsageDataExportScheduleResponseAggregationsFunction = "MEAN"
+	UsageDataExportScheduleResponseAggregationsFunctionUnique UsageDataExportScheduleResponseAggregationsFunction = "UNIQUE"
 )
 
-func (r UsageDataExportScheduleResponseAggregationFrequency) IsKnown() bool {
+func (r UsageDataExportScheduleResponseAggregationsFunction) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleResponseAggregationFrequencyOriginal, UsageDataExportScheduleResponseAggregationFrequencyHour, UsageDataExportScheduleResponseAggregationFrequencyDay, UsageDataExportScheduleResponseAggregationFrequencyWeek, UsageDataExportScheduleResponseAggregationFrequencyMonth:
+	case UsageDataExportScheduleResponseAggregationsFunctionSum, UsageDataExportScheduleResponseAggregationsFunctionMin, UsageDataExportScheduleResponseAggregationsFunctionMax, UsageDataExportScheduleResponseAggregationsFunctionCount, UsageDataExportScheduleResponseAggregationsFunctionLatest, UsageDataExportScheduleResponseAggregationsFunctionMean, UsageDataExportScheduleResponseAggregationsFunctionUnique:
+		return true
+	}
+	return false
+}
+
+type UsageDataExportScheduleResponseDimensionFilter struct {
+	// Field code
+	FieldCode string `json:"fieldCode,required"`
+	// Meter ID
+	MeterID string `json:"meterId,required"`
+	// Values to filter by
+	Values []string                                           `json:"values,required"`
+	JSON   usageDataExportScheduleResponseDimensionFilterJSON `json:"-"`
+}
+
+// usageDataExportScheduleResponseDimensionFilterJSON contains the JSON metadata
+// for the struct [UsageDataExportScheduleResponseDimensionFilter]
+type usageDataExportScheduleResponseDimensionFilterJSON struct {
+	FieldCode   apijson.Field
+	MeterID     apijson.Field
+	Values      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponseDimensionFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseDimensionFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+// Group by a field
+type UsageDataExportScheduleResponseGroup struct {
+	// Field code to group by
+	FieldCode string `json:"fieldCode"`
+	// Frequency of usage data
+	Frequency UsageDataExportScheduleResponseGroupsFrequency `json:"frequency"`
+	GroupType UsageDataExportScheduleResponseGroupsGroupType `json:"groupType"`
+	// Meter ID to group by
+	MeterID string                                   `json:"meterId"`
+	JSON    usageDataExportScheduleResponseGroupJSON `json:"-"`
+	union   UsageDataExportScheduleResponseGroupsUnion
+}
+
+// usageDataExportScheduleResponseGroupJSON contains the JSON metadata for the
+// struct [UsageDataExportScheduleResponseGroup]
+type usageDataExportScheduleResponseGroupJSON struct {
+	FieldCode   apijson.Field
+	Frequency   apijson.Field
+	GroupType   apijson.Field
+	MeterID     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r usageDataExportScheduleResponseGroupJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *UsageDataExportScheduleResponseGroup) UnmarshalJSON(data []byte) (err error) {
+	*r = UsageDataExportScheduleResponseGroup{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [UsageDataExportScheduleResponseGroupsUnion] interface which
+// you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup],
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup],
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup].
+func (r UsageDataExportScheduleResponseGroup) AsUnion() UsageDataExportScheduleResponseGroupsUnion {
+	return r.union
+}
+
+// Group by a field
+//
+// Union satisfied by
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup],
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup] or
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup].
+type UsageDataExportScheduleResponseGroupsUnion interface {
+	implementsUsageDataExportScheduleResponseGroup()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*UsageDataExportScheduleResponseGroupsUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup{}),
+		},
+	)
+}
+
+// Group by account
+type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup struct {
+	GroupType UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType `json:"groupType"`
+	JSON      usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON      `json:"-"`
+	DataExplorerAccountGroup
+}
+
+// usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON
+// contains the JSON metadata for the struct
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup]
+type usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON struct {
+	GroupType   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup) implementsUsageDataExportScheduleResponseGroup() {
+}
+
+type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType string
+
+const (
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount   UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType = "ACCOUNT"
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType = "DIMENSION"
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeTime      UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType = "TIME"
+)
+
+func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by dimension
+type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup struct {
+	GroupType UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType `json:"groupType"`
+	JSON      usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON      `json:"-"`
+	DataExplorerDimensionGroup
+}
+
+// usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON
+// contains the JSON metadata for the struct
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup]
+type usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON struct {
+	GroupType   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup) implementsUsageDataExportScheduleResponseGroup() {
+}
+
+type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType string
+
+const (
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount   UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType = "ACCOUNT"
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType = "DIMENSION"
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime      UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType = "TIME"
+)
+
+func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by time
+type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup struct {
+	GroupType UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType `json:"groupType"`
+	JSON      usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON      `json:"-"`
+	DataExplorerTimeGroup
+}
+
+// usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON
+// contains the JSON metadata for the struct
+// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup]
+type usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON struct {
+	GroupType   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup) implementsUsageDataExportScheduleResponseGroup() {
+}
+
+type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType string
+
+const (
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount   UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType = "ACCOUNT"
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType = "DIMENSION"
+	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeTime      UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType = "TIME"
+)
+
+func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Frequency of usage data
+type UsageDataExportScheduleResponseGroupsFrequency string
+
+const (
+	UsageDataExportScheduleResponseGroupsFrequencyDay     UsageDataExportScheduleResponseGroupsFrequency = "DAY"
+	UsageDataExportScheduleResponseGroupsFrequencyHour    UsageDataExportScheduleResponseGroupsFrequency = "HOUR"
+	UsageDataExportScheduleResponseGroupsFrequencyWeek    UsageDataExportScheduleResponseGroupsFrequency = "WEEK"
+	UsageDataExportScheduleResponseGroupsFrequencyMonth   UsageDataExportScheduleResponseGroupsFrequency = "MONTH"
+	UsageDataExportScheduleResponseGroupsFrequencyQuarter UsageDataExportScheduleResponseGroupsFrequency = "QUARTER"
+)
+
+func (r UsageDataExportScheduleResponseGroupsFrequency) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseGroupsFrequencyDay, UsageDataExportScheduleResponseGroupsFrequencyHour, UsageDataExportScheduleResponseGroupsFrequencyWeek, UsageDataExportScheduleResponseGroupsFrequencyMonth, UsageDataExportScheduleResponseGroupsFrequencyQuarter:
+		return true
+	}
+	return false
+}
+
+type UsageDataExportScheduleResponseGroupsGroupType string
+
+const (
+	UsageDataExportScheduleResponseGroupsGroupTypeAccount   UsageDataExportScheduleResponseGroupsGroupType = "ACCOUNT"
+	UsageDataExportScheduleResponseGroupsGroupTypeDimension UsageDataExportScheduleResponseGroupsGroupType = "DIMENSION"
+	UsageDataExportScheduleResponseGroupsGroupTypeTime      UsageDataExportScheduleResponseGroupsGroupType = "TIME"
+)
+
+func (r UsageDataExportScheduleResponseGroupsGroupType) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleResponseGroupsGroupTypeAccount, UsageDataExportScheduleResponseGroupsGroupTypeDimension, UsageDataExportScheduleResponseGroupsGroupTypeTime:
 		return true
 	}
 	return false
@@ -766,6 +1069,7 @@ func (r UsageDataExportScheduleResponseAggregationFrequency) IsKnown() bool {
 type UsageDataExportScheduleResponseTimePeriod string
 
 const (
+	UsageDataExportScheduleResponseTimePeriodLast12Hours   UsageDataExportScheduleResponseTimePeriod = "LAST_12_HOURS"
 	UsageDataExportScheduleResponseTimePeriodToday         UsageDataExportScheduleResponseTimePeriod = "TODAY"
 	UsageDataExportScheduleResponseTimePeriodYesterday     UsageDataExportScheduleResponseTimePeriod = "YESTERDAY"
 	UsageDataExportScheduleResponseTimePeriodWeekToDate    UsageDataExportScheduleResponseTimePeriod = "WEEK_TO_DATE"
@@ -778,7 +1082,7 @@ const (
 
 func (r UsageDataExportScheduleResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleResponseTimePeriodToday, UsageDataExportScheduleResponseTimePeriodYesterday, UsageDataExportScheduleResponseTimePeriodWeekToDate, UsageDataExportScheduleResponseTimePeriodCurrentMonth, UsageDataExportScheduleResponseTimePeriodLast30Days, UsageDataExportScheduleResponseTimePeriodLast35Days, UsageDataExportScheduleResponseTimePeriodPreviousWeek, UsageDataExportScheduleResponseTimePeriodPreviousMonth:
+	case UsageDataExportScheduleResponseTimePeriodLast12Hours, UsageDataExportScheduleResponseTimePeriodToday, UsageDataExportScheduleResponseTimePeriodYesterday, UsageDataExportScheduleResponseTimePeriodWeekToDate, UsageDataExportScheduleResponseTimePeriodCurrentMonth, UsageDataExportScheduleResponseTimePeriodLast30Days, UsageDataExportScheduleResponseTimePeriodLast35Days, UsageDataExportScheduleResponseTimePeriodPreviousWeek, UsageDataExportScheduleResponseTimePeriodPreviousMonth:
 		return true
 	}
 	return false
@@ -797,41 +1101,15 @@ type DataExportScheduleNewResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleNewResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleNewResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -870,8 +1148,9 @@ type dataExportScheduleNewResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -924,76 +1203,6 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleNewResponseAggregation string
-
-const (
-	DataExportScheduleNewResponseAggregationSum    DataExportScheduleNewResponseAggregation = "SUM"
-	DataExportScheduleNewResponseAggregationMin    DataExportScheduleNewResponseAggregation = "MIN"
-	DataExportScheduleNewResponseAggregationMax    DataExportScheduleNewResponseAggregation = "MAX"
-	DataExportScheduleNewResponseAggregationCount  DataExportScheduleNewResponseAggregation = "COUNT"
-	DataExportScheduleNewResponseAggregationLatest DataExportScheduleNewResponseAggregation = "LATEST"
-	DataExportScheduleNewResponseAggregationMean   DataExportScheduleNewResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleNewResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewResponseAggregationSum, DataExportScheduleNewResponseAggregationMin, DataExportScheduleNewResponseAggregationMax, DataExportScheduleNewResponseAggregationCount, DataExportScheduleNewResponseAggregationLatest, DataExportScheduleNewResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleNewResponseAggregationFrequency string
-
-const (
-	DataExportScheduleNewResponseAggregationFrequencyOriginal DataExportScheduleNewResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleNewResponseAggregationFrequencyHour     DataExportScheduleNewResponseAggregationFrequency = "HOUR"
-	DataExportScheduleNewResponseAggregationFrequencyDay      DataExportScheduleNewResponseAggregationFrequency = "DAY"
-	DataExportScheduleNewResponseAggregationFrequencyWeek     DataExportScheduleNewResponseAggregationFrequency = "WEEK"
-	DataExportScheduleNewResponseAggregationFrequencyMonth    DataExportScheduleNewResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleNewResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewResponseAggregationFrequencyOriginal, DataExportScheduleNewResponseAggregationFrequencyHour, DataExportScheduleNewResponseAggregationFrequencyDay, DataExportScheduleNewResponseAggregationFrequencyWeek, DataExportScheduleNewResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
@@ -1019,6 +1228,7 @@ func (r DataExportScheduleNewResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleNewResponseTimePeriod string
 
 const (
+	DataExportScheduleNewResponseTimePeriodLast12Hours   DataExportScheduleNewResponseTimePeriod = "LAST_12_HOURS"
 	DataExportScheduleNewResponseTimePeriodToday         DataExportScheduleNewResponseTimePeriod = "TODAY"
 	DataExportScheduleNewResponseTimePeriodYesterday     DataExportScheduleNewResponseTimePeriod = "YESTERDAY"
 	DataExportScheduleNewResponseTimePeriodWeekToDate    DataExportScheduleNewResponseTimePeriod = "WEEK_TO_DATE"
@@ -1031,7 +1241,7 @@ const (
 
 func (r DataExportScheduleNewResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleNewResponseTimePeriodToday, DataExportScheduleNewResponseTimePeriodYesterday, DataExportScheduleNewResponseTimePeriodWeekToDate, DataExportScheduleNewResponseTimePeriodCurrentMonth, DataExportScheduleNewResponseTimePeriodLast30Days, DataExportScheduleNewResponseTimePeriodLast35Days, DataExportScheduleNewResponseTimePeriodPreviousWeek, DataExportScheduleNewResponseTimePeriodPreviousMonth:
+	case DataExportScheduleNewResponseTimePeriodLast12Hours, DataExportScheduleNewResponseTimePeriodToday, DataExportScheduleNewResponseTimePeriodYesterday, DataExportScheduleNewResponseTimePeriodWeekToDate, DataExportScheduleNewResponseTimePeriodCurrentMonth, DataExportScheduleNewResponseTimePeriodLast30Days, DataExportScheduleNewResponseTimePeriodLast35Days, DataExportScheduleNewResponseTimePeriodPreviousWeek, DataExportScheduleNewResponseTimePeriodPreviousMonth:
 		return true
 	}
 	return false
@@ -1050,41 +1260,15 @@ type DataExportScheduleGetResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleGetResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleGetResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -1123,8 +1307,9 @@ type dataExportScheduleGetResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -1177,76 +1362,6 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleGetResponseAggregation string
-
-const (
-	DataExportScheduleGetResponseAggregationSum    DataExportScheduleGetResponseAggregation = "SUM"
-	DataExportScheduleGetResponseAggregationMin    DataExportScheduleGetResponseAggregation = "MIN"
-	DataExportScheduleGetResponseAggregationMax    DataExportScheduleGetResponseAggregation = "MAX"
-	DataExportScheduleGetResponseAggregationCount  DataExportScheduleGetResponseAggregation = "COUNT"
-	DataExportScheduleGetResponseAggregationLatest DataExportScheduleGetResponseAggregation = "LATEST"
-	DataExportScheduleGetResponseAggregationMean   DataExportScheduleGetResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleGetResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleGetResponseAggregationSum, DataExportScheduleGetResponseAggregationMin, DataExportScheduleGetResponseAggregationMax, DataExportScheduleGetResponseAggregationCount, DataExportScheduleGetResponseAggregationLatest, DataExportScheduleGetResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleGetResponseAggregationFrequency string
-
-const (
-	DataExportScheduleGetResponseAggregationFrequencyOriginal DataExportScheduleGetResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleGetResponseAggregationFrequencyHour     DataExportScheduleGetResponseAggregationFrequency = "HOUR"
-	DataExportScheduleGetResponseAggregationFrequencyDay      DataExportScheduleGetResponseAggregationFrequency = "DAY"
-	DataExportScheduleGetResponseAggregationFrequencyWeek     DataExportScheduleGetResponseAggregationFrequency = "WEEK"
-	DataExportScheduleGetResponseAggregationFrequencyMonth    DataExportScheduleGetResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleGetResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleGetResponseAggregationFrequencyOriginal, DataExportScheduleGetResponseAggregationFrequencyHour, DataExportScheduleGetResponseAggregationFrequencyDay, DataExportScheduleGetResponseAggregationFrequencyWeek, DataExportScheduleGetResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
@@ -1272,6 +1387,7 @@ func (r DataExportScheduleGetResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleGetResponseTimePeriod string
 
 const (
+	DataExportScheduleGetResponseTimePeriodLast12Hours   DataExportScheduleGetResponseTimePeriod = "LAST_12_HOURS"
 	DataExportScheduleGetResponseTimePeriodToday         DataExportScheduleGetResponseTimePeriod = "TODAY"
 	DataExportScheduleGetResponseTimePeriodYesterday     DataExportScheduleGetResponseTimePeriod = "YESTERDAY"
 	DataExportScheduleGetResponseTimePeriodWeekToDate    DataExportScheduleGetResponseTimePeriod = "WEEK_TO_DATE"
@@ -1284,7 +1400,7 @@ const (
 
 func (r DataExportScheduleGetResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleGetResponseTimePeriodToday, DataExportScheduleGetResponseTimePeriodYesterday, DataExportScheduleGetResponseTimePeriodWeekToDate, DataExportScheduleGetResponseTimePeriodCurrentMonth, DataExportScheduleGetResponseTimePeriodLast30Days, DataExportScheduleGetResponseTimePeriodLast35Days, DataExportScheduleGetResponseTimePeriodPreviousWeek, DataExportScheduleGetResponseTimePeriodPreviousMonth:
+	case DataExportScheduleGetResponseTimePeriodLast12Hours, DataExportScheduleGetResponseTimePeriodToday, DataExportScheduleGetResponseTimePeriodYesterday, DataExportScheduleGetResponseTimePeriodWeekToDate, DataExportScheduleGetResponseTimePeriodCurrentMonth, DataExportScheduleGetResponseTimePeriodLast30Days, DataExportScheduleGetResponseTimePeriodLast35Days, DataExportScheduleGetResponseTimePeriodPreviousWeek, DataExportScheduleGetResponseTimePeriodPreviousMonth:
 		return true
 	}
 	return false
@@ -1303,41 +1419,15 @@ type DataExportScheduleUpdateResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleUpdateResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleUpdateResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -1376,8 +1466,9 @@ type dataExportScheduleUpdateResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -1430,76 +1521,6 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleUpdateResponseAggregation string
-
-const (
-	DataExportScheduleUpdateResponseAggregationSum    DataExportScheduleUpdateResponseAggregation = "SUM"
-	DataExportScheduleUpdateResponseAggregationMin    DataExportScheduleUpdateResponseAggregation = "MIN"
-	DataExportScheduleUpdateResponseAggregationMax    DataExportScheduleUpdateResponseAggregation = "MAX"
-	DataExportScheduleUpdateResponseAggregationCount  DataExportScheduleUpdateResponseAggregation = "COUNT"
-	DataExportScheduleUpdateResponseAggregationLatest DataExportScheduleUpdateResponseAggregation = "LATEST"
-	DataExportScheduleUpdateResponseAggregationMean   DataExportScheduleUpdateResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleUpdateResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateResponseAggregationSum, DataExportScheduleUpdateResponseAggregationMin, DataExportScheduleUpdateResponseAggregationMax, DataExportScheduleUpdateResponseAggregationCount, DataExportScheduleUpdateResponseAggregationLatest, DataExportScheduleUpdateResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleUpdateResponseAggregationFrequency string
-
-const (
-	DataExportScheduleUpdateResponseAggregationFrequencyOriginal DataExportScheduleUpdateResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleUpdateResponseAggregationFrequencyHour     DataExportScheduleUpdateResponseAggregationFrequency = "HOUR"
-	DataExportScheduleUpdateResponseAggregationFrequencyDay      DataExportScheduleUpdateResponseAggregationFrequency = "DAY"
-	DataExportScheduleUpdateResponseAggregationFrequencyWeek     DataExportScheduleUpdateResponseAggregationFrequency = "WEEK"
-	DataExportScheduleUpdateResponseAggregationFrequencyMonth    DataExportScheduleUpdateResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleUpdateResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateResponseAggregationFrequencyOriginal, DataExportScheduleUpdateResponseAggregationFrequencyHour, DataExportScheduleUpdateResponseAggregationFrequencyDay, DataExportScheduleUpdateResponseAggregationFrequencyWeek, DataExportScheduleUpdateResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
@@ -1525,6 +1546,7 @@ func (r DataExportScheduleUpdateResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleUpdateResponseTimePeriod string
 
 const (
+	DataExportScheduleUpdateResponseTimePeriodLast12Hours   DataExportScheduleUpdateResponseTimePeriod = "LAST_12_HOURS"
 	DataExportScheduleUpdateResponseTimePeriodToday         DataExportScheduleUpdateResponseTimePeriod = "TODAY"
 	DataExportScheduleUpdateResponseTimePeriodYesterday     DataExportScheduleUpdateResponseTimePeriod = "YESTERDAY"
 	DataExportScheduleUpdateResponseTimePeriodWeekToDate    DataExportScheduleUpdateResponseTimePeriod = "WEEK_TO_DATE"
@@ -1537,7 +1559,7 @@ const (
 
 func (r DataExportScheduleUpdateResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleUpdateResponseTimePeriodToday, DataExportScheduleUpdateResponseTimePeriodYesterday, DataExportScheduleUpdateResponseTimePeriodWeekToDate, DataExportScheduleUpdateResponseTimePeriodCurrentMonth, DataExportScheduleUpdateResponseTimePeriodLast30Days, DataExportScheduleUpdateResponseTimePeriodLast35Days, DataExportScheduleUpdateResponseTimePeriodPreviousWeek, DataExportScheduleUpdateResponseTimePeriodPreviousMonth:
+	case DataExportScheduleUpdateResponseTimePeriodLast12Hours, DataExportScheduleUpdateResponseTimePeriodToday, DataExportScheduleUpdateResponseTimePeriodYesterday, DataExportScheduleUpdateResponseTimePeriodWeekToDate, DataExportScheduleUpdateResponseTimePeriodCurrentMonth, DataExportScheduleUpdateResponseTimePeriodLast30Days, DataExportScheduleUpdateResponseTimePeriodLast35Days, DataExportScheduleUpdateResponseTimePeriodPreviousWeek, DataExportScheduleUpdateResponseTimePeriodPreviousMonth:
 		return true
 	}
 	return false
@@ -1663,41 +1685,15 @@ type DataExportScheduleDeleteResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleDeleteResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleDeleteResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -1736,8 +1732,9 @@ type dataExportScheduleDeleteResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -1790,76 +1787,6 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleDeleteResponseAggregation string
-
-const (
-	DataExportScheduleDeleteResponseAggregationSum    DataExportScheduleDeleteResponseAggregation = "SUM"
-	DataExportScheduleDeleteResponseAggregationMin    DataExportScheduleDeleteResponseAggregation = "MIN"
-	DataExportScheduleDeleteResponseAggregationMax    DataExportScheduleDeleteResponseAggregation = "MAX"
-	DataExportScheduleDeleteResponseAggregationCount  DataExportScheduleDeleteResponseAggregation = "COUNT"
-	DataExportScheduleDeleteResponseAggregationLatest DataExportScheduleDeleteResponseAggregation = "LATEST"
-	DataExportScheduleDeleteResponseAggregationMean   DataExportScheduleDeleteResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleDeleteResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleDeleteResponseAggregationSum, DataExportScheduleDeleteResponseAggregationMin, DataExportScheduleDeleteResponseAggregationMax, DataExportScheduleDeleteResponseAggregationCount, DataExportScheduleDeleteResponseAggregationLatest, DataExportScheduleDeleteResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleDeleteResponseAggregationFrequency string
-
-const (
-	DataExportScheduleDeleteResponseAggregationFrequencyOriginal DataExportScheduleDeleteResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleDeleteResponseAggregationFrequencyHour     DataExportScheduleDeleteResponseAggregationFrequency = "HOUR"
-	DataExportScheduleDeleteResponseAggregationFrequencyDay      DataExportScheduleDeleteResponseAggregationFrequency = "DAY"
-	DataExportScheduleDeleteResponseAggregationFrequencyWeek     DataExportScheduleDeleteResponseAggregationFrequency = "WEEK"
-	DataExportScheduleDeleteResponseAggregationFrequencyMonth    DataExportScheduleDeleteResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleDeleteResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleDeleteResponseAggregationFrequencyOriginal, DataExportScheduleDeleteResponseAggregationFrequencyHour, DataExportScheduleDeleteResponseAggregationFrequencyDay, DataExportScheduleDeleteResponseAggregationFrequencyWeek, DataExportScheduleDeleteResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
@@ -1885,6 +1812,7 @@ func (r DataExportScheduleDeleteResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleDeleteResponseTimePeriod string
 
 const (
+	DataExportScheduleDeleteResponseTimePeriodLast12Hours   DataExportScheduleDeleteResponseTimePeriod = "LAST_12_HOURS"
 	DataExportScheduleDeleteResponseTimePeriodToday         DataExportScheduleDeleteResponseTimePeriod = "TODAY"
 	DataExportScheduleDeleteResponseTimePeriodYesterday     DataExportScheduleDeleteResponseTimePeriod = "YESTERDAY"
 	DataExportScheduleDeleteResponseTimePeriodWeekToDate    DataExportScheduleDeleteResponseTimePeriod = "WEEK_TO_DATE"
@@ -1897,7 +1825,7 @@ const (
 
 func (r DataExportScheduleDeleteResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleDeleteResponseTimePeriodToday, DataExportScheduleDeleteResponseTimePeriodYesterday, DataExportScheduleDeleteResponseTimePeriodWeekToDate, DataExportScheduleDeleteResponseTimePeriodCurrentMonth, DataExportScheduleDeleteResponseTimePeriodLast30Days, DataExportScheduleDeleteResponseTimePeriodLast35Days, DataExportScheduleDeleteResponseTimePeriodPreviousWeek, DataExportScheduleDeleteResponseTimePeriodPreviousMonth:
+	case DataExportScheduleDeleteResponseTimePeriodLast12Hours, DataExportScheduleDeleteResponseTimePeriodToday, DataExportScheduleDeleteResponseTimePeriodYesterday, DataExportScheduleDeleteResponseTimePeriodWeekToDate, DataExportScheduleDeleteResponseTimePeriodCurrentMonth, DataExportScheduleDeleteResponseTimePeriodLast30Days, DataExportScheduleDeleteResponseTimePeriodLast35Days, DataExportScheduleDeleteResponseTimePeriodPreviousWeek, DataExportScheduleDeleteResponseTimePeriodPreviousMonth:
 		return true
 	}
 	return false
@@ -1916,45 +1844,13 @@ func (r DataExportScheduleNewParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational schedule configuration.
 type DataExportScheduleNewParamsBody struct {
-	SourceType param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType,required"`
-	AccountIDs param.Field[interface{}]                               `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[DataExportScheduleNewParamsBodyAggregation] `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[DataExportScheduleNewParamsBodyAggregationFrequency] `json:"aggregationFrequency"`
-	MeterIDs             param.Field[interface{}]                                         `json:"meterIds"`
-	OperationalDataTypes param.Field[interface{}]                                         `json:"operationalDataTypes"`
+	SourceType           param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType,required"`
+	AccountIDs           param.Field[interface{}]                               `json:"accountIds"`
+	Aggregations         param.Field[interface{}]                               `json:"aggregations"`
+	DimensionFilters     param.Field[interface{}]                               `json:"dimensionFilters"`
+	Groups               param.Field[interface{}]                               `json:"groups"`
+	MeterIDs             param.Field[interface{}]                               `json:"meterIds"`
+	OperationalDataTypes param.Field[interface{}]                               `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
@@ -2018,76 +1914,6 @@ func (r DataExportScheduleNewParamsBodySourceType) IsKnown() bool {
 	return false
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleNewParamsBodyAggregation string
-
-const (
-	DataExportScheduleNewParamsBodyAggregationSum    DataExportScheduleNewParamsBodyAggregation = "SUM"
-	DataExportScheduleNewParamsBodyAggregationMin    DataExportScheduleNewParamsBodyAggregation = "MIN"
-	DataExportScheduleNewParamsBodyAggregationMax    DataExportScheduleNewParamsBodyAggregation = "MAX"
-	DataExportScheduleNewParamsBodyAggregationCount  DataExportScheduleNewParamsBodyAggregation = "COUNT"
-	DataExportScheduleNewParamsBodyAggregationLatest DataExportScheduleNewParamsBodyAggregation = "LATEST"
-	DataExportScheduleNewParamsBodyAggregationMean   DataExportScheduleNewParamsBodyAggregation = "MEAN"
-)
-
-func (r DataExportScheduleNewParamsBodyAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewParamsBodyAggregationSum, DataExportScheduleNewParamsBodyAggregationMin, DataExportScheduleNewParamsBodyAggregationMax, DataExportScheduleNewParamsBodyAggregationCount, DataExportScheduleNewParamsBodyAggregationLatest, DataExportScheduleNewParamsBodyAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleNewParamsBodyAggregationFrequency string
-
-const (
-	DataExportScheduleNewParamsBodyAggregationFrequencyOriginal DataExportScheduleNewParamsBodyAggregationFrequency = "ORIGINAL"
-	DataExportScheduleNewParamsBodyAggregationFrequencyHour     DataExportScheduleNewParamsBodyAggregationFrequency = "HOUR"
-	DataExportScheduleNewParamsBodyAggregationFrequencyDay      DataExportScheduleNewParamsBodyAggregationFrequency = "DAY"
-	DataExportScheduleNewParamsBodyAggregationFrequencyWeek     DataExportScheduleNewParamsBodyAggregationFrequency = "WEEK"
-	DataExportScheduleNewParamsBodyAggregationFrequencyMonth    DataExportScheduleNewParamsBodyAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleNewParamsBodyAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewParamsBodyAggregationFrequencyOriginal, DataExportScheduleNewParamsBodyAggregationFrequencyHour, DataExportScheduleNewParamsBodyAggregationFrequencyDay, DataExportScheduleNewParamsBodyAggregationFrequencyWeek, DataExportScheduleNewParamsBodyAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
@@ -2113,6 +1939,7 @@ func (r DataExportScheduleNewParamsBodyAggregationFrequency) IsKnown() bool {
 type DataExportScheduleNewParamsBodyTimePeriod string
 
 const (
+	DataExportScheduleNewParamsBodyTimePeriodLast12Hours   DataExportScheduleNewParamsBodyTimePeriod = "LAST_12_HOURS"
 	DataExportScheduleNewParamsBodyTimePeriodToday         DataExportScheduleNewParamsBodyTimePeriod = "TODAY"
 	DataExportScheduleNewParamsBodyTimePeriodYesterday     DataExportScheduleNewParamsBodyTimePeriod = "YESTERDAY"
 	DataExportScheduleNewParamsBodyTimePeriodWeekToDate    DataExportScheduleNewParamsBodyTimePeriod = "WEEK_TO_DATE"
@@ -2125,7 +1952,7 @@ const (
 
 func (r DataExportScheduleNewParamsBodyTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleNewParamsBodyTimePeriodToday, DataExportScheduleNewParamsBodyTimePeriodYesterday, DataExportScheduleNewParamsBodyTimePeriodWeekToDate, DataExportScheduleNewParamsBodyTimePeriodCurrentMonth, DataExportScheduleNewParamsBodyTimePeriodLast30Days, DataExportScheduleNewParamsBodyTimePeriodLast35Days, DataExportScheduleNewParamsBodyTimePeriodPreviousWeek, DataExportScheduleNewParamsBodyTimePeriodPreviousMonth:
+	case DataExportScheduleNewParamsBodyTimePeriodLast12Hours, DataExportScheduleNewParamsBodyTimePeriodToday, DataExportScheduleNewParamsBodyTimePeriodYesterday, DataExportScheduleNewParamsBodyTimePeriodWeekToDate, DataExportScheduleNewParamsBodyTimePeriodCurrentMonth, DataExportScheduleNewParamsBodyTimePeriodLast30Days, DataExportScheduleNewParamsBodyTimePeriodLast35Days, DataExportScheduleNewParamsBodyTimePeriodPreviousWeek, DataExportScheduleNewParamsBodyTimePeriodPreviousMonth:
 		return true
 	}
 	return false
@@ -2149,45 +1976,13 @@ func (r DataExportScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational schedule configuration.
 type DataExportScheduleUpdateParamsBody struct {
-	SourceType param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType,required"`
-	AccountIDs param.Field[interface{}]                                  `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[DataExportScheduleUpdateParamsBodyAggregation] `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[DataExportScheduleUpdateParamsBodyAggregationFrequency] `json:"aggregationFrequency"`
-	MeterIDs             param.Field[interface{}]                                            `json:"meterIds"`
-	OperationalDataTypes param.Field[interface{}]                                            `json:"operationalDataTypes"`
+	SourceType           param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType,required"`
+	AccountIDs           param.Field[interface{}]                                  `json:"accountIds"`
+	Aggregations         param.Field[interface{}]                                  `json:"aggregations"`
+	DimensionFilters     param.Field[interface{}]                                  `json:"dimensionFilters"`
+	Groups               param.Field[interface{}]                                  `json:"groups"`
+	MeterIDs             param.Field[interface{}]                                  `json:"meterIds"`
+	OperationalDataTypes param.Field[interface{}]                                  `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
@@ -2251,76 +2046,6 @@ func (r DataExportScheduleUpdateParamsBodySourceType) IsKnown() bool {
 	return false
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleUpdateParamsBodyAggregation string
-
-const (
-	DataExportScheduleUpdateParamsBodyAggregationSum    DataExportScheduleUpdateParamsBodyAggregation = "SUM"
-	DataExportScheduleUpdateParamsBodyAggregationMin    DataExportScheduleUpdateParamsBodyAggregation = "MIN"
-	DataExportScheduleUpdateParamsBodyAggregationMax    DataExportScheduleUpdateParamsBodyAggregation = "MAX"
-	DataExportScheduleUpdateParamsBodyAggregationCount  DataExportScheduleUpdateParamsBodyAggregation = "COUNT"
-	DataExportScheduleUpdateParamsBodyAggregationLatest DataExportScheduleUpdateParamsBodyAggregation = "LATEST"
-	DataExportScheduleUpdateParamsBodyAggregationMean   DataExportScheduleUpdateParamsBodyAggregation = "MEAN"
-)
-
-func (r DataExportScheduleUpdateParamsBodyAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateParamsBodyAggregationSum, DataExportScheduleUpdateParamsBodyAggregationMin, DataExportScheduleUpdateParamsBodyAggregationMax, DataExportScheduleUpdateParamsBodyAggregationCount, DataExportScheduleUpdateParamsBodyAggregationLatest, DataExportScheduleUpdateParamsBodyAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleUpdateParamsBodyAggregationFrequency string
-
-const (
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyOriginal DataExportScheduleUpdateParamsBodyAggregationFrequency = "ORIGINAL"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyHour     DataExportScheduleUpdateParamsBodyAggregationFrequency = "HOUR"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyDay      DataExportScheduleUpdateParamsBodyAggregationFrequency = "DAY"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyWeek     DataExportScheduleUpdateParamsBodyAggregationFrequency = "WEEK"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyMonth    DataExportScheduleUpdateParamsBodyAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleUpdateParamsBodyAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateParamsBodyAggregationFrequencyOriginal, DataExportScheduleUpdateParamsBodyAggregationFrequencyHour, DataExportScheduleUpdateParamsBodyAggregationFrequencyDay, DataExportScheduleUpdateParamsBodyAggregationFrequencyWeek, DataExportScheduleUpdateParamsBodyAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
@@ -2346,6 +2071,7 @@ func (r DataExportScheduleUpdateParamsBodyAggregationFrequency) IsKnown() bool {
 type DataExportScheduleUpdateParamsBodyTimePeriod string
 
 const (
+	DataExportScheduleUpdateParamsBodyTimePeriodLast12Hours   DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_12_HOURS"
 	DataExportScheduleUpdateParamsBodyTimePeriodToday         DataExportScheduleUpdateParamsBodyTimePeriod = "TODAY"
 	DataExportScheduleUpdateParamsBodyTimePeriodYesterday     DataExportScheduleUpdateParamsBodyTimePeriod = "YESTERDAY"
 	DataExportScheduleUpdateParamsBodyTimePeriodWeekToDate    DataExportScheduleUpdateParamsBodyTimePeriod = "WEEK_TO_DATE"
@@ -2358,7 +2084,7 @@ const (
 
 func (r DataExportScheduleUpdateParamsBodyTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleUpdateParamsBodyTimePeriodToday, DataExportScheduleUpdateParamsBodyTimePeriodYesterday, DataExportScheduleUpdateParamsBodyTimePeriodWeekToDate, DataExportScheduleUpdateParamsBodyTimePeriodCurrentMonth, DataExportScheduleUpdateParamsBodyTimePeriodLast30Days, DataExportScheduleUpdateParamsBodyTimePeriodLast35Days, DataExportScheduleUpdateParamsBodyTimePeriodPreviousWeek, DataExportScheduleUpdateParamsBodyTimePeriodPreviousMonth:
+	case DataExportScheduleUpdateParamsBodyTimePeriodLast12Hours, DataExportScheduleUpdateParamsBodyTimePeriodToday, DataExportScheduleUpdateParamsBodyTimePeriodYesterday, DataExportScheduleUpdateParamsBodyTimePeriodWeekToDate, DataExportScheduleUpdateParamsBodyTimePeriodCurrentMonth, DataExportScheduleUpdateParamsBodyTimePeriodLast30Days, DataExportScheduleUpdateParamsBodyTimePeriodLast35Days, DataExportScheduleUpdateParamsBodyTimePeriodPreviousWeek, DataExportScheduleUpdateParamsBodyTimePeriodPreviousMonth:
 		return true
 	}
 	return false

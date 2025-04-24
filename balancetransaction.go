@@ -304,6 +304,7 @@ type BalanceTransactionListParams struct {
 	NextToken param.Field[string] `query:"nextToken"`
 	// The maximum number of transactions to return per page.
 	PageSize          param.Field[int64]  `query:"pageSize"`
+	ScheduleID        param.Field[string] `query:"scheduleId"`
 	TransactionTypeID param.Field[string] `query:"transactionTypeId"`
 }
 

@@ -132,7 +132,8 @@ type LineItemResponse struct {
 	// pricing band or tier.
 	BandUsage []LineItemResponseBandUsage `json:"bandUsage"`
 	// The unique identifier (UUID) for the Bill that includes this line item.
-	BillID string `json:"billId"`
+	BillID   string `json:"billId"`
+	ChargeID string `json:"chargeId"`
 	// The unique identifier (UUID) of the Commitment _(if this is used)_.
 	CommitmentID string `json:"commitmentId"`
 	// A unique identifier (UUID) for the Compound Aggregation, if applicable.
@@ -231,6 +232,7 @@ type lineItemResponseJSON struct {
 	BalanceID              apijson.Field
 	BandUsage              apijson.Field
 	BillID                 apijson.Field
+	ChargeID               apijson.Field
 	CommitmentID           apijson.Field
 	CompoundAggregationID  apijson.Field
 	ContractID             apijson.Field
