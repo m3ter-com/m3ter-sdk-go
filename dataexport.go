@@ -201,69 +201,17 @@ func (r adHocResponseJSON) RawJSON() string {
 }
 
 type AdHocUsageDataRequestParam struct {
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[AdHocUsageDataRequestAggregationFrequency] `json:"aggregationFrequency,required"`
-	SourceType           param.Field[AdHocUsageDataRequestSourceType]           `json:"sourceType,required"`
+	SourceType param.Field[AdHocUsageDataRequestSourceType] `json:"sourceType,required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs param.Field[[]string] `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[AdHocUsageDataRequestAggregation] `json:"aggregation"`
+	// List of aggregations to apply
+	Aggregations param.Field[[]AdHocUsageDataRequestAggregationParam] `json:"aggregations"`
+	// List of dimension filters to apply
+	DimensionFilters param.Field[[]AdHocUsageDataRequestDimensionFilterParam] `json:"dimensionFilters"`
+	// List of groups to apply
+	Groups param.Field[[]AdHocUsageDataRequestGroupsUnionParam] `json:"groups"`
 	// List of meter IDs for which the usage data will be exported.
 	MeterIDs param.Field[[]string] `json:"meterIds"`
-	// Define a time period to control the range of usage data you want the data export
-	// to contain when it runs:
-	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
-	//
-	// For more details and examples, see the
-	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
-	// section in our main User Documentation.
-	TimePeriod param.Field[AdHocUsageDataRequestTimePeriod] `json:"timePeriod"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -281,46 +229,6 @@ func (r AdHocUsageDataRequestParam) MarshalJSON() (data []byte, err error) {
 
 func (r AdHocUsageDataRequestParam) implementsDataExportNewAdhocParamsBodyUnion() {}
 
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type AdHocUsageDataRequestAggregationFrequency string
-
-const (
-	AdHocUsageDataRequestAggregationFrequencyOriginal AdHocUsageDataRequestAggregationFrequency = "ORIGINAL"
-	AdHocUsageDataRequestAggregationFrequencyHour     AdHocUsageDataRequestAggregationFrequency = "HOUR"
-	AdHocUsageDataRequestAggregationFrequencyDay      AdHocUsageDataRequestAggregationFrequency = "DAY"
-	AdHocUsageDataRequestAggregationFrequencyWeek     AdHocUsageDataRequestAggregationFrequency = "WEEK"
-	AdHocUsageDataRequestAggregationFrequencyMonth    AdHocUsageDataRequestAggregationFrequency = "MONTH"
-)
-
-func (r AdHocUsageDataRequestAggregationFrequency) IsKnown() bool {
-	switch r {
-	case AdHocUsageDataRequestAggregationFrequencyOriginal, AdHocUsageDataRequestAggregationFrequencyHour, AdHocUsageDataRequestAggregationFrequencyDay, AdHocUsageDataRequestAggregationFrequencyWeek, AdHocUsageDataRequestAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 type AdHocUsageDataRequestSourceType string
 
 const (
@@ -336,77 +244,341 @@ func (r AdHocUsageDataRequestSourceType) IsKnown() bool {
 	return false
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type AdHocUsageDataRequestAggregation string
+type AdHocUsageDataRequestAggregationParam struct {
+	// Field code
+	FieldCode param.Field[string] `json:"fieldCode,required"`
+	// Type of field
+	FieldType param.Field[AdHocUsageDataRequestAggregationsFieldType] `json:"fieldType,required"`
+	// Aggregation function
+	Function param.Field[AdHocUsageDataRequestAggregationsFunction] `json:"function,required"`
+	// Meter ID
+	MeterID param.Field[string] `json:"meterId,required"`
+}
+
+func (r AdHocUsageDataRequestAggregationParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Type of field
+type AdHocUsageDataRequestAggregationsFieldType string
 
 const (
-	AdHocUsageDataRequestAggregationSum    AdHocUsageDataRequestAggregation = "SUM"
-	AdHocUsageDataRequestAggregationMin    AdHocUsageDataRequestAggregation = "MIN"
-	AdHocUsageDataRequestAggregationMax    AdHocUsageDataRequestAggregation = "MAX"
-	AdHocUsageDataRequestAggregationCount  AdHocUsageDataRequestAggregation = "COUNT"
-	AdHocUsageDataRequestAggregationLatest AdHocUsageDataRequestAggregation = "LATEST"
-	AdHocUsageDataRequestAggregationMean   AdHocUsageDataRequestAggregation = "MEAN"
+	AdHocUsageDataRequestAggregationsFieldTypeDimension AdHocUsageDataRequestAggregationsFieldType = "DIMENSION"
+	AdHocUsageDataRequestAggregationsFieldTypeMeasure   AdHocUsageDataRequestAggregationsFieldType = "MEASURE"
 )
 
-func (r AdHocUsageDataRequestAggregation) IsKnown() bool {
+func (r AdHocUsageDataRequestAggregationsFieldType) IsKnown() bool {
 	switch r {
-	case AdHocUsageDataRequestAggregationSum, AdHocUsageDataRequestAggregationMin, AdHocUsageDataRequestAggregationMax, AdHocUsageDataRequestAggregationCount, AdHocUsageDataRequestAggregationLatest, AdHocUsageDataRequestAggregationMean:
+	case AdHocUsageDataRequestAggregationsFieldTypeDimension, AdHocUsageDataRequestAggregationsFieldTypeMeasure:
 		return true
 	}
 	return false
 }
 
-// Define a time period to control the range of usage data you want the data export
-// to contain when it runs:
-//
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
-//
-// For more details and examples, see the
-// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
-// section in our main User Documentation.
-type AdHocUsageDataRequestTimePeriod string
+// Aggregation function
+type AdHocUsageDataRequestAggregationsFunction string
 
 const (
-	AdHocUsageDataRequestTimePeriodToday         AdHocUsageDataRequestTimePeriod = "TODAY"
-	AdHocUsageDataRequestTimePeriodYesterday     AdHocUsageDataRequestTimePeriod = "YESTERDAY"
-	AdHocUsageDataRequestTimePeriodWeekToDate    AdHocUsageDataRequestTimePeriod = "WEEK_TO_DATE"
-	AdHocUsageDataRequestTimePeriodCurrentMonth  AdHocUsageDataRequestTimePeriod = "CURRENT_MONTH"
-	AdHocUsageDataRequestTimePeriodLast30Days    AdHocUsageDataRequestTimePeriod = "LAST_30_DAYS"
-	AdHocUsageDataRequestTimePeriodLast35Days    AdHocUsageDataRequestTimePeriod = "LAST_35_DAYS"
-	AdHocUsageDataRequestTimePeriodPreviousWeek  AdHocUsageDataRequestTimePeriod = "PREVIOUS_WEEK"
-	AdHocUsageDataRequestTimePeriodPreviousMonth AdHocUsageDataRequestTimePeriod = "PREVIOUS_MONTH"
+	AdHocUsageDataRequestAggregationsFunctionSum    AdHocUsageDataRequestAggregationsFunction = "SUM"
+	AdHocUsageDataRequestAggregationsFunctionMin    AdHocUsageDataRequestAggregationsFunction = "MIN"
+	AdHocUsageDataRequestAggregationsFunctionMax    AdHocUsageDataRequestAggregationsFunction = "MAX"
+	AdHocUsageDataRequestAggregationsFunctionCount  AdHocUsageDataRequestAggregationsFunction = "COUNT"
+	AdHocUsageDataRequestAggregationsFunctionLatest AdHocUsageDataRequestAggregationsFunction = "LATEST"
+	AdHocUsageDataRequestAggregationsFunctionMean   AdHocUsageDataRequestAggregationsFunction = "MEAN"
+	AdHocUsageDataRequestAggregationsFunctionUnique AdHocUsageDataRequestAggregationsFunction = "UNIQUE"
 )
 
-func (r AdHocUsageDataRequestTimePeriod) IsKnown() bool {
+func (r AdHocUsageDataRequestAggregationsFunction) IsKnown() bool {
 	switch r {
-	case AdHocUsageDataRequestTimePeriodToday, AdHocUsageDataRequestTimePeriodYesterday, AdHocUsageDataRequestTimePeriodWeekToDate, AdHocUsageDataRequestTimePeriodCurrentMonth, AdHocUsageDataRequestTimePeriodLast30Days, AdHocUsageDataRequestTimePeriodLast35Days, AdHocUsageDataRequestTimePeriodPreviousWeek, AdHocUsageDataRequestTimePeriodPreviousMonth:
+	case AdHocUsageDataRequestAggregationsFunctionSum, AdHocUsageDataRequestAggregationsFunctionMin, AdHocUsageDataRequestAggregationsFunctionMax, AdHocUsageDataRequestAggregationsFunctionCount, AdHocUsageDataRequestAggregationsFunctionLatest, AdHocUsageDataRequestAggregationsFunctionMean, AdHocUsageDataRequestAggregationsFunctionUnique:
 		return true
 	}
 	return false
+}
+
+type AdHocUsageDataRequestDimensionFilterParam struct {
+	// Field code
+	FieldCode param.Field[string] `json:"fieldCode,required"`
+	// Meter ID
+	MeterID param.Field[string] `json:"meterId,required"`
+	// Values to filter by
+	Values param.Field[[]string] `json:"values,required"`
+}
+
+func (r AdHocUsageDataRequestDimensionFilterParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Group by a field
+//
+// Satisfied by
+// [AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam],
+// [AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam],
+// [AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam].
+type AdHocUsageDataRequestGroupsUnionParam interface {
+	implementsAdHocUsageDataRequestGroupsUnionParam()
+}
+
+// Group by account
+type AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam struct {
+	GroupType param.Field[AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType] `json:"groupType"`
+	DataExplorerAccountGroupParam
+}
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam) implementsAdHocUsageDataRequestGroupsUnionParam() {
+}
+
+type AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType string
+
+const (
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount   AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "ACCOUNT"
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "DIMENSION"
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime      AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "TIME"
+)
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType) IsKnown() bool {
+	switch r {
+	case AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount, AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension, AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by dimension
+type AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam struct {
+	GroupType param.Field[AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType] `json:"groupType"`
+	DataExplorerDimensionGroupParam
+}
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam) implementsAdHocUsageDataRequestGroupsUnionParam() {
+}
+
+type AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType string
+
+const (
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount   AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "ACCOUNT"
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "DIMENSION"
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime      AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "TIME"
+)
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType) IsKnown() bool {
+	switch r {
+	case AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount, AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension, AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by time
+type AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam struct {
+	GroupType param.Field[AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType] `json:"groupType"`
+	DataExplorerTimeGroupParam
+}
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam) implementsAdHocUsageDataRequestGroupsUnionParam() {
+}
+
+type AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType string
+
+const (
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount   AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "ACCOUNT"
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "DIMENSION"
+	AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime      AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "TIME"
+)
+
+func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType) IsKnown() bool {
+	switch r {
+	case AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount, AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension, AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by account
+type DataExplorerAccountGroup struct {
+	GroupType DataExplorerAccountGroupGroupType `json:"groupType"`
+	JSON      dataExplorerAccountGroupJSON      `json:"-"`
+}
+
+// dataExplorerAccountGroupJSON contains the JSON metadata for the struct
+// [DataExplorerAccountGroup]
+type dataExplorerAccountGroupJSON struct {
+	GroupType   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DataExplorerAccountGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataExplorerAccountGroupJSON) RawJSON() string {
+	return r.raw
+}
+
+type DataExplorerAccountGroupGroupType string
+
+const (
+	DataExplorerAccountGroupGroupTypeAccount   DataExplorerAccountGroupGroupType = "ACCOUNT"
+	DataExplorerAccountGroupGroupTypeDimension DataExplorerAccountGroupGroupType = "DIMENSION"
+	DataExplorerAccountGroupGroupTypeTime      DataExplorerAccountGroupGroupType = "TIME"
+)
+
+func (r DataExplorerAccountGroupGroupType) IsKnown() bool {
+	switch r {
+	case DataExplorerAccountGroupGroupTypeAccount, DataExplorerAccountGroupGroupTypeDimension, DataExplorerAccountGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by account
+type DataExplorerAccountGroupParam struct {
+	GroupType param.Field[DataExplorerAccountGroupGroupType] `json:"groupType"`
+}
+
+func (r DataExplorerAccountGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Group by dimension
+type DataExplorerDimensionGroup struct {
+	// Field code to group by
+	FieldCode string `json:"fieldCode,required"`
+	// Meter ID to group by
+	MeterID   string                              `json:"meterId,required"`
+	GroupType DataExplorerDimensionGroupGroupType `json:"groupType"`
+	JSON      dataExplorerDimensionGroupJSON      `json:"-"`
+}
+
+// dataExplorerDimensionGroupJSON contains the JSON metadata for the struct
+// [DataExplorerDimensionGroup]
+type dataExplorerDimensionGroupJSON struct {
+	FieldCode   apijson.Field
+	MeterID     apijson.Field
+	GroupType   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DataExplorerDimensionGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataExplorerDimensionGroupJSON) RawJSON() string {
+	return r.raw
+}
+
+type DataExplorerDimensionGroupGroupType string
+
+const (
+	DataExplorerDimensionGroupGroupTypeAccount   DataExplorerDimensionGroupGroupType = "ACCOUNT"
+	DataExplorerDimensionGroupGroupTypeDimension DataExplorerDimensionGroupGroupType = "DIMENSION"
+	DataExplorerDimensionGroupGroupTypeTime      DataExplorerDimensionGroupGroupType = "TIME"
+)
+
+func (r DataExplorerDimensionGroupGroupType) IsKnown() bool {
+	switch r {
+	case DataExplorerDimensionGroupGroupTypeAccount, DataExplorerDimensionGroupGroupTypeDimension, DataExplorerDimensionGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by dimension
+type DataExplorerDimensionGroupParam struct {
+	// Field code to group by
+	FieldCode param.Field[string] `json:"fieldCode,required"`
+	// Meter ID to group by
+	MeterID   param.Field[string]                              `json:"meterId,required"`
+	GroupType param.Field[DataExplorerDimensionGroupGroupType] `json:"groupType"`
+}
+
+func (r DataExplorerDimensionGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Group by time
+type DataExplorerTimeGroup struct {
+	// Frequency of usage data
+	Frequency DataExplorerTimeGroupFrequency `json:"frequency,required"`
+	GroupType DataExplorerTimeGroupGroupType `json:"groupType"`
+	JSON      dataExplorerTimeGroupJSON      `json:"-"`
+}
+
+// dataExplorerTimeGroupJSON contains the JSON metadata for the struct
+// [DataExplorerTimeGroup]
+type dataExplorerTimeGroupJSON struct {
+	Frequency   apijson.Field
+	GroupType   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DataExplorerTimeGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dataExplorerTimeGroupJSON) RawJSON() string {
+	return r.raw
+}
+
+// Frequency of usage data
+type DataExplorerTimeGroupFrequency string
+
+const (
+	DataExplorerTimeGroupFrequencyDay     DataExplorerTimeGroupFrequency = "DAY"
+	DataExplorerTimeGroupFrequencyHour    DataExplorerTimeGroupFrequency = "HOUR"
+	DataExplorerTimeGroupFrequencyWeek    DataExplorerTimeGroupFrequency = "WEEK"
+	DataExplorerTimeGroupFrequencyMonth   DataExplorerTimeGroupFrequency = "MONTH"
+	DataExplorerTimeGroupFrequencyQuarter DataExplorerTimeGroupFrequency = "QUARTER"
+)
+
+func (r DataExplorerTimeGroupFrequency) IsKnown() bool {
+	switch r {
+	case DataExplorerTimeGroupFrequencyDay, DataExplorerTimeGroupFrequencyHour, DataExplorerTimeGroupFrequencyWeek, DataExplorerTimeGroupFrequencyMonth, DataExplorerTimeGroupFrequencyQuarter:
+		return true
+	}
+	return false
+}
+
+type DataExplorerTimeGroupGroupType string
+
+const (
+	DataExplorerTimeGroupGroupTypeAccount   DataExplorerTimeGroupGroupType = "ACCOUNT"
+	DataExplorerTimeGroupGroupTypeDimension DataExplorerTimeGroupGroupType = "DIMENSION"
+	DataExplorerTimeGroupGroupTypeTime      DataExplorerTimeGroupGroupType = "TIME"
+)
+
+func (r DataExplorerTimeGroupGroupType) IsKnown() bool {
+	switch r {
+	case DataExplorerTimeGroupGroupTypeAccount, DataExplorerTimeGroupGroupTypeDimension, DataExplorerTimeGroupGroupTypeTime:
+		return true
+	}
+	return false
+}
+
+// Group by time
+type DataExplorerTimeGroupParam struct {
+	// Frequency of usage data
+	Frequency param.Field[DataExplorerTimeGroupFrequency] `json:"frequency,required"`
+	GroupType param.Field[DataExplorerTimeGroupGroupType] `json:"groupType"`
+}
+
+func (r DataExplorerTimeGroupParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type DataExportNewAdhocParams struct {
@@ -422,68 +594,13 @@ func (r DataExportNewAdhocParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational data export configuration.
 type DataExportNewAdhocParamsBody struct {
-	SourceType param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType,required"`
-	AccountIDs param.Field[interface{}]                            `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[DataExportNewAdhocParamsBodyAggregation] `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[DataExportNewAdhocParamsBodyAggregationFrequency] `json:"aggregationFrequency"`
-	MeterIDs             param.Field[interface{}]                                      `json:"meterIds"`
-	OperationalDataTypes param.Field[interface{}]                                      `json:"operationalDataTypes"`
-	// Define a time period to control the range of usage data you want the data export
-	// to contain when it runs:
-	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
-	//
-	// For more details and examples, see the
-	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
-	// section in our main User Documentation.
-	TimePeriod param.Field[DataExportNewAdhocParamsBodyTimePeriod] `json:"timePeriod"`
+	SourceType           param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType,required"`
+	AccountIDs           param.Field[interface{}]                            `json:"accountIds"`
+	Aggregations         param.Field[interface{}]                            `json:"aggregations"`
+	DimensionFilters     param.Field[interface{}]                            `json:"dimensionFilters"`
+	Groups               param.Field[interface{}]                            `json:"groups"`
+	MeterIDs             param.Field[interface{}]                            `json:"meterIds"`
+	OperationalDataTypes param.Field[interface{}]                            `json:"operationalDataTypes"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -519,119 +636,6 @@ const (
 func (r DataExportNewAdhocParamsBodySourceType) IsKnown() bool {
 	switch r {
 	case DataExportNewAdhocParamsBodySourceTypeUsage, DataExportNewAdhocParamsBodySourceTypeOperational:
-		return true
-	}
-	return false
-}
-
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportNewAdhocParamsBodyAggregation string
-
-const (
-	DataExportNewAdhocParamsBodyAggregationSum    DataExportNewAdhocParamsBodyAggregation = "SUM"
-	DataExportNewAdhocParamsBodyAggregationMin    DataExportNewAdhocParamsBodyAggregation = "MIN"
-	DataExportNewAdhocParamsBodyAggregationMax    DataExportNewAdhocParamsBodyAggregation = "MAX"
-	DataExportNewAdhocParamsBodyAggregationCount  DataExportNewAdhocParamsBodyAggregation = "COUNT"
-	DataExportNewAdhocParamsBodyAggregationLatest DataExportNewAdhocParamsBodyAggregation = "LATEST"
-	DataExportNewAdhocParamsBodyAggregationMean   DataExportNewAdhocParamsBodyAggregation = "MEAN"
-)
-
-func (r DataExportNewAdhocParamsBodyAggregation) IsKnown() bool {
-	switch r {
-	case DataExportNewAdhocParamsBodyAggregationSum, DataExportNewAdhocParamsBodyAggregationMin, DataExportNewAdhocParamsBodyAggregationMax, DataExportNewAdhocParamsBodyAggregationCount, DataExportNewAdhocParamsBodyAggregationLatest, DataExportNewAdhocParamsBodyAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportNewAdhocParamsBodyAggregationFrequency string
-
-const (
-	DataExportNewAdhocParamsBodyAggregationFrequencyOriginal DataExportNewAdhocParamsBodyAggregationFrequency = "ORIGINAL"
-	DataExportNewAdhocParamsBodyAggregationFrequencyHour     DataExportNewAdhocParamsBodyAggregationFrequency = "HOUR"
-	DataExportNewAdhocParamsBodyAggregationFrequencyDay      DataExportNewAdhocParamsBodyAggregationFrequency = "DAY"
-	DataExportNewAdhocParamsBodyAggregationFrequencyWeek     DataExportNewAdhocParamsBodyAggregationFrequency = "WEEK"
-	DataExportNewAdhocParamsBodyAggregationFrequencyMonth    DataExportNewAdhocParamsBodyAggregationFrequency = "MONTH"
-)
-
-func (r DataExportNewAdhocParamsBodyAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportNewAdhocParamsBodyAggregationFrequencyOriginal, DataExportNewAdhocParamsBodyAggregationFrequencyHour, DataExportNewAdhocParamsBodyAggregationFrequencyDay, DataExportNewAdhocParamsBodyAggregationFrequencyWeek, DataExportNewAdhocParamsBodyAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
-// Define a time period to control the range of usage data you want the data export
-// to contain when it runs:
-//
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
-//
-// For more details and examples, see the
-// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
-// section in our main User Documentation.
-type DataExportNewAdhocParamsBodyTimePeriod string
-
-const (
-	DataExportNewAdhocParamsBodyTimePeriodToday         DataExportNewAdhocParamsBodyTimePeriod = "TODAY"
-	DataExportNewAdhocParamsBodyTimePeriodYesterday     DataExportNewAdhocParamsBodyTimePeriod = "YESTERDAY"
-	DataExportNewAdhocParamsBodyTimePeriodWeekToDate    DataExportNewAdhocParamsBodyTimePeriod = "WEEK_TO_DATE"
-	DataExportNewAdhocParamsBodyTimePeriodCurrentMonth  DataExportNewAdhocParamsBodyTimePeriod = "CURRENT_MONTH"
-	DataExportNewAdhocParamsBodyTimePeriodLast30Days    DataExportNewAdhocParamsBodyTimePeriod = "LAST_30_DAYS"
-	DataExportNewAdhocParamsBodyTimePeriodLast35Days    DataExportNewAdhocParamsBodyTimePeriod = "LAST_35_DAYS"
-	DataExportNewAdhocParamsBodyTimePeriodPreviousWeek  DataExportNewAdhocParamsBodyTimePeriod = "PREVIOUS_WEEK"
-	DataExportNewAdhocParamsBodyTimePeriodPreviousMonth DataExportNewAdhocParamsBodyTimePeriod = "PREVIOUS_MONTH"
-)
-
-func (r DataExportNewAdhocParamsBodyTimePeriod) IsKnown() bool {
-	switch r {
-	case DataExportNewAdhocParamsBodyTimePeriodToday, DataExportNewAdhocParamsBodyTimePeriodYesterday, DataExportNewAdhocParamsBodyTimePeriodWeekToDate, DataExportNewAdhocParamsBodyTimePeriodCurrentMonth, DataExportNewAdhocParamsBodyTimePeriodLast30Days, DataExportNewAdhocParamsBodyTimePeriodLast35Days, DataExportNewAdhocParamsBodyTimePeriodPreviousWeek, DataExportNewAdhocParamsBodyTimePeriodPreviousMonth:
 		return true
 	}
 	return false

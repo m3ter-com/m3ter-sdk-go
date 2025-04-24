@@ -140,6 +140,7 @@ func TestCounterAdjustmentListWithOptionalParams(t *testing.T) {
 		EndDateStart: m3ter.F("endDateStart"),
 		NextToken:    m3ter.F("nextToken"),
 		PageSize:     m3ter.F(int64(1)),
+		SortOrder:    m3ter.F("sortOrder"),
 	})
 	if err != nil {
 		var apierr *m3ter.Error

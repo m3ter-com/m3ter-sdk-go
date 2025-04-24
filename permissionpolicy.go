@@ -469,26 +469,28 @@ func (r permissionStatementResponseJSON) RawJSON() string {
 type PermissionStatementResponseAction string
 
 const (
-	PermissionStatementResponseActionAll                    PermissionStatementResponseAction = "ALL"
-	PermissionStatementResponseActionConfigCreate           PermissionStatementResponseAction = "CONFIG_CREATE"
-	PermissionStatementResponseActionConfigRetrieve         PermissionStatementResponseAction = "CONFIG_RETRIEVE"
-	PermissionStatementResponseActionConfigUpdate           PermissionStatementResponseAction = "CONFIG_UPDATE"
-	PermissionStatementResponseActionConfigDelete           PermissionStatementResponseAction = "CONFIG_DELETE"
-	PermissionStatementResponseActionConfigExport           PermissionStatementResponseAction = "CONFIG_EXPORT"
-	PermissionStatementResponseActionAnalyticsQuery         PermissionStatementResponseAction = "ANALYTICS_QUERY"
-	PermissionStatementResponseActionMeasurementsUpload     PermissionStatementResponseAction = "MEASUREMENTS_UPLOAD"
-	PermissionStatementResponseActionMeasurementsFileupload PermissionStatementResponseAction = "MEASUREMENTS_FILEUPLOAD"
-	PermissionStatementResponseActionMeasurementsRetrieve   PermissionStatementResponseAction = "MEASUREMENTS_RETRIEVE"
-	PermissionStatementResponseActionMeasurementsExport     PermissionStatementResponseAction = "MEASUREMENTS_EXPORT"
-	PermissionStatementResponseActionForecastRetrieve       PermissionStatementResponseAction = "FORECAST_RETRIEVE"
-	PermissionStatementResponseActionHealthscoresRetrieve   PermissionStatementResponseAction = "HEALTHSCORES_RETRIEVE"
-	PermissionStatementResponseActionAnomaliesRetrieve      PermissionStatementResponseAction = "ANOMALIES_RETRIEVE"
-	PermissionStatementResponseActionExportsDownload        PermissionStatementResponseAction = "EXPORTS_DOWNLOAD"
+	PermissionStatementResponseActionAll                      PermissionStatementResponseAction = "ALL"
+	PermissionStatementResponseActionConfigCreate             PermissionStatementResponseAction = "CONFIG_CREATE"
+	PermissionStatementResponseActionConfigRetrieve           PermissionStatementResponseAction = "CONFIG_RETRIEVE"
+	PermissionStatementResponseActionConfigUpdate             PermissionStatementResponseAction = "CONFIG_UPDATE"
+	PermissionStatementResponseActionConfigDelete             PermissionStatementResponseAction = "CONFIG_DELETE"
+	PermissionStatementResponseActionConfigExport             PermissionStatementResponseAction = "CONFIG_EXPORT"
+	PermissionStatementResponseActionAnalyticsQuery           PermissionStatementResponseAction = "ANALYTICS_QUERY"
+	PermissionStatementResponseActionMeasurementsUpload       PermissionStatementResponseAction = "MEASUREMENTS_UPLOAD"
+	PermissionStatementResponseActionMeasurementsFileupload   PermissionStatementResponseAction = "MEASUREMENTS_FILEUPLOAD"
+	PermissionStatementResponseActionMeasurementsRetrieve     PermissionStatementResponseAction = "MEASUREMENTS_RETRIEVE"
+	PermissionStatementResponseActionMeasurementsExport       PermissionStatementResponseAction = "MEASUREMENTS_EXPORT"
+	PermissionStatementResponseActionForecastRetrieve         PermissionStatementResponseAction = "FORECAST_RETRIEVE"
+	PermissionStatementResponseActionHealthscoresRetrieve     PermissionStatementResponseAction = "HEALTHSCORES_RETRIEVE"
+	PermissionStatementResponseActionAnomaliesRetrieve        PermissionStatementResponseAction = "ANOMALIES_RETRIEVE"
+	PermissionStatementResponseActionExportsDownload          PermissionStatementResponseAction = "EXPORTS_DOWNLOAD"
+	PermissionStatementResponseActionMarketplaceUsageCreate   PermissionStatementResponseAction = "MARKETPLACE_USAGE_CREATE"
+	PermissionStatementResponseActionMarketplaceUsageRetrieve PermissionStatementResponseAction = "MARKETPLACE_USAGE_RETRIEVE"
 )
 
 func (r PermissionStatementResponseAction) IsKnown() bool {
 	switch r {
-	case PermissionStatementResponseActionAll, PermissionStatementResponseActionConfigCreate, PermissionStatementResponseActionConfigRetrieve, PermissionStatementResponseActionConfigUpdate, PermissionStatementResponseActionConfigDelete, PermissionStatementResponseActionConfigExport, PermissionStatementResponseActionAnalyticsQuery, PermissionStatementResponseActionMeasurementsUpload, PermissionStatementResponseActionMeasurementsFileupload, PermissionStatementResponseActionMeasurementsRetrieve, PermissionStatementResponseActionMeasurementsExport, PermissionStatementResponseActionForecastRetrieve, PermissionStatementResponseActionHealthscoresRetrieve, PermissionStatementResponseActionAnomaliesRetrieve, PermissionStatementResponseActionExportsDownload:
+	case PermissionStatementResponseActionAll, PermissionStatementResponseActionConfigCreate, PermissionStatementResponseActionConfigRetrieve, PermissionStatementResponseActionConfigUpdate, PermissionStatementResponseActionConfigDelete, PermissionStatementResponseActionConfigExport, PermissionStatementResponseActionAnalyticsQuery, PermissionStatementResponseActionMeasurementsUpload, PermissionStatementResponseActionMeasurementsFileupload, PermissionStatementResponseActionMeasurementsRetrieve, PermissionStatementResponseActionMeasurementsExport, PermissionStatementResponseActionForecastRetrieve, PermissionStatementResponseActionHealthscoresRetrieve, PermissionStatementResponseActionAnomaliesRetrieve, PermissionStatementResponseActionExportsDownload, PermissionStatementResponseActionMarketplaceUsageCreate, PermissionStatementResponseActionMarketplaceUsageRetrieve:
 		return true
 	}
 	return false

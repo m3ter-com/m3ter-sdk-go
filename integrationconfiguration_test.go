@@ -246,8 +246,10 @@ func TestIntegrationConfigurationGetByEntityWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"entityType",
 		m3ter.IntegrationConfigurationGetByEntityParams{
-			OrgID:    m3ter.F("orgId"),
-			EntityID: m3ter.F("entityId"),
+			OrgID:         m3ter.F("orgId"),
+			Destination:   m3ter.F("destination"),
+			DestinationID: m3ter.F("destinationId"),
+			EntityID:      m3ter.F("entityId"),
 		},
 	)
 	if err != nil {
