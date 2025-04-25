@@ -31,11 +31,12 @@ func TestDataExportDestinationNewWithOptionalParams(t *testing.T) {
 	_, err := client.DataExports.Destinations.New(context.TODO(), m3ter.DataExportDestinationNewParams{
 		OrgID: m3ter.F("orgId"),
 		Body: m3ter.DataExportDestinationS3RequestParam{
-			BucketName:     m3ter.F("xxx"),
-			IamRoleArn:     m3ter.F("arn:aws:iam::321669910225:role/z"),
-			PartitionOrder: m3ter.F(m3ter.DataExportDestinationS3RequestPartitionOrderTypeFirst),
-			Prefix:         m3ter.F("prefix"),
-			Version:        m3ter.F(int64(0)),
+			BucketName:      m3ter.F("xxx"),
+			IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/z"),
+			DestinationType: m3ter.F(m3ter.DataExportDestinationS3RequestDestinationTypeS3),
+			PartitionOrder:  m3ter.F(m3ter.DataExportDestinationS3RequestPartitionOrderTypeFirst),
+			Prefix:          m3ter.F("prefix"),
+			Version:         m3ter.F(int64(0)),
 		},
 	})
 	if err != nil {
@@ -99,11 +100,12 @@ func TestDataExportDestinationUpdateWithOptionalParams(t *testing.T) {
 		m3ter.DataExportDestinationUpdateParams{
 			OrgID: m3ter.F("orgId"),
 			Body: m3ter.DataExportDestinationS3RequestParam{
-				BucketName:     m3ter.F("xxx"),
-				IamRoleArn:     m3ter.F("arn:aws:iam::321669910225:role/z"),
-				PartitionOrder: m3ter.F(m3ter.DataExportDestinationS3RequestPartitionOrderTypeFirst),
-				Prefix:         m3ter.F("prefix"),
-				Version:        m3ter.F(int64(0)),
+				BucketName:      m3ter.F("xxx"),
+				IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/z"),
+				DestinationType: m3ter.F(m3ter.DataExportDestinationS3RequestDestinationTypeS3),
+				PartitionOrder:  m3ter.F(m3ter.DataExportDestinationS3RequestPartitionOrderTypeFirst),
+				Prefix:          m3ter.F("prefix"),
+				Version:         m3ter.F(int64(0)),
 			},
 		},
 	)
