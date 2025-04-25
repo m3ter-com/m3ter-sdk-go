@@ -173,6 +173,8 @@ type DataExportDestinationGoogleCloudStorageRequestParam struct {
 	ProjectNumber param.Field[string] `json:"projectNumber,required"`
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID param.Field[string] `json:"providerId,required"`
+	// The type of destination to create. Possible values are: GCS
+	DestinationType param.Field[DataExportDestinationGoogleCloudStorageRequestDestinationType] `json:"destinationType"`
 	// Specify how you want the file path to be structured in your bucket destination -
 	// by Time first (Default) or Type first.
 	//
@@ -212,6 +214,21 @@ func (r DataExportDestinationGoogleCloudStorageRequestParam) implementsDataExpor
 }
 
 func (r DataExportDestinationGoogleCloudStorageRequestParam) implementsDataExportDestinationUpdateParamsBodyUnion() {
+}
+
+// The type of destination to create. Possible values are: GCS
+type DataExportDestinationGoogleCloudStorageRequestDestinationType string
+
+const (
+	DataExportDestinationGoogleCloudStorageRequestDestinationTypeGcs DataExportDestinationGoogleCloudStorageRequestDestinationType = "GCS"
+)
+
+func (r DataExportDestinationGoogleCloudStorageRequestDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationGoogleCloudStorageRequestDestinationTypeGcs:
+		return true
+	}
+	return false
 }
 
 // Specify how you want the file path to be structured in your bucket destination -
@@ -330,6 +347,8 @@ type DataExportDestinationS3RequestParam struct {
 	// [Creating Data Export Destinations](https://www.m3ter.com/docs/guides/data-exports/creating-data-export-destinations)
 	// in our main User documentation.
 	IamRoleArn param.Field[string] `json:"iamRoleArn,required"`
+	// The type of destination to create. Possible values are: S3
+	DestinationType param.Field[DataExportDestinationS3RequestDestinationType] `json:"destinationType"`
 	// Specify how you want the file path to be structured in your bucket destination -
 	// by Time first (Default) or Type first.
 	//
@@ -367,6 +386,21 @@ func (r DataExportDestinationS3RequestParam) MarshalJSON() (data []byte, err err
 func (r DataExportDestinationS3RequestParam) implementsDataExportDestinationNewParamsBodyUnion() {}
 
 func (r DataExportDestinationS3RequestParam) implementsDataExportDestinationUpdateParamsBodyUnion() {}
+
+// The type of destination to create. Possible values are: S3
+type DataExportDestinationS3RequestDestinationType string
+
+const (
+	DataExportDestinationS3RequestDestinationTypeS3 DataExportDestinationS3RequestDestinationType = "S3"
+)
+
+func (r DataExportDestinationS3RequestDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationS3RequestDestinationTypeS3:
+		return true
+	}
+	return false
+}
 
 // Specify how you want the file path to be structured in your bucket destination -
 // by Time first (Default) or Type first.
@@ -1951,6 +1985,8 @@ func (r DataExportDestinationNewParams) MarshalJSON() (data []byte, err error) {
 type DataExportDestinationNewParamsBody struct {
 	// Name of the S3 bucket for the Export Destination.
 	BucketName param.Field[string] `json:"bucketName,required"`
+	// The type of destination to create. Possible values are: S3
+	DestinationType param.Field[DataExportDestinationNewParamsBodyDestinationType] `json:"destinationType"`
 	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
 	// assume an IAM role with PutObject permission for the specified `bucketName`.
 	// Create a suitable IAM role in your AWS account and enter ARN:
@@ -2020,6 +2056,22 @@ type DataExportDestinationNewParamsBodyUnion interface {
 	implementsDataExportDestinationNewParamsBodyUnion()
 }
 
+// The type of destination to create. Possible values are: S3
+type DataExportDestinationNewParamsBodyDestinationType string
+
+const (
+	DataExportDestinationNewParamsBodyDestinationTypeS3  DataExportDestinationNewParamsBodyDestinationType = "S3"
+	DataExportDestinationNewParamsBodyDestinationTypeGcs DataExportDestinationNewParamsBodyDestinationType = "GCS"
+)
+
+func (r DataExportDestinationNewParamsBodyDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationNewParamsBodyDestinationTypeS3, DataExportDestinationNewParamsBodyDestinationTypeGcs:
+		return true
+	}
+	return false
+}
+
 // Specify how you want the file path to be structured in your bucket destination -
 // by Time first (Default) or Type first.
 //
@@ -2068,6 +2120,8 @@ func (r DataExportDestinationUpdateParams) MarshalJSON() (data []byte, err error
 type DataExportDestinationUpdateParamsBody struct {
 	// Name of the S3 bucket for the Export Destination.
 	BucketName param.Field[string] `json:"bucketName,required"`
+	// The type of destination to create. Possible values are: S3
+	DestinationType param.Field[DataExportDestinationUpdateParamsBodyDestinationType] `json:"destinationType"`
 	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
 	// assume an IAM role with PutObject permission for the specified `bucketName`.
 	// Create a suitable IAM role in your AWS account and enter ARN:
@@ -2136,6 +2190,22 @@ func (r DataExportDestinationUpdateParamsBody) implementsDataExportDestinationUp
 // [DataExportDestinationUpdateParamsBody].
 type DataExportDestinationUpdateParamsBodyUnion interface {
 	implementsDataExportDestinationUpdateParamsBodyUnion()
+}
+
+// The type of destination to create. Possible values are: S3
+type DataExportDestinationUpdateParamsBodyDestinationType string
+
+const (
+	DataExportDestinationUpdateParamsBodyDestinationTypeS3  DataExportDestinationUpdateParamsBodyDestinationType = "S3"
+	DataExportDestinationUpdateParamsBodyDestinationTypeGcs DataExportDestinationUpdateParamsBodyDestinationType = "GCS"
+)
+
+func (r DataExportDestinationUpdateParamsBodyDestinationType) IsKnown() bool {
+	switch r {
+	case DataExportDestinationUpdateParamsBodyDestinationTypeS3, DataExportDestinationUpdateParamsBodyDestinationTypeGcs:
+		return true
+	}
+	return false
 }
 
 // Specify how you want the file path to be structured in your bucket destination -

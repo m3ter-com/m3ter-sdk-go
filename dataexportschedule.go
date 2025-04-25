@@ -216,7 +216,8 @@ func (r *DataExportScheduleService) Delete(ctx context.Context, id string, body 
 type OperationalDataExportScheduleRequestParam struct {
 	// A list of the entities whose operational data is included in the data export.
 	OperationalDataTypes param.Field[[]OperationalDataExportScheduleRequestOperationalDataType] `json:"operationalDataTypes,required"`
-	SourceType           param.Field[OperationalDataExportScheduleRequestSourceType]            `json:"sourceType,required"`
+	// The type of data to export. Possible values are: OPERATIONAL
+	SourceType param.Field[OperationalDataExportScheduleRequestSourceType] `json:"sourceType,required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -268,16 +269,16 @@ func (r OperationalDataExportScheduleRequestOperationalDataType) IsKnown() bool 
 	return false
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type OperationalDataExportScheduleRequestSourceType string
 
 const (
-	OperationalDataExportScheduleRequestSourceTypeUsage       OperationalDataExportScheduleRequestSourceType = "USAGE"
 	OperationalDataExportScheduleRequestSourceTypeOperational OperationalDataExportScheduleRequestSourceType = "OPERATIONAL"
 )
 
 func (r OperationalDataExportScheduleRequestSourceType) IsKnown() bool {
 	switch r {
-	case OperationalDataExportScheduleRequestSourceTypeUsage, OperationalDataExportScheduleRequestSourceTypeOperational:
+	case OperationalDataExportScheduleRequestSourceTypeOperational:
 		return true
 	}
 	return false
@@ -356,6 +357,7 @@ func (r OperationalDataExportScheduleResponseOperationalDataType) IsKnown() bool
 }
 
 type UsageDataExportScheduleRequestParam struct {
+	// The type of data to export. Possible values are: USAGE
 	SourceType param.Field[UsageDataExportScheduleRequestSourceType] `json:"sourceType,required"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
@@ -409,16 +411,16 @@ func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleNewPara
 
 func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleUpdateParamsBodyUnion() {}
 
+// The type of data to export. Possible values are: USAGE
 type UsageDataExportScheduleRequestSourceType string
 
 const (
-	UsageDataExportScheduleRequestSourceTypeUsage       UsageDataExportScheduleRequestSourceType = "USAGE"
-	UsageDataExportScheduleRequestSourceTypeOperational UsageDataExportScheduleRequestSourceType = "OPERATIONAL"
+	UsageDataExportScheduleRequestSourceTypeUsage UsageDataExportScheduleRequestSourceType = "USAGE"
 )
 
 func (r UsageDataExportScheduleRequestSourceType) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleRequestSourceTypeUsage, UsageDataExportScheduleRequestSourceTypeOperational:
+	case UsageDataExportScheduleRequestSourceTypeUsage:
 		return true
 	}
 	return false
@@ -1844,6 +1846,7 @@ func (r DataExportScheduleNewParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational schedule configuration.
 type DataExportScheduleNewParamsBody struct {
+	// The type of data to export. Possible values are: OPERATIONAL
 	SourceType           param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType,required"`
 	AccountIDs           param.Field[interface{}]                               `json:"accountIds"`
 	Aggregations         param.Field[interface{}]                               `json:"aggregations"`
@@ -1899,16 +1902,17 @@ type DataExportScheduleNewParamsBodyUnion interface {
 	implementsDataExportScheduleNewParamsBodyUnion()
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type DataExportScheduleNewParamsBodySourceType string
 
 const (
-	DataExportScheduleNewParamsBodySourceTypeUsage       DataExportScheduleNewParamsBodySourceType = "USAGE"
 	DataExportScheduleNewParamsBodySourceTypeOperational DataExportScheduleNewParamsBodySourceType = "OPERATIONAL"
+	DataExportScheduleNewParamsBodySourceTypeUsage       DataExportScheduleNewParamsBodySourceType = "USAGE"
 )
 
 func (r DataExportScheduleNewParamsBodySourceType) IsKnown() bool {
 	switch r {
-	case DataExportScheduleNewParamsBodySourceTypeUsage, DataExportScheduleNewParamsBodySourceTypeOperational:
+	case DataExportScheduleNewParamsBodySourceTypeOperational, DataExportScheduleNewParamsBodySourceTypeUsage:
 		return true
 	}
 	return false
@@ -1976,6 +1980,7 @@ func (r DataExportScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational schedule configuration.
 type DataExportScheduleUpdateParamsBody struct {
+	// The type of data to export. Possible values are: OPERATIONAL
 	SourceType           param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType,required"`
 	AccountIDs           param.Field[interface{}]                                  `json:"accountIds"`
 	Aggregations         param.Field[interface{}]                                  `json:"aggregations"`
@@ -2031,16 +2036,17 @@ type DataExportScheduleUpdateParamsBodyUnion interface {
 	implementsDataExportScheduleUpdateParamsBodyUnion()
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type DataExportScheduleUpdateParamsBodySourceType string
 
 const (
-	DataExportScheduleUpdateParamsBodySourceTypeUsage       DataExportScheduleUpdateParamsBodySourceType = "USAGE"
 	DataExportScheduleUpdateParamsBodySourceTypeOperational DataExportScheduleUpdateParamsBodySourceType = "OPERATIONAL"
+	DataExportScheduleUpdateParamsBodySourceTypeUsage       DataExportScheduleUpdateParamsBodySourceType = "USAGE"
 )
 
 func (r DataExportScheduleUpdateParamsBodySourceType) IsKnown() bool {
 	switch r {
-	case DataExportScheduleUpdateParamsBodySourceTypeUsage, DataExportScheduleUpdateParamsBodySourceTypeOperational:
+	case DataExportScheduleUpdateParamsBodySourceTypeOperational, DataExportScheduleUpdateParamsBodySourceTypeUsage:
 		return true
 	}
 	return false

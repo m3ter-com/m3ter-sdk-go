@@ -114,7 +114,8 @@ func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAd
 type AdHocOperationalDataRequestParam struct {
 	// The list of the operational data types should be exported for.
 	OperationalDataTypes param.Field[[]AdHocOperationalDataRequestOperationalDataType] `json:"operationalDataTypes,required"`
-	SourceType           param.Field[AdHocOperationalDataRequestSourceType]            `json:"sourceType,required"`
+	// The type of data to export. Possible values are: OPERATIONAL
+	SourceType param.Field[AdHocOperationalDataRequestSourceType] `json:"sourceType,required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -163,16 +164,16 @@ func (r AdHocOperationalDataRequestOperationalDataType) IsKnown() bool {
 	return false
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type AdHocOperationalDataRequestSourceType string
 
 const (
-	AdHocOperationalDataRequestSourceTypeUsage       AdHocOperationalDataRequestSourceType = "USAGE"
 	AdHocOperationalDataRequestSourceTypeOperational AdHocOperationalDataRequestSourceType = "OPERATIONAL"
 )
 
 func (r AdHocOperationalDataRequestSourceType) IsKnown() bool {
 	switch r {
-	case AdHocOperationalDataRequestSourceTypeUsage, AdHocOperationalDataRequestSourceTypeOperational:
+	case AdHocOperationalDataRequestSourceTypeOperational:
 		return true
 	}
 	return false
@@ -201,6 +202,7 @@ func (r adHocResponseJSON) RawJSON() string {
 }
 
 type AdHocUsageDataRequestParam struct {
+	// The type of data to export. Possible values are: USAGE
 	SourceType param.Field[AdHocUsageDataRequestSourceType] `json:"sourceType,required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs param.Field[[]string] `json:"accountIds"`
@@ -229,16 +231,16 @@ func (r AdHocUsageDataRequestParam) MarshalJSON() (data []byte, err error) {
 
 func (r AdHocUsageDataRequestParam) implementsDataExportNewAdhocParamsBodyUnion() {}
 
+// The type of data to export. Possible values are: USAGE
 type AdHocUsageDataRequestSourceType string
 
 const (
-	AdHocUsageDataRequestSourceTypeUsage       AdHocUsageDataRequestSourceType = "USAGE"
-	AdHocUsageDataRequestSourceTypeOperational AdHocUsageDataRequestSourceType = "OPERATIONAL"
+	AdHocUsageDataRequestSourceTypeUsage AdHocUsageDataRequestSourceType = "USAGE"
 )
 
 func (r AdHocUsageDataRequestSourceType) IsKnown() bool {
 	switch r {
-	case AdHocUsageDataRequestSourceTypeUsage, AdHocUsageDataRequestSourceTypeOperational:
+	case AdHocUsageDataRequestSourceTypeUsage:
 		return true
 	}
 	return false
@@ -594,6 +596,7 @@ func (r DataExportNewAdhocParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational data export configuration.
 type DataExportNewAdhocParamsBody struct {
+	// The type of data to export. Possible values are: OPERATIONAL
 	SourceType           param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType,required"`
 	AccountIDs           param.Field[interface{}]                            `json:"accountIds"`
 	Aggregations         param.Field[interface{}]                            `json:"aggregations"`
@@ -626,16 +629,17 @@ type DataExportNewAdhocParamsBodyUnion interface {
 	implementsDataExportNewAdhocParamsBodyUnion()
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type DataExportNewAdhocParamsBodySourceType string
 
 const (
-	DataExportNewAdhocParamsBodySourceTypeUsage       DataExportNewAdhocParamsBodySourceType = "USAGE"
 	DataExportNewAdhocParamsBodySourceTypeOperational DataExportNewAdhocParamsBodySourceType = "OPERATIONAL"
+	DataExportNewAdhocParamsBodySourceTypeUsage       DataExportNewAdhocParamsBodySourceType = "USAGE"
 )
 
 func (r DataExportNewAdhocParamsBodySourceType) IsKnown() bool {
 	switch r {
-	case DataExportNewAdhocParamsBodySourceTypeUsage, DataExportNewAdhocParamsBodySourceTypeOperational:
+	case DataExportNewAdhocParamsBodySourceTypeOperational, DataExportNewAdhocParamsBodySourceTypeUsage:
 		return true
 	}
 	return false
