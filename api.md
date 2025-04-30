@@ -498,6 +498,10 @@ Methods:
 
 # OrganizationConfig
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#OrganizationConfigRequestParam">OrganizationConfigRequestParam</a>
+
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#OrganizationConfigResponse">OrganizationConfigResponse</a>
