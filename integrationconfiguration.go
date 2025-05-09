@@ -213,11 +213,14 @@ func (r *IntegrationConfigurationService) GetByEntity(ctx context.Context, entit
 type IntegrationConfigurationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The destination system for the integration.
+	// The destination system for the integration run.
 	Destination string `json:"destination,required"`
-	// The unique identifier (UUID) of the entity the integration is for.
+	// The unique identifier (UUID) of the entity the integration run is for.
 	EntityID string `json:"entityId,required"`
-	// The type of entity the integration is for _(e.g. Bill)_.
+	// The type of entity the integration run is for. Two options:
+	//
+	// - Bill
+	// - Notification
 	EntityType string                                 `json:"entityType,required"`
 	Status     IntegrationConfigurationResponseStatus `json:"status,required"`
 	// The version number:
@@ -229,13 +232,13 @@ type IntegrationConfigurationResponse struct {
 	Version int64 `json:"version,required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
-	// The date and time the integration was completed _(in ISO-8601 format)_.
+	// The date and time the integration was completed. _(in ISO-8601 format)_.
 	DtCompleted time.Time `json:"dtCompleted" format:"date-time"`
 	// The DateTime when this item was created _(in ISO-8601 format)_.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The DateTime when this item was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
-	// The date and time the integration was started _(in ISO-8601 format)_.
+	// The date and time the integration run was started _(in ISO-8601 format)_.
 	DtStarted time.Time `json:"dtStarted" format:"date-time"`
 	// Describes any errors encountered during the integration run.
 	Error string `json:"error"`
@@ -1055,6 +1058,10 @@ type IntegrationConfigurationEnableParams struct {
 type IntegrationConfigurationGetByEntityParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
+	// Destination type to retrieve IntegrationConfigs for
+	Destination param.Field[string] `query:"destination"`
+	// UUID of the destination to retrieve IntegrationConfigs for
+	DestinationID param.Field[string] `query:"destinationId"`
 	// UUID of the entity to retrieve IntegrationConfigs for
 	EntityID param.Field[string] `query:"entityId"`
 }

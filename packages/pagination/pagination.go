@@ -43,7 +43,10 @@ func (r *Cursor[T]) GetNextPage() (res *Cursor[T], err error) {
 		return nil, nil
 	}
 	cfg := r.cfg.Clone(r.cfg.Context)
-	cfg.Apply(option.WithQuery("nextToken", next))
+	err = cfg.Apply(option.WithQuery("nextToken", next))
+	if err != nil {
+		return nil, err
+	}
 	var raw *http.Response
 	cfg.ResponseInto = &raw
 	cfg.ResponseBodyInto = &res

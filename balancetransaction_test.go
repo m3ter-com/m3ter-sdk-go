@@ -75,6 +75,7 @@ func TestBalanceTransactionListWithOptionalParams(t *testing.T) {
 			OrgID:             m3ter.F("orgId"),
 			NextToken:         m3ter.F("nextToken"),
 			PageSize:          m3ter.F(int64(1)),
+			ScheduleID:        m3ter.F("scheduleId"),
 			TransactionTypeID: m3ter.F("transactionTypeId"),
 		},
 	)
