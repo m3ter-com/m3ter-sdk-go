@@ -129,14 +129,14 @@ func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts 
 //     The usage data measurement is accepted and ingested as data belonging to the
 //     new auto-created Account. At a later date, you can edit the Account's
 //     Code,??Name, and??e-mail address. For more details, see
-//     [Submittting Usage Data for Non-Existent Accounts](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-for-non-existent-accounts)
+//     [Submitting Usage Data for Non-Existent Accounts](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-for-non-existent-accounts)
 //     in our main documentation.
 //   - **Usage Data Adjustments.** If you need to make corrections for billing
 //     retrospectively against an Account, you can use date/time values in the past
 //     for the `ts` (timestamp) request parameter to submit positive or negative
 //     usage data amounts to correct and reconcile earlier billing anomalies. For
 //     more details, see
-//     [Submittting Usage Data Adjustments Using Timestamp](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-adjustments-using-timestamp)
+//     [Submitting Usage Data Adjustments Using Timestamp](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-adjustments-using-timestamp)
 //     in our main documentation.
 //   - **Ingest Validation Failure Events.** After the intial submission of a usage
 //     data measurement to the Ingest API, a data enrichment stage is performed to

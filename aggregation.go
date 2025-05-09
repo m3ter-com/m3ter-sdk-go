@@ -341,18 +341,19 @@ func (r aggregationResponseJSON) RawJSON() string {
 type AggregationResponseAggregation string
 
 const (
-	AggregationResponseAggregationSum    AggregationResponseAggregation = "SUM"
-	AggregationResponseAggregationMin    AggregationResponseAggregation = "MIN"
-	AggregationResponseAggregationMax    AggregationResponseAggregation = "MAX"
-	AggregationResponseAggregationCount  AggregationResponseAggregation = "COUNT"
-	AggregationResponseAggregationLatest AggregationResponseAggregation = "LATEST"
-	AggregationResponseAggregationMean   AggregationResponseAggregation = "MEAN"
-	AggregationResponseAggregationUnique AggregationResponseAggregation = "UNIQUE"
+	AggregationResponseAggregationSum       AggregationResponseAggregation = "SUM"
+	AggregationResponseAggregationMin       AggregationResponseAggregation = "MIN"
+	AggregationResponseAggregationMax       AggregationResponseAggregation = "MAX"
+	AggregationResponseAggregationCount     AggregationResponseAggregation = "COUNT"
+	AggregationResponseAggregationLatest    AggregationResponseAggregation = "LATEST"
+	AggregationResponseAggregationMean      AggregationResponseAggregation = "MEAN"
+	AggregationResponseAggregationUnique    AggregationResponseAggregation = "UNIQUE"
+	AggregationResponseAggregationCustomSql AggregationResponseAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationResponseAggregation) IsKnown() bool {
 	switch r {
-	case AggregationResponseAggregationSum, AggregationResponseAggregationMin, AggregationResponseAggregationMax, AggregationResponseAggregationCount, AggregationResponseAggregationLatest, AggregationResponseAggregationMean, AggregationResponseAggregationUnique:
+	case AggregationResponseAggregationSum, AggregationResponseAggregationMin, AggregationResponseAggregationMax, AggregationResponseAggregationCount, AggregationResponseAggregationLatest, AggregationResponseAggregationMean, AggregationResponseAggregationUnique, AggregationResponseAggregationCustomSql:
 		return true
 	}
 	return false
@@ -486,7 +487,10 @@ type AggregationNewParams struct {
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                           `json:"code"`
 	CustomFields param.Field[map[string]AggregationNewParamsCustomFieldsUnion] `json:"customFields"`
-	CustomSql    param.Field[string]                                           `json:"customSql"`
+	// **NOTE:** The `customSql` Aggregation type is currently only available in Beta
+	// release and on request. If you are interested in using this feature, please get
+	// in touch with m3ter Support or your m3ter contact.
+	CustomSql param.Field[string] `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -561,18 +565,19 @@ func (r AggregationNewParams) MarshalJSON() (data []byte, err error) {
 type AggregationNewParamsAggregation string
 
 const (
-	AggregationNewParamsAggregationSum    AggregationNewParamsAggregation = "SUM"
-	AggregationNewParamsAggregationMin    AggregationNewParamsAggregation = "MIN"
-	AggregationNewParamsAggregationMax    AggregationNewParamsAggregation = "MAX"
-	AggregationNewParamsAggregationCount  AggregationNewParamsAggregation = "COUNT"
-	AggregationNewParamsAggregationLatest AggregationNewParamsAggregation = "LATEST"
-	AggregationNewParamsAggregationMean   AggregationNewParamsAggregation = "MEAN"
-	AggregationNewParamsAggregationUnique AggregationNewParamsAggregation = "UNIQUE"
+	AggregationNewParamsAggregationSum       AggregationNewParamsAggregation = "SUM"
+	AggregationNewParamsAggregationMin       AggregationNewParamsAggregation = "MIN"
+	AggregationNewParamsAggregationMax       AggregationNewParamsAggregation = "MAX"
+	AggregationNewParamsAggregationCount     AggregationNewParamsAggregation = "COUNT"
+	AggregationNewParamsAggregationLatest    AggregationNewParamsAggregation = "LATEST"
+	AggregationNewParamsAggregationMean      AggregationNewParamsAggregation = "MEAN"
+	AggregationNewParamsAggregationUnique    AggregationNewParamsAggregation = "UNIQUE"
+	AggregationNewParamsAggregationCustomSql AggregationNewParamsAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationNewParamsAggregation) IsKnown() bool {
 	switch r {
-	case AggregationNewParamsAggregationSum, AggregationNewParamsAggregationMin, AggregationNewParamsAggregationMax, AggregationNewParamsAggregationCount, AggregationNewParamsAggregationLatest, AggregationNewParamsAggregationMean, AggregationNewParamsAggregationUnique:
+	case AggregationNewParamsAggregationSum, AggregationNewParamsAggregationMin, AggregationNewParamsAggregationMax, AggregationNewParamsAggregationCount, AggregationNewParamsAggregationLatest, AggregationNewParamsAggregationMean, AggregationNewParamsAggregationUnique, AggregationNewParamsAggregationCustomSql:
 		return true
 	}
 	return false
@@ -696,7 +701,10 @@ type AggregationUpdateParams struct {
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                              `json:"code"`
 	CustomFields param.Field[map[string]AggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`
-	CustomSql    param.Field[string]                                              `json:"customSql"`
+	// **NOTE:** The `customSql` Aggregation type is currently only available in Beta
+	// release and on request. If you are interested in using this feature, please get
+	// in touch with m3ter Support or your m3ter contact.
+	CustomSql param.Field[string] `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -771,18 +779,19 @@ func (r AggregationUpdateParams) MarshalJSON() (data []byte, err error) {
 type AggregationUpdateParamsAggregation string
 
 const (
-	AggregationUpdateParamsAggregationSum    AggregationUpdateParamsAggregation = "SUM"
-	AggregationUpdateParamsAggregationMin    AggregationUpdateParamsAggregation = "MIN"
-	AggregationUpdateParamsAggregationMax    AggregationUpdateParamsAggregation = "MAX"
-	AggregationUpdateParamsAggregationCount  AggregationUpdateParamsAggregation = "COUNT"
-	AggregationUpdateParamsAggregationLatest AggregationUpdateParamsAggregation = "LATEST"
-	AggregationUpdateParamsAggregationMean   AggregationUpdateParamsAggregation = "MEAN"
-	AggregationUpdateParamsAggregationUnique AggregationUpdateParamsAggregation = "UNIQUE"
+	AggregationUpdateParamsAggregationSum       AggregationUpdateParamsAggregation = "SUM"
+	AggregationUpdateParamsAggregationMin       AggregationUpdateParamsAggregation = "MIN"
+	AggregationUpdateParamsAggregationMax       AggregationUpdateParamsAggregation = "MAX"
+	AggregationUpdateParamsAggregationCount     AggregationUpdateParamsAggregation = "COUNT"
+	AggregationUpdateParamsAggregationLatest    AggregationUpdateParamsAggregation = "LATEST"
+	AggregationUpdateParamsAggregationMean      AggregationUpdateParamsAggregation = "MEAN"
+	AggregationUpdateParamsAggregationUnique    AggregationUpdateParamsAggregation = "UNIQUE"
+	AggregationUpdateParamsAggregationCustomSql AggregationUpdateParamsAggregation = "CUSTOM_SQL"
 )
 
 func (r AggregationUpdateParamsAggregation) IsKnown() bool {
 	switch r {
-	case AggregationUpdateParamsAggregationSum, AggregationUpdateParamsAggregationMin, AggregationUpdateParamsAggregationMax, AggregationUpdateParamsAggregationCount, AggregationUpdateParamsAggregationLatest, AggregationUpdateParamsAggregationMean, AggregationUpdateParamsAggregationUnique:
+	case AggregationUpdateParamsAggregationSum, AggregationUpdateParamsAggregationMin, AggregationUpdateParamsAggregationMax, AggregationUpdateParamsAggregationCount, AggregationUpdateParamsAggregationLatest, AggregationUpdateParamsAggregationMean, AggregationUpdateParamsAggregationUnique, AggregationUpdateParamsAggregationCustomSql:
 		return true
 	}
 	return false

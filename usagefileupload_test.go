@@ -13,7 +13,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestUsageFileUploadGenerateUploadURLWithOptionalParams(t *testing.T) {
+func TestUsageFileUploadGenerateUploadURL(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,9 +30,9 @@ func TestUsageFileUploadGenerateUploadURLWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Usage.FileUploads.GenerateUploadURL(context.TODO(), m3ter.UsageFileUploadGenerateUploadURLParams{
 		OrgID:         m3ter.F("orgId"),
-		ContentType:   m3ter.F("x"),
-		FileName:      m3ter.F("x"),
 		ContentLength: m3ter.F(int64(1)),
+		ContentType:   m3ter.F(m3ter.UsageFileUploadGenerateUploadURLParamsContentTypeApplicationJson),
+		FileName:      m3ter.F("x"),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
