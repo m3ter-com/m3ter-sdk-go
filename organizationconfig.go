@@ -380,7 +380,7 @@ type OrganizationConfigResponse struct {
 	// rate.
 	CurrencyConversions []shared.CurrencyConversion `json:"currencyConversions"`
 	// The first bill date _(in ISO-8601 format)_ for daily billing periods.
-	DayEpoch time.Time `json:"dayEpoch" format:"date"`
+	DayEpoch string `json:"dayEpoch"`
 	// The number of days after the Bill generation date shown on Bills as the due
 	// date.
 	DaysBeforeBillDue int64 `json:"daysBeforeBillDue"`
@@ -405,7 +405,7 @@ type OrganizationConfigResponse struct {
 	// - **FALSE** - bill in arrears _(end of each billing period)_.
 	MinimumSpendBillInAdvance bool `json:"minimumSpendBillInAdvance"`
 	// The first bill date _(in ISO-8601 format)_ for monthly billing periods.
-	MonthEpoch time.Time `json:"monthEpoch" format:"date"`
+	MonthEpoch string `json:"monthEpoch"`
 	// Specifies the required interval for updating bills.
 	//
 	//   - **For portions of an hour (minutes)**. Two options: **0.25** (15 minutes) and
@@ -431,9 +431,9 @@ type OrganizationConfigResponse struct {
 	// The timezone for the Organization.
 	Timezone string `json:"timezone"`
 	// The first bill date _(in ISO-8601 format)_ for weekly billing periods.
-	WeekEpoch time.Time `json:"weekEpoch" format:"date"`
+	WeekEpoch string `json:"weekEpoch"`
 	// The first bill date _(in ISO-8601 format)_ for yearly billing periods.
-	YearEpoch time.Time                      `json:"yearEpoch" format:"date"`
+	YearEpoch string                         `json:"yearEpoch"`
 	JSON      organizationConfigResponseJSON `json:"-"`
 }
 
