@@ -156,6 +156,7 @@ func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts 
 // above for more details.
 func (r *UsageService) Submit(ctx context.Context, params UsageSubmitParams, opts ...option.RequestOption) (res *SubmitMeasurementsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://ingest.m3ter.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
