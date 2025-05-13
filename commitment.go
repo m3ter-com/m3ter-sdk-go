@@ -504,6 +504,12 @@ type CommitmentNewParams struct {
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
 	// The unique identifier (UUID) for the Product linked to the Commitment for
 	// accounting purposes. _(Optional)_
+	//
+	// **NOTE:** If you're planning to set up an integration for sending Bills to an
+	// external accounts receivable system, please check requirements for your chosen
+	// system. Some systems, such as NetSuite, require a Product to be linked with any
+	// Bill line items associated with Account Commitments, and the integration will
+	// fail if this is not present
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// The amount to be billed in the first invoice.
 	AmountFirstBill param.Field[float64] `json:"amountFirstBill"`
@@ -715,6 +721,12 @@ type CommitmentUpdateParams struct {
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
 	// The unique identifier (UUID) for the Product linked to the Commitment for
 	// accounting purposes. _(Optional)_
+	//
+	// **NOTE:** If you're planning to set up an integration for sending Bills to an
+	// external accounts receivable system, please check requirements for your chosen
+	// system. Some systems, such as NetSuite, require a Product to be linked with any
+	// Bill line items associated with Account Commitments, and the integration will
+	// fail if this is not present
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// The amount to be billed in the first invoice.
 	AmountFirstBill param.Field[float64] `json:"amountFirstBill"`

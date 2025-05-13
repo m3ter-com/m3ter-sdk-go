@@ -32,7 +32,7 @@ func TestDataExportScheduleNewWithOptionalParams(t *testing.T) {
 		OrgID: m3ter.F("orgId"),
 		Body: m3ter.OperationalDataExportScheduleRequestParam{
 			OperationalDataTypes: m3ter.F([]m3ter.OperationalDataExportScheduleRequestOperationalDataType{m3ter.OperationalDataExportScheduleRequestOperationalDataTypeBills}),
-			SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeUsage),
+			SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeOperational),
 			Version:              m3ter.F(int64(0)),
 		},
 	})
@@ -98,7 +98,7 @@ func TestDataExportScheduleUpdateWithOptionalParams(t *testing.T) {
 			OrgID: m3ter.F("orgId"),
 			Body: m3ter.OperationalDataExportScheduleRequestParam{
 				OperationalDataTypes: m3ter.F([]m3ter.OperationalDataExportScheduleRequestOperationalDataType{m3ter.OperationalDataExportScheduleRequestOperationalDataTypeBills}),
-				SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeUsage),
+				SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeOperational),
 				Version:              m3ter.F(int64(0)),
 			},
 		},
