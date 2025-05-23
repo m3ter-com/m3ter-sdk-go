@@ -29,7 +29,6 @@ func TestDataExportNewAdhocWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.NewAdhoc(context.TODO(), m3ter.DataExportNewAdhocParams{
-		OrgID: m3ter.F("orgId"),
 		Body: m3ter.AdHocOperationalDataRequestParam{
 			OperationalDataTypes: m3ter.F([]m3ter.AdHocOperationalDataRequestOperationalDataType{m3ter.AdHocOperationalDataRequestOperationalDataTypeBills}),
 			SourceType:           m3ter.F(m3ter.AdHocOperationalDataRequestSourceTypeOperational),

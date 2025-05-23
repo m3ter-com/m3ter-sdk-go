@@ -29,7 +29,6 @@ func TestCounterAdjustmentNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.New(context.TODO(), m3ter.CounterAdjustmentNewParams{
-		OrgID:               m3ter.F("orgId"),
 		AccountID:           m3ter.F("x"),
 		CounterID:           m3ter.F("x"),
 		Date:                m3ter.F("2022-01-04"),
@@ -64,9 +63,7 @@ func TestCounterAdjustmentGet(t *testing.T) {
 	_, err := client.CounterAdjustments.Get(
 		context.TODO(),
 		"id",
-		m3ter.CounterAdjustmentGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CounterAdjustmentGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -96,7 +93,6 @@ func TestCounterAdjustmentUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.CounterAdjustmentUpdateParams{
-			OrgID:               m3ter.F("orgId"),
 			AccountID:           m3ter.F("x"),
 			CounterID:           m3ter.F("x"),
 			Date:                m3ter.F("2022-01-04"),
@@ -130,7 +126,6 @@ func TestCounterAdjustmentListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterAdjustments.List(context.TODO(), m3ter.CounterAdjustmentListParams{
-		OrgID:        m3ter.F("orgId"),
 		AccountID:    m3ter.F("accountId"),
 		CounterID:    m3ter.F("counterId"),
 		Date:         m3ter.F("date"),
@@ -169,9 +164,7 @@ func TestCounterAdjustmentDelete(t *testing.T) {
 	_, err := client.CounterAdjustments.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CounterAdjustmentDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CounterAdjustmentDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

@@ -29,7 +29,6 @@ func TestUsageFileUploadGenerateUploadURL(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.FileUploads.GenerateUploadURL(context.TODO(), m3ter.UsageFileUploadGenerateUploadURLParams{
-		OrgID:         m3ter.F("orgId"),
 		ContentLength: m3ter.F(int64(1)),
 		ContentType:   m3ter.F(m3ter.UsageFileUploadGenerateUploadURLParamsContentTypeApplicationJson),
 		FileName:      m3ter.F("x"),

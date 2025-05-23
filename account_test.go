@@ -31,7 +31,6 @@ func TestAccountNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.New(context.TODO(), m3ter.AccountNewParams{
-		OrgID:        m3ter.F("orgId"),
 		Code:         m3ter.F("JS!?Q0]r] ]$]"),
 		EmailAddress: m3ter.F("dev@stainless.com"),
 		Name:         m3ter.F("x"),
@@ -88,9 +87,7 @@ func TestAccountGet(t *testing.T) {
 	_, err := client.Accounts.Get(
 		context.TODO(),
 		"id",
-		m3ter.AccountGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.AccountGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -120,7 +117,6 @@ func TestAccountUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.AccountUpdateParams{
-			OrgID:        m3ter.F("orgId"),
 			Code:         m3ter.F("JS!?Q0]r] ]$]"),
 			EmailAddress: m3ter.F("dev@stainless.com"),
 			Name:         m3ter.F("x"),
@@ -176,7 +172,6 @@ func TestAccountListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.List(context.TODO(), m3ter.AccountListParams{
-		OrgID:     m3ter.F("orgId"),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
@@ -209,9 +204,7 @@ func TestAccountDelete(t *testing.T) {
 	_, err := client.Accounts.Delete(
 		context.TODO(),
 		"id",
-		m3ter.AccountDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.AccountDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -241,7 +234,6 @@ func TestAccountEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.AccountEndDateBillingEntitiesParams{
-			OrgID:           m3ter.F("orgId"),
 			BillingEntities: m3ter.F([]m3ter.AccountEndDateBillingEntitiesParamsBillingEntity{m3ter.AccountEndDateBillingEntitiesParamsBillingEntityContract}),
 			EndDate:         m3ter.F(time.Now()),
 			ApplyToChildren: m3ter.F(true),
@@ -275,7 +267,6 @@ func TestAccountGetChildrenWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.AccountGetChildrenParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -305,7 +296,6 @@ func TestAccountSearchWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.Search(context.TODO(), m3ter.AccountSearchParams{
-		OrgID:        m3ter.F("orgId"),
 		FromDocument: m3ter.F(int64(0)),
 		Operator:     m3ter.F(m3ter.AccountSearchParamsOperatorAnd),
 		PageSize:     m3ter.F(int64(1)),

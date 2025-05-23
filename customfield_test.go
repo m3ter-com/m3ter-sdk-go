@@ -29,9 +29,7 @@ func TestCustomFieldGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.CustomFields.Get(context.TODO(), m3ter.CustomFieldGetParams{
-		OrgID: m3ter.F("orgId"),
-	})
+	_, err := client.CustomFields.Get(context.TODO(), m3ter.CustomFieldGetParams{})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -57,7 +55,6 @@ func TestCustomFieldUpdateWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CustomFields.Update(context.TODO(), m3ter.CustomFieldUpdateParams{
-		OrgID: m3ter.F("orgId"),
 		Account: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsAccountUnion{
 			"foo": shared.UnionString("string"),
 		}),

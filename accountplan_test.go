@@ -31,7 +31,6 @@ func TestAccountPlanNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.New(context.TODO(), m3ter.AccountPlanNewParams{
-		OrgID:            m3ter.F("orgId"),
 		AccountID:        m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		StartDate:        m3ter.F(time.Now()),
 		BillEpoch:        m3ter.F(time.Now()),
@@ -73,9 +72,7 @@ func TestAccountPlanGet(t *testing.T) {
 	_, err := client.AccountPlans.Get(
 		context.TODO(),
 		"id",
-		m3ter.AccountPlanGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.AccountPlanGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -105,7 +102,6 @@ func TestAccountPlanUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.AccountPlanUpdateParams{
-			OrgID:            m3ter.F("orgId"),
 			AccountID:        m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			StartDate:        m3ter.F(time.Now()),
 			BillEpoch:        m3ter.F(time.Now()),
@@ -146,7 +142,6 @@ func TestAccountPlanListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.AccountPlans.List(context.TODO(), m3ter.AccountPlanListParams{
-		OrgID:      m3ter.F("orgId"),
 		Account:    m3ter.F("account"),
 		Contract:   m3ter.F("contract"),
 		Date:       m3ter.F("date"),
@@ -184,9 +179,7 @@ func TestAccountPlanDelete(t *testing.T) {
 	_, err := client.AccountPlans.Delete(
 		context.TODO(),
 		"id",
-		m3ter.AccountPlanDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.AccountPlanDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

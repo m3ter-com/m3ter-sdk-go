@@ -31,9 +31,7 @@ func TestBillGet(t *testing.T) {
 	_, err := client.Bills.Get(
 		context.TODO(),
 		"id",
-		m3ter.BillGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -60,7 +58,6 @@ func TestBillListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.List(context.TODO(), m3ter.BillListParams{
-		OrgID:                    m3ter.F("orgId"),
 		AccountID:                m3ter.F("accountId"),
 		BillDate:                 m3ter.F("billDate"),
 		BillDateEnd:              m3ter.F("billDateEnd"),
@@ -103,9 +100,7 @@ func TestBillDelete(t *testing.T) {
 	_, err := client.Bills.Delete(
 		context.TODO(),
 		"id",
-		m3ter.BillDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -132,7 +127,6 @@ func TestBillApproveWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.Approve(context.TODO(), m3ter.BillApproveParams{
-		OrgID:                    m3ter.F("orgId"),
 		BillIDs:                  m3ter.F([]string{"string"}),
 		AccountIDs:               m3ter.F("accountIds"),
 		ExternalInvoiceDateEnd:   m3ter.F("externalInvoiceDateEnd"),
@@ -165,9 +159,7 @@ func TestBillLatestByAccount(t *testing.T) {
 	_, err := client.Bills.LatestByAccount(
 		context.TODO(),
 		"accountId",
-		m3ter.BillLatestByAccountParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillLatestByAccountParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -196,9 +188,7 @@ func TestBillLock(t *testing.T) {
 	_, err := client.Bills.Lock(
 		context.TODO(),
 		"id",
-		m3ter.BillLockParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillLockParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -225,7 +215,6 @@ func TestBillSearchWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Bills.Search(context.TODO(), m3ter.BillSearchParams{
-		OrgID:        m3ter.F("orgId"),
 		FromDocument: m3ter.F(int64(0)),
 		Operator:     m3ter.F(m3ter.BillSearchParamsOperatorAnd),
 		PageSize:     m3ter.F(int64(1)),
@@ -261,7 +250,6 @@ func TestBillUpdateStatus(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.BillUpdateStatusParams{
-			OrgID:  m3ter.F("orgId"),
 			Status: m3ter.F(m3ter.BillUpdateStatusParamsStatusPending),
 		},
 	)

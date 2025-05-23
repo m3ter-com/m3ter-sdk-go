@@ -30,7 +30,6 @@ func TestCompoundAggregationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.New(context.TODO(), m3ter.CompoundAggregationNewParams{
-		OrgID:               m3ter.F("orgId"),
 		Calculation:         m3ter.F("x"),
 		Name:                m3ter.F("x"),
 		QuantityPerUnit:     m3ter.F(1.000000),
@@ -72,9 +71,7 @@ func TestCompoundAggregationGet(t *testing.T) {
 	_, err := client.CompoundAggregations.Get(
 		context.TODO(),
 		"id",
-		m3ter.CompoundAggregationGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CompoundAggregationGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -104,7 +101,6 @@ func TestCompoundAggregationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.CompoundAggregationUpdateParams{
-			OrgID:               m3ter.F("orgId"),
 			Calculation:         m3ter.F("x"),
 			Name:                m3ter.F("x"),
 			QuantityPerUnit:     m3ter.F(1.000000),
@@ -145,7 +141,6 @@ func TestCompoundAggregationListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CompoundAggregations.List(context.TODO(), m3ter.CompoundAggregationListParams{
-		OrgID:     m3ter.F("orgId"),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
@@ -179,9 +174,7 @@ func TestCompoundAggregationDelete(t *testing.T) {
 	_, err := client.CompoundAggregations.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CompoundAggregationDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CompoundAggregationDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

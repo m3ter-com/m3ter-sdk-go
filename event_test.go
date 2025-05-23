@@ -31,9 +31,7 @@ func TestEventGet(t *testing.T) {
 	_, err := client.Events.Get(
 		context.TODO(),
 		"id",
-		m3ter.EventGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.EventGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -60,7 +58,6 @@ func TestEventListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Events.List(context.TODO(), m3ter.EventListParams{
-		OrgID:            m3ter.F("orgId"),
 		AccountID:        m3ter.F("accountId"),
 		EventName:        m3ter.F("eventName"),
 		EventType:        m3ter.F("eventType"),
@@ -97,7 +94,6 @@ func TestEventGetFieldsWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Events.GetFields(context.TODO(), m3ter.EventGetFieldsParams{
-		OrgID:     m3ter.F("orgId"),
 		EventName: m3ter.F("eventName"),
 	})
 	if err != nil {
@@ -124,9 +120,7 @@ func TestEventGetTypes(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Events.GetTypes(context.TODO(), m3ter.EventGetTypesParams{
-		OrgID: m3ter.F("orgId"),
-	})
+	_, err := client.Events.GetTypes(context.TODO(), m3ter.EventGetTypesParams{})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {

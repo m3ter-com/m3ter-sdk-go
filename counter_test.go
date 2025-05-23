@@ -29,7 +29,6 @@ func TestCounterNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Counters.New(context.TODO(), m3ter.CounterNewParams{
-		OrgID:     m3ter.F("orgId"),
 		Name:      m3ter.F("x"),
 		Unit:      m3ter.F("x"),
 		Code:      m3ter.F("JS!?Q0]r] ]$]"),
@@ -63,9 +62,7 @@ func TestCounterGet(t *testing.T) {
 	_, err := client.Counters.Get(
 		context.TODO(),
 		"id",
-		m3ter.CounterGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CounterGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -95,7 +92,6 @@ func TestCounterUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.CounterUpdateParams{
-			OrgID:     m3ter.F("orgId"),
 			Name:      m3ter.F("x"),
 			Unit:      m3ter.F("x"),
 			Code:      m3ter.F("JS!?Q0]r] ]$]"),
@@ -128,7 +124,6 @@ func TestCounterListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Counters.List(context.TODO(), m3ter.CounterListParams{
-		OrgID:     m3ter.F("orgId"),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
@@ -162,9 +157,7 @@ func TestCounterDelete(t *testing.T) {
 	_, err := client.Counters.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CounterDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CounterDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
