@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/m3ter-com/m3ter-sdk-go@v0.3.0-alpha'
+go get -u 'github.com/m3ter-com/m3ter-sdk-go@v0.4.0-alpha'
 ```
 
 <!-- x-release-please-end -->
