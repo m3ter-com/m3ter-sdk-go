@@ -29,7 +29,6 @@ func TestIntegrationConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.New(context.TODO(), m3ter.IntegrationConfigurationNewParams{
-		OrgID: m3ter.F("orgId"),
 		ConfigData: m3ter.F(map[string]interface{}{
 			"foo": "bar",
 		}),
@@ -75,9 +74,7 @@ func TestIntegrationConfigurationGet(t *testing.T) {
 	_, err := client.IntegrationConfigurations.Get(
 		context.TODO(),
 		"id",
-		m3ter.IntegrationConfigurationGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.IntegrationConfigurationGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -107,7 +104,6 @@ func TestIntegrationConfigurationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.IntegrationConfigurationUpdateParams{
-			OrgID: m3ter.F("orgId"),
 			ConfigData: m3ter.F(map[string]interface{}{
 				"foo": "bar",
 			}),
@@ -152,7 +148,6 @@ func TestIntegrationConfigurationListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.List(context.TODO(), m3ter.IntegrationConfigurationListParams{
-		OrgID:     m3ter.F("orgId"),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
 	})
@@ -183,9 +178,7 @@ func TestIntegrationConfigurationDelete(t *testing.T) {
 	_, err := client.IntegrationConfigurations.Delete(
 		context.TODO(),
 		"id",
-		m3ter.IntegrationConfigurationDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.IntegrationConfigurationDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -214,9 +207,7 @@ func TestIntegrationConfigurationEnable(t *testing.T) {
 	_, err := client.IntegrationConfigurations.Enable(
 		context.TODO(),
 		"id",
-		m3ter.IntegrationConfigurationEnableParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.IntegrationConfigurationEnableParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -246,7 +237,6 @@ func TestIntegrationConfigurationGetByEntityWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"entityType",
 		m3ter.IntegrationConfigurationGetByEntityParams{
-			OrgID:         m3ter.F("orgId"),
 			Destination:   m3ter.F("destination"),
 			DestinationID: m3ter.F("destinationId"),
 			EntityID:      m3ter.F("entityId"),

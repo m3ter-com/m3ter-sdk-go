@@ -30,8 +30,7 @@ func TestUsageGetFailedIngestDownloadURLWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.GetFailedIngestDownloadURL(context.TODO(), m3ter.UsageGetFailedIngestDownloadURLParams{
-		OrgID: m3ter.F("orgId"),
-		File:  m3ter.F("file"),
+		File: m3ter.F("file"),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -58,7 +57,6 @@ func TestUsageQueryWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.Query(context.TODO(), m3ter.UsageQueryParams{
-		OrgID:      m3ter.F("orgId"),
 		AccountIDs: m3ter.F([]string{"string"}),
 		Aggregations: m3ter.F([]m3ter.UsageQueryParamsAggregation{{
 			FieldCode: m3ter.F("x"),
@@ -107,7 +105,6 @@ func TestUsageSubmit(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.Submit(context.TODO(), m3ter.UsageSubmitParams{
-		OrgID: m3ter.F("orgId"),
 		SubmitMeasurementsRequest: m3ter.SubmitMeasurementsRequestParam{
 			Measurements: m3ter.F([]m3ter.MeasurementRequestParam{{
 				Account: m3ter.F("Acme Corp"),

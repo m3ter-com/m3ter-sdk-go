@@ -29,7 +29,6 @@ func TestExternalMappingNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.New(context.TODO(), m3ter.ExternalMappingNewParams{
-		OrgID:               m3ter.F("orgId"),
 		ExternalID:          m3ter.F("JS!?Q0]r] ]$]"),
 		ExternalSystem:      m3ter.F("JS!?Q0]r] ]$]"),
 		ExternalTable:       m3ter.F("JS!?Q0]r] ]$]"),
@@ -65,9 +64,7 @@ func TestExternalMappingGet(t *testing.T) {
 	_, err := client.ExternalMappings.Get(
 		context.TODO(),
 		"id",
-		m3ter.ExternalMappingGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ExternalMappingGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -97,7 +94,6 @@ func TestExternalMappingUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ExternalMappingUpdateParams{
-			OrgID:               m3ter.F("orgId"),
 			ExternalID:          m3ter.F("JS!?Q0]r] ]$]"),
 			ExternalSystem:      m3ter.F("JS!?Q0]r] ]$]"),
 			ExternalTable:       m3ter.F("JS!?Q0]r] ]$]"),
@@ -132,7 +128,6 @@ func TestExternalMappingListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.List(context.TODO(), m3ter.ExternalMappingListParams{
-		OrgID:               m3ter.F("orgId"),
 		ExternalSystemID:    m3ter.F("externalSystemId"),
 		IntegrationConfigID: m3ter.F("integrationConfigId"),
 		M3terIDs:            m3ter.F([]string{"string"}),
@@ -166,9 +161,7 @@ func TestExternalMappingDelete(t *testing.T) {
 	_, err := client.ExternalMappings.Delete(
 		context.TODO(),
 		"id",
-		m3ter.ExternalMappingDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ExternalMappingDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -200,7 +193,6 @@ func TestExternalMappingListByExternalEntityWithOptionalParams(t *testing.T) {
 		"externalTable",
 		"externalId",
 		m3ter.ExternalMappingListByExternalEntityParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -234,7 +226,6 @@ func TestExternalMappingListByM3terEntityWithOptionalParams(t *testing.T) {
 		"entity",
 		"m3terId",
 		m3ter.ExternalMappingListByM3terEntityParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},

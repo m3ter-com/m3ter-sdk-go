@@ -29,7 +29,6 @@ func TestDataExportDestinationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Destinations.New(context.TODO(), m3ter.DataExportDestinationNewParams{
-		OrgID: m3ter.F("orgId"),
 		Body: m3ter.DataExportDestinationS3RequestParam{
 			BucketName:      m3ter.F("xxx"),
 			IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/z"),
@@ -66,9 +65,7 @@ func TestDataExportDestinationGet(t *testing.T) {
 	_, err := client.DataExports.Destinations.Get(
 		context.TODO(),
 		"id",
-		m3ter.DataExportDestinationGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DataExportDestinationGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -98,7 +95,6 @@ func TestDataExportDestinationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.DataExportDestinationUpdateParams{
-			OrgID: m3ter.F("orgId"),
 			Body: m3ter.DataExportDestinationS3RequestParam{
 				BucketName:      m3ter.F("xxx"),
 				IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/z"),
@@ -134,7 +130,6 @@ func TestDataExportDestinationListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Destinations.List(context.TODO(), m3ter.DataExportDestinationListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -166,9 +161,7 @@ func TestDataExportDestinationDelete(t *testing.T) {
 	_, err := client.DataExports.Destinations.Delete(
 		context.TODO(),
 		"id",
-		m3ter.DataExportDestinationDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DataExportDestinationDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

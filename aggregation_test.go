@@ -30,7 +30,6 @@ func TestAggregationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.New(context.TODO(), m3ter.AggregationNewParams{
-		OrgID:               m3ter.F("orgId"),
 		Aggregation:         m3ter.F(m3ter.AggregationNewParamsAggregationSum),
 		MeterID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		Name:                m3ter.F("x"),
@@ -78,9 +77,7 @@ func TestAggregationGet(t *testing.T) {
 	_, err := client.Aggregations.Get(
 		context.TODO(),
 		"id",
-		m3ter.AggregationGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.AggregationGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -110,7 +107,6 @@ func TestAggregationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.AggregationUpdateParams{
-			OrgID:               m3ter.F("orgId"),
 			Aggregation:         m3ter.F(m3ter.AggregationUpdateParamsAggregationSum),
 			MeterID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			Name:                m3ter.F("x"),
@@ -157,7 +153,6 @@ func TestAggregationListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Aggregations.List(context.TODO(), m3ter.AggregationListParams{
-		OrgID:     m3ter.F("orgId"),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
@@ -191,9 +186,7 @@ func TestAggregationDelete(t *testing.T) {
 	_, err := client.Aggregations.Delete(
 		context.TODO(),
 		"id",
-		m3ter.AggregationDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.AggregationDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

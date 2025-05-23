@@ -32,9 +32,7 @@ func TestBillLineItemGet(t *testing.T) {
 		context.TODO(),
 		"billId",
 		"id",
-		m3ter.BillLineItemGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillLineItemGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -64,7 +62,6 @@ func TestBillLineItemListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"billId",
 		m3ter.BillLineItemListParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},

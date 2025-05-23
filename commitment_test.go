@@ -30,7 +30,6 @@ func TestCommitmentNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.New(context.TODO(), m3ter.CommitmentNewParams{
-		OrgID:                        m3ter.F("orgId"),
 		AccountID:                    m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		Amount:                       m3ter.F(1.000000),
 		Currency:                     m3ter.F("x"),
@@ -90,9 +89,7 @@ func TestCommitmentGet(t *testing.T) {
 	_, err := client.Commitments.Get(
 		context.TODO(),
 		"id",
-		m3ter.CommitmentGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CommitmentGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -122,7 +119,6 @@ func TestCommitmentUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.CommitmentUpdateParams{
-			OrgID:                        m3ter.F("orgId"),
 			AccountID:                    m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			Amount:                       m3ter.F(1.000000),
 			Currency:                     m3ter.F("x"),
@@ -181,7 +177,6 @@ func TestCommitmentListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.List(context.TODO(), m3ter.CommitmentListParams{
-		OrgID:        m3ter.F("orgId"),
 		AccountID:    m3ter.F("accountId"),
 		ContractID:   m3ter.F("contractId"),
 		Date:         m3ter.F("date"),
@@ -219,9 +214,7 @@ func TestCommitmentDelete(t *testing.T) {
 	_, err := client.Commitments.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CommitmentDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CommitmentDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -248,7 +241,6 @@ func TestCommitmentSearchWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Commitments.Search(context.TODO(), m3ter.CommitmentSearchParams{
-		OrgID:        m3ter.F("orgId"),
 		FromDocument: m3ter.F(int64(0)),
 		Operator:     m3ter.F(m3ter.CommitmentSearchParamsOperatorAnd),
 		PageSize:     m3ter.F(int64(1)),

@@ -29,9 +29,7 @@ func TestOrganizationConfigGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.OrganizationConfig.Get(context.TODO(), m3ter.OrganizationConfigGetParams{
-		OrgID: m3ter.F("orgId"),
-	})
+	_, err := client.OrganizationConfig.Get(context.TODO(), m3ter.OrganizationConfigGetParams{})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -57,7 +55,6 @@ func TestOrganizationConfigUpdateWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.OrganizationConfig.Update(context.TODO(), m3ter.OrganizationConfigUpdateParams{
-		OrgID: m3ter.F("orgId"),
 		OrganizationConfigRequest: m3ter.OrganizationConfigRequestParam{
 			Currency:                        m3ter.F("USD"),
 			DayEpoch:                        m3ter.F("2022-01-01"),

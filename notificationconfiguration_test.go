@@ -29,7 +29,6 @@ func TestNotificationConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.New(context.TODO(), m3ter.NotificationConfigurationNewParams{
-		OrgID:           m3ter.F("orgId"),
 		Code:            m3ter.F("x"),
 		Description:     m3ter.F("x"),
 		EventName:       m3ter.F("x"),
@@ -66,9 +65,7 @@ func TestNotificationConfigurationGet(t *testing.T) {
 	_, err := client.NotificationConfigurations.Get(
 		context.TODO(),
 		"id",
-		m3ter.NotificationConfigurationGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.NotificationConfigurationGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -98,7 +95,6 @@ func TestNotificationConfigurationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.NotificationConfigurationUpdateParams{
-			OrgID:           m3ter.F("orgId"),
 			Code:            m3ter.F("x"),
 			Description:     m3ter.F("x"),
 			EventName:       m3ter.F("x"),
@@ -134,7 +130,6 @@ func TestNotificationConfigurationListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.List(context.TODO(), m3ter.NotificationConfigurationListParams{
-		OrgID:     m3ter.F("orgId"),
 		Active:    m3ter.F(true),
 		EventName: m3ter.F("eventName"),
 		IDs:       m3ter.F([]string{"string"}),
@@ -168,9 +163,7 @@ func TestNotificationConfigurationDelete(t *testing.T) {
 	_, err := client.NotificationConfigurations.Delete(
 		context.TODO(),
 		"id",
-		m3ter.NotificationConfigurationDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.NotificationConfigurationDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

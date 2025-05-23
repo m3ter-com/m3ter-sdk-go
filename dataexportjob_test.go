@@ -31,9 +31,7 @@ func TestDataExportJobGet(t *testing.T) {
 	_, err := client.DataExports.Jobs.Get(
 		context.TODO(),
 		"id",
-		m3ter.DataExportJobGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DataExportJobGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -60,7 +58,6 @@ func TestDataExportJobListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Jobs.List(context.TODO(), m3ter.DataExportJobListParams{
-		OrgID:            m3ter.F("orgId"),
 		DateCreatedEnd:   m3ter.F("dateCreatedEnd"),
 		DateCreatedStart: m3ter.F("dateCreatedStart"),
 		IDs:              m3ter.F([]string{"string"}),
@@ -96,9 +93,7 @@ func TestDataExportJobGetDownloadURL(t *testing.T) {
 	_, err := client.DataExports.Jobs.GetDownloadURL(
 		context.TODO(),
 		"jobId",
-		m3ter.DataExportJobGetDownloadURLParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DataExportJobGetDownloadURLParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

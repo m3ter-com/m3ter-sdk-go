@@ -29,7 +29,6 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), m3ter.WebhookNewParams{
-		OrgID: m3ter.F("orgId"),
 		Credentials: m3ter.F(m3ter.M3terSignedCredentialsRequestParam{
 			APIKey:  m3ter.F("x"),
 			Secret:  m3ter.F("x"),
@@ -71,9 +70,7 @@ func TestWebhookGet(t *testing.T) {
 	_, err := client.Webhooks.Get(
 		context.TODO(),
 		"id",
-		m3ter.WebhookGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.WebhookGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -103,7 +100,6 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.WebhookUpdateParams{
-			OrgID: m3ter.F("orgId"),
 			Credentials: m3ter.F(m3ter.M3terSignedCredentialsRequestParam{
 				APIKey:  m3ter.F("x"),
 				Secret:  m3ter.F("x"),
@@ -144,7 +140,6 @@ func TestWebhookListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Webhooks.List(context.TODO(), m3ter.WebhookListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -176,9 +171,7 @@ func TestWebhookDelete(t *testing.T) {
 	_, err := client.Webhooks.Delete(
 		context.TODO(),
 		"id",
-		m3ter.WebhookDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.WebhookDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -208,7 +201,6 @@ func TestWebhookSetActiveWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.WebhookSetActiveParams{
-			OrgID:  m3ter.F("orgId"),
 			Active: m3ter.F(true),
 		},
 	)
