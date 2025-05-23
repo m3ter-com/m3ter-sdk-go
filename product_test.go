@@ -30,9 +30,8 @@ func TestProductNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.New(context.TODO(), m3ter.ProductNewParams{
-		OrgID: m3ter.F("orgId"),
-		Code:  m3ter.F("JS!?Q0]r] ]$]"),
-		Name:  m3ter.F("x"),
+		Code: m3ter.F("JS!?Q0]r] ]$]"),
+		Name: m3ter.F("x"),
 		CustomFields: m3ter.F(map[string]m3ter.ProductNewParamsCustomFieldsUnion{
 			"foo": shared.UnionString("string"),
 		}),
@@ -65,9 +64,7 @@ func TestProductGet(t *testing.T) {
 	_, err := client.Products.Get(
 		context.TODO(),
 		"id",
-		m3ter.ProductGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ProductGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -97,9 +94,8 @@ func TestProductUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ProductUpdateParams{
-			OrgID: m3ter.F("orgId"),
-			Code:  m3ter.F("JS!?Q0]r] ]$]"),
-			Name:  m3ter.F("x"),
+			Code: m3ter.F("JS!?Q0]r] ]$]"),
+			Name: m3ter.F("x"),
 			CustomFields: m3ter.F(map[string]m3ter.ProductUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),
@@ -131,7 +127,6 @@ func TestProductListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -163,9 +158,7 @@ func TestProductDelete(t *testing.T) {
 	_, err := client.Products.Delete(
 		context.TODO(),
 		"id",
-		m3ter.ProductDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ProductDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

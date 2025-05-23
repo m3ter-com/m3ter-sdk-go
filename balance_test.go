@@ -30,7 +30,6 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.New(context.TODO(), m3ter.BalanceNewParams{
-		OrgID:                           m3ter.F("orgId"),
 		AccountID:                       m3ter.F("x"),
 		Currency:                        m3ter.F("x"),
 		EndDate:                         m3ter.F(time.Now()),
@@ -76,9 +75,7 @@ func TestBalanceGet(t *testing.T) {
 	_, err := client.Balances.Get(
 		context.TODO(),
 		"id",
-		m3ter.BalanceGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BalanceGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -108,7 +105,6 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.BalanceUpdateParams{
-			OrgID:                           m3ter.F("orgId"),
 			AccountID:                       m3ter.F("x"),
 			Currency:                        m3ter.F("x"),
 			EndDate:                         m3ter.F(time.Now()),
@@ -153,7 +149,6 @@ func TestBalanceListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Balances.List(context.TODO(), m3ter.BalanceListParams{
-		OrgID:        m3ter.F("orgId"),
 		AccountID:    m3ter.F("accountId"),
 		EndDateEnd:   m3ter.F("endDateEnd"),
 		EndDateStart: m3ter.F("endDateStart"),
@@ -187,9 +182,7 @@ func TestBalanceDelete(t *testing.T) {
 	_, err := client.Balances.Delete(
 		context.TODO(),
 		"id",
-		m3ter.BalanceDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BalanceDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

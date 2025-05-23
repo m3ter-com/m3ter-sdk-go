@@ -33,7 +33,6 @@ func TestBillDebitLineItemNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"billId",
 		m3ter.BillDebitLineItemNewParams{
-			OrgID:                  m3ter.F("orgId"),
 			Amount:                 m3ter.F(1.000000),
 			Description:            m3ter.F("x"),
 			ProductID:              m3ter.F("productId"),
@@ -75,9 +74,7 @@ func TestBillDebitLineItemGet(t *testing.T) {
 		context.TODO(),
 		"billId",
 		"id",
-		m3ter.BillDebitLineItemGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillDebitLineItemGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -108,7 +105,6 @@ func TestBillDebitLineItemUpdateWithOptionalParams(t *testing.T) {
 		"billId",
 		"id",
 		m3ter.BillDebitLineItemUpdateParams{
-			OrgID:                  m3ter.F("orgId"),
 			Amount:                 m3ter.F(1.000000),
 			Description:            m3ter.F("x"),
 			ProductID:              m3ter.F("productId"),
@@ -150,7 +146,6 @@ func TestBillDebitLineItemListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"billId",
 		m3ter.BillDebitLineItemListParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -183,9 +178,7 @@ func TestBillDebitLineItemDelete(t *testing.T) {
 		context.TODO(),
 		"billId",
 		"id",
-		m3ter.BillDebitLineItemDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillDebitLineItemDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

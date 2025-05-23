@@ -30,8 +30,7 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.New(context.TODO(), m3ter.MeterNewParams{
-		OrgID: m3ter.F("orgId"),
-		Code:  m3ter.F("JS!?Q0]r] ]$]"),
+		Code: m3ter.F("JS!?Q0]r] ]$]"),
 		DataFields: m3ter.F([]m3ter.DataFieldParam{{
 			Category: m3ter.F(m3ter.DataFieldCategoryWho),
 			Code:     m3ter.F("{1{}}_"),
@@ -82,9 +81,7 @@ func TestMeterGet(t *testing.T) {
 	_, err := client.Meters.Get(
 		context.TODO(),
 		"id",
-		m3ter.MeterGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.MeterGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -114,8 +111,7 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.MeterUpdateParams{
-			OrgID: m3ter.F("orgId"),
-			Code:  m3ter.F("JS!?Q0]r] ]$]"),
+			Code: m3ter.F("JS!?Q0]r] ]$]"),
 			DataFields: m3ter.F([]m3ter.DataFieldParam{{
 				Category: m3ter.F(m3ter.DataFieldCategoryWho),
 				Code:     m3ter.F("{1{}}_"),
@@ -165,7 +161,6 @@ func TestMeterListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.List(context.TODO(), m3ter.MeterListParams{
-		OrgID:     m3ter.F("orgId"),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
@@ -199,9 +194,7 @@ func TestMeterDelete(t *testing.T) {
 	_, err := client.Meters.Delete(
 		context.TODO(),
 		"id",
-		m3ter.MeterDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.MeterDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

@@ -30,7 +30,6 @@ func TestPlanGroupNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroups.New(context.TODO(), m3ter.PlanGroupNewParams{
-		OrgID:     m3ter.F("orgId"),
 		Currency:  m3ter.F("xxx"),
 		Name:      m3ter.F("x"),
 		AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -75,9 +74,7 @@ func TestPlanGroupGet(t *testing.T) {
 	_, err := client.PlanGroups.Get(
 		context.TODO(),
 		"id",
-		m3ter.PlanGroupGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanGroupGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -107,7 +104,6 @@ func TestPlanGroupUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.PlanGroupUpdateParams{
-			OrgID:     m3ter.F("orgId"),
 			Currency:  m3ter.F("xxx"),
 			Name:      m3ter.F("x"),
 			AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -151,7 +147,6 @@ func TestPlanGroupListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroups.List(context.TODO(), m3ter.PlanGroupListParams{
-		OrgID:     m3ter.F("orgId"),
 		AccountID: m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
@@ -184,9 +179,7 @@ func TestPlanGroupDelete(t *testing.T) {
 	_, err := client.PlanGroups.Delete(
 		context.TODO(),
 		"id",
-		m3ter.PlanGroupDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanGroupDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

@@ -31,7 +31,6 @@ func TestBillJobNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.New(context.TODO(), m3ter.BillJobNewParams{
-		OrgID:                 m3ter.F("orgId"),
 		AccountIDs:            m3ter.F([]string{"string"}),
 		BillDate:              m3ter.F(time.Now()),
 		BillFrequencyInterval: m3ter.F(int64(0)),
@@ -79,9 +78,7 @@ func TestBillJobGet(t *testing.T) {
 	_, err := client.BillJobs.Get(
 		context.TODO(),
 		"id",
-		m3ter.BillJobGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillJobGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -108,7 +105,6 @@ func TestBillJobListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.List(context.TODO(), m3ter.BillJobListParams{
-		OrgID:     m3ter.F("orgId"),
 		Active:    m3ter.F("active"),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -141,9 +137,7 @@ func TestBillJobCancel(t *testing.T) {
 	_, err := client.BillJobs.Cancel(
 		context.TODO(),
 		"id",
-		m3ter.BillJobCancelParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.BillJobCancelParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -170,7 +164,6 @@ func TestBillJobRecalculateWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.BillJobs.Recalculate(context.TODO(), m3ter.BillJobRecalculateParams{
-		OrgID:   m3ter.F("orgId"),
 		BillIDs: m3ter.F([]string{"string"}),
 		Version: m3ter.F(int64(0)),
 	})

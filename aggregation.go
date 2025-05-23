@@ -487,7 +487,10 @@ type AggregationNewParams struct {
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                           `json:"code"`
 	CustomFields param.Field[map[string]AggregationNewParamsCustomFieldsUnion] `json:"customFields"`
-	CustomSql    param.Field[string]                                           `json:"customSql"`
+	// **NOTE:** The `customSql` Aggregation type is currently only available in Beta
+	// release and on request. If you are interested in using this feature, please get
+	// in touch with m3ter Support or your m3ter contact.
+	CustomSql param.Field[string] `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -698,7 +701,10 @@ type AggregationUpdateParams struct {
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                              `json:"code"`
 	CustomFields param.Field[map[string]AggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`
-	CustomSql    param.Field[string]                                              `json:"customSql"`
+	// **NOTE:** The `customSql` Aggregation type is currently only available in Beta
+	// release and on request. If you are interested in using this feature, please get
+	// in touch with m3ter Support or your m3ter contact.
+	CustomSql param.Field[string] `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//

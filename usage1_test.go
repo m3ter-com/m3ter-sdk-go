@@ -27,9 +27,7 @@ func TestUsage(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{
-		OrgID: m3ter.F("My Org ID"),
-	})
+	page, err := client.Products.List(context.TODO(), m3ter.ProductListParams{})
 	if err != nil {
 		t.Error(err)
 		return

@@ -32,9 +32,7 @@ func TestUserGet(t *testing.T) {
 	_, err := client.Users.Get(
 		context.TODO(),
 		"id",
-		m3ter.UserGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.UserGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -64,7 +62,6 @@ func TestUserUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.UserUpdateParams{
-			OrgID:       m3ter.F("orgId"),
 			DtEndAccess: m3ter.F(time.Now()),
 			PermissionPolicy: m3ter.F([]m3ter.PermissionStatementResponseParam{{
 				Action:   m3ter.F([]m3ter.PermissionStatementResponseAction{m3ter.PermissionStatementResponseActionAll}),
@@ -99,7 +96,6 @@ func TestUserListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Users.List(context.TODO(), m3ter.UserListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -132,7 +128,6 @@ func TestUserGetPermissionsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.UserGetPermissionsParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -165,7 +160,6 @@ func TestUserGetUserGroupsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.UserGetUserGroupsParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -194,9 +188,7 @@ func TestUserMe(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Users.Me(context.TODO(), m3ter.UserMeParams{
-		OrgID: m3ter.F("orgId"),
-	})
+	_, err := client.Users.Me(context.TODO(), m3ter.UserMeParams{})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
@@ -224,9 +216,7 @@ func TestUserResendPassword(t *testing.T) {
 	err := client.Users.ResendPassword(
 		context.TODO(),
 		"id",
-		m3ter.UserResendPasswordParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.UserResendPasswordParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

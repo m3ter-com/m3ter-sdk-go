@@ -31,7 +31,6 @@ func TestCounterPricingNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.New(context.TODO(), m3ter.CounterPricingNewParams{
-		OrgID:     m3ter.F("orgId"),
 		CounterID: m3ter.F("x"),
 		PricingBands: m3ter.F([]shared.PricingBandParam{{
 			FixedPrice:   m3ter.F(0.000000),
@@ -81,9 +80,7 @@ func TestCounterPricingGet(t *testing.T) {
 	_, err := client.CounterPricings.Get(
 		context.TODO(),
 		"id",
-		m3ter.CounterPricingGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CounterPricingGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -113,7 +110,6 @@ func TestCounterPricingUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.CounterPricingUpdateParams{
-			OrgID:     m3ter.F("orgId"),
 			CounterID: m3ter.F("x"),
 			PricingBands: m3ter.F([]shared.PricingBandParam{{
 				FixedPrice:   m3ter.F(0.000000),
@@ -162,7 +158,6 @@ func TestCounterPricingListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CounterPricings.List(context.TODO(), m3ter.CounterPricingListParams{
-		OrgID:          m3ter.F("orgId"),
 		Date:           m3ter.F("date"),
 		IDs:            m3ter.F([]string{"string"}),
 		NextToken:      m3ter.F("nextToken"),
@@ -197,9 +192,7 @@ func TestCounterPricingDelete(t *testing.T) {
 	_, err := client.CounterPricings.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CounterPricingDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CounterPricingDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

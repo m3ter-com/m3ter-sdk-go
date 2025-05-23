@@ -29,7 +29,6 @@ func TestScheduledEventConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ScheduledEventConfigurations.New(context.TODO(), m3ter.ScheduledEventConfigurationNewParams{
-		OrgID:   m3ter.F("orgId"),
 		Entity:  m3ter.F("Bill"),
 		Field:   m3ter.F("endDate"),
 		Name:    m3ter.F("scheduled.bill.enddateEvent"),
@@ -63,9 +62,7 @@ func TestScheduledEventConfigurationGet(t *testing.T) {
 	_, err := client.ScheduledEventConfigurations.Get(
 		context.TODO(),
 		"id",
-		m3ter.ScheduledEventConfigurationGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ScheduledEventConfigurationGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -95,7 +92,6 @@ func TestScheduledEventConfigurationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ScheduledEventConfigurationUpdateParams{
-			OrgID:   m3ter.F("orgId"),
 			Entity:  m3ter.F("Bill"),
 			Field:   m3ter.F("endDate"),
 			Name:    m3ter.F("scheduled.bill.enddateEvent"),
@@ -128,7 +124,6 @@ func TestScheduledEventConfigurationListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ScheduledEventConfigurations.List(context.TODO(), m3ter.ScheduledEventConfigurationListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -160,9 +155,7 @@ func TestScheduledEventConfigurationDelete(t *testing.T) {
 	_, err := client.ScheduledEventConfigurations.Delete(
 		context.TODO(),
 		"id",
-		m3ter.ScheduledEventConfigurationDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ScheduledEventConfigurationDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

@@ -29,7 +29,6 @@ func TestCreditReasonNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.New(context.TODO(), m3ter.CreditReasonNewParams{
-		OrgID:    m3ter.F("orgId"),
 		Name:     m3ter.F("x"),
 		Archived: m3ter.F(true),
 		Code:     m3ter.F("code"),
@@ -62,9 +61,7 @@ func TestCreditReasonGet(t *testing.T) {
 	_, err := client.CreditReasons.Get(
 		context.TODO(),
 		"id",
-		m3ter.CreditReasonGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CreditReasonGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -94,7 +91,6 @@ func TestCreditReasonUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.CreditReasonUpdateParams{
-			OrgID:    m3ter.F("orgId"),
 			Name:     m3ter.F("x"),
 			Archived: m3ter.F(true),
 			Code:     m3ter.F("code"),
@@ -126,7 +122,6 @@ func TestCreditReasonListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CreditReasons.List(context.TODO(), m3ter.CreditReasonListParams{
-		OrgID:     m3ter.F("orgId"),
 		Archived:  m3ter.F(true),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
@@ -160,9 +155,7 @@ func TestCreditReasonDelete(t *testing.T) {
 	_, err := client.CreditReasons.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CreditReasonDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CreditReasonDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

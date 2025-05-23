@@ -29,7 +29,6 @@ func TestDebitReasonNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.New(context.TODO(), m3ter.DebitReasonNewParams{
-		OrgID:    m3ter.F("orgId"),
 		Name:     m3ter.F("x"),
 		Archived: m3ter.F(true),
 		Code:     m3ter.F("code"),
@@ -62,9 +61,7 @@ func TestDebitReasonGet(t *testing.T) {
 	_, err := client.DebitReasons.Get(
 		context.TODO(),
 		"id",
-		m3ter.DebitReasonGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DebitReasonGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -94,7 +91,6 @@ func TestDebitReasonUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.DebitReasonUpdateParams{
-			OrgID:    m3ter.F("orgId"),
 			Name:     m3ter.F("x"),
 			Archived: m3ter.F(true),
 			Code:     m3ter.F("code"),
@@ -126,7 +122,6 @@ func TestDebitReasonListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DebitReasons.List(context.TODO(), m3ter.DebitReasonListParams{
-		OrgID:     m3ter.F("orgId"),
 		Archived:  m3ter.F(true),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
@@ -160,9 +155,7 @@ func TestDebitReasonDelete(t *testing.T) {
 	_, err := client.DebitReasons.Delete(
 		context.TODO(),
 		"id",
-		m3ter.DebitReasonDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DebitReasonDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

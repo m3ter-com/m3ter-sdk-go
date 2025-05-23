@@ -31,7 +31,6 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.New(context.TODO(), m3ter.ContractNewParams{
-		OrgID:     m3ter.F("orgId"),
 		AccountID: m3ter.F("x"),
 		EndDate:   m3ter.F(time.Now()),
 		Name:      m3ter.F("x"),
@@ -71,9 +70,7 @@ func TestContractGet(t *testing.T) {
 	_, err := client.Contracts.Get(
 		context.TODO(),
 		"id",
-		m3ter.ContractGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ContractGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -103,7 +100,6 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ContractUpdateParams{
-			OrgID:     m3ter.F("orgId"),
 			AccountID: m3ter.F("x"),
 			EndDate:   m3ter.F(time.Now()),
 			Name:      m3ter.F("x"),
@@ -142,7 +138,6 @@ func TestContractListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.List(context.TODO(), m3ter.ContractListParams{
-		OrgID:     m3ter.F("orgId"),
 		AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
@@ -176,9 +171,7 @@ func TestContractDelete(t *testing.T) {
 	_, err := client.Contracts.Delete(
 		context.TODO(),
 		"id",
-		m3ter.ContractDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ContractDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -208,7 +201,6 @@ func TestContractEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ContractEndDateBillingEntitiesParams{
-			OrgID:           m3ter.F("orgId"),
 			BillingEntities: m3ter.F([]m3ter.ContractEndDateBillingEntitiesParamsBillingEntity{m3ter.ContractEndDateBillingEntitiesParamsBillingEntityContract}),
 			EndDate:         m3ter.F(time.Now()),
 			ApplyToChildren: m3ter.F(true),

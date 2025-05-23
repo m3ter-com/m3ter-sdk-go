@@ -31,9 +31,7 @@ func TestUsageFileUploadJobGet(t *testing.T) {
 	_, err := client.Usage.FileUploads.Jobs.Get(
 		context.TODO(),
 		"id",
-		m3ter.UsageFileUploadJobGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.UsageFileUploadJobGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -60,7 +58,6 @@ func TestUsageFileUploadJobListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.FileUploads.Jobs.List(context.TODO(), m3ter.UsageFileUploadJobListParams{
-		OrgID:            m3ter.F("orgId"),
 		DateCreatedEnd:   m3ter.F("dateCreatedEnd"),
 		DateCreatedStart: m3ter.F("dateCreatedStart"),
 		FileKey:          m3ter.F("fileKey"),
@@ -94,9 +91,7 @@ func TestUsageFileUploadJobGetOriginalDownloadURL(t *testing.T) {
 	_, err := client.Usage.FileUploads.Jobs.GetOriginalDownloadURL(
 		context.TODO(),
 		"id",
-		m3ter.UsageFileUploadJobGetOriginalDownloadURLParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.UsageFileUploadJobGetOriginalDownloadURLParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

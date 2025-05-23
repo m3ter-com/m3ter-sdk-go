@@ -319,16 +319,27 @@ Params Types:
 
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AdHocOperationalDataRequestParam">AdHocOperationalDataRequestParam</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AdHocUsageDataRequestParam">AdHocUsageDataRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerAccountGroupParam">DataExplorerAccountGroupParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerDimensionGroupParam">DataExplorerDimensionGroupParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerTimeGroupParam">DataExplorerTimeGroupParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AdHocResponse">AdHocResponse</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerAccountGroup">DataExplorerAccountGroup</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerDimensionGroup">DataExplorerDimensionGroup</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerTimeGroup">DataExplorerTimeGroup</a>
 
 Methods:
 
 - <code title="post /organizations/{orgId}/dataexports/adhoc">client.DataExports.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExportService.NewAdhoc">NewAdhoc</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExportNewAdhocParams">DataExportNewAdhocParams</a>) (<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AdHocResponse">AdHocResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Destinations
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExportDestinationGoogleCloudStorageRequestParam">DataExportDestinationGoogleCloudStorageRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExportDestinationS3RequestParam">DataExportDestinationS3RequestParam</a>
 
 Response Types:
 
@@ -486,6 +497,10 @@ Methods:
 - <code title="delete /organizations/{orgId}/notifications/configurations/{id}">client.NotificationConfigurations.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#NotificationConfigurationService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#NotificationConfigurationDeleteParams">NotificationConfigurationDeleteParams</a>) (<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#NotificationConfigurationResponse">NotificationConfigurationResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # OrganizationConfig
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#OrganizationConfigRequestParam">OrganizationConfigRequestParam</a>
 
 Response Types:
 

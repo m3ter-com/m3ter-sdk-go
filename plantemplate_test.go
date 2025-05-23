@@ -30,7 +30,6 @@ func TestPlanTemplateNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.New(context.TODO(), m3ter.PlanTemplateNewParams{
-		OrgID:                 m3ter.F("orgId"),
 		BillFrequency:         m3ter.F(m3ter.PlanTemplateNewParamsBillFrequencyDaily),
 		Currency:              m3ter.F("xxx"),
 		Name:                  m3ter.F("x"),
@@ -78,9 +77,7 @@ func TestPlanTemplateGet(t *testing.T) {
 	_, err := client.PlanTemplates.Get(
 		context.TODO(),
 		"id",
-		m3ter.PlanTemplateGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanTemplateGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -110,7 +107,6 @@ func TestPlanTemplateUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.PlanTemplateUpdateParams{
-			OrgID:                 m3ter.F("orgId"),
 			BillFrequency:         m3ter.F(m3ter.PlanTemplateUpdateParamsBillFrequencyDaily),
 			Currency:              m3ter.F("xxx"),
 			Name:                  m3ter.F("x"),
@@ -157,7 +153,6 @@ func TestPlanTemplateListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.List(context.TODO(), m3ter.PlanTemplateListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -190,9 +185,7 @@ func TestPlanTemplateDelete(t *testing.T) {
 	_, err := client.PlanTemplates.Delete(
 		context.TODO(),
 		"id",
-		m3ter.PlanTemplateDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanTemplateDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

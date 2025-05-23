@@ -90,6 +90,8 @@ type CustomFieldsResponse struct {
 	Aggregation map[string]CustomFieldsResponseAggregationUnion `json:"aggregation"`
 	// CustomFields added to Compound Aggregation entities.
 	CompoundAggregation map[string]CustomFieldsResponseCompoundAggregationUnion `json:"compoundAggregation"`
+	// CustomFields added to Contract entities.
+	Contract map[string]interface{} `json:"contract"`
 	// The id of the user who created this custom field.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Organization was created _(in ISO-8601 format)_.
@@ -121,6 +123,7 @@ type customFieldsResponseJSON struct {
 	AccountPlan         apijson.Field
 	Aggregation         apijson.Field
 	CompoundAggregation apijson.Field
+	Contract            apijson.Field
 	CreatedBy           apijson.Field
 	DtCreated           apijson.Field
 	DtLastModified      apijson.Field
@@ -332,12 +335,14 @@ type CustomFieldUpdateParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Updates to Account entity CustomFields.
 	Account param.Field[map[string]CustomFieldUpdateParamsAccountUnion] `json:"account"`
-	// Updates to accountPlan entity CustomFields.
+	// Updates to AccountPlan entity CustomFields.
 	AccountPlan param.Field[map[string]CustomFieldUpdateParamsAccountPlanUnion] `json:"accountPlan"`
 	// Updates to simple Aggregation entity CustomFields.
 	Aggregation param.Field[map[string]CustomFieldUpdateParamsAggregationUnion] `json:"aggregation"`
 	// Updates to Compound Aggregation entity CustomFields.
 	CompoundAggregation param.Field[map[string]CustomFieldUpdateParamsCompoundAggregationUnion] `json:"compoundAggregation"`
+	// Updates to Contract entity CustomFields.
+	Contract param.Field[map[string]interface{}] `json:"contract"`
 	// Updates to Meter entity CustomFields.
 	Meter param.Field[map[string]CustomFieldUpdateParamsMeterUnion] `json:"meter"`
 	// Updates to Organization CustomFields.

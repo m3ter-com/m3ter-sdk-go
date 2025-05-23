@@ -29,7 +29,6 @@ func TestPlanGroupLinkNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.New(context.TODO(), m3ter.PlanGroupLinkNewParams{
-		OrgID:       m3ter.F("orgId"),
 		PlanGroupID: m3ter.F("x"),
 		PlanID:      m3ter.F("x"),
 		Version:     m3ter.F(int64(0)),
@@ -61,9 +60,7 @@ func TestPlanGroupLinkGet(t *testing.T) {
 	_, err := client.PlanGroupLinks.Get(
 		context.TODO(),
 		"id",
-		m3ter.PlanGroupLinkGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanGroupLinkGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -93,7 +90,6 @@ func TestPlanGroupLinkUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.PlanGroupLinkUpdateParams{
-			OrgID:       m3ter.F("orgId"),
 			PlanGroupID: m3ter.F("x"),
 			PlanID:      m3ter.F("x"),
 			Version:     m3ter.F(int64(0)),
@@ -124,7 +120,6 @@ func TestPlanGroupLinkListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanGroupLinks.List(context.TODO(), m3ter.PlanGroupLinkListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -158,9 +153,7 @@ func TestPlanGroupLinkDelete(t *testing.T) {
 	_, err := client.PlanGroupLinks.Delete(
 		context.TODO(),
 		"id",
-		m3ter.PlanGroupLinkDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanGroupLinkDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

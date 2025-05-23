@@ -32,7 +32,6 @@ func TestResourceGroupNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"type",
 		m3ter.ResourceGroupNewParams{
-			OrgID:   m3ter.F("orgId"),
 			Name:    m3ter.F("x"),
 			Version: m3ter.F(int64(0)),
 		},
@@ -65,9 +64,7 @@ func TestResourceGroupGet(t *testing.T) {
 		context.TODO(),
 		"type",
 		"id",
-		m3ter.ResourceGroupGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ResourceGroupGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -98,7 +95,6 @@ func TestResourceGroupUpdateWithOptionalParams(t *testing.T) {
 		"type",
 		"id",
 		m3ter.ResourceGroupUpdateParams{
-			OrgID:   m3ter.F("orgId"),
 			Name:    m3ter.F("x"),
 			Version: m3ter.F(int64(0)),
 		},
@@ -131,7 +127,6 @@ func TestResourceGroupListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"type",
 		m3ter.ResourceGroupListParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -164,9 +159,7 @@ func TestResourceGroupDelete(t *testing.T) {
 		context.TODO(),
 		"type",
 		"id",
-		m3ter.ResourceGroupDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.ResourceGroupDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -197,7 +190,6 @@ func TestResourceGroupAddResourceWithOptionalParams(t *testing.T) {
 		"type",
 		"resourceGroupId",
 		m3ter.ResourceGroupAddResourceParams{
-			OrgID:      m3ter.F("orgId"),
 			TargetID:   m3ter.F("06f6b50c-a868-4ca6-XXXX-448e507d5248"),
 			TargetType: m3ter.F(m3ter.ResourceGroupAddResourceParamsTargetTypeItem),
 			Version:    m3ter.F(int64(0)),
@@ -232,7 +224,6 @@ func TestResourceGroupListContentsWithOptionalParams(t *testing.T) {
 		"type",
 		"resourceGroupId",
 		m3ter.ResourceGroupListContentsParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -266,7 +257,6 @@ func TestResourceGroupListPermissionsWithOptionalParams(t *testing.T) {
 		"type",
 		"resourceGroupId",
 		m3ter.ResourceGroupListPermissionsParams{
-			OrgID:     m3ter.F("orgId"),
 			NextToken: m3ter.F("nextToken"),
 			PageSize:  m3ter.F(int64(1)),
 		},
@@ -300,7 +290,6 @@ func TestResourceGroupRemoveResourceWithOptionalParams(t *testing.T) {
 		"type",
 		"resourceGroupId",
 		m3ter.ResourceGroupRemoveResourceParams{
-			OrgID:      m3ter.F("orgId"),
 			TargetID:   m3ter.F("06f6b50c-a868-4ca6-XXXX-448e507d5248"),
 			TargetType: m3ter.F(m3ter.ResourceGroupRemoveResourceParamsTargetTypeItem),
 			Version:    m3ter.F(int64(0)),

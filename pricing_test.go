@@ -31,7 +31,6 @@ func TestPricingNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.New(context.TODO(), m3ter.PricingNewParams{
-		OrgID: m3ter.F("orgId"),
 		PricingBands: m3ter.F([]shared.PricingBandParam{{
 			FixedPrice:   m3ter.F(0.000000),
 			LowerLimit:   m3ter.F(0.000000),
@@ -93,9 +92,7 @@ func TestPricingGet(t *testing.T) {
 	_, err := client.Pricings.Get(
 		context.TODO(),
 		"id",
-		m3ter.PricingGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PricingGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -125,7 +122,6 @@ func TestPricingUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.PricingUpdateParams{
-			OrgID: m3ter.F("orgId"),
 			PricingBands: m3ter.F([]shared.PricingBandParam{{
 				FixedPrice:   m3ter.F(0.000000),
 				LowerLimit:   m3ter.F(0.000000),
@@ -186,7 +182,6 @@ func TestPricingListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.List(context.TODO(), m3ter.PricingListParams{
-		OrgID:          m3ter.F("orgId"),
 		Date:           m3ter.F("date"),
 		IDs:            m3ter.F([]string{"string"}),
 		NextToken:      m3ter.F("nextToken"),
@@ -221,9 +216,7 @@ func TestPricingDelete(t *testing.T) {
 	_, err := client.Pricings.Delete(
 		context.TODO(),
 		"id",
-		m3ter.PricingDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PricingDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

@@ -30,7 +30,6 @@ func TestPlanNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.New(context.TODO(), m3ter.PlanNewParams{
-		OrgID:          m3ter.F("orgId"),
 		Code:           m3ter.F("JS!?Q0]r] ]$]"),
 		Name:           m3ter.F("x"),
 		PlanTemplateID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -77,9 +76,7 @@ func TestPlanGet(t *testing.T) {
 	_, err := client.Plans.Get(
 		context.TODO(),
 		"id",
-		m3ter.PlanGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -109,7 +106,6 @@ func TestPlanUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.PlanUpdateParams{
-			OrgID:          m3ter.F("orgId"),
 			Code:           m3ter.F("JS!?Q0]r] ]$]"),
 			Name:           m3ter.F("x"),
 			PlanTemplateID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -155,7 +151,6 @@ func TestPlanListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.List(context.TODO(), m3ter.PlanListParams{
-		OrgID:     m3ter.F("orgId"),
 		AccountID: m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
@@ -189,9 +184,7 @@ func TestPlanDelete(t *testing.T) {
 	_, err := client.Plans.Delete(
 		context.TODO(),
 		"id",
-		m3ter.PlanDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.PlanDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

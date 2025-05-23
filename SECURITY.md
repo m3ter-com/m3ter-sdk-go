@@ -16,11 +16,11 @@ before making any information public.
 ## Reporting Non-SDK Related Security Issues
 
 If you encounter security issues that are not directly related to SDKs but pertain to the services
-or products provided by M3ter please follow the respective company's security reporting guidelines.
+or products provided by M3ter, please follow the respective company's security reporting guidelines.
 
 ### M3ter Terms and Policies
 
-Please contact sdks@m3ter.com for any questions or concerns regarding security of our services.
+Please contact sdks@m3ter.com for any questions or concerns regarding the security of our services.
 
 ---
 
