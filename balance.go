@@ -190,6 +190,7 @@ type Balance struct {
 	// A unique short code assigned to the Balance.
 	Code                            string `json:"code"`
 	ConsumptionsAccountingProductID string `json:"consumptionsAccountingProductId"`
+	ContractID                      string `json:"contractId"`
 	// The unique identifier (UUID) for the user who created the Balance.
 	CreatedBy string `json:"createdBy"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
@@ -240,6 +241,7 @@ type balanceJSON struct {
 	BalanceDrawDownDescription      apijson.Field
 	Code                            apijson.Field
 	ConsumptionsAccountingProductID apijson.Field
+	ContractID                      apijson.Field
 	CreatedBy                       apijson.Field
 	Currency                        apijson.Field
 	Description                     apijson.Field
@@ -311,6 +313,7 @@ type BalanceNewParams struct {
 	// Optional Product ID this Balance Consumptions should be attributed to for
 	// accounting purposes
 	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
+	ContractID                      param.Field[string] `json:"contractId"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
 	// Optional Product ID this Balance Fees should be attributed to for accounting
@@ -430,6 +433,7 @@ type BalanceUpdateParams struct {
 	// Optional Product ID this Balance Consumptions should be attributed to for
 	// accounting purposes
 	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
+	ContractID                      param.Field[string] `json:"contractId"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
 	// Optional Product ID this Balance Fees should be attributed to for accounting

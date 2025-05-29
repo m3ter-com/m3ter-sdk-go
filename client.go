@@ -50,6 +50,7 @@ type Client struct {
 	Products                     *ProductService
 	ResourceGroups               *ResourceGroupService
 	ScheduledEventConfigurations *ScheduledEventConfigurationService
+	Statements                   *StatementService
 	TransactionTypes             *TransactionTypeService
 	Usage                        *UsageService
 	Users                        *UserService
@@ -123,6 +124,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Products = NewProductService(opts...)
 	r.ResourceGroups = NewResourceGroupService(opts...)
 	r.ScheduledEventConfigurations = NewScheduledEventConfigurationService(opts...)
+	r.Statements = NewStatementService(opts...)
 	r.TransactionTypes = NewTransactionTypeService(opts...)
 	r.Usage = NewUsageService(opts...)
 	r.Users = NewUserService(opts...)
