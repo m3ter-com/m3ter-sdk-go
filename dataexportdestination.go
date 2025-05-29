@@ -42,8 +42,20 @@ func NewDataExportDestinationService(opts ...option.RequestOption) (r *DataExpor
 // Create a new Export Destination to use for your Data Export Schedules or Ad-Hoc
 // Data Exports.
 //
-// **NOTE:** Currently, you can only create Export Destinations using an S3 bucket
-// on your AWS Account.
+// Currently, two options for setting up Data Export Destinations are available:
+//
+// - S3 buckets on your AWS account.
+// - Buckets in your Google Cloud Storage account.
+//
+// Request and Response schema:
+//
+//   - Use the selector under the `destinationType` parameter to expose the relevant
+//     request and response schema for the type of Destination.
+//
+// Request and Response samples:
+//
+//   - Use the **Example** selector to show the relevant request and response samples
+//     for the type of Destination.
 func (r *DataExportDestinationService) New(ctx context.Context, params DataExportDestinationNewParams, opts ...option.RequestOption) (res *DataExportDestinationNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -83,8 +95,20 @@ func (r *DataExportDestinationService) Get(ctx context.Context, id string, query
 
 // Update an Export Destination for the given UUID.
 //
-// **NOTE:** Currently, only Export Destinations using an S3 bucket on your AWS
-// Account are supported.
+// Currently, two options for setting up Data Export Destinations are available:
+//
+// - S3 buckets on your AWS account.
+// - Buckets in your Google Cloud Storage account.
+//
+// Request and Response schema:
+//
+//   - Use the selector under the `destinationType` parameter to expose the relevant
+//     request and response schema for the type of Destination.
+//
+// Request and Response samples:
+//
+//   - Use the **Example** selector to show the relevant request and response samples
+//     for the type of Destination.
 func (r *DataExportDestinationService) Update(ctx context.Context, id string, params DataExportDestinationUpdateParams, opts ...option.RequestOption) (res *DataExportDestinationUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

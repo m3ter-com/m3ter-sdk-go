@@ -7,14 +7,13 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestBalanceNewWithOptionalParams(t *testing.T) {
+func TestStatementStatementDefinitionNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -29,25 +28,22 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.New(context.TODO(), m3ter.BalanceNewParams{
-		AccountID:                       m3ter.F("x"),
-		Currency:                        m3ter.F("x"),
-		EndDate:                         m3ter.F(time.Now()),
-		StartDate:                       m3ter.F(time.Now()),
-		BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
-		Code:                            m3ter.F("JS!?Q0]r] ]$]"),
-		ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		ContractID:                      m3ter.F("contractId"),
-		Description:                     m3ter.F("description"),
-		FeesAccountingProductID:         m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		LineItemTypes:                   m3ter.F([]m3ter.BalanceNewParamsLineItemType{m3ter.BalanceNewParamsLineItemTypeStandingCharge}),
-		Name:                            m3ter.F("name"),
-		OverageDescription:              m3ter.F("overageDescription"),
-		OverageSurchargePercent:         m3ter.F(0.000000),
-		ProductIDs:                      m3ter.F([]string{"string"}),
-		RolloverAmount:                  m3ter.F(0.000000),
-		RolloverEndDate:                 m3ter.F(time.Now()),
-		Version:                         m3ter.F(int64(0)),
+	_, err := client.Statements.StatementDefinitions.New(context.TODO(), m3ter.StatementStatementDefinitionNewParams{
+		AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionNewParamsAggregationFrequencyDay),
+		Dimensions: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsDimension{{
+			Filter:     m3ter.F([]string{"string"}),
+			Name:       m3ter.F("x"),
+			Attributes: m3ter.F([]string{"string"}),
+			MeterID:    m3ter.F("meterId"),
+		}}),
+		IncludePricePerUnit: m3ter.F(true),
+		Measures: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsMeasure{{
+			Aggregations: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsMeasuresAggregation{m3ter.StatementStatementDefinitionNewParamsMeasuresAggregationSum}),
+			MeterID:      m3ter.F("meterId"),
+			Name:         m3ter.F("name"),
+		}}),
+		Name:    m3ter.F("name"),
+		Version: m3ter.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -58,7 +54,7 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBalanceGet(t *testing.T) {
+func TestStatementStatementDefinitionGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -73,10 +69,10 @@ func TestBalanceGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.Get(
+	_, err := client.Statements.StatementDefinitions.Get(
 		context.TODO(),
 		"id",
-		m3ter.BalanceGetParams{},
+		m3ter.StatementStatementDefinitionGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -87,7 +83,7 @@ func TestBalanceGet(t *testing.T) {
 	}
 }
 
-func TestBalanceUpdateWithOptionalParams(t *testing.T) {
+func TestStatementStatementDefinitionUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -102,28 +98,25 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.Update(
+	_, err := client.Statements.StatementDefinitions.Update(
 		context.TODO(),
 		"id",
-		m3ter.BalanceUpdateParams{
-			AccountID:                       m3ter.F("x"),
-			Currency:                        m3ter.F("x"),
-			EndDate:                         m3ter.F(time.Now()),
-			StartDate:                       m3ter.F(time.Now()),
-			BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
-			Code:                            m3ter.F("JS!?Q0]r] ]$]"),
-			ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			ContractID:                      m3ter.F("contractId"),
-			Description:                     m3ter.F("description"),
-			FeesAccountingProductID:         m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			LineItemTypes:                   m3ter.F([]m3ter.BalanceUpdateParamsLineItemType{m3ter.BalanceUpdateParamsLineItemTypeStandingCharge}),
-			Name:                            m3ter.F("name"),
-			OverageDescription:              m3ter.F("overageDescription"),
-			OverageSurchargePercent:         m3ter.F(0.000000),
-			ProductIDs:                      m3ter.F([]string{"string"}),
-			RolloverAmount:                  m3ter.F(0.000000),
-			RolloverEndDate:                 m3ter.F(time.Now()),
-			Version:                         m3ter.F(int64(0)),
+		m3ter.StatementStatementDefinitionUpdateParams{
+			AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionUpdateParamsAggregationFrequencyDay),
+			Dimensions: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsDimension{{
+				Filter:     m3ter.F([]string{"string"}),
+				Name:       m3ter.F("x"),
+				Attributes: m3ter.F([]string{"string"}),
+				MeterID:    m3ter.F("meterId"),
+			}}),
+			IncludePricePerUnit: m3ter.F(true),
+			Measures: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsMeasure{{
+				Aggregations: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsMeasuresAggregation{m3ter.StatementStatementDefinitionUpdateParamsMeasuresAggregationSum}),
+				MeterID:      m3ter.F("meterId"),
+				Name:         m3ter.F("name"),
+			}}),
+			Name:    m3ter.F("name"),
+			Version: m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -135,7 +128,7 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBalanceListWithOptionalParams(t *testing.T) {
+func TestStatementStatementDefinitionListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -150,12 +143,9 @@ func TestBalanceListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.List(context.TODO(), m3ter.BalanceListParams{
-		AccountID:    m3ter.F("accountId"),
-		EndDateEnd:   m3ter.F("endDateEnd"),
-		EndDateStart: m3ter.F("endDateStart"),
-		NextToken:    m3ter.F("nextToken"),
-		PageSize:     m3ter.F(int64(1)),
+	_, err := client.Statements.StatementDefinitions.List(context.TODO(), m3ter.StatementStatementDefinitionListParams{
+		NextToken: m3ter.F("nextToken"),
+		PageSize:  m3ter.F(int64(1)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -166,7 +156,7 @@ func TestBalanceListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBalanceDelete(t *testing.T) {
+func TestStatementStatementDefinitionDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -181,10 +171,10 @@ func TestBalanceDelete(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Balances.Delete(
+	_, err := client.Statements.StatementDefinitions.Delete(
 		context.TODO(),
 		"id",
-		m3ter.BalanceDeleteParams{},
+		m3ter.StatementStatementDefinitionDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

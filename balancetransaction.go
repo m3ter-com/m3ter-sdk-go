@@ -227,11 +227,12 @@ const (
 	TransactionResponseEntityTypeCommitment  TransactionResponseEntityType = "COMMITMENT"
 	TransactionResponseEntityTypeUser        TransactionResponseEntityType = "USER"
 	TransactionResponseEntityTypeServiceUser TransactionResponseEntityType = "SERVICE_USER"
+	TransactionResponseEntityTypeScheduler   TransactionResponseEntityType = "SCHEDULER"
 )
 
 func (r TransactionResponseEntityType) IsKnown() bool {
 	switch r {
-	case TransactionResponseEntityTypeBill, TransactionResponseEntityTypeCommitment, TransactionResponseEntityTypeUser, TransactionResponseEntityTypeServiceUser:
+	case TransactionResponseEntityTypeBill, TransactionResponseEntityTypeCommitment, TransactionResponseEntityTypeUser, TransactionResponseEntityTypeServiceUser, TransactionResponseEntityTypeScheduler:
 		return true
 	}
 	return false
@@ -298,13 +299,14 @@ func (r BalanceTransactionNewParams) MarshalJSON() (data []byte, err error) {
 
 type BalanceTransactionListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID      param.Field[string]                                 `path:"orgId,required"`
+	EntityID   param.Field[string]                                 `query:"entityId"`
+	EntityType param.Field[BalanceTransactionListParamsEntityType] `query:"entityType"`
 	// `nextToken` for multi page retrievals. A token for retrieving the next page of
 	// transactions. You'll get this from the response to your request.
 	NextToken param.Field[string] `query:"nextToken"`
 	// The maximum number of transactions to return per page.
 	PageSize          param.Field[int64]  `query:"pageSize"`
-	ScheduleID        param.Field[string] `query:"scheduleId"`
 	TransactionTypeID param.Field[string] `query:"transactionTypeId"`
 }
 
@@ -315,6 +317,24 @@ func (r BalanceTransactionListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type BalanceTransactionListParamsEntityType string
+
+const (
+	BalanceTransactionListParamsEntityTypeBill        BalanceTransactionListParamsEntityType = "BILL"
+	BalanceTransactionListParamsEntityTypeCommitment  BalanceTransactionListParamsEntityType = "COMMITMENT"
+	BalanceTransactionListParamsEntityTypeUser        BalanceTransactionListParamsEntityType = "USER"
+	BalanceTransactionListParamsEntityTypeServiceUser BalanceTransactionListParamsEntityType = "SERVICE_USER"
+	BalanceTransactionListParamsEntityTypeScheduler   BalanceTransactionListParamsEntityType = "SCHEDULER"
+)
+
+func (r BalanceTransactionListParamsEntityType) IsKnown() bool {
+	switch r {
+	case BalanceTransactionListParamsEntityTypeBill, BalanceTransactionListParamsEntityTypeCommitment, BalanceTransactionListParamsEntityTypeUser, BalanceTransactionListParamsEntityTypeServiceUser, BalanceTransactionListParamsEntityTypeScheduler:
+		return true
+	}
+	return false
 }
 
 type BalanceTransactionSummaryParams struct {
