@@ -55,17 +55,31 @@ func NewDataExportScheduleService(opts ...option.RequestOption) (r *DataExportSc
 //
 //   - Select the Meters and Accounts whose usage data you want to include in the
 //     export each time the Export Schedule runs.
-//   - If _don't want to aggregate_ the usage data collected by the selected Meters,
-//     use **ORIGINAL** for `aggregationFrequency`, which is the _default_. This
-//     means the raw usage data collected by any type of Data Fields and the values
-//     for any Derived Fields on the selected Meters will be included in the export.
-//   - If you _do want to aggregate_ the usage data collected by the selected Meters,
-//     use one of the other options for `aggregationFrequency`: **HOUR**, **DAY**,
-//     **WEEK**, or **MONTH**. You _must_ then also specified an `aggregation` method
-//     to be used on the usage data before export. Importantly, if you do aggregate
-//     usage data, only the usage data collected by any numeric Data Fields on the
-//     selected Meters - those of type **MEASURE**, **INCOME**, or **COST** - will be
-//     included in the export each time the Export Schedule runs.
+//   - You can use the `dimensionFilters` parameter to filter the usage data returned
+//     for export by adding specific values of non-numeric Dimension data fields on
+//     included Meters. Only the data collected for the values you've added for the
+//     selected Dimension fields will be included in the export.
+//   - You can use the `aggregations` to apply aggregation methods the usage data
+//     returned for export. This restricts the range of usage data returned for
+//     export to only the data collected by aggregated fields on selected Meters.
+//     Nothing is returned for any non-aggregated fields on Meters. The usage data
+//     for Meter fields is returned as the values resulting from applying the
+//     selected aggregation method. See the
+//     [Aggregations for Queries - Options and Consequences](https://www.m3ter.com/docs/guides/data-explorer/usage-data-explorer-v2#aggregations-for-queries---understanding-options-and-consequences)
+//     for more details.
+//   - If you've applied `aggregations` to the usage returned for export, you can
+//     then use the `groups` parameter to group the data by _Account_, _Dimension_,
+//     or _Time_.
+//
+// Request and Response schema:
+//
+//   - Use the selector under the `sourceType` parameter to expose the relevant
+//     request and response schema for the source data type.
+//
+// Request and Response samples:
+//
+//   - Use the **Example** selector to show the relevant request and response samples
+//     for source data type.
 func (r *DataExportScheduleService) New(ctx context.Context, params DataExportScheduleNewParams, opts ...option.RequestOption) (res *DataExportScheduleNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -120,17 +134,21 @@ func (r *DataExportScheduleService) Get(ctx context.Context, id string, query Da
 //
 //   - Select the Meters and Accounts whose usage data you want to include in the
 //     export each time the Export Schedule runs.
-//   - If _don't want to aggregate_ the usage data collected by the selected Meters,
-//     use **ORIGINAL** for `aggregationFrequency`, which is the _default_. This
-//     means the raw usage data collected by any type of Data Fields and the values
-//     for any Derived Fields on the selected Meters will be included in the export.
-//   - If you _do want to aggregate_ the usage data collected by the selected Meters,
-//     use one of the other options for `aggregationFrequency`: **HOUR**, **DAY**,
-//     **WEEK**, or **MONTH**. You _must_ then also specified an `aggregation` method
-//     to be used on the usage data before export. Importantly, if you do aggregate
-//     usage data, only the usage data collected by any numeric Data Fields on the
-//     selected Meters - those of type **MEASURE**, **INCOME**, or **COST** - will be
-//     included in the export each time the Export Schedule runs.
+//   - You can use the `dimensionFilters` parameter to filter the usage data returned
+//     for export by adding specific values of non-numeric Dimension data fields on
+//     included Meters. Only the data collected for the values you've added for the
+//     selected Dimension fields will be included in the export.
+//   - You can use the `aggregations` to apply aggregation methods the usage data
+//     returned for export. This restricts the range of usage data returned for
+//     export to only the data collected by aggregated fields on selected Meters.
+//     Nothing is returned for any non-aggregated fields on Meters. The usage data
+//     for Meter fields is returned as the values resulting from applying the
+//     selected aggregation method. See the
+//     [Aggregations for Queries - Options and Consequences](https://www.m3ter.com/docs/guides/data-explorer/usage-data-explorer-v2#aggregations-for-queries---understanding-options-and-consequences)
+//     for more details.
+//   - If you've applied `aggregations` to the usage returned for export, you can
+//     then use the `groups` parameter to group the data by _Account_, _Dimension_,
+//     or _Time_.
 func (r *DataExportScheduleService) Update(ctx context.Context, id string, params DataExportScheduleUpdateParams, opts ...option.RequestOption) (res *DataExportScheduleUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -216,7 +234,8 @@ func (r *DataExportScheduleService) Delete(ctx context.Context, id string, body 
 type OperationalDataExportScheduleRequestParam struct {
 	// A list of the entities whose operational data is included in the data export.
 	OperationalDataTypes param.Field[[]OperationalDataExportScheduleRequestOperationalDataType] `json:"operationalDataTypes,required"`
-	SourceType           param.Field[OperationalDataExportScheduleRequestSourceType]            `json:"sourceType,required"`
+	// The type of data to export. Possible values are: OPERATIONAL
+	SourceType param.Field[OperationalDataExportScheduleRequestSourceType] `json:"sourceType,required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -268,16 +287,16 @@ func (r OperationalDataExportScheduleRequestOperationalDataType) IsKnown() bool 
 	return false
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type OperationalDataExportScheduleRequestSourceType string
 
 const (
-	OperationalDataExportScheduleRequestSourceTypeUsage       OperationalDataExportScheduleRequestSourceType = "USAGE"
 	OperationalDataExportScheduleRequestSourceTypeOperational OperationalDataExportScheduleRequestSourceType = "OPERATIONAL"
 )
 
 func (r OperationalDataExportScheduleRequestSourceType) IsKnown() bool {
 	switch r {
-	case OperationalDataExportScheduleRequestSourceTypeUsage, OperationalDataExportScheduleRequestSourceTypeOperational:
+	case OperationalDataExportScheduleRequestSourceTypeOperational:
 		return true
 	}
 	return false
@@ -356,68 +375,50 @@ func (r OperationalDataExportScheduleResponseOperationalDataType) IsKnown() bool
 }
 
 type UsageDataExportScheduleRequestParam struct {
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[UsageDataExportScheduleRequestAggregationFrequency] `json:"aggregationFrequency,required"`
-	SourceType           param.Field[UsageDataExportScheduleRequestSourceType]           `json:"sourceType,required"`
+	// The type of data to export. Possible values are: USAGE
+	SourceType param.Field[UsageDataExportScheduleRequestSourceType] `json:"sourceType,required"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
 	TimePeriod param.Field[UsageDataExportScheduleRequestTimePeriod] `json:"timePeriod,required"`
-	// List of account IDs for which the usage data will be exported.
+	// List of account IDs to export
 	AccountIDs param.Field[[]string] `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[UsageDataExportScheduleRequestAggregation] `json:"aggregation"`
-	// List of meter IDs for which the usage data will be exported.
+	// List of aggregations to apply
+	Aggregations param.Field[[]UsageDataExportScheduleRequestAggregationParam] `json:"aggregations"`
+	// List of dimension filters to apply
+	DimensionFilters param.Field[[]UsageDataExportScheduleRequestDimensionFilterParam] `json:"dimensionFilters"`
+	// List of groups to apply
+	Groups param.Field[[]DataExplorerGroupParam] `json:"groups"`
+	// List of meter IDs to export
 	MeterIDs param.Field[[]string] `json:"meterIds"`
 	// The version number of the entity:
 	//
@@ -438,56 +439,16 @@ func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleNewPara
 
 func (r UsageDataExportScheduleRequestParam) implementsDataExportScheduleUpdateParamsBodyUnion() {}
 
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type UsageDataExportScheduleRequestAggregationFrequency string
-
-const (
-	UsageDataExportScheduleRequestAggregationFrequencyOriginal UsageDataExportScheduleRequestAggregationFrequency = "ORIGINAL"
-	UsageDataExportScheduleRequestAggregationFrequencyHour     UsageDataExportScheduleRequestAggregationFrequency = "HOUR"
-	UsageDataExportScheduleRequestAggregationFrequencyDay      UsageDataExportScheduleRequestAggregationFrequency = "DAY"
-	UsageDataExportScheduleRequestAggregationFrequencyWeek     UsageDataExportScheduleRequestAggregationFrequency = "WEEK"
-	UsageDataExportScheduleRequestAggregationFrequencyMonth    UsageDataExportScheduleRequestAggregationFrequency = "MONTH"
-)
-
-func (r UsageDataExportScheduleRequestAggregationFrequency) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleRequestAggregationFrequencyOriginal, UsageDataExportScheduleRequestAggregationFrequencyHour, UsageDataExportScheduleRequestAggregationFrequencyDay, UsageDataExportScheduleRequestAggregationFrequencyWeek, UsageDataExportScheduleRequestAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
+// The type of data to export. Possible values are: USAGE
 type UsageDataExportScheduleRequestSourceType string
 
 const (
-	UsageDataExportScheduleRequestSourceTypeUsage       UsageDataExportScheduleRequestSourceType = "USAGE"
-	UsageDataExportScheduleRequestSourceTypeOperational UsageDataExportScheduleRequestSourceType = "OPERATIONAL"
+	UsageDataExportScheduleRequestSourceTypeUsage UsageDataExportScheduleRequestSourceType = "USAGE"
 )
 
 func (r UsageDataExportScheduleRequestSourceType) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleRequestSourceTypeUsage, UsageDataExportScheduleRequestSourceTypeOperational:
+	case UsageDataExportScheduleRequestSourceTypeUsage:
 		return true
 	}
 	return false
@@ -496,21 +457,31 @@ func (r UsageDataExportScheduleRequestSourceType) IsKnown() bool {
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -518,56 +489,99 @@ func (r UsageDataExportScheduleRequestSourceType) IsKnown() bool {
 type UsageDataExportScheduleRequestTimePeriod string
 
 const (
-	UsageDataExportScheduleRequestTimePeriodToday         UsageDataExportScheduleRequestTimePeriod = "TODAY"
-	UsageDataExportScheduleRequestTimePeriodYesterday     UsageDataExportScheduleRequestTimePeriod = "YESTERDAY"
-	UsageDataExportScheduleRequestTimePeriodWeekToDate    UsageDataExportScheduleRequestTimePeriod = "WEEK_TO_DATE"
-	UsageDataExportScheduleRequestTimePeriodCurrentMonth  UsageDataExportScheduleRequestTimePeriod = "CURRENT_MONTH"
-	UsageDataExportScheduleRequestTimePeriodLast30Days    UsageDataExportScheduleRequestTimePeriod = "LAST_30_DAYS"
-	UsageDataExportScheduleRequestTimePeriodLast35Days    UsageDataExportScheduleRequestTimePeriod = "LAST_35_DAYS"
-	UsageDataExportScheduleRequestTimePeriodPreviousWeek  UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_WEEK"
-	UsageDataExportScheduleRequestTimePeriodPreviousMonth UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_MONTH"
+	UsageDataExportScheduleRequestTimePeriodToday           UsageDataExportScheduleRequestTimePeriod = "TODAY"
+	UsageDataExportScheduleRequestTimePeriodYesterday       UsageDataExportScheduleRequestTimePeriod = "YESTERDAY"
+	UsageDataExportScheduleRequestTimePeriodWeekToDate      UsageDataExportScheduleRequestTimePeriod = "WEEK_TO_DATE"
+	UsageDataExportScheduleRequestTimePeriodMonthToDate     UsageDataExportScheduleRequestTimePeriod = "MONTH_TO_DATE"
+	UsageDataExportScheduleRequestTimePeriodYearToDate      UsageDataExportScheduleRequestTimePeriod = "YEAR_TO_DATE"
+	UsageDataExportScheduleRequestTimePeriodPreviousWeek    UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_WEEK"
+	UsageDataExportScheduleRequestTimePeriodPreviousMonth   UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_MONTH"
+	UsageDataExportScheduleRequestTimePeriodPreviousQuarter UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_QUARTER"
+	UsageDataExportScheduleRequestTimePeriodPreviousYear    UsageDataExportScheduleRequestTimePeriod = "PREVIOUS_YEAR"
+	UsageDataExportScheduleRequestTimePeriodLast12Hours     UsageDataExportScheduleRequestTimePeriod = "LAST_12_HOURS"
+	UsageDataExportScheduleRequestTimePeriodLast7Days       UsageDataExportScheduleRequestTimePeriod = "LAST_7_DAYS"
+	UsageDataExportScheduleRequestTimePeriodLast30Days      UsageDataExportScheduleRequestTimePeriod = "LAST_30_DAYS"
+	UsageDataExportScheduleRequestTimePeriodLast35Days      UsageDataExportScheduleRequestTimePeriod = "LAST_35_DAYS"
+	UsageDataExportScheduleRequestTimePeriodLast90Days      UsageDataExportScheduleRequestTimePeriod = "LAST_90_DAYS"
+	UsageDataExportScheduleRequestTimePeriodLast120Days     UsageDataExportScheduleRequestTimePeriod = "LAST_120_DAYS"
+	UsageDataExportScheduleRequestTimePeriodLastYear        UsageDataExportScheduleRequestTimePeriod = "LAST_YEAR"
 )
 
 func (r UsageDataExportScheduleRequestTimePeriod) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleRequestTimePeriodToday, UsageDataExportScheduleRequestTimePeriodYesterday, UsageDataExportScheduleRequestTimePeriodWeekToDate, UsageDataExportScheduleRequestTimePeriodCurrentMonth, UsageDataExportScheduleRequestTimePeriodLast30Days, UsageDataExportScheduleRequestTimePeriodLast35Days, UsageDataExportScheduleRequestTimePeriodPreviousWeek, UsageDataExportScheduleRequestTimePeriodPreviousMonth:
+	case UsageDataExportScheduleRequestTimePeriodToday, UsageDataExportScheduleRequestTimePeriodYesterday, UsageDataExportScheduleRequestTimePeriodWeekToDate, UsageDataExportScheduleRequestTimePeriodMonthToDate, UsageDataExportScheduleRequestTimePeriodYearToDate, UsageDataExportScheduleRequestTimePeriodPreviousWeek, UsageDataExportScheduleRequestTimePeriodPreviousMonth, UsageDataExportScheduleRequestTimePeriodPreviousQuarter, UsageDataExportScheduleRequestTimePeriodPreviousYear, UsageDataExportScheduleRequestTimePeriodLast12Hours, UsageDataExportScheduleRequestTimePeriodLast7Days, UsageDataExportScheduleRequestTimePeriodLast30Days, UsageDataExportScheduleRequestTimePeriodLast35Days, UsageDataExportScheduleRequestTimePeriodLast90Days, UsageDataExportScheduleRequestTimePeriodLast120Days, UsageDataExportScheduleRequestTimePeriodLastYear:
 		return true
 	}
 	return false
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type UsageDataExportScheduleRequestAggregation string
+type UsageDataExportScheduleRequestAggregationParam struct {
+	// Field code
+	FieldCode param.Field[string] `json:"fieldCode,required"`
+	// Type of field
+	FieldType param.Field[UsageDataExportScheduleRequestAggregationsFieldType] `json:"fieldType,required"`
+	// Aggregation function
+	Function param.Field[UsageDataExportScheduleRequestAggregationsFunction] `json:"function,required"`
+	// Meter ID
+	MeterID param.Field[string] `json:"meterId,required"`
+}
+
+func (r UsageDataExportScheduleRequestAggregationParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Type of field
+type UsageDataExportScheduleRequestAggregationsFieldType string
 
 const (
-	UsageDataExportScheduleRequestAggregationSum    UsageDataExportScheduleRequestAggregation = "SUM"
-	UsageDataExportScheduleRequestAggregationMin    UsageDataExportScheduleRequestAggregation = "MIN"
-	UsageDataExportScheduleRequestAggregationMax    UsageDataExportScheduleRequestAggregation = "MAX"
-	UsageDataExportScheduleRequestAggregationCount  UsageDataExportScheduleRequestAggregation = "COUNT"
-	UsageDataExportScheduleRequestAggregationLatest UsageDataExportScheduleRequestAggregation = "LATEST"
-	UsageDataExportScheduleRequestAggregationMean   UsageDataExportScheduleRequestAggregation = "MEAN"
+	UsageDataExportScheduleRequestAggregationsFieldTypeDimension UsageDataExportScheduleRequestAggregationsFieldType = "DIMENSION"
+	UsageDataExportScheduleRequestAggregationsFieldTypeMeasure   UsageDataExportScheduleRequestAggregationsFieldType = "MEASURE"
 )
 
-func (r UsageDataExportScheduleRequestAggregation) IsKnown() bool {
+func (r UsageDataExportScheduleRequestAggregationsFieldType) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleRequestAggregationSum, UsageDataExportScheduleRequestAggregationMin, UsageDataExportScheduleRequestAggregationMax, UsageDataExportScheduleRequestAggregationCount, UsageDataExportScheduleRequestAggregationLatest, UsageDataExportScheduleRequestAggregationMean:
+	case UsageDataExportScheduleRequestAggregationsFieldTypeDimension, UsageDataExportScheduleRequestAggregationsFieldTypeMeasure:
 		return true
 	}
 	return false
+}
+
+// Aggregation function
+type UsageDataExportScheduleRequestAggregationsFunction string
+
+const (
+	UsageDataExportScheduleRequestAggregationsFunctionSum    UsageDataExportScheduleRequestAggregationsFunction = "SUM"
+	UsageDataExportScheduleRequestAggregationsFunctionMin    UsageDataExportScheduleRequestAggregationsFunction = "MIN"
+	UsageDataExportScheduleRequestAggregationsFunctionMax    UsageDataExportScheduleRequestAggregationsFunction = "MAX"
+	UsageDataExportScheduleRequestAggregationsFunctionCount  UsageDataExportScheduleRequestAggregationsFunction = "COUNT"
+	UsageDataExportScheduleRequestAggregationsFunctionLatest UsageDataExportScheduleRequestAggregationsFunction = "LATEST"
+	UsageDataExportScheduleRequestAggregationsFunctionMean   UsageDataExportScheduleRequestAggregationsFunction = "MEAN"
+	UsageDataExportScheduleRequestAggregationsFunctionUnique UsageDataExportScheduleRequestAggregationsFunction = "UNIQUE"
+)
+
+func (r UsageDataExportScheduleRequestAggregationsFunction) IsKnown() bool {
+	switch r {
+	case UsageDataExportScheduleRequestAggregationsFunctionSum, UsageDataExportScheduleRequestAggregationsFunctionMin, UsageDataExportScheduleRequestAggregationsFunctionMax, UsageDataExportScheduleRequestAggregationsFunctionCount, UsageDataExportScheduleRequestAggregationsFunctionLatest, UsageDataExportScheduleRequestAggregationsFunctionMean, UsageDataExportScheduleRequestAggregationsFunctionUnique:
+		return true
+	}
+	return false
+}
+
+type UsageDataExportScheduleRequestDimensionFilterParam struct {
+	// Field code
+	FieldCode param.Field[string] `json:"fieldCode,required"`
+	// Meter ID
+	MeterID param.Field[string] `json:"meterId,required"`
+	// Values to filter by
+	Values param.Field[[]string] `json:"values,required"`
+}
+
+func (r UsageDataExportScheduleRequestDimensionFilterParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type UsageDataExportScheduleResponse struct {
-	// The id of the schedule
+	// The id of the schedule configuration.
 	ID string `json:"id,required"`
 	// The version number:
 	//
@@ -578,61 +592,42 @@ type UsageDataExportScheduleResponse struct {
 	Version int64 `json:"version,required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs []string `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation UsageDataExportScheduleResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency UsageDataExportScheduleResponseAggregationFrequency `json:"aggregationFrequency"`
+	// List of aggregations to apply
+	Aggregations []UsageDataExportScheduleResponseAggregation `json:"aggregations"`
+	// List of dimension filters to apply
+	DimensionFilters []UsageDataExportScheduleResponseDimensionFilter `json:"dimensionFilters"`
+	// List of groups to apply
+	Groups []DataExplorerGroup `json:"groups"`
 	// List of meter IDs for which the usage data will be exported.
 	MeterIDs []string `json:"meterIds"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -644,15 +639,16 @@ type UsageDataExportScheduleResponse struct {
 // usageDataExportScheduleResponseJSON contains the JSON metadata for the struct
 // [UsageDataExportScheduleResponse]
 type usageDataExportScheduleResponseJSON struct {
-	ID                   apijson.Field
-	Version              apijson.Field
-	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
-	MeterIDs             apijson.Field
-	TimePeriod           apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
+	ID               apijson.Field
+	Version          apijson.Field
+	AccountIDs       apijson.Field
+	Aggregations     apijson.Field
+	DimensionFilters apijson.Field
+	Groups           apijson.Field
+	MeterIDs         apijson.Field
+	TimePeriod       apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *UsageDataExportScheduleResponse) UnmarshalJSON(data []byte) (err error) {
@@ -671,94 +667,130 @@ func (r UsageDataExportScheduleResponse) implementsDataExportScheduleUpdateRespo
 
 func (r UsageDataExportScheduleResponse) implementsDataExportScheduleDeleteResponse() {}
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type UsageDataExportScheduleResponseAggregation string
+type UsageDataExportScheduleResponseAggregation struct {
+	// Field code
+	FieldCode string `json:"fieldCode,required"`
+	// Type of field
+	FieldType UsageDataExportScheduleResponseAggregationsFieldType `json:"fieldType,required"`
+	// Aggregation function
+	Function UsageDataExportScheduleResponseAggregationsFunction `json:"function,required"`
+	// Meter ID
+	MeterID string                                         `json:"meterId,required"`
+	JSON    usageDataExportScheduleResponseAggregationJSON `json:"-"`
+}
+
+// usageDataExportScheduleResponseAggregationJSON contains the JSON metadata for
+// the struct [UsageDataExportScheduleResponseAggregation]
+type usageDataExportScheduleResponseAggregationJSON struct {
+	FieldCode   apijson.Field
+	FieldType   apijson.Field
+	Function    apijson.Field
+	MeterID     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponseAggregation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseAggregationJSON) RawJSON() string {
+	return r.raw
+}
+
+// Type of field
+type UsageDataExportScheduleResponseAggregationsFieldType string
 
 const (
-	UsageDataExportScheduleResponseAggregationSum    UsageDataExportScheduleResponseAggregation = "SUM"
-	UsageDataExportScheduleResponseAggregationMin    UsageDataExportScheduleResponseAggregation = "MIN"
-	UsageDataExportScheduleResponseAggregationMax    UsageDataExportScheduleResponseAggregation = "MAX"
-	UsageDataExportScheduleResponseAggregationCount  UsageDataExportScheduleResponseAggregation = "COUNT"
-	UsageDataExportScheduleResponseAggregationLatest UsageDataExportScheduleResponseAggregation = "LATEST"
-	UsageDataExportScheduleResponseAggregationMean   UsageDataExportScheduleResponseAggregation = "MEAN"
+	UsageDataExportScheduleResponseAggregationsFieldTypeDimension UsageDataExportScheduleResponseAggregationsFieldType = "DIMENSION"
+	UsageDataExportScheduleResponseAggregationsFieldTypeMeasure   UsageDataExportScheduleResponseAggregationsFieldType = "MEASURE"
 )
 
-func (r UsageDataExportScheduleResponseAggregation) IsKnown() bool {
+func (r UsageDataExportScheduleResponseAggregationsFieldType) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleResponseAggregationSum, UsageDataExportScheduleResponseAggregationMin, UsageDataExportScheduleResponseAggregationMax, UsageDataExportScheduleResponseAggregationCount, UsageDataExportScheduleResponseAggregationLatest, UsageDataExportScheduleResponseAggregationMean:
+	case UsageDataExportScheduleResponseAggregationsFieldTypeDimension, UsageDataExportScheduleResponseAggregationsFieldTypeMeasure:
 		return true
 	}
 	return false
 }
 
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type UsageDataExportScheduleResponseAggregationFrequency string
+// Aggregation function
+type UsageDataExportScheduleResponseAggregationsFunction string
 
 const (
-	UsageDataExportScheduleResponseAggregationFrequencyOriginal UsageDataExportScheduleResponseAggregationFrequency = "ORIGINAL"
-	UsageDataExportScheduleResponseAggregationFrequencyHour     UsageDataExportScheduleResponseAggregationFrequency = "HOUR"
-	UsageDataExportScheduleResponseAggregationFrequencyDay      UsageDataExportScheduleResponseAggregationFrequency = "DAY"
-	UsageDataExportScheduleResponseAggregationFrequencyWeek     UsageDataExportScheduleResponseAggregationFrequency = "WEEK"
-	UsageDataExportScheduleResponseAggregationFrequencyMonth    UsageDataExportScheduleResponseAggregationFrequency = "MONTH"
+	UsageDataExportScheduleResponseAggregationsFunctionSum    UsageDataExportScheduleResponseAggregationsFunction = "SUM"
+	UsageDataExportScheduleResponseAggregationsFunctionMin    UsageDataExportScheduleResponseAggregationsFunction = "MIN"
+	UsageDataExportScheduleResponseAggregationsFunctionMax    UsageDataExportScheduleResponseAggregationsFunction = "MAX"
+	UsageDataExportScheduleResponseAggregationsFunctionCount  UsageDataExportScheduleResponseAggregationsFunction = "COUNT"
+	UsageDataExportScheduleResponseAggregationsFunctionLatest UsageDataExportScheduleResponseAggregationsFunction = "LATEST"
+	UsageDataExportScheduleResponseAggregationsFunctionMean   UsageDataExportScheduleResponseAggregationsFunction = "MEAN"
+	UsageDataExportScheduleResponseAggregationsFunctionUnique UsageDataExportScheduleResponseAggregationsFunction = "UNIQUE"
 )
 
-func (r UsageDataExportScheduleResponseAggregationFrequency) IsKnown() bool {
+func (r UsageDataExportScheduleResponseAggregationsFunction) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleResponseAggregationFrequencyOriginal, UsageDataExportScheduleResponseAggregationFrequencyHour, UsageDataExportScheduleResponseAggregationFrequencyDay, UsageDataExportScheduleResponseAggregationFrequencyWeek, UsageDataExportScheduleResponseAggregationFrequencyMonth:
+	case UsageDataExportScheduleResponseAggregationsFunctionSum, UsageDataExportScheduleResponseAggregationsFunctionMin, UsageDataExportScheduleResponseAggregationsFunctionMax, UsageDataExportScheduleResponseAggregationsFunctionCount, UsageDataExportScheduleResponseAggregationsFunctionLatest, UsageDataExportScheduleResponseAggregationsFunctionMean, UsageDataExportScheduleResponseAggregationsFunctionUnique:
 		return true
 	}
 	return false
+}
+
+type UsageDataExportScheduleResponseDimensionFilter struct {
+	// Field code
+	FieldCode string `json:"fieldCode,required"`
+	// Meter ID
+	MeterID string `json:"meterId,required"`
+	// Values to filter by
+	Values []string                                           `json:"values,required"`
+	JSON   usageDataExportScheduleResponseDimensionFilterJSON `json:"-"`
+}
+
+// usageDataExportScheduleResponseDimensionFilterJSON contains the JSON metadata
+// for the struct [UsageDataExportScheduleResponseDimensionFilter]
+type usageDataExportScheduleResponseDimensionFilterJSON struct {
+	FieldCode   apijson.Field
+	MeterID     apijson.Field
+	Values      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageDataExportScheduleResponseDimensionFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageDataExportScheduleResponseDimensionFilterJSON) RawJSON() string {
+	return r.raw
 }
 
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -766,19 +798,27 @@ func (r UsageDataExportScheduleResponseAggregationFrequency) IsKnown() bool {
 type UsageDataExportScheduleResponseTimePeriod string
 
 const (
-	UsageDataExportScheduleResponseTimePeriodToday         UsageDataExportScheduleResponseTimePeriod = "TODAY"
-	UsageDataExportScheduleResponseTimePeriodYesterday     UsageDataExportScheduleResponseTimePeriod = "YESTERDAY"
-	UsageDataExportScheduleResponseTimePeriodWeekToDate    UsageDataExportScheduleResponseTimePeriod = "WEEK_TO_DATE"
-	UsageDataExportScheduleResponseTimePeriodCurrentMonth  UsageDataExportScheduleResponseTimePeriod = "CURRENT_MONTH"
-	UsageDataExportScheduleResponseTimePeriodLast30Days    UsageDataExportScheduleResponseTimePeriod = "LAST_30_DAYS"
-	UsageDataExportScheduleResponseTimePeriodLast35Days    UsageDataExportScheduleResponseTimePeriod = "LAST_35_DAYS"
-	UsageDataExportScheduleResponseTimePeriodPreviousWeek  UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_WEEK"
-	UsageDataExportScheduleResponseTimePeriodPreviousMonth UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_MONTH"
+	UsageDataExportScheduleResponseTimePeriodToday           UsageDataExportScheduleResponseTimePeriod = "TODAY"
+	UsageDataExportScheduleResponseTimePeriodYesterday       UsageDataExportScheduleResponseTimePeriod = "YESTERDAY"
+	UsageDataExportScheduleResponseTimePeriodWeekToDate      UsageDataExportScheduleResponseTimePeriod = "WEEK_TO_DATE"
+	UsageDataExportScheduleResponseTimePeriodMonthToDate     UsageDataExportScheduleResponseTimePeriod = "MONTH_TO_DATE"
+	UsageDataExportScheduleResponseTimePeriodYearToDate      UsageDataExportScheduleResponseTimePeriod = "YEAR_TO_DATE"
+	UsageDataExportScheduleResponseTimePeriodPreviousWeek    UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_WEEK"
+	UsageDataExportScheduleResponseTimePeriodPreviousMonth   UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_MONTH"
+	UsageDataExportScheduleResponseTimePeriodPreviousQuarter UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_QUARTER"
+	UsageDataExportScheduleResponseTimePeriodPreviousYear    UsageDataExportScheduleResponseTimePeriod = "PREVIOUS_YEAR"
+	UsageDataExportScheduleResponseTimePeriodLast12Hours     UsageDataExportScheduleResponseTimePeriod = "LAST_12_HOURS"
+	UsageDataExportScheduleResponseTimePeriodLast7Days       UsageDataExportScheduleResponseTimePeriod = "LAST_7_DAYS"
+	UsageDataExportScheduleResponseTimePeriodLast30Days      UsageDataExportScheduleResponseTimePeriod = "LAST_30_DAYS"
+	UsageDataExportScheduleResponseTimePeriodLast35Days      UsageDataExportScheduleResponseTimePeriod = "LAST_35_DAYS"
+	UsageDataExportScheduleResponseTimePeriodLast90Days      UsageDataExportScheduleResponseTimePeriod = "LAST_90_DAYS"
+	UsageDataExportScheduleResponseTimePeriodLast120Days     UsageDataExportScheduleResponseTimePeriod = "LAST_120_DAYS"
+	UsageDataExportScheduleResponseTimePeriodLastYear        UsageDataExportScheduleResponseTimePeriod = "LAST_YEAR"
 )
 
 func (r UsageDataExportScheduleResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case UsageDataExportScheduleResponseTimePeriodToday, UsageDataExportScheduleResponseTimePeriodYesterday, UsageDataExportScheduleResponseTimePeriodWeekToDate, UsageDataExportScheduleResponseTimePeriodCurrentMonth, UsageDataExportScheduleResponseTimePeriodLast30Days, UsageDataExportScheduleResponseTimePeriodLast35Days, UsageDataExportScheduleResponseTimePeriodPreviousWeek, UsageDataExportScheduleResponseTimePeriodPreviousMonth:
+	case UsageDataExportScheduleResponseTimePeriodToday, UsageDataExportScheduleResponseTimePeriodYesterday, UsageDataExportScheduleResponseTimePeriodWeekToDate, UsageDataExportScheduleResponseTimePeriodMonthToDate, UsageDataExportScheduleResponseTimePeriodYearToDate, UsageDataExportScheduleResponseTimePeriodPreviousWeek, UsageDataExportScheduleResponseTimePeriodPreviousMonth, UsageDataExportScheduleResponseTimePeriodPreviousQuarter, UsageDataExportScheduleResponseTimePeriodPreviousYear, UsageDataExportScheduleResponseTimePeriodLast12Hours, UsageDataExportScheduleResponseTimePeriodLast7Days, UsageDataExportScheduleResponseTimePeriodLast30Days, UsageDataExportScheduleResponseTimePeriodLast35Days, UsageDataExportScheduleResponseTimePeriodLast90Days, UsageDataExportScheduleResponseTimePeriodLast120Days, UsageDataExportScheduleResponseTimePeriodLastYear:
 		return true
 	}
 	return false
@@ -797,41 +837,14 @@ type DataExportScheduleNewResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleNewResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleNewResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of [[]DataExplorerGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -840,21 +853,31 @@ type DataExportScheduleNewResponse struct {
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -870,8 +893,9 @@ type dataExportScheduleNewResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -924,94 +948,34 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleNewResponseAggregation string
-
-const (
-	DataExportScheduleNewResponseAggregationSum    DataExportScheduleNewResponseAggregation = "SUM"
-	DataExportScheduleNewResponseAggregationMin    DataExportScheduleNewResponseAggregation = "MIN"
-	DataExportScheduleNewResponseAggregationMax    DataExportScheduleNewResponseAggregation = "MAX"
-	DataExportScheduleNewResponseAggregationCount  DataExportScheduleNewResponseAggregation = "COUNT"
-	DataExportScheduleNewResponseAggregationLatest DataExportScheduleNewResponseAggregation = "LATEST"
-	DataExportScheduleNewResponseAggregationMean   DataExportScheduleNewResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleNewResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewResponseAggregationSum, DataExportScheduleNewResponseAggregationMin, DataExportScheduleNewResponseAggregationMax, DataExportScheduleNewResponseAggregationCount, DataExportScheduleNewResponseAggregationLatest, DataExportScheduleNewResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleNewResponseAggregationFrequency string
-
-const (
-	DataExportScheduleNewResponseAggregationFrequencyOriginal DataExportScheduleNewResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleNewResponseAggregationFrequencyHour     DataExportScheduleNewResponseAggregationFrequency = "HOUR"
-	DataExportScheduleNewResponseAggregationFrequencyDay      DataExportScheduleNewResponseAggregationFrequency = "DAY"
-	DataExportScheduleNewResponseAggregationFrequencyWeek     DataExportScheduleNewResponseAggregationFrequency = "WEEK"
-	DataExportScheduleNewResponseAggregationFrequencyMonth    DataExportScheduleNewResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleNewResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewResponseAggregationFrequencyOriginal, DataExportScheduleNewResponseAggregationFrequencyHour, DataExportScheduleNewResponseAggregationFrequencyDay, DataExportScheduleNewResponseAggregationFrequencyWeek, DataExportScheduleNewResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -1019,19 +983,27 @@ func (r DataExportScheduleNewResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleNewResponseTimePeriod string
 
 const (
-	DataExportScheduleNewResponseTimePeriodToday         DataExportScheduleNewResponseTimePeriod = "TODAY"
-	DataExportScheduleNewResponseTimePeriodYesterday     DataExportScheduleNewResponseTimePeriod = "YESTERDAY"
-	DataExportScheduleNewResponseTimePeriodWeekToDate    DataExportScheduleNewResponseTimePeriod = "WEEK_TO_DATE"
-	DataExportScheduleNewResponseTimePeriodCurrentMonth  DataExportScheduleNewResponseTimePeriod = "CURRENT_MONTH"
-	DataExportScheduleNewResponseTimePeriodLast30Days    DataExportScheduleNewResponseTimePeriod = "LAST_30_DAYS"
-	DataExportScheduleNewResponseTimePeriodLast35Days    DataExportScheduleNewResponseTimePeriod = "LAST_35_DAYS"
-	DataExportScheduleNewResponseTimePeriodPreviousWeek  DataExportScheduleNewResponseTimePeriod = "PREVIOUS_WEEK"
-	DataExportScheduleNewResponseTimePeriodPreviousMonth DataExportScheduleNewResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleNewResponseTimePeriodToday           DataExportScheduleNewResponseTimePeriod = "TODAY"
+	DataExportScheduleNewResponseTimePeriodYesterday       DataExportScheduleNewResponseTimePeriod = "YESTERDAY"
+	DataExportScheduleNewResponseTimePeriodWeekToDate      DataExportScheduleNewResponseTimePeriod = "WEEK_TO_DATE"
+	DataExportScheduleNewResponseTimePeriodMonthToDate     DataExportScheduleNewResponseTimePeriod = "MONTH_TO_DATE"
+	DataExportScheduleNewResponseTimePeriodYearToDate      DataExportScheduleNewResponseTimePeriod = "YEAR_TO_DATE"
+	DataExportScheduleNewResponseTimePeriodPreviousWeek    DataExportScheduleNewResponseTimePeriod = "PREVIOUS_WEEK"
+	DataExportScheduleNewResponseTimePeriodPreviousMonth   DataExportScheduleNewResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleNewResponseTimePeriodPreviousQuarter DataExportScheduleNewResponseTimePeriod = "PREVIOUS_QUARTER"
+	DataExportScheduleNewResponseTimePeriodPreviousYear    DataExportScheduleNewResponseTimePeriod = "PREVIOUS_YEAR"
+	DataExportScheduleNewResponseTimePeriodLast12Hours     DataExportScheduleNewResponseTimePeriod = "LAST_12_HOURS"
+	DataExportScheduleNewResponseTimePeriodLast7Days       DataExportScheduleNewResponseTimePeriod = "LAST_7_DAYS"
+	DataExportScheduleNewResponseTimePeriodLast30Days      DataExportScheduleNewResponseTimePeriod = "LAST_30_DAYS"
+	DataExportScheduleNewResponseTimePeriodLast35Days      DataExportScheduleNewResponseTimePeriod = "LAST_35_DAYS"
+	DataExportScheduleNewResponseTimePeriodLast90Days      DataExportScheduleNewResponseTimePeriod = "LAST_90_DAYS"
+	DataExportScheduleNewResponseTimePeriodLast120Days     DataExportScheduleNewResponseTimePeriod = "LAST_120_DAYS"
+	DataExportScheduleNewResponseTimePeriodLastYear        DataExportScheduleNewResponseTimePeriod = "LAST_YEAR"
 )
 
 func (r DataExportScheduleNewResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleNewResponseTimePeriodToday, DataExportScheduleNewResponseTimePeriodYesterday, DataExportScheduleNewResponseTimePeriodWeekToDate, DataExportScheduleNewResponseTimePeriodCurrentMonth, DataExportScheduleNewResponseTimePeriodLast30Days, DataExportScheduleNewResponseTimePeriodLast35Days, DataExportScheduleNewResponseTimePeriodPreviousWeek, DataExportScheduleNewResponseTimePeriodPreviousMonth:
+	case DataExportScheduleNewResponseTimePeriodToday, DataExportScheduleNewResponseTimePeriodYesterday, DataExportScheduleNewResponseTimePeriodWeekToDate, DataExportScheduleNewResponseTimePeriodMonthToDate, DataExportScheduleNewResponseTimePeriodYearToDate, DataExportScheduleNewResponseTimePeriodPreviousWeek, DataExportScheduleNewResponseTimePeriodPreviousMonth, DataExportScheduleNewResponseTimePeriodPreviousQuarter, DataExportScheduleNewResponseTimePeriodPreviousYear, DataExportScheduleNewResponseTimePeriodLast12Hours, DataExportScheduleNewResponseTimePeriodLast7Days, DataExportScheduleNewResponseTimePeriodLast30Days, DataExportScheduleNewResponseTimePeriodLast35Days, DataExportScheduleNewResponseTimePeriodLast90Days, DataExportScheduleNewResponseTimePeriodLast120Days, DataExportScheduleNewResponseTimePeriodLastYear:
 		return true
 	}
 	return false
@@ -1050,41 +1022,14 @@ type DataExportScheduleGetResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleGetResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleGetResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of [[]DataExplorerGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -1093,21 +1038,31 @@ type DataExportScheduleGetResponse struct {
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -1123,8 +1078,9 @@ type dataExportScheduleGetResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -1177,94 +1133,34 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleGetResponseAggregation string
-
-const (
-	DataExportScheduleGetResponseAggregationSum    DataExportScheduleGetResponseAggregation = "SUM"
-	DataExportScheduleGetResponseAggregationMin    DataExportScheduleGetResponseAggregation = "MIN"
-	DataExportScheduleGetResponseAggregationMax    DataExportScheduleGetResponseAggregation = "MAX"
-	DataExportScheduleGetResponseAggregationCount  DataExportScheduleGetResponseAggregation = "COUNT"
-	DataExportScheduleGetResponseAggregationLatest DataExportScheduleGetResponseAggregation = "LATEST"
-	DataExportScheduleGetResponseAggregationMean   DataExportScheduleGetResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleGetResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleGetResponseAggregationSum, DataExportScheduleGetResponseAggregationMin, DataExportScheduleGetResponseAggregationMax, DataExportScheduleGetResponseAggregationCount, DataExportScheduleGetResponseAggregationLatest, DataExportScheduleGetResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleGetResponseAggregationFrequency string
-
-const (
-	DataExportScheduleGetResponseAggregationFrequencyOriginal DataExportScheduleGetResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleGetResponseAggregationFrequencyHour     DataExportScheduleGetResponseAggregationFrequency = "HOUR"
-	DataExportScheduleGetResponseAggregationFrequencyDay      DataExportScheduleGetResponseAggregationFrequency = "DAY"
-	DataExportScheduleGetResponseAggregationFrequencyWeek     DataExportScheduleGetResponseAggregationFrequency = "WEEK"
-	DataExportScheduleGetResponseAggregationFrequencyMonth    DataExportScheduleGetResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleGetResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleGetResponseAggregationFrequencyOriginal, DataExportScheduleGetResponseAggregationFrequencyHour, DataExportScheduleGetResponseAggregationFrequencyDay, DataExportScheduleGetResponseAggregationFrequencyWeek, DataExportScheduleGetResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -1272,19 +1168,27 @@ func (r DataExportScheduleGetResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleGetResponseTimePeriod string
 
 const (
-	DataExportScheduleGetResponseTimePeriodToday         DataExportScheduleGetResponseTimePeriod = "TODAY"
-	DataExportScheduleGetResponseTimePeriodYesterday     DataExportScheduleGetResponseTimePeriod = "YESTERDAY"
-	DataExportScheduleGetResponseTimePeriodWeekToDate    DataExportScheduleGetResponseTimePeriod = "WEEK_TO_DATE"
-	DataExportScheduleGetResponseTimePeriodCurrentMonth  DataExportScheduleGetResponseTimePeriod = "CURRENT_MONTH"
-	DataExportScheduleGetResponseTimePeriodLast30Days    DataExportScheduleGetResponseTimePeriod = "LAST_30_DAYS"
-	DataExportScheduleGetResponseTimePeriodLast35Days    DataExportScheduleGetResponseTimePeriod = "LAST_35_DAYS"
-	DataExportScheduleGetResponseTimePeriodPreviousWeek  DataExportScheduleGetResponseTimePeriod = "PREVIOUS_WEEK"
-	DataExportScheduleGetResponseTimePeriodPreviousMonth DataExportScheduleGetResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleGetResponseTimePeriodToday           DataExportScheduleGetResponseTimePeriod = "TODAY"
+	DataExportScheduleGetResponseTimePeriodYesterday       DataExportScheduleGetResponseTimePeriod = "YESTERDAY"
+	DataExportScheduleGetResponseTimePeriodWeekToDate      DataExportScheduleGetResponseTimePeriod = "WEEK_TO_DATE"
+	DataExportScheduleGetResponseTimePeriodMonthToDate     DataExportScheduleGetResponseTimePeriod = "MONTH_TO_DATE"
+	DataExportScheduleGetResponseTimePeriodYearToDate      DataExportScheduleGetResponseTimePeriod = "YEAR_TO_DATE"
+	DataExportScheduleGetResponseTimePeriodPreviousWeek    DataExportScheduleGetResponseTimePeriod = "PREVIOUS_WEEK"
+	DataExportScheduleGetResponseTimePeriodPreviousMonth   DataExportScheduleGetResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleGetResponseTimePeriodPreviousQuarter DataExportScheduleGetResponseTimePeriod = "PREVIOUS_QUARTER"
+	DataExportScheduleGetResponseTimePeriodPreviousYear    DataExportScheduleGetResponseTimePeriod = "PREVIOUS_YEAR"
+	DataExportScheduleGetResponseTimePeriodLast12Hours     DataExportScheduleGetResponseTimePeriod = "LAST_12_HOURS"
+	DataExportScheduleGetResponseTimePeriodLast7Days       DataExportScheduleGetResponseTimePeriod = "LAST_7_DAYS"
+	DataExportScheduleGetResponseTimePeriodLast30Days      DataExportScheduleGetResponseTimePeriod = "LAST_30_DAYS"
+	DataExportScheduleGetResponseTimePeriodLast35Days      DataExportScheduleGetResponseTimePeriod = "LAST_35_DAYS"
+	DataExportScheduleGetResponseTimePeriodLast90Days      DataExportScheduleGetResponseTimePeriod = "LAST_90_DAYS"
+	DataExportScheduleGetResponseTimePeriodLast120Days     DataExportScheduleGetResponseTimePeriod = "LAST_120_DAYS"
+	DataExportScheduleGetResponseTimePeriodLastYear        DataExportScheduleGetResponseTimePeriod = "LAST_YEAR"
 )
 
 func (r DataExportScheduleGetResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleGetResponseTimePeriodToday, DataExportScheduleGetResponseTimePeriodYesterday, DataExportScheduleGetResponseTimePeriodWeekToDate, DataExportScheduleGetResponseTimePeriodCurrentMonth, DataExportScheduleGetResponseTimePeriodLast30Days, DataExportScheduleGetResponseTimePeriodLast35Days, DataExportScheduleGetResponseTimePeriodPreviousWeek, DataExportScheduleGetResponseTimePeriodPreviousMonth:
+	case DataExportScheduleGetResponseTimePeriodToday, DataExportScheduleGetResponseTimePeriodYesterday, DataExportScheduleGetResponseTimePeriodWeekToDate, DataExportScheduleGetResponseTimePeriodMonthToDate, DataExportScheduleGetResponseTimePeriodYearToDate, DataExportScheduleGetResponseTimePeriodPreviousWeek, DataExportScheduleGetResponseTimePeriodPreviousMonth, DataExportScheduleGetResponseTimePeriodPreviousQuarter, DataExportScheduleGetResponseTimePeriodPreviousYear, DataExportScheduleGetResponseTimePeriodLast12Hours, DataExportScheduleGetResponseTimePeriodLast7Days, DataExportScheduleGetResponseTimePeriodLast30Days, DataExportScheduleGetResponseTimePeriodLast35Days, DataExportScheduleGetResponseTimePeriodLast90Days, DataExportScheduleGetResponseTimePeriodLast120Days, DataExportScheduleGetResponseTimePeriodLastYear:
 		return true
 	}
 	return false
@@ -1303,41 +1207,14 @@ type DataExportScheduleUpdateResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleUpdateResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleUpdateResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of [[]DataExplorerGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -1346,21 +1223,31 @@ type DataExportScheduleUpdateResponse struct {
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -1376,8 +1263,9 @@ type dataExportScheduleUpdateResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -1430,94 +1318,34 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleUpdateResponseAggregation string
-
-const (
-	DataExportScheduleUpdateResponseAggregationSum    DataExportScheduleUpdateResponseAggregation = "SUM"
-	DataExportScheduleUpdateResponseAggregationMin    DataExportScheduleUpdateResponseAggregation = "MIN"
-	DataExportScheduleUpdateResponseAggregationMax    DataExportScheduleUpdateResponseAggregation = "MAX"
-	DataExportScheduleUpdateResponseAggregationCount  DataExportScheduleUpdateResponseAggregation = "COUNT"
-	DataExportScheduleUpdateResponseAggregationLatest DataExportScheduleUpdateResponseAggregation = "LATEST"
-	DataExportScheduleUpdateResponseAggregationMean   DataExportScheduleUpdateResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleUpdateResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateResponseAggregationSum, DataExportScheduleUpdateResponseAggregationMin, DataExportScheduleUpdateResponseAggregationMax, DataExportScheduleUpdateResponseAggregationCount, DataExportScheduleUpdateResponseAggregationLatest, DataExportScheduleUpdateResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleUpdateResponseAggregationFrequency string
-
-const (
-	DataExportScheduleUpdateResponseAggregationFrequencyOriginal DataExportScheduleUpdateResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleUpdateResponseAggregationFrequencyHour     DataExportScheduleUpdateResponseAggregationFrequency = "HOUR"
-	DataExportScheduleUpdateResponseAggregationFrequencyDay      DataExportScheduleUpdateResponseAggregationFrequency = "DAY"
-	DataExportScheduleUpdateResponseAggregationFrequencyWeek     DataExportScheduleUpdateResponseAggregationFrequency = "WEEK"
-	DataExportScheduleUpdateResponseAggregationFrequencyMonth    DataExportScheduleUpdateResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleUpdateResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateResponseAggregationFrequencyOriginal, DataExportScheduleUpdateResponseAggregationFrequencyHour, DataExportScheduleUpdateResponseAggregationFrequencyDay, DataExportScheduleUpdateResponseAggregationFrequencyWeek, DataExportScheduleUpdateResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -1525,19 +1353,27 @@ func (r DataExportScheduleUpdateResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleUpdateResponseTimePeriod string
 
 const (
-	DataExportScheduleUpdateResponseTimePeriodToday         DataExportScheduleUpdateResponseTimePeriod = "TODAY"
-	DataExportScheduleUpdateResponseTimePeriodYesterday     DataExportScheduleUpdateResponseTimePeriod = "YESTERDAY"
-	DataExportScheduleUpdateResponseTimePeriodWeekToDate    DataExportScheduleUpdateResponseTimePeriod = "WEEK_TO_DATE"
-	DataExportScheduleUpdateResponseTimePeriodCurrentMonth  DataExportScheduleUpdateResponseTimePeriod = "CURRENT_MONTH"
-	DataExportScheduleUpdateResponseTimePeriodLast30Days    DataExportScheduleUpdateResponseTimePeriod = "LAST_30_DAYS"
-	DataExportScheduleUpdateResponseTimePeriodLast35Days    DataExportScheduleUpdateResponseTimePeriod = "LAST_35_DAYS"
-	DataExportScheduleUpdateResponseTimePeriodPreviousWeek  DataExportScheduleUpdateResponseTimePeriod = "PREVIOUS_WEEK"
-	DataExportScheduleUpdateResponseTimePeriodPreviousMonth DataExportScheduleUpdateResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleUpdateResponseTimePeriodToday           DataExportScheduleUpdateResponseTimePeriod = "TODAY"
+	DataExportScheduleUpdateResponseTimePeriodYesterday       DataExportScheduleUpdateResponseTimePeriod = "YESTERDAY"
+	DataExportScheduleUpdateResponseTimePeriodWeekToDate      DataExportScheduleUpdateResponseTimePeriod = "WEEK_TO_DATE"
+	DataExportScheduleUpdateResponseTimePeriodMonthToDate     DataExportScheduleUpdateResponseTimePeriod = "MONTH_TO_DATE"
+	DataExportScheduleUpdateResponseTimePeriodYearToDate      DataExportScheduleUpdateResponseTimePeriod = "YEAR_TO_DATE"
+	DataExportScheduleUpdateResponseTimePeriodPreviousWeek    DataExportScheduleUpdateResponseTimePeriod = "PREVIOUS_WEEK"
+	DataExportScheduleUpdateResponseTimePeriodPreviousMonth   DataExportScheduleUpdateResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleUpdateResponseTimePeriodPreviousQuarter DataExportScheduleUpdateResponseTimePeriod = "PREVIOUS_QUARTER"
+	DataExportScheduleUpdateResponseTimePeriodPreviousYear    DataExportScheduleUpdateResponseTimePeriod = "PREVIOUS_YEAR"
+	DataExportScheduleUpdateResponseTimePeriodLast12Hours     DataExportScheduleUpdateResponseTimePeriod = "LAST_12_HOURS"
+	DataExportScheduleUpdateResponseTimePeriodLast7Days       DataExportScheduleUpdateResponseTimePeriod = "LAST_7_DAYS"
+	DataExportScheduleUpdateResponseTimePeriodLast30Days      DataExportScheduleUpdateResponseTimePeriod = "LAST_30_DAYS"
+	DataExportScheduleUpdateResponseTimePeriodLast35Days      DataExportScheduleUpdateResponseTimePeriod = "LAST_35_DAYS"
+	DataExportScheduleUpdateResponseTimePeriodLast90Days      DataExportScheduleUpdateResponseTimePeriod = "LAST_90_DAYS"
+	DataExportScheduleUpdateResponseTimePeriodLast120Days     DataExportScheduleUpdateResponseTimePeriod = "LAST_120_DAYS"
+	DataExportScheduleUpdateResponseTimePeriodLastYear        DataExportScheduleUpdateResponseTimePeriod = "LAST_YEAR"
 )
 
 func (r DataExportScheduleUpdateResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleUpdateResponseTimePeriodToday, DataExportScheduleUpdateResponseTimePeriodYesterday, DataExportScheduleUpdateResponseTimePeriodWeekToDate, DataExportScheduleUpdateResponseTimePeriodCurrentMonth, DataExportScheduleUpdateResponseTimePeriodLast30Days, DataExportScheduleUpdateResponseTimePeriodLast35Days, DataExportScheduleUpdateResponseTimePeriodPreviousWeek, DataExportScheduleUpdateResponseTimePeriodPreviousMonth:
+	case DataExportScheduleUpdateResponseTimePeriodToday, DataExportScheduleUpdateResponseTimePeriodYesterday, DataExportScheduleUpdateResponseTimePeriodWeekToDate, DataExportScheduleUpdateResponseTimePeriodMonthToDate, DataExportScheduleUpdateResponseTimePeriodYearToDate, DataExportScheduleUpdateResponseTimePeriodPreviousWeek, DataExportScheduleUpdateResponseTimePeriodPreviousMonth, DataExportScheduleUpdateResponseTimePeriodPreviousQuarter, DataExportScheduleUpdateResponseTimePeriodPreviousYear, DataExportScheduleUpdateResponseTimePeriodLast12Hours, DataExportScheduleUpdateResponseTimePeriodLast7Days, DataExportScheduleUpdateResponseTimePeriodLast30Days, DataExportScheduleUpdateResponseTimePeriodLast35Days, DataExportScheduleUpdateResponseTimePeriodLast90Days, DataExportScheduleUpdateResponseTimePeriodLast120Days, DataExportScheduleUpdateResponseTimePeriodLastYear:
 		return true
 	}
 	return false
@@ -1568,8 +1404,8 @@ type DataExportScheduleListResponse struct {
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the Data Export Schedule.
 	Name string `json:"name"`
-	// Defines the Schedule frequency for the Data Export to run in Hours or Days. Used
-	// in conjunction with the `scheduleType` parameter.
+	// Defines the Schedule frequency for the Data Export to run in Hours, Days, or
+	// Minutes. Used in conjunction with the `scheduleType` parameter.
 	Period       int64                                      `json:"period"`
 	ScheduleType DataExportScheduleListResponseScheduleType `json:"scheduleType"`
 	SourceType   DataExportScheduleListResponseSourceType   `json:"sourceType"`
@@ -1607,13 +1443,14 @@ func (r dataExportScheduleListResponseJSON) RawJSON() string {
 type DataExportScheduleListResponseExportFileFormat string
 
 const (
-	DataExportScheduleListResponseExportFileFormatCsv  DataExportScheduleListResponseExportFileFormat = "CSV"
-	DataExportScheduleListResponseExportFileFormatJson DataExportScheduleListResponseExportFileFormat = "JSON"
+	DataExportScheduleListResponseExportFileFormatCsv   DataExportScheduleListResponseExportFileFormat = "CSV"
+	DataExportScheduleListResponseExportFileFormatJson  DataExportScheduleListResponseExportFileFormat = "JSON"
+	DataExportScheduleListResponseExportFileFormatJSONL DataExportScheduleListResponseExportFileFormat = "JSONL"
 )
 
 func (r DataExportScheduleListResponseExportFileFormat) IsKnown() bool {
 	switch r {
-	case DataExportScheduleListResponseExportFileFormatCsv, DataExportScheduleListResponseExportFileFormatJson:
+	case DataExportScheduleListResponseExportFileFormatCsv, DataExportScheduleListResponseExportFileFormatJson, DataExportScheduleListResponseExportFileFormatJSONL:
 		return true
 	}
 	return false
@@ -1622,14 +1459,15 @@ func (r DataExportScheduleListResponseExportFileFormat) IsKnown() bool {
 type DataExportScheduleListResponseScheduleType string
 
 const (
-	DataExportScheduleListResponseScheduleTypeHourly DataExportScheduleListResponseScheduleType = "HOURLY"
-	DataExportScheduleListResponseScheduleTypeDaily  DataExportScheduleListResponseScheduleType = "DAILY"
+	DataExportScheduleListResponseScheduleTypeHour   DataExportScheduleListResponseScheduleType = "HOUR"
+	DataExportScheduleListResponseScheduleTypeDay    DataExportScheduleListResponseScheduleType = "DAY"
+	DataExportScheduleListResponseScheduleTypeMinute DataExportScheduleListResponseScheduleType = "MINUTE"
 	DataExportScheduleListResponseScheduleTypeAdHoc  DataExportScheduleListResponseScheduleType = "AD_HOC"
 )
 
 func (r DataExportScheduleListResponseScheduleType) IsKnown() bool {
 	switch r {
-	case DataExportScheduleListResponseScheduleTypeHourly, DataExportScheduleListResponseScheduleTypeDaily, DataExportScheduleListResponseScheduleTypeAdHoc:
+	case DataExportScheduleListResponseScheduleTypeHour, DataExportScheduleListResponseScheduleTypeDay, DataExportScheduleListResponseScheduleTypeMinute, DataExportScheduleListResponseScheduleTypeAdHoc:
 		return true
 	}
 	return false
@@ -1663,41 +1501,14 @@ type DataExportScheduleDeleteResponse struct {
 	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation DataExportScheduleDeleteResponseAggregation `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency DataExportScheduleDeleteResponseAggregationFrequency `json:"aggregationFrequency"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseAggregation].
+	Aggregations interface{} `json:"aggregations"`
+	// This field can have the runtime type of
+	// [[]UsageDataExportScheduleResponseDimensionFilter].
+	DimensionFilters interface{} `json:"dimensionFilters"`
+	// This field can have the runtime type of [[]DataExplorerGroup].
+	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
 	// This field can have the runtime type of
@@ -1706,21 +1517,31 @@ type DataExportScheduleDeleteResponse struct {
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -1736,8 +1557,9 @@ type dataExportScheduleDeleteResponseJSON struct {
 	ID                   apijson.Field
 	Version              apijson.Field
 	AccountIDs           apijson.Field
-	Aggregation          apijson.Field
-	AggregationFrequency apijson.Field
+	Aggregations         apijson.Field
+	DimensionFilters     apijson.Field
+	Groups               apijson.Field
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
@@ -1790,94 +1612,34 @@ func init() {
 	)
 }
 
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleDeleteResponseAggregation string
-
-const (
-	DataExportScheduleDeleteResponseAggregationSum    DataExportScheduleDeleteResponseAggregation = "SUM"
-	DataExportScheduleDeleteResponseAggregationMin    DataExportScheduleDeleteResponseAggregation = "MIN"
-	DataExportScheduleDeleteResponseAggregationMax    DataExportScheduleDeleteResponseAggregation = "MAX"
-	DataExportScheduleDeleteResponseAggregationCount  DataExportScheduleDeleteResponseAggregation = "COUNT"
-	DataExportScheduleDeleteResponseAggregationLatest DataExportScheduleDeleteResponseAggregation = "LATEST"
-	DataExportScheduleDeleteResponseAggregationMean   DataExportScheduleDeleteResponseAggregation = "MEAN"
-)
-
-func (r DataExportScheduleDeleteResponseAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleDeleteResponseAggregationSum, DataExportScheduleDeleteResponseAggregationMin, DataExportScheduleDeleteResponseAggregationMax, DataExportScheduleDeleteResponseAggregationCount, DataExportScheduleDeleteResponseAggregationLatest, DataExportScheduleDeleteResponseAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleDeleteResponseAggregationFrequency string
-
-const (
-	DataExportScheduleDeleteResponseAggregationFrequencyOriginal DataExportScheduleDeleteResponseAggregationFrequency = "ORIGINAL"
-	DataExportScheduleDeleteResponseAggregationFrequencyHour     DataExportScheduleDeleteResponseAggregationFrequency = "HOUR"
-	DataExportScheduleDeleteResponseAggregationFrequencyDay      DataExportScheduleDeleteResponseAggregationFrequency = "DAY"
-	DataExportScheduleDeleteResponseAggregationFrequencyWeek     DataExportScheduleDeleteResponseAggregationFrequency = "WEEK"
-	DataExportScheduleDeleteResponseAggregationFrequencyMonth    DataExportScheduleDeleteResponseAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleDeleteResponseAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleDeleteResponseAggregationFrequencyOriginal, DataExportScheduleDeleteResponseAggregationFrequencyHour, DataExportScheduleDeleteResponseAggregationFrequencyDay, DataExportScheduleDeleteResponseAggregationFrequencyWeek, DataExportScheduleDeleteResponseAggregationFrequencyMonth:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -1885,19 +1647,27 @@ func (r DataExportScheduleDeleteResponseAggregationFrequency) IsKnown() bool {
 type DataExportScheduleDeleteResponseTimePeriod string
 
 const (
-	DataExportScheduleDeleteResponseTimePeriodToday         DataExportScheduleDeleteResponseTimePeriod = "TODAY"
-	DataExportScheduleDeleteResponseTimePeriodYesterday     DataExportScheduleDeleteResponseTimePeriod = "YESTERDAY"
-	DataExportScheduleDeleteResponseTimePeriodWeekToDate    DataExportScheduleDeleteResponseTimePeriod = "WEEK_TO_DATE"
-	DataExportScheduleDeleteResponseTimePeriodCurrentMonth  DataExportScheduleDeleteResponseTimePeriod = "CURRENT_MONTH"
-	DataExportScheduleDeleteResponseTimePeriodLast30Days    DataExportScheduleDeleteResponseTimePeriod = "LAST_30_DAYS"
-	DataExportScheduleDeleteResponseTimePeriodLast35Days    DataExportScheduleDeleteResponseTimePeriod = "LAST_35_DAYS"
-	DataExportScheduleDeleteResponseTimePeriodPreviousWeek  DataExportScheduleDeleteResponseTimePeriod = "PREVIOUS_WEEK"
-	DataExportScheduleDeleteResponseTimePeriodPreviousMonth DataExportScheduleDeleteResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleDeleteResponseTimePeriodToday           DataExportScheduleDeleteResponseTimePeriod = "TODAY"
+	DataExportScheduleDeleteResponseTimePeriodYesterday       DataExportScheduleDeleteResponseTimePeriod = "YESTERDAY"
+	DataExportScheduleDeleteResponseTimePeriodWeekToDate      DataExportScheduleDeleteResponseTimePeriod = "WEEK_TO_DATE"
+	DataExportScheduleDeleteResponseTimePeriodMonthToDate     DataExportScheduleDeleteResponseTimePeriod = "MONTH_TO_DATE"
+	DataExportScheduleDeleteResponseTimePeriodYearToDate      DataExportScheduleDeleteResponseTimePeriod = "YEAR_TO_DATE"
+	DataExportScheduleDeleteResponseTimePeriodPreviousWeek    DataExportScheduleDeleteResponseTimePeriod = "PREVIOUS_WEEK"
+	DataExportScheduleDeleteResponseTimePeriodPreviousMonth   DataExportScheduleDeleteResponseTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleDeleteResponseTimePeriodPreviousQuarter DataExportScheduleDeleteResponseTimePeriod = "PREVIOUS_QUARTER"
+	DataExportScheduleDeleteResponseTimePeriodPreviousYear    DataExportScheduleDeleteResponseTimePeriod = "PREVIOUS_YEAR"
+	DataExportScheduleDeleteResponseTimePeriodLast12Hours     DataExportScheduleDeleteResponseTimePeriod = "LAST_12_HOURS"
+	DataExportScheduleDeleteResponseTimePeriodLast7Days       DataExportScheduleDeleteResponseTimePeriod = "LAST_7_DAYS"
+	DataExportScheduleDeleteResponseTimePeriodLast30Days      DataExportScheduleDeleteResponseTimePeriod = "LAST_30_DAYS"
+	DataExportScheduleDeleteResponseTimePeriodLast35Days      DataExportScheduleDeleteResponseTimePeriod = "LAST_35_DAYS"
+	DataExportScheduleDeleteResponseTimePeriodLast90Days      DataExportScheduleDeleteResponseTimePeriod = "LAST_90_DAYS"
+	DataExportScheduleDeleteResponseTimePeriodLast120Days     DataExportScheduleDeleteResponseTimePeriod = "LAST_120_DAYS"
+	DataExportScheduleDeleteResponseTimePeriodLastYear        DataExportScheduleDeleteResponseTimePeriod = "LAST_YEAR"
 )
 
 func (r DataExportScheduleDeleteResponseTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleDeleteResponseTimePeriodToday, DataExportScheduleDeleteResponseTimePeriodYesterday, DataExportScheduleDeleteResponseTimePeriodWeekToDate, DataExportScheduleDeleteResponseTimePeriodCurrentMonth, DataExportScheduleDeleteResponseTimePeriodLast30Days, DataExportScheduleDeleteResponseTimePeriodLast35Days, DataExportScheduleDeleteResponseTimePeriodPreviousWeek, DataExportScheduleDeleteResponseTimePeriodPreviousMonth:
+	case DataExportScheduleDeleteResponseTimePeriodToday, DataExportScheduleDeleteResponseTimePeriodYesterday, DataExportScheduleDeleteResponseTimePeriodWeekToDate, DataExportScheduleDeleteResponseTimePeriodMonthToDate, DataExportScheduleDeleteResponseTimePeriodYearToDate, DataExportScheduleDeleteResponseTimePeriodPreviousWeek, DataExportScheduleDeleteResponseTimePeriodPreviousMonth, DataExportScheduleDeleteResponseTimePeriodPreviousQuarter, DataExportScheduleDeleteResponseTimePeriodPreviousYear, DataExportScheduleDeleteResponseTimePeriodLast12Hours, DataExportScheduleDeleteResponseTimePeriodLast7Days, DataExportScheduleDeleteResponseTimePeriodLast30Days, DataExportScheduleDeleteResponseTimePeriodLast35Days, DataExportScheduleDeleteResponseTimePeriodLast90Days, DataExportScheduleDeleteResponseTimePeriodLast120Days, DataExportScheduleDeleteResponseTimePeriodLastYear:
 		return true
 	}
 	return false
@@ -1916,63 +1686,42 @@ func (r DataExportScheduleNewParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational schedule configuration.
 type DataExportScheduleNewParamsBody struct {
-	SourceType param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType,required"`
-	AccountIDs param.Field[interface{}]                               `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[DataExportScheduleNewParamsBodyAggregation] `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[DataExportScheduleNewParamsBodyAggregationFrequency] `json:"aggregationFrequency"`
-	MeterIDs             param.Field[interface{}]                                         `json:"meterIds"`
-	OperationalDataTypes param.Field[interface{}]                                         `json:"operationalDataTypes"`
+	// The type of data to export. Possible values are: OPERATIONAL
+	SourceType           param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType,required"`
+	AccountIDs           param.Field[interface{}]                               `json:"accountIds"`
+	Aggregations         param.Field[interface{}]                               `json:"aggregations"`
+	DimensionFilters     param.Field[interface{}]                               `json:"dimensionFilters"`
+	Groups               param.Field[interface{}]                               `json:"groups"`
+	MeterIDs             param.Field[interface{}]                               `json:"meterIds"`
+	OperationalDataTypes param.Field[interface{}]                               `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -2003,86 +1752,17 @@ type DataExportScheduleNewParamsBodyUnion interface {
 	implementsDataExportScheduleNewParamsBodyUnion()
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type DataExportScheduleNewParamsBodySourceType string
 
 const (
-	DataExportScheduleNewParamsBodySourceTypeUsage       DataExportScheduleNewParamsBodySourceType = "USAGE"
 	DataExportScheduleNewParamsBodySourceTypeOperational DataExportScheduleNewParamsBodySourceType = "OPERATIONAL"
+	DataExportScheduleNewParamsBodySourceTypeUsage       DataExportScheduleNewParamsBodySourceType = "USAGE"
 )
 
 func (r DataExportScheduleNewParamsBodySourceType) IsKnown() bool {
 	switch r {
-	case DataExportScheduleNewParamsBodySourceTypeUsage, DataExportScheduleNewParamsBodySourceTypeOperational:
-		return true
-	}
-	return false
-}
-
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleNewParamsBodyAggregation string
-
-const (
-	DataExportScheduleNewParamsBodyAggregationSum    DataExportScheduleNewParamsBodyAggregation = "SUM"
-	DataExportScheduleNewParamsBodyAggregationMin    DataExportScheduleNewParamsBodyAggregation = "MIN"
-	DataExportScheduleNewParamsBodyAggregationMax    DataExportScheduleNewParamsBodyAggregation = "MAX"
-	DataExportScheduleNewParamsBodyAggregationCount  DataExportScheduleNewParamsBodyAggregation = "COUNT"
-	DataExportScheduleNewParamsBodyAggregationLatest DataExportScheduleNewParamsBodyAggregation = "LATEST"
-	DataExportScheduleNewParamsBodyAggregationMean   DataExportScheduleNewParamsBodyAggregation = "MEAN"
-)
-
-func (r DataExportScheduleNewParamsBodyAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewParamsBodyAggregationSum, DataExportScheduleNewParamsBodyAggregationMin, DataExportScheduleNewParamsBodyAggregationMax, DataExportScheduleNewParamsBodyAggregationCount, DataExportScheduleNewParamsBodyAggregationLatest, DataExportScheduleNewParamsBodyAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleNewParamsBodyAggregationFrequency string
-
-const (
-	DataExportScheduleNewParamsBodyAggregationFrequencyOriginal DataExportScheduleNewParamsBodyAggregationFrequency = "ORIGINAL"
-	DataExportScheduleNewParamsBodyAggregationFrequencyHour     DataExportScheduleNewParamsBodyAggregationFrequency = "HOUR"
-	DataExportScheduleNewParamsBodyAggregationFrequencyDay      DataExportScheduleNewParamsBodyAggregationFrequency = "DAY"
-	DataExportScheduleNewParamsBodyAggregationFrequencyWeek     DataExportScheduleNewParamsBodyAggregationFrequency = "WEEK"
-	DataExportScheduleNewParamsBodyAggregationFrequencyMonth    DataExportScheduleNewParamsBodyAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleNewParamsBodyAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleNewParamsBodyAggregationFrequencyOriginal, DataExportScheduleNewParamsBodyAggregationFrequencyHour, DataExportScheduleNewParamsBodyAggregationFrequencyDay, DataExportScheduleNewParamsBodyAggregationFrequencyWeek, DataExportScheduleNewParamsBodyAggregationFrequencyMonth:
+	case DataExportScheduleNewParamsBodySourceTypeOperational, DataExportScheduleNewParamsBodySourceTypeUsage:
 		return true
 	}
 	return false
@@ -2091,21 +1771,31 @@ func (r DataExportScheduleNewParamsBodyAggregationFrequency) IsKnown() bool {
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -2113,19 +1803,27 @@ func (r DataExportScheduleNewParamsBodyAggregationFrequency) IsKnown() bool {
 type DataExportScheduleNewParamsBodyTimePeriod string
 
 const (
-	DataExportScheduleNewParamsBodyTimePeriodToday         DataExportScheduleNewParamsBodyTimePeriod = "TODAY"
-	DataExportScheduleNewParamsBodyTimePeriodYesterday     DataExportScheduleNewParamsBodyTimePeriod = "YESTERDAY"
-	DataExportScheduleNewParamsBodyTimePeriodWeekToDate    DataExportScheduleNewParamsBodyTimePeriod = "WEEK_TO_DATE"
-	DataExportScheduleNewParamsBodyTimePeriodCurrentMonth  DataExportScheduleNewParamsBodyTimePeriod = "CURRENT_MONTH"
-	DataExportScheduleNewParamsBodyTimePeriodLast30Days    DataExportScheduleNewParamsBodyTimePeriod = "LAST_30_DAYS"
-	DataExportScheduleNewParamsBodyTimePeriodLast35Days    DataExportScheduleNewParamsBodyTimePeriod = "LAST_35_DAYS"
-	DataExportScheduleNewParamsBodyTimePeriodPreviousWeek  DataExportScheduleNewParamsBodyTimePeriod = "PREVIOUS_WEEK"
-	DataExportScheduleNewParamsBodyTimePeriodPreviousMonth DataExportScheduleNewParamsBodyTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleNewParamsBodyTimePeriodToday           DataExportScheduleNewParamsBodyTimePeriod = "TODAY"
+	DataExportScheduleNewParamsBodyTimePeriodYesterday       DataExportScheduleNewParamsBodyTimePeriod = "YESTERDAY"
+	DataExportScheduleNewParamsBodyTimePeriodWeekToDate      DataExportScheduleNewParamsBodyTimePeriod = "WEEK_TO_DATE"
+	DataExportScheduleNewParamsBodyTimePeriodMonthToDate     DataExportScheduleNewParamsBodyTimePeriod = "MONTH_TO_DATE"
+	DataExportScheduleNewParamsBodyTimePeriodYearToDate      DataExportScheduleNewParamsBodyTimePeriod = "YEAR_TO_DATE"
+	DataExportScheduleNewParamsBodyTimePeriodPreviousWeek    DataExportScheduleNewParamsBodyTimePeriod = "PREVIOUS_WEEK"
+	DataExportScheduleNewParamsBodyTimePeriodPreviousMonth   DataExportScheduleNewParamsBodyTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleNewParamsBodyTimePeriodPreviousQuarter DataExportScheduleNewParamsBodyTimePeriod = "PREVIOUS_QUARTER"
+	DataExportScheduleNewParamsBodyTimePeriodPreviousYear    DataExportScheduleNewParamsBodyTimePeriod = "PREVIOUS_YEAR"
+	DataExportScheduleNewParamsBodyTimePeriodLast12Hours     DataExportScheduleNewParamsBodyTimePeriod = "LAST_12_HOURS"
+	DataExportScheduleNewParamsBodyTimePeriodLast7Days       DataExportScheduleNewParamsBodyTimePeriod = "LAST_7_DAYS"
+	DataExportScheduleNewParamsBodyTimePeriodLast30Days      DataExportScheduleNewParamsBodyTimePeriod = "LAST_30_DAYS"
+	DataExportScheduleNewParamsBodyTimePeriodLast35Days      DataExportScheduleNewParamsBodyTimePeriod = "LAST_35_DAYS"
+	DataExportScheduleNewParamsBodyTimePeriodLast90Days      DataExportScheduleNewParamsBodyTimePeriod = "LAST_90_DAYS"
+	DataExportScheduleNewParamsBodyTimePeriodLast120Days     DataExportScheduleNewParamsBodyTimePeriod = "LAST_120_DAYS"
+	DataExportScheduleNewParamsBodyTimePeriodLastYear        DataExportScheduleNewParamsBodyTimePeriod = "LAST_YEAR"
 )
 
 func (r DataExportScheduleNewParamsBodyTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleNewParamsBodyTimePeriodToday, DataExportScheduleNewParamsBodyTimePeriodYesterday, DataExportScheduleNewParamsBodyTimePeriodWeekToDate, DataExportScheduleNewParamsBodyTimePeriodCurrentMonth, DataExportScheduleNewParamsBodyTimePeriodLast30Days, DataExportScheduleNewParamsBodyTimePeriodLast35Days, DataExportScheduleNewParamsBodyTimePeriodPreviousWeek, DataExportScheduleNewParamsBodyTimePeriodPreviousMonth:
+	case DataExportScheduleNewParamsBodyTimePeriodToday, DataExportScheduleNewParamsBodyTimePeriodYesterday, DataExportScheduleNewParamsBodyTimePeriodWeekToDate, DataExportScheduleNewParamsBodyTimePeriodMonthToDate, DataExportScheduleNewParamsBodyTimePeriodYearToDate, DataExportScheduleNewParamsBodyTimePeriodPreviousWeek, DataExportScheduleNewParamsBodyTimePeriodPreviousMonth, DataExportScheduleNewParamsBodyTimePeriodPreviousQuarter, DataExportScheduleNewParamsBodyTimePeriodPreviousYear, DataExportScheduleNewParamsBodyTimePeriodLast12Hours, DataExportScheduleNewParamsBodyTimePeriodLast7Days, DataExportScheduleNewParamsBodyTimePeriodLast30Days, DataExportScheduleNewParamsBodyTimePeriodLast35Days, DataExportScheduleNewParamsBodyTimePeriodLast90Days, DataExportScheduleNewParamsBodyTimePeriodLast120Days, DataExportScheduleNewParamsBodyTimePeriodLastYear:
 		return true
 	}
 	return false
@@ -2149,63 +1847,42 @@ func (r DataExportScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
 
 // Request representing an operational schedule configuration.
 type DataExportScheduleUpdateParamsBody struct {
-	SourceType param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType,required"`
-	AccountIDs param.Field[interface{}]                                  `json:"accountIds"`
-	// Specifies the aggregation method applied to usage data collected in the numeric
-	// Data Fields of Meters included for the Data Export Schedule - that is, Data
-	// Fields of type **MEASURE**, **INCOME**, or **COST**:
-	//
-	//   - **SUM**. Adds the values.
-	//   - **MIN**. Uses the minimum value.
-	//   - **MAX**. Uses the maximum value.
-	//   - **COUNT**. Counts the number of values.
-	//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-	//     value of usage data measurement submissions. If using this method, please
-	//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-	Aggregation param.Field[DataExportScheduleUpdateParamsBodyAggregation] `json:"aggregation"`
-	// Specifies the time period for the aggregation of usage data included each time
-	// the Data Export Schedule runs:
-	//
-	//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-	//     then raw usage data measurements collected by all Data Field types and any
-	//     Derived Fields on the selected Meters are included in the export. This is the
-	//     _Default_.
-	//
-	// If you want to aggregate usage data for the Export Schedule you must define an
-	// `aggregationFrequency`:
-	//
-	// - **HOUR**. Aggregated hourly.
-	// - **DAY**. Aggregated daily.
-	// - **WEEK**. Aggregated weekly.
-	// - **MONTH**. Aggregated monthly.
-	//
-	//   - If you select to aggregate usage data for a Export Schedule, then only the
-	//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-	//     **INCOME**, or **COST** on selected Meters are included in the export.
-	//
-	// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-	// not define an `aggregation` method, then you'll receive and error.
-	AggregationFrequency param.Field[DataExportScheduleUpdateParamsBodyAggregationFrequency] `json:"aggregationFrequency"`
-	MeterIDs             param.Field[interface{}]                                            `json:"meterIds"`
-	OperationalDataTypes param.Field[interface{}]                                            `json:"operationalDataTypes"`
+	// The type of data to export. Possible values are: OPERATIONAL
+	SourceType           param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType,required"`
+	AccountIDs           param.Field[interface{}]                                  `json:"accountIds"`
+	Aggregations         param.Field[interface{}]                                  `json:"aggregations"`
+	DimensionFilters     param.Field[interface{}]                                  `json:"dimensionFilters"`
+	Groups               param.Field[interface{}]                                  `json:"groups"`
+	MeterIDs             param.Field[interface{}]                                  `json:"meterIds"`
+	OperationalDataTypes param.Field[interface{}]                                  `json:"operationalDataTypes"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
-	//   - **TODAY**. Data collected for the current day up until the time the export
-	//     runs.
-	//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-	//     the 24 hour period from midnight to midnight of the day before.
-	//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-	//     the date and time the export runs, and weeks run Monday to Monday.
-	//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-	//     ran up to and including the date and time the export runs.
-	//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-	//     is ran.
-	//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-	//     is ran.
-	//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-	//     run Monday to Monday.
-	//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+	//   - **TODAY**. Data collected for the current day up until the time the export is
+	//     scheduled to run.
+	//   - **YESTERDAY**. Data collected for the day before the export runs under the
+	//     schedule - that is, the 24 hour period from midnight to midnight of the day
+	//     before.
+	//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+	//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+	//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+	//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+	//     export will contain data for the period running from Monday, June 3rd 2024 to
+	//     midnight on Sunday, June 9th 2024.
+	//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+	//     the period covering the current week, month, or year period. For example if
+	//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+	//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+	//     all usage data collected starting Monday October 14th 2024 through to the
+	//     Wednesday at 10 a.m. UTC of the current week.
+	//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+	//     of the hour in which the export is scheduled to run.
+	//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+	//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+	//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+	//     and the export is scheduled to run for any time on June 15th 2024, it will
+	//     contain usage data collected for the previous 30 days - starting May 16th 2024
+	//     through to midnight on June 14th 2024
 	//
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -2236,86 +1913,17 @@ type DataExportScheduleUpdateParamsBodyUnion interface {
 	implementsDataExportScheduleUpdateParamsBodyUnion()
 }
 
+// The type of data to export. Possible values are: OPERATIONAL
 type DataExportScheduleUpdateParamsBodySourceType string
 
 const (
-	DataExportScheduleUpdateParamsBodySourceTypeUsage       DataExportScheduleUpdateParamsBodySourceType = "USAGE"
 	DataExportScheduleUpdateParamsBodySourceTypeOperational DataExportScheduleUpdateParamsBodySourceType = "OPERATIONAL"
+	DataExportScheduleUpdateParamsBodySourceTypeUsage       DataExportScheduleUpdateParamsBodySourceType = "USAGE"
 )
 
 func (r DataExportScheduleUpdateParamsBodySourceType) IsKnown() bool {
 	switch r {
-	case DataExportScheduleUpdateParamsBodySourceTypeUsage, DataExportScheduleUpdateParamsBodySourceTypeOperational:
-		return true
-	}
-	return false
-}
-
-// Specifies the aggregation method applied to usage data collected in the numeric
-// Data Fields of Meters included for the Data Export Schedule - that is, Data
-// Fields of type **MEASURE**, **INCOME**, or **COST**:
-//
-//   - **SUM**. Adds the values.
-//   - **MIN**. Uses the minimum value.
-//   - **MAX**. Uses the maximum value.
-//   - **COUNT**. Counts the number of values.
-//   - **LATEST**. Uses the most recent value. Note: Based on the timestamp `ts`
-//     value of usage data measurement submissions. If using this method, please
-//     ensure _distinct_ `ts` values are used for usage data measurement submissions.
-type DataExportScheduleUpdateParamsBodyAggregation string
-
-const (
-	DataExportScheduleUpdateParamsBodyAggregationSum    DataExportScheduleUpdateParamsBodyAggregation = "SUM"
-	DataExportScheduleUpdateParamsBodyAggregationMin    DataExportScheduleUpdateParamsBodyAggregation = "MIN"
-	DataExportScheduleUpdateParamsBodyAggregationMax    DataExportScheduleUpdateParamsBodyAggregation = "MAX"
-	DataExportScheduleUpdateParamsBodyAggregationCount  DataExportScheduleUpdateParamsBodyAggregation = "COUNT"
-	DataExportScheduleUpdateParamsBodyAggregationLatest DataExportScheduleUpdateParamsBodyAggregation = "LATEST"
-	DataExportScheduleUpdateParamsBodyAggregationMean   DataExportScheduleUpdateParamsBodyAggregation = "MEAN"
-)
-
-func (r DataExportScheduleUpdateParamsBodyAggregation) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateParamsBodyAggregationSum, DataExportScheduleUpdateParamsBodyAggregationMin, DataExportScheduleUpdateParamsBodyAggregationMax, DataExportScheduleUpdateParamsBodyAggregationCount, DataExportScheduleUpdateParamsBodyAggregationLatest, DataExportScheduleUpdateParamsBodyAggregationMean:
-		return true
-	}
-	return false
-}
-
-// Specifies the time period for the aggregation of usage data included each time
-// the Data Export Schedule runs:
-//
-//   - **ORIGINAL**. Usage data is _not aggregated_. If you select to not aggregate,
-//     then raw usage data measurements collected by all Data Field types and any
-//     Derived Fields on the selected Meters are included in the export. This is the
-//     _Default_.
-//
-// If you want to aggregate usage data for the Export Schedule you must define an
-// `aggregationFrequency`:
-//
-// - **HOUR**. Aggregated hourly.
-// - **DAY**. Aggregated daily.
-// - **WEEK**. Aggregated weekly.
-// - **MONTH**. Aggregated monthly.
-//
-//   - If you select to aggregate usage data for a Export Schedule, then only the
-//     aggregated usage data collected by numeric Data Fields of type **MEASURE**,
-//     **INCOME**, or **COST** on selected Meters are included in the export.
-//
-// **NOTE**: If you define an `aggregationFrequency` other than **ORIGINAL** and do
-// not define an `aggregation` method, then you'll receive and error.
-type DataExportScheduleUpdateParamsBodyAggregationFrequency string
-
-const (
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyOriginal DataExportScheduleUpdateParamsBodyAggregationFrequency = "ORIGINAL"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyHour     DataExportScheduleUpdateParamsBodyAggregationFrequency = "HOUR"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyDay      DataExportScheduleUpdateParamsBodyAggregationFrequency = "DAY"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyWeek     DataExportScheduleUpdateParamsBodyAggregationFrequency = "WEEK"
-	DataExportScheduleUpdateParamsBodyAggregationFrequencyMonth    DataExportScheduleUpdateParamsBodyAggregationFrequency = "MONTH"
-)
-
-func (r DataExportScheduleUpdateParamsBodyAggregationFrequency) IsKnown() bool {
-	switch r {
-	case DataExportScheduleUpdateParamsBodyAggregationFrequencyOriginal, DataExportScheduleUpdateParamsBodyAggregationFrequencyHour, DataExportScheduleUpdateParamsBodyAggregationFrequencyDay, DataExportScheduleUpdateParamsBodyAggregationFrequencyWeek, DataExportScheduleUpdateParamsBodyAggregationFrequencyMonth:
+	case DataExportScheduleUpdateParamsBodySourceTypeOperational, DataExportScheduleUpdateParamsBodySourceTypeUsage:
 		return true
 	}
 	return false
@@ -2324,21 +1932,31 @@ func (r DataExportScheduleUpdateParamsBodyAggregationFrequency) IsKnown() bool {
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
-//   - **TODAY**. Data collected for the current day up until the time the export
-//     runs.
-//   - **YESTERDAY**. Data collected for the day before the export runs - that is,
-//     the 24 hour period from midnight to midnight of the day before.
-//   - **WEEK_TO_DATE**. Data collected for the period covering the current week to
-//     the date and time the export runs, and weeks run Monday to Monday.
-//   - **CURRENT_MONTH**. Data collected for the current month in which the export is
-//     ran up to and including the date and time the export runs.
-//   - **LAST_30_DAYS**. Data collected for the 30 days prior to the date the export
-//     is ran.
-//   - **LAST_35_DAYS**. Data collected for the 35 days prior to the date the export
-//     is ran.
-//   - **PREVIOUS_WEEK**. Data collected for the previous full week period, and weeks
-//     run Monday to Monday.
-//   - **PREVIOUS_MONTH**. Data collected for the previous full month period.
+//   - **TODAY**. Data collected for the current day up until the time the export is
+//     scheduled to run.
+//   - **YESTERDAY**. Data collected for the day before the export runs under the
+//     schedule - that is, the 24 hour period from midnight to midnight of the day
+//     before.
+//   - **PREVIOUS_WEEK**, **PREVIOUS_MONTH**, **PREVIOUS_QUARTER**,
+//     **PREVIOUS_YEAR**. Data collected for the previous full week, month, quarter,
+//     or year period. For example if **PREVIOUS_WEEK**, weeks run Monday to Monday -
+//     if the export is scheduled to run on June 12th 2024, which is a Wednesday, the
+//     export will contain data for the period running from Monday, June 3rd 2024 to
+//     midnight on Sunday, June 9th 2024.
+//   - **WEEK_TO_DATE**, **MONTH_TO_DATE**, or **YEAR_TO_DATE**. Data collected for
+//     the period covering the current week, month, or year period. For example if
+//     **WEEK_TO_DATE**, weeks run Monday to Monday - if the Export is scheduled to
+//     run at 10 a.m. UTC on October 16th 2024, which is a Wednesday, it will contain
+//     all usage data collected starting Monday October 14th 2024 through to the
+//     Wednesday at 10 a.m. UTC of the current week.
+//   - **LAST_12_HOURS**. Data collected for the twelve hour period up to the start
+//     of the hour in which the export is scheduled to run.
+//   - **LAST_7_DAYS**, **LAST_30_DAYS**, **LAST_35_DAYS**, **LAST_90_DAYS**,
+//     **LAST_120_DAYS** **LAST_YEAR**. Data collected for the selected period prior
+//     to the date the export is scheduled to run. For example if **LAST_30_DAYS**
+//     and the export is scheduled to run for any time on June 15th 2024, it will
+//     contain usage data collected for the previous 30 days - starting May 16th 2024
+//     through to midnight on June 14th 2024
 //
 // For more details and examples, see the
 // [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
@@ -2346,19 +1964,27 @@ func (r DataExportScheduleUpdateParamsBodyAggregationFrequency) IsKnown() bool {
 type DataExportScheduleUpdateParamsBodyTimePeriod string
 
 const (
-	DataExportScheduleUpdateParamsBodyTimePeriodToday         DataExportScheduleUpdateParamsBodyTimePeriod = "TODAY"
-	DataExportScheduleUpdateParamsBodyTimePeriodYesterday     DataExportScheduleUpdateParamsBodyTimePeriod = "YESTERDAY"
-	DataExportScheduleUpdateParamsBodyTimePeriodWeekToDate    DataExportScheduleUpdateParamsBodyTimePeriod = "WEEK_TO_DATE"
-	DataExportScheduleUpdateParamsBodyTimePeriodCurrentMonth  DataExportScheduleUpdateParamsBodyTimePeriod = "CURRENT_MONTH"
-	DataExportScheduleUpdateParamsBodyTimePeriodLast30Days    DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_30_DAYS"
-	DataExportScheduleUpdateParamsBodyTimePeriodLast35Days    DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_35_DAYS"
-	DataExportScheduleUpdateParamsBodyTimePeriodPreviousWeek  DataExportScheduleUpdateParamsBodyTimePeriod = "PREVIOUS_WEEK"
-	DataExportScheduleUpdateParamsBodyTimePeriodPreviousMonth DataExportScheduleUpdateParamsBodyTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleUpdateParamsBodyTimePeriodToday           DataExportScheduleUpdateParamsBodyTimePeriod = "TODAY"
+	DataExportScheduleUpdateParamsBodyTimePeriodYesterday       DataExportScheduleUpdateParamsBodyTimePeriod = "YESTERDAY"
+	DataExportScheduleUpdateParamsBodyTimePeriodWeekToDate      DataExportScheduleUpdateParamsBodyTimePeriod = "WEEK_TO_DATE"
+	DataExportScheduleUpdateParamsBodyTimePeriodMonthToDate     DataExportScheduleUpdateParamsBodyTimePeriod = "MONTH_TO_DATE"
+	DataExportScheduleUpdateParamsBodyTimePeriodYearToDate      DataExportScheduleUpdateParamsBodyTimePeriod = "YEAR_TO_DATE"
+	DataExportScheduleUpdateParamsBodyTimePeriodPreviousWeek    DataExportScheduleUpdateParamsBodyTimePeriod = "PREVIOUS_WEEK"
+	DataExportScheduleUpdateParamsBodyTimePeriodPreviousMonth   DataExportScheduleUpdateParamsBodyTimePeriod = "PREVIOUS_MONTH"
+	DataExportScheduleUpdateParamsBodyTimePeriodPreviousQuarter DataExportScheduleUpdateParamsBodyTimePeriod = "PREVIOUS_QUARTER"
+	DataExportScheduleUpdateParamsBodyTimePeriodPreviousYear    DataExportScheduleUpdateParamsBodyTimePeriod = "PREVIOUS_YEAR"
+	DataExportScheduleUpdateParamsBodyTimePeriodLast12Hours     DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_12_HOURS"
+	DataExportScheduleUpdateParamsBodyTimePeriodLast7Days       DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_7_DAYS"
+	DataExportScheduleUpdateParamsBodyTimePeriodLast30Days      DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_30_DAYS"
+	DataExportScheduleUpdateParamsBodyTimePeriodLast35Days      DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_35_DAYS"
+	DataExportScheduleUpdateParamsBodyTimePeriodLast90Days      DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_90_DAYS"
+	DataExportScheduleUpdateParamsBodyTimePeriodLast120Days     DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_120_DAYS"
+	DataExportScheduleUpdateParamsBodyTimePeriodLastYear        DataExportScheduleUpdateParamsBodyTimePeriod = "LAST_YEAR"
 )
 
 func (r DataExportScheduleUpdateParamsBodyTimePeriod) IsKnown() bool {
 	switch r {
-	case DataExportScheduleUpdateParamsBodyTimePeriodToday, DataExportScheduleUpdateParamsBodyTimePeriodYesterday, DataExportScheduleUpdateParamsBodyTimePeriodWeekToDate, DataExportScheduleUpdateParamsBodyTimePeriodCurrentMonth, DataExportScheduleUpdateParamsBodyTimePeriodLast30Days, DataExportScheduleUpdateParamsBodyTimePeriodLast35Days, DataExportScheduleUpdateParamsBodyTimePeriodPreviousWeek, DataExportScheduleUpdateParamsBodyTimePeriodPreviousMonth:
+	case DataExportScheduleUpdateParamsBodyTimePeriodToday, DataExportScheduleUpdateParamsBodyTimePeriodYesterday, DataExportScheduleUpdateParamsBodyTimePeriodWeekToDate, DataExportScheduleUpdateParamsBodyTimePeriodMonthToDate, DataExportScheduleUpdateParamsBodyTimePeriodYearToDate, DataExportScheduleUpdateParamsBodyTimePeriodPreviousWeek, DataExportScheduleUpdateParamsBodyTimePeriodPreviousMonth, DataExportScheduleUpdateParamsBodyTimePeriodPreviousQuarter, DataExportScheduleUpdateParamsBodyTimePeriodPreviousYear, DataExportScheduleUpdateParamsBodyTimePeriodLast12Hours, DataExportScheduleUpdateParamsBodyTimePeriodLast7Days, DataExportScheduleUpdateParamsBodyTimePeriodLast30Days, DataExportScheduleUpdateParamsBodyTimePeriodLast35Days, DataExportScheduleUpdateParamsBodyTimePeriodLast90Days, DataExportScheduleUpdateParamsBodyTimePeriodLast120Days, DataExportScheduleUpdateParamsBodyTimePeriodLastYear:
 		return true
 	}
 	return false

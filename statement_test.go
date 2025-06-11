@@ -13,7 +13,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestDataExportJobGet(t *testing.T) {
+func TestStatementNewCsv(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,10 +28,10 @@ func TestDataExportJobGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.DataExports.Jobs.Get(
+	_, err := client.Statements.NewCsv(
 		context.TODO(),
 		"id",
-		m3ter.DataExportJobGetParams{},
+		m3ter.StatementNewCsvParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -42,7 +42,7 @@ func TestDataExportJobGet(t *testing.T) {
 	}
 }
 
-func TestDataExportJobListWithOptionalParams(t *testing.T) {
+func TestStatementGetCsv(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,43 +57,39 @@ func TestDataExportJobListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.DataExports.Jobs.List(context.TODO(), m3ter.DataExportJobListParams{
-		DateCreatedEnd:   m3ter.F("dateCreatedEnd"),
-		DateCreatedStart: m3ter.F("dateCreatedStart"),
-		IDs:              m3ter.F([]string{"string"}),
-		NextToken:        m3ter.F("nextToken"),
-		PageSize:         m3ter.F(int64(1)),
-		ScheduleID:       m3ter.F("scheduleId"),
-		Status:           m3ter.F(m3ter.DataExportJobListParamsStatusPending),
-	})
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDataExportJobGetDownloadURL(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.DataExports.Jobs.GetDownloadURL(
+	_, err := client.Statements.GetCsv(
 		context.TODO(),
-		"jobId",
-		m3ter.DataExportJobGetDownloadURLParams{},
+		"id",
+		m3ter.StatementGetCsvParams{},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestStatementGetJson(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.Statements.GetJson(
+		context.TODO(),
+		"id",
+		m3ter.StatementGetJsonParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

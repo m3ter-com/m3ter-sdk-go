@@ -29,10 +29,9 @@ func TestDataExportScheduleNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Schedules.New(context.TODO(), m3ter.DataExportScheduleNewParams{
-		OrgID: m3ter.F("orgId"),
 		Body: m3ter.OperationalDataExportScheduleRequestParam{
 			OperationalDataTypes: m3ter.F([]m3ter.OperationalDataExportScheduleRequestOperationalDataType{m3ter.OperationalDataExportScheduleRequestOperationalDataTypeBills}),
-			SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeUsage),
+			SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeOperational),
 			Version:              m3ter.F(int64(0)),
 		},
 	})
@@ -63,9 +62,7 @@ func TestDataExportScheduleGet(t *testing.T) {
 	_, err := client.DataExports.Schedules.Get(
 		context.TODO(),
 		"id",
-		m3ter.DataExportScheduleGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DataExportScheduleGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -95,10 +92,9 @@ func TestDataExportScheduleUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.DataExportScheduleUpdateParams{
-			OrgID: m3ter.F("orgId"),
 			Body: m3ter.OperationalDataExportScheduleRequestParam{
 				OperationalDataTypes: m3ter.F([]m3ter.OperationalDataExportScheduleRequestOperationalDataType{m3ter.OperationalDataExportScheduleRequestOperationalDataTypeBills}),
-				SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeUsage),
+				SourceType:           m3ter.F(m3ter.OperationalDataExportScheduleRequestSourceTypeOperational),
 				Version:              m3ter.F(int64(0)),
 			},
 		},
@@ -128,7 +124,6 @@ func TestDataExportScheduleListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.DataExports.Schedules.List(context.TODO(), m3ter.DataExportScheduleListParams{
-		OrgID:     m3ter.F("orgId"),
 		IDs:       m3ter.F([]string{"string"}),
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
@@ -160,9 +155,7 @@ func TestDataExportScheduleDelete(t *testing.T) {
 	_, err := client.DataExports.Schedules.Delete(
 		context.TODO(),
 		"id",
-		m3ter.DataExportScheduleDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.DataExportScheduleDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

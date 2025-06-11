@@ -29,11 +29,10 @@ func TestCurrencyNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.New(context.TODO(), m3ter.CurrencyNewParams{
-		OrgID:            m3ter.F("orgId"),
 		Name:             m3ter.F("x"),
 		Archived:         m3ter.F(true),
 		Code:             m3ter.F("code"),
-		MaxDecimalPlaces: m3ter.F(int64(0)),
+		MaxDecimalPlaces: m3ter.F(int64(2)),
 		RoundingMode:     m3ter.F(m3ter.CurrencyNewParamsRoundingModeUp),
 		Version:          m3ter.F(int64(0)),
 	})
@@ -64,9 +63,7 @@ func TestCurrencyGet(t *testing.T) {
 	_, err := client.Currencies.Get(
 		context.TODO(),
 		"id",
-		m3ter.CurrencyGetParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CurrencyGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -96,11 +93,10 @@ func TestCurrencyUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.CurrencyUpdateParams{
-			OrgID:            m3ter.F("orgId"),
 			Name:             m3ter.F("x"),
 			Archived:         m3ter.F(true),
 			Code:             m3ter.F("code"),
-			MaxDecimalPlaces: m3ter.F(int64(0)),
+			MaxDecimalPlaces: m3ter.F(int64(2)),
 			RoundingMode:     m3ter.F(m3ter.CurrencyUpdateParamsRoundingModeUp),
 			Version:          m3ter.F(int64(0)),
 		},
@@ -130,7 +126,6 @@ func TestCurrencyListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Currencies.List(context.TODO(), m3ter.CurrencyListParams{
-		OrgID:     m3ter.F("orgId"),
 		Archived:  m3ter.F(true),
 		Codes:     m3ter.F([]string{"string"}),
 		IDs:       m3ter.F([]string{"string"}),
@@ -164,9 +159,7 @@ func TestCurrencyDelete(t *testing.T) {
 	_, err := client.Currencies.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CurrencyDeleteParams{
-			OrgID: m3ter.F("orgId"),
-		},
+		m3ter.CurrencyDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

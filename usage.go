@@ -80,7 +80,27 @@ func (r *UsageService) GetFailedIngestDownloadURL(ctx context.Context, params Us
 	return
 }
 
-// Query and filter usage data
+// Query and filter usage data collected for your Organization.
+//
+// You can use several parameters to filter the range of usage data returned:
+//
+//   - **Time period.** Use `startDate` and `endDate` to define a period. The query
+//     references the `timestamp` values of usage data submissions for applying the
+//     defined time period, and not the time submissions were `receivedAt` by the
+//     platform. Only usage data with a `timestamp` that falls in the defined time
+//     period are returned.(Required)
+//   - **Meters.** Specify the Meters you want the query to return data for.
+//   - **Accounts.** Specify the Accounts you want the query to return data for.
+//   - **Dimension Filters.** Specify values for Dimension data fields on included
+//     Meters. Only data that match the specified Dimension field values will be
+//     returned for the query.
+//
+// You can apply Aggregations functions to the usage data returned for the query.
+// If you apply Aggregations, you can select to group the data by:
+//
+// - **Account**
+// - **Time**
+// - **Dimension**
 func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts ...option.RequestOption) (res *UsageQueryResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -109,14 +129,14 @@ func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts 
 //     The usage data measurement is accepted and ingested as data belonging to the
 //     new auto-created Account. At a later date, you can edit the Account's
 //     Code,??Name, and??e-mail address. For more details, see
-//     [Submittting Usage Data for Non-Existent Accounts](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-for-non-existent-accounts)
+//     [Submitting Usage Data for Non-Existent Accounts](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-for-non-existent-accounts)
 //     in our main documentation.
 //   - **Usage Data Adjustments.** If you need to make corrections for billing
 //     retrospectively against an Account, you can use date/time values in the past
 //     for the `ts` (timestamp) request parameter to submit positive or negative
 //     usage data amounts to correct and reconcile earlier billing anomalies. For
 //     more details, see
-//     [Submittting Usage Data Adjustments Using Timestamp](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-adjustments-using-timestamp)
+//     [Submitting Usage Data Adjustments Using Timestamp](https://www.m3ter.com/docs/guides/billing-and-usage-data/submitting-usage-data/submitting-usage-data-adjustments-using-timestamp)
 //     in our main documentation.
 //   - **Ingest Validation Failure Events.** After the intial submission of a usage
 //     data measurement to the Ingest API, a data enrichment stage is performed to
@@ -137,6 +157,7 @@ func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts 
 // above for more details.
 func (r *UsageService) Submit(ctx context.Context, params UsageSubmitParams, opts ...option.RequestOption) (res *SubmitMeasurementsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://ingest.m3ter.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -250,7 +271,19 @@ func (r submitMeasurementsResponseJSON) RawJSON() string {
 
 type UsageQueryResponse struct {
 	Data []map[string]interface{} `json:"data"`
-	// Flag to know if there are more data available than the one returned
+	// Boolean flag to indicate whether or not there are more data available for the
+	// query than are returned:
+	//
+	// - If there are more data, then TRUE.
+	// - If there are no more data, then FALSE.
+	//
+	// **NOTES:**
+	//
+	//   - The limit on the size of the return is 20000 data items. If the query returns
+	//     more than this limit, only 20000 items are returned with most recent first and
+	//     `hasMoreData` will be TRUE.
+	//   - If you have set `limit` in your query request at fewer than the number
+	//     returned by the query, then `hasMoreData` will be TRUE in the response.
 	HasMoreData bool                   `json:"hasMoreData"`
 	JSON        usageQueryResponseJSON `json:"-"`
 }
@@ -291,16 +324,53 @@ func (r UsageGetFailedIngestDownloadURLParams) URLQuery() (v url.Values) {
 type UsageQueryParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
-	// ISO 8601 formatted end date to filter by.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
-	// ISO 8601 formatted start date to filter by.
-	StartDate        param.Field[time.Time]                         `json:"startDate,required" format:"date-time"`
-	AccountIDs       param.Field[[]string]                          `json:"accountIds"`
-	Aggregations     param.Field[[]UsageQueryParamsAggregation]     `json:"aggregations"`
+	// Specify the Accounts you want the query to return usage data for.
+	AccountIDs param.Field[[]string] `json:"accountIds"`
+	// Define the Aggregation functions you want to apply to data fields on included
+	// Meters:
+	//
+	// - **SUM**. Adds the values.
+	// - **MIN**. Uses the minimum value.
+	// - **MAX**. Uses the maximum value.
+	// - **COUNT**. Counts the number of values.
+	// - **LATEST**. Uses the most recent value.
+	// - **MEAN**. Uses the arithmetic mean of the values.
+	// - **UNIQUE**. Uses a count of the number of unique values.
+	//
+	// **NOTE!** The Aggregation functions that can be applied depend on the data field
+	// type:
+	//
+	//   - **Measure** fields. `SUM`, `MIN`, `MAX`, `COUNT`, `LATEST`, or `MEAN`
+	//     functions can be applied.
+	//   - **Dimension** field. `COUNT` or `UNIQUE` functions can be applied.
+	Aggregations param.Field[[]UsageQueryParamsAggregation] `json:"aggregations"`
+	// Define Dimension filters you want to apply for the query.
+	//
+	// Specify values for Dimension data fields on included Meters. Only data that
+	// match the specified Dimension field values will be returned for the query.
 	DimensionFilters param.Field[[]UsageQueryParamsDimensionFilter] `json:"dimensionFilters"`
-	Groups           param.Field[[]UsageQueryParamsGroupUnion]      `json:"groups"`
-	Limit            param.Field[int64]                             `json:"limit"`
-	MeterIDs         param.Field[[]string]                          `json:"meterIds"`
+	// The exclusive end date to define a time period to filter by. (_ISO 8601
+	// formatted_)
+	EndDate param.Field[time.Time] `json:"endDate" format:"date-time"`
+	// If you've applied Aggregations for your query, specify any grouping you want to
+	// impose on the returned data:
+	//
+	//   - **Account**
+	//   - **Time** - group by frequency. Five options: `DAY`, `HOUR`, `WEEK`, `MONTH`,
+	//     or `QUARTER`.
+	//   - **Dimension** - group by Meter and data field.
+	//
+	// **NOTE:** If you attempt to impose grouping for a query that doesn't apply
+	// Aggregations, you'll receive an error.
+	Groups param.Field[[]DataExplorerGroupParam] `json:"groups"`
+	// Define a limit for the number of usage data items you want the query to return,
+	// starting with the most recently received data item.
+	Limit param.Field[int64] `json:"limit"`
+	// Specify the Meters you want the query to return usage data for.
+	MeterIDs param.Field[[]string] `json:"meterIds"`
+	// The inclusive start date to define a time period to filter by. (_ISO 8601
+	// formatted_)
+	StartDate param.Field[time.Time] `json:"startDate" format:"date-time"`
 }
 
 func (r UsageQueryParams) MarshalJSON() (data []byte, err error) {
@@ -370,173 +440,6 @@ type UsageQueryParamsDimensionFilter struct {
 
 func (r UsageQueryParamsDimensionFilter) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Group by a field
-type UsageQueryParamsGroup struct {
-	// Field code to group by
-	FieldCode param.Field[string] `json:"fieldCode"`
-	// Frequency of usage data
-	Frequency param.Field[UsageQueryParamsGroupsFrequency] `json:"frequency"`
-	GroupType param.Field[UsageQueryParamsGroupsGroupType] `json:"groupType"`
-	// Meter ID to group by
-	MeterID param.Field[string] `json:"meterId"`
-}
-
-func (r UsageQueryParamsGroup) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageQueryParamsGroup) implementsUsageQueryParamsGroupUnion() {}
-
-// Group by a field
-//
-// Satisfied by [UsageQueryParamsGroupsDataExplorerAccountGroup],
-// [UsageQueryParamsGroupsDataExplorerDimensionGroup],
-// [UsageQueryParamsGroupsDataExplorerTimeGroup], [UsageQueryParamsGroup].
-type UsageQueryParamsGroupUnion interface {
-	implementsUsageQueryParamsGroupUnion()
-}
-
-// Group by account
-type UsageQueryParamsGroupsDataExplorerAccountGroup struct {
-	GroupType param.Field[UsageQueryParamsGroupsDataExplorerAccountGroupGroupType] `json:"groupType"`
-}
-
-func (r UsageQueryParamsGroupsDataExplorerAccountGroup) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageQueryParamsGroupsDataExplorerAccountGroup) implementsUsageQueryParamsGroupUnion() {}
-
-type UsageQueryParamsGroupsDataExplorerAccountGroupGroupType string
-
-const (
-	UsageQueryParamsGroupsDataExplorerAccountGroupGroupTypeAccount   UsageQueryParamsGroupsDataExplorerAccountGroupGroupType = "ACCOUNT"
-	UsageQueryParamsGroupsDataExplorerAccountGroupGroupTypeDimension UsageQueryParamsGroupsDataExplorerAccountGroupGroupType = "DIMENSION"
-	UsageQueryParamsGroupsDataExplorerAccountGroupGroupTypeTime      UsageQueryParamsGroupsDataExplorerAccountGroupGroupType = "TIME"
-)
-
-func (r UsageQueryParamsGroupsDataExplorerAccountGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsDataExplorerAccountGroupGroupTypeAccount, UsageQueryParamsGroupsDataExplorerAccountGroupGroupTypeDimension, UsageQueryParamsGroupsDataExplorerAccountGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by dimension
-type UsageQueryParamsGroupsDataExplorerDimensionGroup struct {
-	// Field code to group by
-	FieldCode param.Field[string] `json:"fieldCode,required"`
-	// Meter ID to group by
-	MeterID   param.Field[string]                                                    `json:"meterId,required"`
-	GroupType param.Field[UsageQueryParamsGroupsDataExplorerDimensionGroupGroupType] `json:"groupType"`
-}
-
-func (r UsageQueryParamsGroupsDataExplorerDimensionGroup) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageQueryParamsGroupsDataExplorerDimensionGroup) implementsUsageQueryParamsGroupUnion() {}
-
-type UsageQueryParamsGroupsDataExplorerDimensionGroupGroupType string
-
-const (
-	UsageQueryParamsGroupsDataExplorerDimensionGroupGroupTypeAccount   UsageQueryParamsGroupsDataExplorerDimensionGroupGroupType = "ACCOUNT"
-	UsageQueryParamsGroupsDataExplorerDimensionGroupGroupTypeDimension UsageQueryParamsGroupsDataExplorerDimensionGroupGroupType = "DIMENSION"
-	UsageQueryParamsGroupsDataExplorerDimensionGroupGroupTypeTime      UsageQueryParamsGroupsDataExplorerDimensionGroupGroupType = "TIME"
-)
-
-func (r UsageQueryParamsGroupsDataExplorerDimensionGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsDataExplorerDimensionGroupGroupTypeAccount, UsageQueryParamsGroupsDataExplorerDimensionGroupGroupTypeDimension, UsageQueryParamsGroupsDataExplorerDimensionGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by time
-type UsageQueryParamsGroupsDataExplorerTimeGroup struct {
-	// Frequency of usage data
-	Frequency param.Field[UsageQueryParamsGroupsDataExplorerTimeGroupFrequency] `json:"frequency,required"`
-	GroupType param.Field[UsageQueryParamsGroupsDataExplorerTimeGroupGroupType] `json:"groupType"`
-}
-
-func (r UsageQueryParamsGroupsDataExplorerTimeGroup) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageQueryParamsGroupsDataExplorerTimeGroup) implementsUsageQueryParamsGroupUnion() {}
-
-// Frequency of usage data
-type UsageQueryParamsGroupsDataExplorerTimeGroupFrequency string
-
-const (
-	UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyDay     UsageQueryParamsGroupsDataExplorerTimeGroupFrequency = "DAY"
-	UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyHour    UsageQueryParamsGroupsDataExplorerTimeGroupFrequency = "HOUR"
-	UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyWeek    UsageQueryParamsGroupsDataExplorerTimeGroupFrequency = "WEEK"
-	UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyMonth   UsageQueryParamsGroupsDataExplorerTimeGroupFrequency = "MONTH"
-	UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyQuarter UsageQueryParamsGroupsDataExplorerTimeGroupFrequency = "QUARTER"
-)
-
-func (r UsageQueryParamsGroupsDataExplorerTimeGroupFrequency) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyDay, UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyHour, UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyWeek, UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyMonth, UsageQueryParamsGroupsDataExplorerTimeGroupFrequencyQuarter:
-		return true
-	}
-	return false
-}
-
-type UsageQueryParamsGroupsDataExplorerTimeGroupGroupType string
-
-const (
-	UsageQueryParamsGroupsDataExplorerTimeGroupGroupTypeAccount   UsageQueryParamsGroupsDataExplorerTimeGroupGroupType = "ACCOUNT"
-	UsageQueryParamsGroupsDataExplorerTimeGroupGroupTypeDimension UsageQueryParamsGroupsDataExplorerTimeGroupGroupType = "DIMENSION"
-	UsageQueryParamsGroupsDataExplorerTimeGroupGroupTypeTime      UsageQueryParamsGroupsDataExplorerTimeGroupGroupType = "TIME"
-)
-
-func (r UsageQueryParamsGroupsDataExplorerTimeGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsDataExplorerTimeGroupGroupTypeAccount, UsageQueryParamsGroupsDataExplorerTimeGroupGroupTypeDimension, UsageQueryParamsGroupsDataExplorerTimeGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Frequency of usage data
-type UsageQueryParamsGroupsFrequency string
-
-const (
-	UsageQueryParamsGroupsFrequencyDay     UsageQueryParamsGroupsFrequency = "DAY"
-	UsageQueryParamsGroupsFrequencyHour    UsageQueryParamsGroupsFrequency = "HOUR"
-	UsageQueryParamsGroupsFrequencyWeek    UsageQueryParamsGroupsFrequency = "WEEK"
-	UsageQueryParamsGroupsFrequencyMonth   UsageQueryParamsGroupsFrequency = "MONTH"
-	UsageQueryParamsGroupsFrequencyQuarter UsageQueryParamsGroupsFrequency = "QUARTER"
-)
-
-func (r UsageQueryParamsGroupsFrequency) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsFrequencyDay, UsageQueryParamsGroupsFrequencyHour, UsageQueryParamsGroupsFrequencyWeek, UsageQueryParamsGroupsFrequencyMonth, UsageQueryParamsGroupsFrequencyQuarter:
-		return true
-	}
-	return false
-}
-
-type UsageQueryParamsGroupsGroupType string
-
-const (
-	UsageQueryParamsGroupsGroupTypeAccount   UsageQueryParamsGroupsGroupType = "ACCOUNT"
-	UsageQueryParamsGroupsGroupTypeDimension UsageQueryParamsGroupsGroupType = "DIMENSION"
-	UsageQueryParamsGroupsGroupTypeTime      UsageQueryParamsGroupsGroupType = "TIME"
-)
-
-func (r UsageQueryParamsGroupsGroupType) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsGroupTypeAccount, UsageQueryParamsGroupsGroupTypeDimension, UsageQueryParamsGroupsGroupTypeTime:
-		return true
-	}
-	return false
 }
 
 type UsageSubmitParams struct {

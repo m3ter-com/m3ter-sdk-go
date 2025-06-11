@@ -13,7 +13,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestCounterNewWithOptionalParams(t *testing.T) {
+func TestStatementStatementDefinitionNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,12 +28,20 @@ func TestCounterNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Counters.New(context.TODO(), m3ter.CounterNewParams{
-		Name:      m3ter.F("x"),
-		Unit:      m3ter.F("x"),
-		Code:      m3ter.F("JS!?Q0]r] ]$]"),
-		ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		Version:   m3ter.F(int64(0)),
+	_, err := client.Statements.StatementDefinitions.New(context.TODO(), m3ter.StatementStatementDefinitionNewParams{
+		AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionNewParamsAggregationFrequencyOriginal),
+		Dimensions: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsDimension{{
+			DimensionAttributes: m3ter.F([]string{"string"}),
+			DimensionName:       m3ter.F("dimensionName"),
+		}}),
+		IncludePricePerUnit: m3ter.F(true),
+		Measures: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsMeasure{{
+			Aggregations: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsMeasuresAggregation{m3ter.StatementStatementDefinitionNewParamsMeasuresAggregationSum}),
+			MeterID:      m3ter.F("meterId"),
+			Name:         m3ter.F("name"),
+		}}),
+		Name:    m3ter.F("name"),
+		Version: m3ter.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -44,7 +52,7 @@ func TestCounterNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCounterGet(t *testing.T) {
+func TestStatementStatementDefinitionGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,10 +67,10 @@ func TestCounterGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Counters.Get(
+	_, err := client.Statements.StatementDefinitions.Get(
 		context.TODO(),
 		"id",
-		m3ter.CounterGetParams{},
+		m3ter.StatementStatementDefinitionGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -73,7 +81,7 @@ func TestCounterGet(t *testing.T) {
 	}
 }
 
-func TestCounterUpdateWithOptionalParams(t *testing.T) {
+func TestStatementStatementDefinitionUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -88,15 +96,23 @@ func TestCounterUpdateWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Counters.Update(
+	_, err := client.Statements.StatementDefinitions.Update(
 		context.TODO(),
 		"id",
-		m3ter.CounterUpdateParams{
-			Name:      m3ter.F("x"),
-			Unit:      m3ter.F("x"),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
-			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Version:   m3ter.F(int64(0)),
+		m3ter.StatementStatementDefinitionUpdateParams{
+			AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionUpdateParamsAggregationFrequencyOriginal),
+			Dimensions: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsDimension{{
+				DimensionAttributes: m3ter.F([]string{"string"}),
+				DimensionName:       m3ter.F("dimensionName"),
+			}}),
+			IncludePricePerUnit: m3ter.F(true),
+			Measures: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsMeasure{{
+				Aggregations: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsMeasuresAggregation{m3ter.StatementStatementDefinitionUpdateParamsMeasuresAggregationSum}),
+				MeterID:      m3ter.F("meterId"),
+				Name:         m3ter.F("name"),
+			}}),
+			Name:    m3ter.F("name"),
+			Version: m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -108,7 +124,7 @@ func TestCounterUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCounterListWithOptionalParams(t *testing.T) {
+func TestStatementStatementDefinitionListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,12 +139,9 @@ func TestCounterListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Counters.List(context.TODO(), m3ter.CounterListParams{
-		Codes:     m3ter.F([]string{"string"}),
-		IDs:       m3ter.F([]string{"string"}),
+	_, err := client.Statements.StatementDefinitions.List(context.TODO(), m3ter.StatementStatementDefinitionListParams{
 		NextToken: m3ter.F("nextToken"),
 		PageSize:  m3ter.F(int64(1)),
-		ProductID: m3ter.F([]string{"string"}),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -139,7 +152,7 @@ func TestCounterListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCounterDelete(t *testing.T) {
+func TestStatementStatementDefinitionDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -154,10 +167,10 @@ func TestCounterDelete(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Counters.Delete(
+	_, err := client.Statements.StatementDefinitions.Delete(
 		context.TODO(),
 		"id",
-		m3ter.CounterDeleteParams{},
+		m3ter.StatementStatementDefinitionDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

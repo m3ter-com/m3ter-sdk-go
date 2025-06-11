@@ -30,8 +30,7 @@ func TestUsageGetFailedIngestDownloadURLWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.GetFailedIngestDownloadURL(context.TODO(), m3ter.UsageGetFailedIngestDownloadURLParams{
-		OrgID: m3ter.F("orgId"),
-		File:  m3ter.F("file"),
+		File: m3ter.F("file"),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -58,9 +57,6 @@ func TestUsageQueryWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.Query(context.TODO(), m3ter.UsageQueryParams{
-		OrgID:      m3ter.F("orgId"),
-		EndDate:    m3ter.F(time.Now()),
-		StartDate:  m3ter.F(time.Now()),
 		AccountIDs: m3ter.F([]string{"string"}),
 		Aggregations: m3ter.F([]m3ter.UsageQueryParamsAggregation{{
 			FieldCode: m3ter.F("x"),
@@ -73,11 +69,13 @@ func TestUsageQueryWithOptionalParams(t *testing.T) {
 			MeterID:   m3ter.F("x"),
 			Values:    m3ter.F([]string{"string"}),
 		}}),
-		Groups: m3ter.F([]m3ter.UsageQueryParamsGroupUnion{m3ter.UsageQueryParamsGroupsDataExplorerAccountGroup{
-			GroupType: m3ter.F(m3ter.UsageQueryParamsGroupsDataExplorerAccountGroupGroupTypeAccount),
+		EndDate: m3ter.F(time.Now()),
+		Groups: m3ter.F([]m3ter.DataExplorerGroupParam{{
+			GroupType: m3ter.F(m3ter.DataExplorerGroupGroupTypeAccount),
 		}}),
-		Limit:    m3ter.F(int64(1)),
-		MeterIDs: m3ter.F([]string{"string"}),
+		Limit:     m3ter.F(int64(1)),
+		MeterIDs:  m3ter.F([]string{"string"}),
+		StartDate: m3ter.F(time.Now()),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -104,7 +102,6 @@ func TestUsageSubmit(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Usage.Submit(context.TODO(), m3ter.UsageSubmitParams{
-		OrgID: m3ter.F("orgId"),
 		SubmitMeasurementsRequest: m3ter.SubmitMeasurementsRequestParam{
 			Measurements: m3ter.F([]m3ter.MeasurementRequestParam{{
 				Account: m3ter.F("Acme Corp"),

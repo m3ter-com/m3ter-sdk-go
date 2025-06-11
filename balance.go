@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -16,6 +17,8 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/internal/requestconfig"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
+	"github.com/tidwall/gjson"
 )
 
 // BalanceService contains methods and other services that help with interacting
@@ -190,10 +193,22 @@ type Balance struct {
 	// A unique short code assigned to the Balance.
 	Code                            string `json:"code"`
 	ConsumptionsAccountingProductID string `json:"consumptionsAccountingProductId"`
+	ContractID                      string `json:"contractId"`
 	// The unique identifier (UUID) for the user who created the Balance.
 	CreatedBy string `json:"createdBy"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
 	Currency string `json:"currency"`
+	// User defined fields enabling you to attach custom data. The value for a custom
+	// field can be either a string or a number.
+	//
+	// If `customFields` can also be defined for this entity at the Organizational
+	// level,`customField` values defined at individual level override values of
+	// `customFields` with the same name defined at Organization level.
+	//
+	// See
+	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
+	// in the m3ter documentation for more information.
+	CustomFields map[string]BalanceCustomFieldsUnion `json:"customFields"`
 	// A description of the Balance.
 	Description string `json:"description"`
 	// The date and time _(in ISO 8601 format)_ when the Balance was first created.
@@ -240,8 +255,10 @@ type balanceJSON struct {
 	BalanceDrawDownDescription      apijson.Field
 	Code                            apijson.Field
 	ConsumptionsAccountingProductID apijson.Field
+	ContractID                      apijson.Field
 	CreatedBy                       apijson.Field
 	Currency                        apijson.Field
+	CustomFields                    apijson.Field
 	Description                     apijson.Field
 	DtCreated                       apijson.Field
 	DtLastModified                  apijson.Field
@@ -266,6 +283,26 @@ func (r *Balance) UnmarshalJSON(data []byte) (err error) {
 
 func (r balanceJSON) RawJSON() string {
 	return r.raw
+}
+
+// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
+type BalanceCustomFieldsUnion interface {
+	ImplementsBalanceCustomFieldsUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*BalanceCustomFieldsUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.Number,
+			Type:       reflect.TypeOf(shared.UnionFloat(0)),
+		},
+	)
 }
 
 // Available line item types for Balances
@@ -311,6 +348,18 @@ type BalanceNewParams struct {
 	// Optional Product ID this Balance Consumptions should be attributed to for
 	// accounting purposes
 	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
+	ContractID                      param.Field[string] `json:"contractId"`
+	// User defined fields enabling you to attach custom data. The value for a custom
+	// field can be either a string or a number.
+	//
+	// If `customFields` can also be defined for this entity at the Organizational
+	// level, `customField` values defined at individual level override values of
+	// `customFields` with the same name defined at Organization level.
+	//
+	// See
+	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
+	// in the m3ter documentation for more information.
+	CustomFields param.Field[map[string]BalanceNewParamsCustomFieldsUnion] `json:"customFields"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
 	// Optional Product ID this Balance Fees should be attributed to for accounting
@@ -382,6 +431,11 @@ func (r BalanceNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type BalanceNewParamsCustomFieldsUnion interface {
+	ImplementsBalanceNewParamsCustomFieldsUnion()
+}
+
 // Available line item types for Balances
 type BalanceNewParamsLineItemType string
 
@@ -430,6 +484,18 @@ type BalanceUpdateParams struct {
 	// Optional Product ID this Balance Consumptions should be attributed to for
 	// accounting purposes
 	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
+	ContractID                      param.Field[string] `json:"contractId"`
+	// User defined fields enabling you to attach custom data. The value for a custom
+	// field can be either a string or a number.
+	//
+	// If `customFields` can also be defined for this entity at the Organizational
+	// level, `customField` values defined at individual level override values of
+	// `customFields` with the same name defined at Organization level.
+	//
+	// See
+	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
+	// in the m3ter documentation for more information.
+	CustomFields param.Field[map[string]BalanceUpdateParamsCustomFieldsUnion] `json:"customFields"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
 	// Optional Product ID this Balance Fees should be attributed to for accounting
@@ -501,6 +567,11 @@ func (r BalanceUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type BalanceUpdateParamsCustomFieldsUnion interface {
+	ImplementsBalanceUpdateParamsCustomFieldsUnion()
+}
+
 // Available line item types for Balances
 type BalanceUpdateParamsLineItemType string
 
@@ -525,6 +596,7 @@ type BalanceListParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer's account.
 	AccountID param.Field[string] `query:"accountId"`
+	Contract  param.Field[string] `query:"contract"`
 	// Only include Balances with end dates earlier than this date.
 	EndDateEnd param.Field[string] `query:"endDateEnd"`
 	// Only include Balances with end dates equal to or later than this date.
