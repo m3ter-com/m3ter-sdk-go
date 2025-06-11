@@ -12,6 +12,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
+	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestBalanceNewWithOptionalParams(t *testing.T) {
@@ -38,16 +39,19 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 		Code:                            m3ter.F("JS!?Q0]r] ]$]"),
 		ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		ContractID:                      m3ter.F("contractId"),
-		Description:                     m3ter.F("description"),
-		FeesAccountingProductID:         m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		LineItemTypes:                   m3ter.F([]m3ter.BalanceNewParamsLineItemType{m3ter.BalanceNewParamsLineItemTypeStandingCharge}),
-		Name:                            m3ter.F("name"),
-		OverageDescription:              m3ter.F("overageDescription"),
-		OverageSurchargePercent:         m3ter.F(0.000000),
-		ProductIDs:                      m3ter.F([]string{"string"}),
-		RolloverAmount:                  m3ter.F(0.000000),
-		RolloverEndDate:                 m3ter.F(time.Now()),
-		Version:                         m3ter.F(int64(0)),
+		CustomFields: m3ter.F(map[string]m3ter.BalanceNewParamsCustomFieldsUnion{
+			"foo": shared.UnionString("string"),
+		}),
+		Description:             m3ter.F("description"),
+		FeesAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		LineItemTypes:           m3ter.F([]m3ter.BalanceNewParamsLineItemType{m3ter.BalanceNewParamsLineItemTypeStandingCharge}),
+		Name:                    m3ter.F("name"),
+		OverageDescription:      m3ter.F("overageDescription"),
+		OverageSurchargePercent: m3ter.F(0.000000),
+		ProductIDs:              m3ter.F([]string{"string"}),
+		RolloverAmount:          m3ter.F(0.000000),
+		RolloverEndDate:         m3ter.F(time.Now()),
+		Version:                 m3ter.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -114,16 +118,19 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 			Code:                            m3ter.F("JS!?Q0]r] ]$]"),
 			ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			ContractID:                      m3ter.F("contractId"),
-			Description:                     m3ter.F("description"),
-			FeesAccountingProductID:         m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			LineItemTypes:                   m3ter.F([]m3ter.BalanceUpdateParamsLineItemType{m3ter.BalanceUpdateParamsLineItemTypeStandingCharge}),
-			Name:                            m3ter.F("name"),
-			OverageDescription:              m3ter.F("overageDescription"),
-			OverageSurchargePercent:         m3ter.F(0.000000),
-			ProductIDs:                      m3ter.F([]string{"string"}),
-			RolloverAmount:                  m3ter.F(0.000000),
-			RolloverEndDate:                 m3ter.F(time.Now()),
-			Version:                         m3ter.F(int64(0)),
+			CustomFields: m3ter.F(map[string]m3ter.BalanceUpdateParamsCustomFieldsUnion{
+				"foo": shared.UnionString("string"),
+			}),
+			Description:             m3ter.F("description"),
+			FeesAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			LineItemTypes:           m3ter.F([]m3ter.BalanceUpdateParamsLineItemType{m3ter.BalanceUpdateParamsLineItemTypeStandingCharge}),
+			Name:                    m3ter.F("name"),
+			OverageDescription:      m3ter.F("overageDescription"),
+			OverageSurchargePercent: m3ter.F(0.000000),
+			ProductIDs:              m3ter.F([]string{"string"}),
+			RolloverAmount:          m3ter.F(0.000000),
+			RolloverEndDate:         m3ter.F(time.Now()),
+			Version:                 m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -152,6 +159,7 @@ func TestBalanceListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Balances.List(context.TODO(), m3ter.BalanceListParams{
 		AccountID:    m3ter.F("accountId"),
+		Contract:     m3ter.F("contract"),
 		EndDateEnd:   m3ter.F("endDateEnd"),
 		EndDateStart: m3ter.F("endDateStart"),
 		NextToken:    m3ter.F("nextToken"),

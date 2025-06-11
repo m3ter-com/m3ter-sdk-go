@@ -238,6 +238,8 @@ func (r statementDefinitionResponseJSON) RawJSON() string {
 type StatementDefinitionResponseAggregationFrequency string
 
 const (
+	StatementDefinitionResponseAggregationFrequencyOriginal    StatementDefinitionResponseAggregationFrequency = "ORIGINAL"
+	StatementDefinitionResponseAggregationFrequencyHour        StatementDefinitionResponseAggregationFrequency = "HOUR"
 	StatementDefinitionResponseAggregationFrequencyDay         StatementDefinitionResponseAggregationFrequency = "DAY"
 	StatementDefinitionResponseAggregationFrequencyWeek        StatementDefinitionResponseAggregationFrequency = "WEEK"
 	StatementDefinitionResponseAggregationFrequencyMonth       StatementDefinitionResponseAggregationFrequency = "MONTH"
@@ -248,7 +250,7 @@ const (
 
 func (r StatementDefinitionResponseAggregationFrequency) IsKnown() bool {
 	switch r {
-	case StatementDefinitionResponseAggregationFrequencyDay, StatementDefinitionResponseAggregationFrequencyWeek, StatementDefinitionResponseAggregationFrequencyMonth, StatementDefinitionResponseAggregationFrequencyQuarter, StatementDefinitionResponseAggregationFrequencyYear, StatementDefinitionResponseAggregationFrequencyWholePeriod:
+	case StatementDefinitionResponseAggregationFrequencyOriginal, StatementDefinitionResponseAggregationFrequencyHour, StatementDefinitionResponseAggregationFrequencyDay, StatementDefinitionResponseAggregationFrequencyWeek, StatementDefinitionResponseAggregationFrequencyMonth, StatementDefinitionResponseAggregationFrequencyQuarter, StatementDefinitionResponseAggregationFrequencyYear, StatementDefinitionResponseAggregationFrequencyWholePeriod:
 		return true
 	}
 	return false
@@ -256,27 +258,20 @@ func (r StatementDefinitionResponseAggregationFrequency) IsKnown() bool {
 
 // A Dimension belonging to a Meter.
 type StatementDefinitionResponseDimension struct {
-	// The value of a Dimension to use as a filter. Use "\*" as a wildcard to filter on
-	// all Dimension values.
-	Filter []string `json:"filter,required"`
-	// The name of the Dimension to target in the Meter.
-	Name string `json:"name,required"`
-	// The Dimension attribute to target.
-	Attributes []string `json:"attributes"`
-	// The unique identifier (UUID) of the Meter containing this Dimension.
-	MeterID string                                   `json:"meterId"`
-	JSON    statementDefinitionResponseDimensionJSON `json:"-"`
+	// Attributes belonging to the dimension
+	DimensionAttributes []string `json:"dimensionAttributes"`
+	// The name of a dimension
+	DimensionName string                                   `json:"dimensionName"`
+	JSON          statementDefinitionResponseDimensionJSON `json:"-"`
 }
 
 // statementDefinitionResponseDimensionJSON contains the JSON metadata for the
 // struct [StatementDefinitionResponseDimension]
 type statementDefinitionResponseDimensionJSON struct {
-	Filter      apijson.Field
-	Name        apijson.Field
-	Attributes  apijson.Field
-	MeterID     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	DimensionAttributes apijson.Field
+	DimensionName       apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
 }
 
 func (r *StatementDefinitionResponseDimension) UnmarshalJSON(data []byte) (err error) {
@@ -345,19 +340,18 @@ func (r statementDefinitionResponseMeasureJSON) RawJSON() string {
 type StatementDefinitionResponseMeasuresAggregation string
 
 const (
-	StatementDefinitionResponseMeasuresAggregationSum       StatementDefinitionResponseMeasuresAggregation = "SUM"
-	StatementDefinitionResponseMeasuresAggregationMin       StatementDefinitionResponseMeasuresAggregation = "MIN"
-	StatementDefinitionResponseMeasuresAggregationMax       StatementDefinitionResponseMeasuresAggregation = "MAX"
-	StatementDefinitionResponseMeasuresAggregationCount     StatementDefinitionResponseMeasuresAggregation = "COUNT"
-	StatementDefinitionResponseMeasuresAggregationLatest    StatementDefinitionResponseMeasuresAggregation = "LATEST"
-	StatementDefinitionResponseMeasuresAggregationMean      StatementDefinitionResponseMeasuresAggregation = "MEAN"
-	StatementDefinitionResponseMeasuresAggregationUnique    StatementDefinitionResponseMeasuresAggregation = "UNIQUE"
-	StatementDefinitionResponseMeasuresAggregationCustomSql StatementDefinitionResponseMeasuresAggregation = "CUSTOM_SQL"
+	StatementDefinitionResponseMeasuresAggregationSum    StatementDefinitionResponseMeasuresAggregation = "SUM"
+	StatementDefinitionResponseMeasuresAggregationMin    StatementDefinitionResponseMeasuresAggregation = "MIN"
+	StatementDefinitionResponseMeasuresAggregationMax    StatementDefinitionResponseMeasuresAggregation = "MAX"
+	StatementDefinitionResponseMeasuresAggregationCount  StatementDefinitionResponseMeasuresAggregation = "COUNT"
+	StatementDefinitionResponseMeasuresAggregationLatest StatementDefinitionResponseMeasuresAggregation = "LATEST"
+	StatementDefinitionResponseMeasuresAggregationMean   StatementDefinitionResponseMeasuresAggregation = "MEAN"
+	StatementDefinitionResponseMeasuresAggregationUnique StatementDefinitionResponseMeasuresAggregation = "UNIQUE"
 )
 
 func (r StatementDefinitionResponseMeasuresAggregation) IsKnown() bool {
 	switch r {
-	case StatementDefinitionResponseMeasuresAggregationSum, StatementDefinitionResponseMeasuresAggregationMin, StatementDefinitionResponseMeasuresAggregationMax, StatementDefinitionResponseMeasuresAggregationCount, StatementDefinitionResponseMeasuresAggregationLatest, StatementDefinitionResponseMeasuresAggregationMean, StatementDefinitionResponseMeasuresAggregationUnique, StatementDefinitionResponseMeasuresAggregationCustomSql:
+	case StatementDefinitionResponseMeasuresAggregationSum, StatementDefinitionResponseMeasuresAggregationMin, StatementDefinitionResponseMeasuresAggregationMax, StatementDefinitionResponseMeasuresAggregationCount, StatementDefinitionResponseMeasuresAggregationLatest, StatementDefinitionResponseMeasuresAggregationMean, StatementDefinitionResponseMeasuresAggregationUnique:
 		return true
 	}
 	return false
@@ -399,6 +393,8 @@ func (r StatementStatementDefinitionNewParams) MarshalJSON() (data []byte, err e
 type StatementStatementDefinitionNewParamsAggregationFrequency string
 
 const (
+	StatementStatementDefinitionNewParamsAggregationFrequencyOriginal    StatementStatementDefinitionNewParamsAggregationFrequency = "ORIGINAL"
+	StatementStatementDefinitionNewParamsAggregationFrequencyHour        StatementStatementDefinitionNewParamsAggregationFrequency = "HOUR"
 	StatementStatementDefinitionNewParamsAggregationFrequencyDay         StatementStatementDefinitionNewParamsAggregationFrequency = "DAY"
 	StatementStatementDefinitionNewParamsAggregationFrequencyWeek        StatementStatementDefinitionNewParamsAggregationFrequency = "WEEK"
 	StatementStatementDefinitionNewParamsAggregationFrequencyMonth       StatementStatementDefinitionNewParamsAggregationFrequency = "MONTH"
@@ -409,7 +405,7 @@ const (
 
 func (r StatementStatementDefinitionNewParamsAggregationFrequency) IsKnown() bool {
 	switch r {
-	case StatementStatementDefinitionNewParamsAggregationFrequencyDay, StatementStatementDefinitionNewParamsAggregationFrequencyWeek, StatementStatementDefinitionNewParamsAggregationFrequencyMonth, StatementStatementDefinitionNewParamsAggregationFrequencyQuarter, StatementStatementDefinitionNewParamsAggregationFrequencyYear, StatementStatementDefinitionNewParamsAggregationFrequencyWholePeriod:
+	case StatementStatementDefinitionNewParamsAggregationFrequencyOriginal, StatementStatementDefinitionNewParamsAggregationFrequencyHour, StatementStatementDefinitionNewParamsAggregationFrequencyDay, StatementStatementDefinitionNewParamsAggregationFrequencyWeek, StatementStatementDefinitionNewParamsAggregationFrequencyMonth, StatementStatementDefinitionNewParamsAggregationFrequencyQuarter, StatementStatementDefinitionNewParamsAggregationFrequencyYear, StatementStatementDefinitionNewParamsAggregationFrequencyWholePeriod:
 		return true
 	}
 	return false
@@ -417,15 +413,10 @@ func (r StatementStatementDefinitionNewParamsAggregationFrequency) IsKnown() boo
 
 // A Dimension belonging to a Meter.
 type StatementStatementDefinitionNewParamsDimension struct {
-	// The value of a Dimension to use as a filter. Use "\*" as a wildcard to filter on
-	// all Dimension values.
-	Filter param.Field[[]string] `json:"filter,required"`
-	// The name of the Dimension to target in the Meter.
-	Name param.Field[string] `json:"name,required"`
-	// The Dimension attribute to target.
-	Attributes param.Field[[]string] `json:"attributes"`
-	// The unique identifier (UUID) of the Meter containing this Dimension.
-	MeterID param.Field[string] `json:"meterId"`
+	// Attributes belonging to the dimension
+	DimensionAttributes param.Field[[]string] `json:"dimensionAttributes"`
+	// The name of a dimension
+	DimensionName param.Field[string] `json:"dimensionName"`
 }
 
 func (r StatementStatementDefinitionNewParamsDimension) MarshalJSON() (data []byte, err error) {
@@ -475,19 +466,18 @@ func (r StatementStatementDefinitionNewParamsMeasure) MarshalJSON() (data []byte
 type StatementStatementDefinitionNewParamsMeasuresAggregation string
 
 const (
-	StatementStatementDefinitionNewParamsMeasuresAggregationSum       StatementStatementDefinitionNewParamsMeasuresAggregation = "SUM"
-	StatementStatementDefinitionNewParamsMeasuresAggregationMin       StatementStatementDefinitionNewParamsMeasuresAggregation = "MIN"
-	StatementStatementDefinitionNewParamsMeasuresAggregationMax       StatementStatementDefinitionNewParamsMeasuresAggregation = "MAX"
-	StatementStatementDefinitionNewParamsMeasuresAggregationCount     StatementStatementDefinitionNewParamsMeasuresAggregation = "COUNT"
-	StatementStatementDefinitionNewParamsMeasuresAggregationLatest    StatementStatementDefinitionNewParamsMeasuresAggregation = "LATEST"
-	StatementStatementDefinitionNewParamsMeasuresAggregationMean      StatementStatementDefinitionNewParamsMeasuresAggregation = "MEAN"
-	StatementStatementDefinitionNewParamsMeasuresAggregationUnique    StatementStatementDefinitionNewParamsMeasuresAggregation = "UNIQUE"
-	StatementStatementDefinitionNewParamsMeasuresAggregationCustomSql StatementStatementDefinitionNewParamsMeasuresAggregation = "CUSTOM_SQL"
+	StatementStatementDefinitionNewParamsMeasuresAggregationSum    StatementStatementDefinitionNewParamsMeasuresAggregation = "SUM"
+	StatementStatementDefinitionNewParamsMeasuresAggregationMin    StatementStatementDefinitionNewParamsMeasuresAggregation = "MIN"
+	StatementStatementDefinitionNewParamsMeasuresAggregationMax    StatementStatementDefinitionNewParamsMeasuresAggregation = "MAX"
+	StatementStatementDefinitionNewParamsMeasuresAggregationCount  StatementStatementDefinitionNewParamsMeasuresAggregation = "COUNT"
+	StatementStatementDefinitionNewParamsMeasuresAggregationLatest StatementStatementDefinitionNewParamsMeasuresAggregation = "LATEST"
+	StatementStatementDefinitionNewParamsMeasuresAggregationMean   StatementStatementDefinitionNewParamsMeasuresAggregation = "MEAN"
+	StatementStatementDefinitionNewParamsMeasuresAggregationUnique StatementStatementDefinitionNewParamsMeasuresAggregation = "UNIQUE"
 )
 
 func (r StatementStatementDefinitionNewParamsMeasuresAggregation) IsKnown() bool {
 	switch r {
-	case StatementStatementDefinitionNewParamsMeasuresAggregationSum, StatementStatementDefinitionNewParamsMeasuresAggregationMin, StatementStatementDefinitionNewParamsMeasuresAggregationMax, StatementStatementDefinitionNewParamsMeasuresAggregationCount, StatementStatementDefinitionNewParamsMeasuresAggregationLatest, StatementStatementDefinitionNewParamsMeasuresAggregationMean, StatementStatementDefinitionNewParamsMeasuresAggregationUnique, StatementStatementDefinitionNewParamsMeasuresAggregationCustomSql:
+	case StatementStatementDefinitionNewParamsMeasuresAggregationSum, StatementStatementDefinitionNewParamsMeasuresAggregationMin, StatementStatementDefinitionNewParamsMeasuresAggregationMax, StatementStatementDefinitionNewParamsMeasuresAggregationCount, StatementStatementDefinitionNewParamsMeasuresAggregationLatest, StatementStatementDefinitionNewParamsMeasuresAggregationMean, StatementStatementDefinitionNewParamsMeasuresAggregationUnique:
 		return true
 	}
 	return false
@@ -534,6 +524,8 @@ func (r StatementStatementDefinitionUpdateParams) MarshalJSON() (data []byte, er
 type StatementStatementDefinitionUpdateParamsAggregationFrequency string
 
 const (
+	StatementStatementDefinitionUpdateParamsAggregationFrequencyOriginal    StatementStatementDefinitionUpdateParamsAggregationFrequency = "ORIGINAL"
+	StatementStatementDefinitionUpdateParamsAggregationFrequencyHour        StatementStatementDefinitionUpdateParamsAggregationFrequency = "HOUR"
 	StatementStatementDefinitionUpdateParamsAggregationFrequencyDay         StatementStatementDefinitionUpdateParamsAggregationFrequency = "DAY"
 	StatementStatementDefinitionUpdateParamsAggregationFrequencyWeek        StatementStatementDefinitionUpdateParamsAggregationFrequency = "WEEK"
 	StatementStatementDefinitionUpdateParamsAggregationFrequencyMonth       StatementStatementDefinitionUpdateParamsAggregationFrequency = "MONTH"
@@ -544,7 +536,7 @@ const (
 
 func (r StatementStatementDefinitionUpdateParamsAggregationFrequency) IsKnown() bool {
 	switch r {
-	case StatementStatementDefinitionUpdateParamsAggregationFrequencyDay, StatementStatementDefinitionUpdateParamsAggregationFrequencyWeek, StatementStatementDefinitionUpdateParamsAggregationFrequencyMonth, StatementStatementDefinitionUpdateParamsAggregationFrequencyQuarter, StatementStatementDefinitionUpdateParamsAggregationFrequencyYear, StatementStatementDefinitionUpdateParamsAggregationFrequencyWholePeriod:
+	case StatementStatementDefinitionUpdateParamsAggregationFrequencyOriginal, StatementStatementDefinitionUpdateParamsAggregationFrequencyHour, StatementStatementDefinitionUpdateParamsAggregationFrequencyDay, StatementStatementDefinitionUpdateParamsAggregationFrequencyWeek, StatementStatementDefinitionUpdateParamsAggregationFrequencyMonth, StatementStatementDefinitionUpdateParamsAggregationFrequencyQuarter, StatementStatementDefinitionUpdateParamsAggregationFrequencyYear, StatementStatementDefinitionUpdateParamsAggregationFrequencyWholePeriod:
 		return true
 	}
 	return false
@@ -552,15 +544,10 @@ func (r StatementStatementDefinitionUpdateParamsAggregationFrequency) IsKnown() 
 
 // A Dimension belonging to a Meter.
 type StatementStatementDefinitionUpdateParamsDimension struct {
-	// The value of a Dimension to use as a filter. Use "\*" as a wildcard to filter on
-	// all Dimension values.
-	Filter param.Field[[]string] `json:"filter,required"`
-	// The name of the Dimension to target in the Meter.
-	Name param.Field[string] `json:"name,required"`
-	// The Dimension attribute to target.
-	Attributes param.Field[[]string] `json:"attributes"`
-	// The unique identifier (UUID) of the Meter containing this Dimension.
-	MeterID param.Field[string] `json:"meterId"`
+	// Attributes belonging to the dimension
+	DimensionAttributes param.Field[[]string] `json:"dimensionAttributes"`
+	// The name of a dimension
+	DimensionName param.Field[string] `json:"dimensionName"`
 }
 
 func (r StatementStatementDefinitionUpdateParamsDimension) MarshalJSON() (data []byte, err error) {
@@ -610,19 +597,18 @@ func (r StatementStatementDefinitionUpdateParamsMeasure) MarshalJSON() (data []b
 type StatementStatementDefinitionUpdateParamsMeasuresAggregation string
 
 const (
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationSum       StatementStatementDefinitionUpdateParamsMeasuresAggregation = "SUM"
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationMin       StatementStatementDefinitionUpdateParamsMeasuresAggregation = "MIN"
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationMax       StatementStatementDefinitionUpdateParamsMeasuresAggregation = "MAX"
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationCount     StatementStatementDefinitionUpdateParamsMeasuresAggregation = "COUNT"
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationLatest    StatementStatementDefinitionUpdateParamsMeasuresAggregation = "LATEST"
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationMean      StatementStatementDefinitionUpdateParamsMeasuresAggregation = "MEAN"
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationUnique    StatementStatementDefinitionUpdateParamsMeasuresAggregation = "UNIQUE"
-	StatementStatementDefinitionUpdateParamsMeasuresAggregationCustomSql StatementStatementDefinitionUpdateParamsMeasuresAggregation = "CUSTOM_SQL"
+	StatementStatementDefinitionUpdateParamsMeasuresAggregationSum    StatementStatementDefinitionUpdateParamsMeasuresAggregation = "SUM"
+	StatementStatementDefinitionUpdateParamsMeasuresAggregationMin    StatementStatementDefinitionUpdateParamsMeasuresAggregation = "MIN"
+	StatementStatementDefinitionUpdateParamsMeasuresAggregationMax    StatementStatementDefinitionUpdateParamsMeasuresAggregation = "MAX"
+	StatementStatementDefinitionUpdateParamsMeasuresAggregationCount  StatementStatementDefinitionUpdateParamsMeasuresAggregation = "COUNT"
+	StatementStatementDefinitionUpdateParamsMeasuresAggregationLatest StatementStatementDefinitionUpdateParamsMeasuresAggregation = "LATEST"
+	StatementStatementDefinitionUpdateParamsMeasuresAggregationMean   StatementStatementDefinitionUpdateParamsMeasuresAggregation = "MEAN"
+	StatementStatementDefinitionUpdateParamsMeasuresAggregationUnique StatementStatementDefinitionUpdateParamsMeasuresAggregation = "UNIQUE"
 )
 
 func (r StatementStatementDefinitionUpdateParamsMeasuresAggregation) IsKnown() bool {
 	switch r {
-	case StatementStatementDefinitionUpdateParamsMeasuresAggregationSum, StatementStatementDefinitionUpdateParamsMeasuresAggregationMin, StatementStatementDefinitionUpdateParamsMeasuresAggregationMax, StatementStatementDefinitionUpdateParamsMeasuresAggregationCount, StatementStatementDefinitionUpdateParamsMeasuresAggregationLatest, StatementStatementDefinitionUpdateParamsMeasuresAggregationMean, StatementStatementDefinitionUpdateParamsMeasuresAggregationUnique, StatementStatementDefinitionUpdateParamsMeasuresAggregationCustomSql:
+	case StatementStatementDefinitionUpdateParamsMeasuresAggregationSum, StatementStatementDefinitionUpdateParamsMeasuresAggregationMin, StatementStatementDefinitionUpdateParamsMeasuresAggregationMax, StatementStatementDefinitionUpdateParamsMeasuresAggregationCount, StatementStatementDefinitionUpdateParamsMeasuresAggregationLatest, StatementStatementDefinitionUpdateParamsMeasuresAggregationMean, StatementStatementDefinitionUpdateParamsMeasuresAggregationUnique:
 		return true
 	}
 	return false

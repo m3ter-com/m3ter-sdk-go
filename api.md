@@ -319,16 +319,12 @@ Params Types:
 
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AdHocOperationalDataRequestParam">AdHocOperationalDataRequestParam</a>
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AdHocUsageDataRequestParam">AdHocUsageDataRequestParam</a>
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerAccountGroupParam">DataExplorerAccountGroupParam</a>
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerDimensionGroupParam">DataExplorerDimensionGroupParam</a>
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerTimeGroupParam">DataExplorerTimeGroupParam</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerGroupParam">DataExplorerGroupParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#AdHocResponse">AdHocResponse</a>
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerAccountGroup">DataExplorerAccountGroup</a>
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerDimensionGroup">DataExplorerDimensionGroup</a>
-- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerTimeGroup">DataExplorerTimeGroup</a>
+- <a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go">m3ter</a>.<a href="https://pkg.go.dev/github.com/m3ter-com/m3ter-sdk-go#DataExplorerGroup">DataExplorerGroup</a>
 
 Methods:
 

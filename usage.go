@@ -354,7 +354,7 @@ type UsageQueryParams struct {
 	//
 	// **NOTE:** If you attempt to impose grouping for a query that doesn't apply
 	// Aggregations, you'll receive an error.
-	Groups param.Field[[]UsageQueryParamsGroupUnion] `json:"groups"`
+	Groups param.Field[[]DataExplorerGroupParam] `json:"groups"`
 	// Define a limit for the number of usage data items you want the query to return,
 	// starting with the most recently received data item.
 	Limit param.Field[int64] `json:"limit"`
@@ -432,102 +432,6 @@ type UsageQueryParamsDimensionFilter struct {
 
 func (r UsageQueryParamsDimensionFilter) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// Group by a field
-//
-// Satisfied by [UsageQueryParamsGroupsDataExportsDataExplorerAccountGroup],
-// [UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroup],
-// [UsageQueryParamsGroupsDataExportsDataExplorerTimeGroup].
-type UsageQueryParamsGroupUnion interface {
-	implementsUsageQueryParamsGroupUnion()
-}
-
-// Group by account
-type UsageQueryParamsGroupsDataExportsDataExplorerAccountGroup struct {
-	GroupType param.Field[UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupType] `json:"groupType"`
-	DataExplorerAccountGroupParam
-}
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerAccountGroup) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerAccountGroup) implementsUsageQueryParamsGroupUnion() {
-}
-
-type UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupType string
-
-const (
-	UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount   UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupType = "ACCOUNT"
-	UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupType = "DIMENSION"
-	UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupTypeTime      UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupType = "TIME"
-)
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount, UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension, UsageQueryParamsGroupsDataExportsDataExplorerAccountGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by dimension
-type UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroup struct {
-	GroupType param.Field[UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupType] `json:"groupType"`
-	DataExplorerDimensionGroupParam
-}
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroup) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroup) implementsUsageQueryParamsGroupUnion() {
-}
-
-type UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupType string
-
-const (
-	UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount   UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupType = "ACCOUNT"
-	UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupType = "DIMENSION"
-	UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime      UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupType = "TIME"
-)
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount, UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension, UsageQueryParamsGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by time
-type UsageQueryParamsGroupsDataExportsDataExplorerTimeGroup struct {
-	GroupType param.Field[UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupType] `json:"groupType"`
-	DataExplorerTimeGroupParam
-}
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerTimeGroup) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerTimeGroup) implementsUsageQueryParamsGroupUnion() {
-}
-
-type UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupType string
-
-const (
-	UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount   UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupType = "ACCOUNT"
-	UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupType = "DIMENSION"
-	UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupTypeTime      UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupType = "TIME"
-)
-
-func (r UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount, UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension, UsageQueryParamsGroupsDataExportsDataExplorerTimeGroupGroupTypeTime:
-		return true
-	}
-	return false
 }
 
 type UsageSubmitParams struct {

@@ -417,7 +417,7 @@ type UsageDataExportScheduleRequestParam struct {
 	// List of dimension filters to apply
 	DimensionFilters param.Field[[]UsageDataExportScheduleRequestDimensionFilterParam] `json:"dimensionFilters"`
 	// List of groups to apply
-	Groups param.Field[[]UsageDataExportScheduleRequestGroupsUnionParam] `json:"groups"`
+	Groups param.Field[[]DataExplorerGroupParam] `json:"groups"`
 	// List of meter IDs to export
 	MeterIDs param.Field[[]string] `json:"meterIds"`
 	// The version number of the entity:
@@ -580,103 +580,6 @@ func (r UsageDataExportScheduleRequestDimensionFilterParam) MarshalJSON() (data 
 	return apijson.MarshalRoot(r)
 }
 
-// Group by a field
-//
-// Satisfied by
-// [UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam],
-// [UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam],
-// [UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam].
-type UsageDataExportScheduleRequestGroupsUnionParam interface {
-	implementsUsageDataExportScheduleRequestGroupsUnionParam()
-}
-
-// Group by account
-type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam struct {
-	GroupType param.Field[UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType] `json:"groupType"`
-	DataExplorerAccountGroupParam
-}
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupParam) implementsUsageDataExportScheduleRequestGroupsUnionParam() {
-}
-
-type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType string
-
-const (
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount   UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "ACCOUNT"
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "DIMENSION"
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime      UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "TIME"
-)
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by dimension
-type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam struct {
-	GroupType param.Field[UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType] `json:"groupType"`
-	DataExplorerDimensionGroupParam
-}
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupParam) implementsUsageDataExportScheduleRequestGroupsUnionParam() {
-}
-
-type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType string
-
-const (
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount   UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "ACCOUNT"
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "DIMENSION"
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime      UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "TIME"
-)
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by time
-type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam struct {
-	GroupType param.Field[UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType] `json:"groupType"`
-	DataExplorerTimeGroupParam
-}
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupParam) implementsUsageDataExportScheduleRequestGroupsUnionParam() {
-}
-
-type UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType string
-
-const (
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount   UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "ACCOUNT"
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "DIMENSION"
-	UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime      UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "TIME"
-)
-
-func (r UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension, UsageDataExportScheduleRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
 type UsageDataExportScheduleResponse struct {
 	// The id of the schedule configuration.
 	ID string `json:"id,required"`
@@ -694,7 +597,7 @@ type UsageDataExportScheduleResponse struct {
 	// List of dimension filters to apply
 	DimensionFilters []UsageDataExportScheduleResponseDimensionFilter `json:"dimensionFilters"`
 	// List of groups to apply
-	Groups []UsageDataExportScheduleResponseGroup `json:"groups"`
+	Groups []DataExplorerGroup `json:"groups"`
 	// List of meter IDs for which the usage data will be exported.
 	MeterIDs []string `json:"meterIds"`
 	// Define a time period to control the range of usage data you want the data export
@@ -860,247 +763,6 @@ func (r usageDataExportScheduleResponseDimensionFilterJSON) RawJSON() string {
 	return r.raw
 }
 
-// Group by a field
-type UsageDataExportScheduleResponseGroup struct {
-	// Field code to group by
-	FieldCode string `json:"fieldCode"`
-	// Frequency of usage data
-	Frequency UsageDataExportScheduleResponseGroupsFrequency `json:"frequency"`
-	GroupType UsageDataExportScheduleResponseGroupsGroupType `json:"groupType"`
-	// Meter ID to group by
-	MeterID string                                   `json:"meterId"`
-	JSON    usageDataExportScheduleResponseGroupJSON `json:"-"`
-	union   UsageDataExportScheduleResponseGroupsUnion
-}
-
-// usageDataExportScheduleResponseGroupJSON contains the JSON metadata for the
-// struct [UsageDataExportScheduleResponseGroup]
-type usageDataExportScheduleResponseGroupJSON struct {
-	FieldCode   apijson.Field
-	Frequency   apijson.Field
-	GroupType   apijson.Field
-	MeterID     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r usageDataExportScheduleResponseGroupJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *UsageDataExportScheduleResponseGroup) UnmarshalJSON(data []byte) (err error) {
-	*r = UsageDataExportScheduleResponseGroup{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [UsageDataExportScheduleResponseGroupsUnion] interface which
-// you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup],
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup],
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup].
-func (r UsageDataExportScheduleResponseGroup) AsUnion() UsageDataExportScheduleResponseGroupsUnion {
-	return r.union
-}
-
-// Group by a field
-//
-// Union satisfied by
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup],
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup] or
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup].
-type UsageDataExportScheduleResponseGroupsUnion interface {
-	implementsUsageDataExportScheduleResponseGroup()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*UsageDataExportScheduleResponseGroupsUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup{}),
-		},
-	)
-}
-
-// Group by account
-type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup struct {
-	GroupType UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType `json:"groupType"`
-	JSON      usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON      `json:"-"`
-	DataExplorerAccountGroup
-}
-
-// usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON
-// contains the JSON metadata for the struct
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup]
-type usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON struct {
-	GroupType   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r usageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroup) implementsUsageDataExportScheduleResponseGroup() {
-}
-
-type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType string
-
-const (
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount   UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType = "ACCOUNT"
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType = "DIMENSION"
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeTime      UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType = "TIME"
-)
-
-func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerAccountGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by dimension
-type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup struct {
-	GroupType UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType `json:"groupType"`
-	JSON      usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON      `json:"-"`
-	DataExplorerDimensionGroup
-}
-
-// usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON
-// contains the JSON metadata for the struct
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup]
-type usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON struct {
-	GroupType   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r usageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroup) implementsUsageDataExportScheduleResponseGroup() {
-}
-
-type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType string
-
-const (
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount   UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType = "ACCOUNT"
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType = "DIMENSION"
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime      UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType = "TIME"
-)
-
-func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by time
-type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup struct {
-	GroupType UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType `json:"groupType"`
-	JSON      usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON      `json:"-"`
-	DataExplorerTimeGroup
-}
-
-// usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON
-// contains the JSON metadata for the struct
-// [UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup]
-type usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON struct {
-	GroupType   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r usageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroup) implementsUsageDataExportScheduleResponseGroup() {
-}
-
-type UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType string
-
-const (
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount   UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType = "ACCOUNT"
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType = "DIMENSION"
-	UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeTime      UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType = "TIME"
-)
-
-func (r UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupType) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension, UsageDataExportScheduleResponseGroupsDataExportsDataExplorerTimeGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Frequency of usage data
-type UsageDataExportScheduleResponseGroupsFrequency string
-
-const (
-	UsageDataExportScheduleResponseGroupsFrequencyDay     UsageDataExportScheduleResponseGroupsFrequency = "DAY"
-	UsageDataExportScheduleResponseGroupsFrequencyHour    UsageDataExportScheduleResponseGroupsFrequency = "HOUR"
-	UsageDataExportScheduleResponseGroupsFrequencyWeek    UsageDataExportScheduleResponseGroupsFrequency = "WEEK"
-	UsageDataExportScheduleResponseGroupsFrequencyMonth   UsageDataExportScheduleResponseGroupsFrequency = "MONTH"
-	UsageDataExportScheduleResponseGroupsFrequencyQuarter UsageDataExportScheduleResponseGroupsFrequency = "QUARTER"
-)
-
-func (r UsageDataExportScheduleResponseGroupsFrequency) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleResponseGroupsFrequencyDay, UsageDataExportScheduleResponseGroupsFrequencyHour, UsageDataExportScheduleResponseGroupsFrequencyWeek, UsageDataExportScheduleResponseGroupsFrequencyMonth, UsageDataExportScheduleResponseGroupsFrequencyQuarter:
-		return true
-	}
-	return false
-}
-
-type UsageDataExportScheduleResponseGroupsGroupType string
-
-const (
-	UsageDataExportScheduleResponseGroupsGroupTypeAccount   UsageDataExportScheduleResponseGroupsGroupType = "ACCOUNT"
-	UsageDataExportScheduleResponseGroupsGroupTypeDimension UsageDataExportScheduleResponseGroupsGroupType = "DIMENSION"
-	UsageDataExportScheduleResponseGroupsGroupTypeTime      UsageDataExportScheduleResponseGroupsGroupType = "TIME"
-)
-
-func (r UsageDataExportScheduleResponseGroupsGroupType) IsKnown() bool {
-	switch r {
-	case UsageDataExportScheduleResponseGroupsGroupTypeAccount, UsageDataExportScheduleResponseGroupsGroupTypeDimension, UsageDataExportScheduleResponseGroupsGroupTypeTime:
-		return true
-	}
-	return false
-}
-
 // Define a time period to control the range of usage data you want the data export
 // to contain when it runs:
 //
@@ -1181,8 +843,7 @@ type DataExportScheduleNewResponse struct {
 	// This field can have the runtime type of
 	// [[]UsageDataExportScheduleResponseDimensionFilter].
 	DimensionFilters interface{} `json:"dimensionFilters"`
-	// This field can have the runtime type of
-	// [[]UsageDataExportScheduleResponseGroup].
+	// This field can have the runtime type of [[]DataExplorerGroup].
 	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
@@ -1367,8 +1028,7 @@ type DataExportScheduleGetResponse struct {
 	// This field can have the runtime type of
 	// [[]UsageDataExportScheduleResponseDimensionFilter].
 	DimensionFilters interface{} `json:"dimensionFilters"`
-	// This field can have the runtime type of
-	// [[]UsageDataExportScheduleResponseGroup].
+	// This field can have the runtime type of [[]DataExplorerGroup].
 	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
@@ -1553,8 +1213,7 @@ type DataExportScheduleUpdateResponse struct {
 	// This field can have the runtime type of
 	// [[]UsageDataExportScheduleResponseDimensionFilter].
 	DimensionFilters interface{} `json:"dimensionFilters"`
-	// This field can have the runtime type of
-	// [[]UsageDataExportScheduleResponseGroup].
+	// This field can have the runtime type of [[]DataExplorerGroup].
 	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
@@ -1784,13 +1443,14 @@ func (r dataExportScheduleListResponseJSON) RawJSON() string {
 type DataExportScheduleListResponseExportFileFormat string
 
 const (
-	DataExportScheduleListResponseExportFileFormatCsv  DataExportScheduleListResponseExportFileFormat = "CSV"
-	DataExportScheduleListResponseExportFileFormatJson DataExportScheduleListResponseExportFileFormat = "JSON"
+	DataExportScheduleListResponseExportFileFormatCsv   DataExportScheduleListResponseExportFileFormat = "CSV"
+	DataExportScheduleListResponseExportFileFormatJson  DataExportScheduleListResponseExportFileFormat = "JSON"
+	DataExportScheduleListResponseExportFileFormatJSONL DataExportScheduleListResponseExportFileFormat = "JSONL"
 )
 
 func (r DataExportScheduleListResponseExportFileFormat) IsKnown() bool {
 	switch r {
-	case DataExportScheduleListResponseExportFileFormatCsv, DataExportScheduleListResponseExportFileFormatJson:
+	case DataExportScheduleListResponseExportFileFormatCsv, DataExportScheduleListResponseExportFileFormatJson, DataExportScheduleListResponseExportFileFormatJSONL:
 		return true
 	}
 	return false
@@ -1847,8 +1507,7 @@ type DataExportScheduleDeleteResponse struct {
 	// This field can have the runtime type of
 	// [[]UsageDataExportScheduleResponseDimensionFilter].
 	DimensionFilters interface{} `json:"dimensionFilters"`
-	// This field can have the runtime type of
-	// [[]UsageDataExportScheduleResponseGroup].
+	// This field can have the runtime type of [[]DataExplorerGroup].
 	Groups interface{} `json:"groups"`
 	// This field can have the runtime type of [[]string].
 	MeterIDs interface{} `json:"meterIds"`
