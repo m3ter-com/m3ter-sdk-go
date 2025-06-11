@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
@@ -71,17 +72,14 @@ func NewDataExportService(opts ...option.RequestOption) (r *DataExportService) {
 //     or _Time_.
 //
 // **Date Range for Operational Data Exports**. To restrict the operational data
-// included in the export by a date/time range, use the `startDate` and `endDate`
-// date/time request parameters to specify the period. Constraints:
-//
-// - `startDate` with no `endDate` is valid.
-// - `endDate` with no `startDate` is valid.
-// - If both are set,`startDate` must be before `endDate`.
-// - `endDate` must be before now UTC.
+// included in the ad-hoc export by a date/time range, use the `startDate`
+// date/time request parameter to specify the start of the time period. The export
+// will include all operational data from the specified `startDate` up until the
+// date/time the export job runs.
 //
 // **Date Range for Usage Data Exports**. To restrict the usage data included in
-// the export by date/time range, use the `startDate` and `endDate` date/time
-// parameters:
+// the ad-hoc export by date/time range, use the `startDate` and `endDate`
+// date/time parameters:
 //
 //   - Both `startDate` and `endDate` are required.
 //   - `endDate` must be after `startDate`.
@@ -208,8 +206,10 @@ type AdHocUsageDataRequestParam struct {
 	Aggregations param.Field[[]AdHocUsageDataRequestAggregationParam] `json:"aggregations"`
 	// List of dimension filters to apply
 	DimensionFilters param.Field[[]AdHocUsageDataRequestDimensionFilterParam] `json:"dimensionFilters"`
+	// The exclusive end date for the data export.
+	EndDate param.Field[time.Time] `json:"endDate" format:"date-time"`
 	// List of groups to apply
-	Groups param.Field[[]AdHocUsageDataRequestGroupsUnionParam] `json:"groups"`
+	Groups param.Field[[]DataExplorerGroupParam] `json:"groups"`
 	// List of meter IDs for which the usage data will be exported.
 	MeterIDs param.Field[[]string] `json:"meterIds"`
 	// The version number of the entity:
@@ -310,274 +310,49 @@ func (r AdHocUsageDataRequestDimensionFilterParam) MarshalJSON() (data []byte, e
 }
 
 // Group by a field
-//
-// Satisfied by
-// [AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam],
-// [AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam],
-// [AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam].
-type AdHocUsageDataRequestGroupsUnionParam interface {
-	implementsAdHocUsageDataRequestGroupsUnionParam()
+type DataExplorerGroup struct {
+	GroupType DataExplorerGroupGroupType `json:"groupType"`
+	JSON      dataExplorerGroupJSON      `json:"-"`
 }
 
-// Group by account
-type AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam struct {
-	GroupType param.Field[AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType] `json:"groupType"`
-	DataExplorerAccountGroupParam
-}
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupParam) implementsAdHocUsageDataRequestGroupsUnionParam() {
-}
-
-type AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType string
-
-const (
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount   AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "ACCOUNT"
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "DIMENSION"
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime      AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType = "TIME"
-)
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupType) IsKnown() bool {
-	switch r {
-	case AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeAccount, AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeDimension, AdHocUsageDataRequestGroupsDataExportsDataExplorerAccountGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by dimension
-type AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam struct {
-	GroupType param.Field[AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType] `json:"groupType"`
-	DataExplorerDimensionGroupParam
-}
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupParam) implementsAdHocUsageDataRequestGroupsUnionParam() {
-}
-
-type AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType string
-
-const (
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount   AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "ACCOUNT"
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "DIMENSION"
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime      AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType = "TIME"
-)
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupType) IsKnown() bool {
-	switch r {
-	case AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeAccount, AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeDimension, AdHocUsageDataRequestGroupsDataExportsDataExplorerDimensionGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by time
-type AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam struct {
-	GroupType param.Field[AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType] `json:"groupType"`
-	DataExplorerTimeGroupParam
-}
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupParam) implementsAdHocUsageDataRequestGroupsUnionParam() {
-}
-
-type AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType string
-
-const (
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount   AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "ACCOUNT"
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "DIMENSION"
-	AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime      AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType = "TIME"
-)
-
-func (r AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupType) IsKnown() bool {
-	switch r {
-	case AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeAccount, AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeDimension, AdHocUsageDataRequestGroupsDataExportsDataExplorerTimeGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by account
-type DataExplorerAccountGroup struct {
-	GroupType DataExplorerAccountGroupGroupType `json:"groupType"`
-	JSON      dataExplorerAccountGroupJSON      `json:"-"`
-}
-
-// dataExplorerAccountGroupJSON contains the JSON metadata for the struct
-// [DataExplorerAccountGroup]
-type dataExplorerAccountGroupJSON struct {
+// dataExplorerGroupJSON contains the JSON metadata for the struct
+// [DataExplorerGroup]
+type dataExplorerGroupJSON struct {
 	GroupType   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *DataExplorerAccountGroup) UnmarshalJSON(data []byte) (err error) {
+func (r *DataExplorerGroup) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r dataExplorerAccountGroupJSON) RawJSON() string {
+func (r dataExplorerGroupJSON) RawJSON() string {
 	return r.raw
 }
 
-type DataExplorerAccountGroupGroupType string
+type DataExplorerGroupGroupType string
 
 const (
-	DataExplorerAccountGroupGroupTypeAccount   DataExplorerAccountGroupGroupType = "ACCOUNT"
-	DataExplorerAccountGroupGroupTypeDimension DataExplorerAccountGroupGroupType = "DIMENSION"
-	DataExplorerAccountGroupGroupTypeTime      DataExplorerAccountGroupGroupType = "TIME"
+	DataExplorerGroupGroupTypeAccount   DataExplorerGroupGroupType = "ACCOUNT"
+	DataExplorerGroupGroupTypeDimension DataExplorerGroupGroupType = "DIMENSION"
+	DataExplorerGroupGroupTypeTime      DataExplorerGroupGroupType = "TIME"
 )
 
-func (r DataExplorerAccountGroupGroupType) IsKnown() bool {
+func (r DataExplorerGroupGroupType) IsKnown() bool {
 	switch r {
-	case DataExplorerAccountGroupGroupTypeAccount, DataExplorerAccountGroupGroupTypeDimension, DataExplorerAccountGroupGroupTypeTime:
+	case DataExplorerGroupGroupTypeAccount, DataExplorerGroupGroupTypeDimension, DataExplorerGroupGroupTypeTime:
 		return true
 	}
 	return false
 }
 
-// Group by account
-type DataExplorerAccountGroupParam struct {
-	GroupType param.Field[DataExplorerAccountGroupGroupType] `json:"groupType"`
+// Group by a field
+type DataExplorerGroupParam struct {
+	GroupType param.Field[DataExplorerGroupGroupType] `json:"groupType"`
 }
 
-func (r DataExplorerAccountGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Group by dimension
-type DataExplorerDimensionGroup struct {
-	// Field code to group by
-	FieldCode string `json:"fieldCode,required"`
-	// Meter ID to group by
-	MeterID   string                              `json:"meterId,required"`
-	GroupType DataExplorerDimensionGroupGroupType `json:"groupType"`
-	JSON      dataExplorerDimensionGroupJSON      `json:"-"`
-}
-
-// dataExplorerDimensionGroupJSON contains the JSON metadata for the struct
-// [DataExplorerDimensionGroup]
-type dataExplorerDimensionGroupJSON struct {
-	FieldCode   apijson.Field
-	MeterID     apijson.Field
-	GroupType   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *DataExplorerDimensionGroup) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dataExplorerDimensionGroupJSON) RawJSON() string {
-	return r.raw
-}
-
-type DataExplorerDimensionGroupGroupType string
-
-const (
-	DataExplorerDimensionGroupGroupTypeAccount   DataExplorerDimensionGroupGroupType = "ACCOUNT"
-	DataExplorerDimensionGroupGroupTypeDimension DataExplorerDimensionGroupGroupType = "DIMENSION"
-	DataExplorerDimensionGroupGroupTypeTime      DataExplorerDimensionGroupGroupType = "TIME"
-)
-
-func (r DataExplorerDimensionGroupGroupType) IsKnown() bool {
-	switch r {
-	case DataExplorerDimensionGroupGroupTypeAccount, DataExplorerDimensionGroupGroupTypeDimension, DataExplorerDimensionGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by dimension
-type DataExplorerDimensionGroupParam struct {
-	// Field code to group by
-	FieldCode param.Field[string] `json:"fieldCode,required"`
-	// Meter ID to group by
-	MeterID   param.Field[string]                              `json:"meterId,required"`
-	GroupType param.Field[DataExplorerDimensionGroupGroupType] `json:"groupType"`
-}
-
-func (r DataExplorerDimensionGroupParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Group by time
-type DataExplorerTimeGroup struct {
-	// Frequency of usage data
-	Frequency DataExplorerTimeGroupFrequency `json:"frequency,required"`
-	GroupType DataExplorerTimeGroupGroupType `json:"groupType"`
-	JSON      dataExplorerTimeGroupJSON      `json:"-"`
-}
-
-// dataExplorerTimeGroupJSON contains the JSON metadata for the struct
-// [DataExplorerTimeGroup]
-type dataExplorerTimeGroupJSON struct {
-	Frequency   apijson.Field
-	GroupType   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *DataExplorerTimeGroup) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dataExplorerTimeGroupJSON) RawJSON() string {
-	return r.raw
-}
-
-// Frequency of usage data
-type DataExplorerTimeGroupFrequency string
-
-const (
-	DataExplorerTimeGroupFrequencyDay     DataExplorerTimeGroupFrequency = "DAY"
-	DataExplorerTimeGroupFrequencyHour    DataExplorerTimeGroupFrequency = "HOUR"
-	DataExplorerTimeGroupFrequencyWeek    DataExplorerTimeGroupFrequency = "WEEK"
-	DataExplorerTimeGroupFrequencyMonth   DataExplorerTimeGroupFrequency = "MONTH"
-	DataExplorerTimeGroupFrequencyQuarter DataExplorerTimeGroupFrequency = "QUARTER"
-)
-
-func (r DataExplorerTimeGroupFrequency) IsKnown() bool {
-	switch r {
-	case DataExplorerTimeGroupFrequencyDay, DataExplorerTimeGroupFrequencyHour, DataExplorerTimeGroupFrequencyWeek, DataExplorerTimeGroupFrequencyMonth, DataExplorerTimeGroupFrequencyQuarter:
-		return true
-	}
-	return false
-}
-
-type DataExplorerTimeGroupGroupType string
-
-const (
-	DataExplorerTimeGroupGroupTypeAccount   DataExplorerTimeGroupGroupType = "ACCOUNT"
-	DataExplorerTimeGroupGroupTypeDimension DataExplorerTimeGroupGroupType = "DIMENSION"
-	DataExplorerTimeGroupGroupTypeTime      DataExplorerTimeGroupGroupType = "TIME"
-)
-
-func (r DataExplorerTimeGroupGroupType) IsKnown() bool {
-	switch r {
-	case DataExplorerTimeGroupGroupTypeAccount, DataExplorerTimeGroupGroupTypeDimension, DataExplorerTimeGroupGroupTypeTime:
-		return true
-	}
-	return false
-}
-
-// Group by time
-type DataExplorerTimeGroupParam struct {
-	// Frequency of usage data
-	Frequency param.Field[DataExplorerTimeGroupFrequency] `json:"frequency,required"`
-	GroupType param.Field[DataExplorerTimeGroupGroupType] `json:"groupType"`
-}
-
-func (r DataExplorerTimeGroupParam) MarshalJSON() (data []byte, err error) {
+func (r DataExplorerGroupParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -595,13 +370,15 @@ func (r DataExportNewAdhocParams) MarshalJSON() (data []byte, err error) {
 // Request representing an operational data export configuration.
 type DataExportNewAdhocParamsBody struct {
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType           param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType,required"`
-	AccountIDs           param.Field[interface{}]                            `json:"accountIds"`
-	Aggregations         param.Field[interface{}]                            `json:"aggregations"`
-	DimensionFilters     param.Field[interface{}]                            `json:"dimensionFilters"`
-	Groups               param.Field[interface{}]                            `json:"groups"`
-	MeterIDs             param.Field[interface{}]                            `json:"meterIds"`
-	OperationalDataTypes param.Field[interface{}]                            `json:"operationalDataTypes"`
+	SourceType       param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType,required"`
+	AccountIDs       param.Field[interface{}]                            `json:"accountIds"`
+	Aggregations     param.Field[interface{}]                            `json:"aggregations"`
+	DimensionFilters param.Field[interface{}]                            `json:"dimensionFilters"`
+	// The exclusive end date for the data export.
+	EndDate              param.Field[time.Time]   `json:"endDate" format:"date-time"`
+	Groups               param.Field[interface{}] `json:"groups"`
+	MeterIDs             param.Field[interface{}] `json:"meterIds"`
+	OperationalDataTypes param.Field[interface{}] `json:"operationalDataTypes"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use

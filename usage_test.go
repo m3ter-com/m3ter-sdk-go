@@ -70,12 +70,9 @@ func TestUsageQueryWithOptionalParams(t *testing.T) {
 			Values:    m3ter.F([]string{"string"}),
 		}}),
 		EndDate: m3ter.F(time.Now()),
-		Groups: m3ter.F([]m3ter.UsageQueryParamsGroupUnion{m3ter.UsageQueryParamsGroupsDataExportsDataExplorerAccountGroup(m3ter.UsageQueryParamsGroupsDataExportsDataExplorerAccountGroup{
-			DataExplorerAccountGroupParam: m3ter.DataExplorerAccountGroupParam{
-				GroupType: m3ter.F(m3ter.DataExplorerAccountGroupGroupTypeAccount),
-			},
-			GroupType: m3ter.F(m3ter.DataExplorerAccountGroupGroupTypeAccount),
-		})}),
+		Groups: m3ter.F([]m3ter.DataExplorerGroupParam{{
+			GroupType: m3ter.F(m3ter.DataExplorerGroupGroupTypeAccount),
+		}}),
 		Limit:     m3ter.F(int64(1)),
 		MeterIDs:  m3ter.F([]string{"string"}),
 		StartDate: m3ter.F(time.Now()),

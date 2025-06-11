@@ -118,6 +118,28 @@ func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, balanceI
 }
 
 // Retrieves the Balance Transactions Summary for a given Balance.
+//
+// The response contains useful recorded and calculated Transaction amounts created
+// for a Balance during the time it is active for the Account, including amounts
+// relevant to any rollover amount configured for a Balance:
+//
+//   - `totalCreditAmount`. The sum of all credits amounts created for the Balance.
+//   - `totalDebitAmount`. The sum of all debit amounts created for the Balance.
+//   - `initialCreditAmount`. The initial credit amount created for the Balance.
+//   - `expiredBalanceAmount`. The amount of the Balance remaining at the time the
+//     Balance expires and which is not included in any configured Rollover amount.
+//     For example, suppose a Balance reaches its end date and $1000 credit remains
+//     unused. If the Balance is configured to rollover $800, then the
+//     `expiredBalanceAmount` is calculated as $1000 - $800 = $200.
+//   - `rolloverConsumed`. The sum of debits made against the configured rollover
+//     amount. Note that this amount is dynamic relative to when the API call is made
+//     until either the rollover end date is reached or the cap configured for the
+//     rollover amount is reached, after which it will be unchanged. If no rollover
+//     is configured for a Balance, then this is ignored.
+//   - `balanceConsumed`. The sum of debits made against the Balance. Note that this
+//     amount is dynamic relative to when the API call is made until either the
+//     Balance end date is reached or the available Balance amount reaches zero,
+//     after which it will be unchanged.
 func (r *BalanceTransactionService) Summary(ctx context.Context, balanceID string, query BalanceTransactionSummaryParams, opts ...option.RequestOption) (res *BalanceTransactionSummaryResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -239,20 +261,29 @@ func (r TransactionResponseEntityType) IsKnown() bool {
 }
 
 type BalanceTransactionSummaryResponse struct {
-	InitialCreditAmount float64                               `json:"initialCreditAmount"`
-	TotalCreditAmount   float64                               `json:"totalCreditAmount"`
-	TotalDebitAmount    float64                               `json:"totalDebitAmount"`
-	JSON                balanceTransactionSummaryResponseJSON `json:"-"`
+	// Amount consumed from the original balance
+	BalanceConsumed float64 `json:"balanceConsumed"`
+	// Amount of the balance that expired without being used
+	ExpiredBalanceAmount float64 `json:"expiredBalanceAmount"`
+	InitialCreditAmount  float64 `json:"initialCreditAmount"`
+	// Amount consumed from rollover credit
+	RolloverConsumed  float64                               `json:"rolloverConsumed"`
+	TotalCreditAmount float64                               `json:"totalCreditAmount"`
+	TotalDebitAmount  float64                               `json:"totalDebitAmount"`
+	JSON              balanceTransactionSummaryResponseJSON `json:"-"`
 }
 
 // balanceTransactionSummaryResponseJSON contains the JSON metadata for the struct
 // [BalanceTransactionSummaryResponse]
 type balanceTransactionSummaryResponseJSON struct {
-	InitialCreditAmount apijson.Field
-	TotalCreditAmount   apijson.Field
-	TotalDebitAmount    apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
+	BalanceConsumed      apijson.Field
+	ExpiredBalanceAmount apijson.Field
+	InitialCreditAmount  apijson.Field
+	RolloverConsumed     apijson.Field
+	TotalCreditAmount    apijson.Field
+	TotalDebitAmount     apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
 }
 
 func (r *BalanceTransactionSummaryResponse) UnmarshalJSON(data []byte) (err error) {
