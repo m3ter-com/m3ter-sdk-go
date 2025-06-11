@@ -1,5 +1,46 @@
 # Changelog
 
+## 0.4.0-alpha (2025-06-11)
+
+Full Changelog: [v0.3.0-alpha...v0.4.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.3.0-alpha...v0.4.0-alpha)
+
+### Features
+
+* **api:** add statements ([288a991](https://github.com/m3ter-com/m3ter-sdk-go/commit/288a991a1bf7fa4c29e0645154ba97bba8781b96))
+* **api:** Introduce OrganizationConfigRequest model ([86abb22](https://github.com/m3ter-com/m3ter-sdk-go/commit/86abb224b6a161fb54ab8c533c55c2f001d9f9d7))
+* **api:** OpenAPI spec update ([c244ebf](https://github.com/m3ter-com/m3ter-sdk-go/commit/c244ebf0b1fbb62c86bea95d1c11a64165dd3098))
+* **api:** Spec fixes ([55338d7](https://github.com/m3ter-com/m3ter-sdk-go/commit/55338d75c25039f160be9ef3a228edd6b3903ac5))
+* **api:** update open api spec ([9804ae8](https://github.com/m3ter-com/m3ter-sdk-go/commit/9804ae80ae6e9ebeb9770bce4e992c23ff1997f4))
+* **api:** update OpenAPI spec + associated fixes ([acc6452](https://github.com/m3ter-com/m3ter-sdk-go/commit/acc64529b30652d0792b2bfcad7ce7d7ef30a760))
+* **client:** add support for endpoint-specific base URLs in python ([c1220bc](https://github.com/m3ter-com/m3ter-sdk-go/commit/c1220bccdbc09f22cbcca0942f414c05d5efa4ac))
+* **client:** add support for reading base URL from environment variable ([6ba1213](https://github.com/m3ter-com/m3ter-sdk-go/commit/6ba1213335259211eb748076bdccf385763928fd))
+
+
+### Bug Fixes
+
+* **client:** clean up reader resources ([c911398](https://github.com/m3ter-com/m3ter-sdk-go/commit/c911398ec044e5e21de92d440a2fc4711145d023))
+* **client:** correctly update body in WithJSONSet ([c47b975](https://github.com/m3ter-com/m3ter-sdk-go/commit/c47b975e606af4138d9b144f1e94bf94bf18b1b4))
+* handle empty bodies in WithJSONSet ([da1a180](https://github.com/m3ter-com/m3ter-sdk-go/commit/da1a180754c30a7b9711d1727af46f90c36fa3e8))
+* **pagination:** handle errors when applying options ([c369b29](https://github.com/m3ter-com/m3ter-sdk-go/commit/c369b296f448202bd89b172d8052179d9693de35))
+
+
+### Chores
+
+* **ci:** add timeout thresholds for CI jobs ([9733540](https://github.com/m3ter-com/m3ter-sdk-go/commit/9733540df33ef5cee5f26d6dbca04f33db064c06))
+* **ci:** only use depot for staging repos ([f3c016a](https://github.com/m3ter-com/m3ter-sdk-go/commit/f3c016a18ea859b0769dc84bf50cc3b1cab19905))
+* **ci:** run on more branches and use depot runners ([6889134](https://github.com/m3ter-com/m3ter-sdk-go/commit/6889134847367a5febceeed8199881d04ffa9f3b))
+* **docs:** document pre-request options ([60fc814](https://github.com/m3ter-com/m3ter-sdk-go/commit/60fc81418b06ab0732397a253fca0114d7e22c00))
+* **docs:** grammar improvements ([a0b5238](https://github.com/m3ter-com/m3ter-sdk-go/commit/a0b5238af703b9d8e78b9051d580dfa39f305aa0))
+* improve devcontainer setup ([14af707](https://github.com/m3ter-com/m3ter-sdk-go/commit/14af7073d1abfdec1453ab657a8b2b7e60b0fcf2))
+* **internal:** codegen related update ([092b3de](https://github.com/m3ter-com/m3ter-sdk-go/commit/092b3deaaae6fc20b7a668be5bf17a6d7532d24e))
+* **internal:** updates ([d2f02a1](https://github.com/m3ter-com/m3ter-sdk-go/commit/d2f02a184b199b36c22269d0ab58afb256051d89))
+* make go mod tidy continue on error ([c5b0bd8](https://github.com/m3ter-com/m3ter-sdk-go/commit/c5b0bd8763ab3b773af586c15a4778dadda33046))
+
+
+### Documentation
+
+* update documentation links to be more uniform ([b65641e](https://github.com/m3ter-com/m3ter-sdk-go/commit/b65641eda07a4404729d6c9c2665cb5cbaec16c9))
+
 ## 0.3.0-alpha (2025-04-10)
 
 Full Changelog: [v0.2.0-alpha...v0.3.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.2.0-alpha...v0.3.0-alpha)
