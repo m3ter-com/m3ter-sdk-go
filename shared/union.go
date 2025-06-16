@@ -26,6 +26,7 @@ func (UnionString) ImplementsCustomFieldsResponseAccountUnion()                 
 func (UnionString) ImplementsCustomFieldsResponseAccountPlanUnion()             {}
 func (UnionString) ImplementsCustomFieldsResponseAggregationUnion()             {}
 func (UnionString) ImplementsCustomFieldsResponseCompoundAggregationUnion()     {}
+func (UnionString) ImplementsCustomFieldsResponseContractUnion()                {}
 func (UnionString) ImplementsCustomFieldsResponseMeterUnion()                   {}
 func (UnionString) ImplementsCustomFieldsResponseOrganizationUnion()            {}
 func (UnionString) ImplementsCustomFieldsResponsePlanUnion()                    {}
@@ -35,6 +36,7 @@ func (UnionString) ImplementsCustomFieldUpdateParamsAccountUnion()              
 func (UnionString) ImplementsCustomFieldUpdateParamsAccountPlanUnion()          {}
 func (UnionString) ImplementsCustomFieldUpdateParamsAggregationUnion()          {}
 func (UnionString) ImplementsCustomFieldUpdateParamsCompoundAggregationUnion()  {}
+func (UnionString) ImplementsCustomFieldUpdateParamsContractUnion()             {}
 func (UnionString) ImplementsCustomFieldUpdateParamsMeterUnion()                {}
 func (UnionString) ImplementsCustomFieldUpdateParamsOrganizationUnion()         {}
 func (UnionString) ImplementsCustomFieldUpdateParamsPlanUnion()                 {}
@@ -80,6 +82,7 @@ func (UnionFloat) ImplementsCustomFieldsResponseAccountUnion()                 {
 func (UnionFloat) ImplementsCustomFieldsResponseAccountPlanUnion()             {}
 func (UnionFloat) ImplementsCustomFieldsResponseAggregationUnion()             {}
 func (UnionFloat) ImplementsCustomFieldsResponseCompoundAggregationUnion()     {}
+func (UnionFloat) ImplementsCustomFieldsResponseContractUnion()                {}
 func (UnionFloat) ImplementsCustomFieldsResponseMeterUnion()                   {}
 func (UnionFloat) ImplementsCustomFieldsResponseOrganizationUnion()            {}
 func (UnionFloat) ImplementsCustomFieldsResponsePlanUnion()                    {}
@@ -89,6 +92,7 @@ func (UnionFloat) ImplementsCustomFieldUpdateParamsAccountUnion()              {
 func (UnionFloat) ImplementsCustomFieldUpdateParamsAccountPlanUnion()          {}
 func (UnionFloat) ImplementsCustomFieldUpdateParamsAggregationUnion()          {}
 func (UnionFloat) ImplementsCustomFieldUpdateParamsCompoundAggregationUnion()  {}
+func (UnionFloat) ImplementsCustomFieldUpdateParamsContractUnion()             {}
 func (UnionFloat) ImplementsCustomFieldUpdateParamsMeterUnion()                {}
 func (UnionFloat) ImplementsCustomFieldUpdateParamsOrganizationUnion()         {}
 func (UnionFloat) ImplementsCustomFieldUpdateParamsPlanUnion()                 {}
