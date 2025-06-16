@@ -91,7 +91,7 @@ type CustomFieldsResponse struct {
 	// CustomFields added to Compound Aggregation entities.
 	CompoundAggregation map[string]CustomFieldsResponseCompoundAggregationUnion `json:"compoundAggregation"`
 	// CustomFields added to Contract entities.
-	Contract map[string]interface{} `json:"contract"`
+	Contract map[string]CustomFieldsResponseContractUnion `json:"contract"`
 	// The id of the user who created this custom field.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Organization was created _(in ISO-8601 format)_.
@@ -226,6 +226,26 @@ func init() {
 }
 
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
+type CustomFieldsResponseContractUnion interface {
+	ImplementsCustomFieldsResponseContractUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*CustomFieldsResponseContractUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.Number,
+			Type:       reflect.TypeOf(shared.UnionFloat(0)),
+		},
+	)
+}
+
+// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
 type CustomFieldsResponseMeterUnion interface {
 	ImplementsCustomFieldsResponseMeterUnion()
 }
@@ -342,7 +362,7 @@ type CustomFieldUpdateParams struct {
 	// Updates to Compound Aggregation entity CustomFields.
 	CompoundAggregation param.Field[map[string]CustomFieldUpdateParamsCompoundAggregationUnion] `json:"compoundAggregation"`
 	// Updates to Contract entity CustomFields.
-	Contract param.Field[map[string]interface{}] `json:"contract"`
+	Contract param.Field[map[string]CustomFieldUpdateParamsContractUnion] `json:"contract"`
 	// Updates to Meter entity CustomFields.
 	Meter param.Field[map[string]CustomFieldUpdateParamsMeterUnion] `json:"meter"`
 	// Updates to Organization CustomFields.
@@ -386,6 +406,11 @@ type CustomFieldUpdateParamsAggregationUnion interface {
 // Satisfied by [shared.UnionString], [shared.UnionFloat].
 type CustomFieldUpdateParamsCompoundAggregationUnion interface {
 	ImplementsCustomFieldUpdateParamsCompoundAggregationUnion()
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type CustomFieldUpdateParamsContractUnion interface {
+	ImplementsCustomFieldUpdateParamsContractUnion()
 }
 
 // Satisfied by [shared.UnionString], [shared.UnionFloat].
