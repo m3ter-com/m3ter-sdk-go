@@ -275,13 +275,6 @@ type M3terSignedCredentialsResponse struct {
 	Destination string `json:"destination,required"`
 	// the type of credentials
 	Type string `json:"type,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The API key provided by m3ter. This key is part of the credential set required
 	// for signing requests and authenticating with m3ter services.
 	APIKey string `json:"apiKey"`
@@ -299,8 +292,15 @@ type M3terSignedCredentialsResponse struct {
 	Name string `json:"name"`
 	// The secret associated with the API key. This secret is used in conjunction with
 	// the API key to generate a signature for secure authentication.
-	Secret string                             `json:"secret"`
-	JSON   m3terSignedCredentialsResponseJSON `json:"-"`
+	Secret string `json:"secret"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                              `json:"version"`
+	JSON    m3terSignedCredentialsResponseJSON `json:"-"`
 }
 
 // m3terSignedCredentialsResponseJSON contains the JSON metadata for the struct
@@ -309,7 +309,6 @@ type m3terSignedCredentialsResponseJSON struct {
 	ID             apijson.Field
 	Destination    apijson.Field
 	Type           apijson.Field
-	Version        apijson.Field
 	APIKey         apijson.Field
 	CreatedBy      apijson.Field
 	DestinationID  apijson.Field
@@ -318,6 +317,7 @@ type m3terSignedCredentialsResponseJSON struct {
 	LastModifiedBy apijson.Field
 	Name           apijson.Field
 	Secret         apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -332,16 +332,9 @@ func (r m3terSignedCredentialsResponseJSON) RawJSON() string {
 
 type Webhook struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64  `json:"version,required"`
-	Active  bool   `json:"active"`
-	Code    string `json:"code"`
+	ID     string `json:"id,required"`
+	Active bool   `json:"active"`
+	Code   string `json:"code"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// Response representing a set of credentials used for signing m3ter requests.
@@ -355,14 +348,20 @@ type Webhook struct {
 	LastModifiedBy string `json:"lastModifiedBy"`
 	Name           string `json:"name"`
 	// The URL to which webhook requests are sent.
-	URL  string      `json:"url"`
-	JSON webhookJSON `json:"-"`
+	URL string `json:"url"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64       `json:"version"`
+	JSON    webhookJSON `json:"-"`
 }
 
 // webhookJSON contains the JSON metadata for the struct [Webhook]
 type webhookJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	Active         apijson.Field
 	Code           apijson.Field
 	CreatedBy      apijson.Field
@@ -373,6 +372,7 @@ type webhookJSON struct {
 	LastModifiedBy apijson.Field
 	Name           apijson.Field
 	URL            apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }

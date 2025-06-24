@@ -288,13 +288,6 @@ func (r DataExportDestinationGoogleCloudStorageRequestPartitionOrder) IsKnown() 
 type DataExportDestinationResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The code of the data Export Destination.
 	Code string `json:"code"`
 	// The id of the user who created the Export Destination.
@@ -307,15 +300,21 @@ type DataExportDestinationResponse struct {
 	// The id of the user who last modified the Export Destination.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the data Export Destination.
-	Name string                            `json:"name"`
-	JSON dataExportDestinationResponseJSON `json:"-"`
+	Name string `json:"name"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                             `json:"version"`
+	JSON    dataExportDestinationResponseJSON `json:"-"`
 }
 
 // dataExportDestinationResponseJSON contains the JSON metadata for the struct
 // [DataExportDestinationResponse]
 type dataExportDestinationResponseJSON struct {
 	ID              apijson.Field
-	Version         apijson.Field
 	Code            apijson.Field
 	CreatedBy       apijson.Field
 	DestinationType apijson.Field
@@ -323,6 +322,7 @@ type dataExportDestinationResponseJSON struct {
 	DtLastModified  apijson.Field
 	LastModifiedBy  apijson.Field
 	Name            apijson.Field
+	Version         apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
@@ -461,13 +461,6 @@ func (r DataExportDestinationS3RequestPartitionOrder) IsKnown() bool {
 type DataExportDestinationNewResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -512,16 +505,22 @@ type DataExportDestinationNewResponse struct {
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                               `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationNewResponseJSON `json:"-"`
-	union               DataExportDestinationNewResponseUnion
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                `json:"version"`
+	JSON    dataExportDestinationNewResponseJSON `json:"-"`
+	union   DataExportDestinationNewResponseUnion
 }
 
 // dataExportDestinationNewResponseJSON contains the JSON metadata for the struct
 // [DataExportDestinationNewResponse]
 type dataExportDestinationNewResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	Code                apijson.Field
 	CreatedBy           apijson.Field
@@ -537,6 +536,7 @@ type dataExportDestinationNewResponseJSON struct {
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
@@ -604,13 +604,6 @@ func init() {
 type DataExportDestinationNewResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -634,8 +627,15 @@ type DataExportDestinationNewResponseExportDestinationS3Response struct {
 	PartitionOrder DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                                                          `json:"prefix"`
-	JSON   dataExportDestinationNewResponseExportDestinationS3ResponseJSON `json:"-"`
+	Prefix string `json:"prefix"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                           `json:"version"`
+	JSON    dataExportDestinationNewResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -644,11 +644,11 @@ type DataExportDestinationNewResponseExportDestinationS3Response struct {
 // [DataExportDestinationNewResponseExportDestinationS3Response]
 type dataExportDestinationNewResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	BucketName     apijson.Field
 	IamRoleArn     apijson.Field
 	PartitionOrder apijson.Field
 	Prefix         apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -699,13 +699,6 @@ func (r DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrde
 type DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -733,8 +726,15 @@ type DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                                                                          `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                                           `json:"version"`
+	JSON    dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -743,7 +743,6 @@ type DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse
 // [DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse]
 type dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	PartitionOrder      apijson.Field
 	PoolID              apijson.Field
@@ -751,6 +750,7 @@ type dataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
@@ -846,13 +846,6 @@ func (r DataExportDestinationNewResponsePartitionOrder) IsKnown() bool {
 type DataExportDestinationGetResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -897,16 +890,22 @@ type DataExportDestinationGetResponse struct {
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                               `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationGetResponseJSON `json:"-"`
-	union               DataExportDestinationGetResponseUnion
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                `json:"version"`
+	JSON    dataExportDestinationGetResponseJSON `json:"-"`
+	union   DataExportDestinationGetResponseUnion
 }
 
 // dataExportDestinationGetResponseJSON contains the JSON metadata for the struct
 // [DataExportDestinationGetResponse]
 type dataExportDestinationGetResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	Code                apijson.Field
 	CreatedBy           apijson.Field
@@ -922,6 +921,7 @@ type dataExportDestinationGetResponseJSON struct {
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
@@ -989,13 +989,6 @@ func init() {
 type DataExportDestinationGetResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -1019,8 +1012,15 @@ type DataExportDestinationGetResponseExportDestinationS3Response struct {
 	PartitionOrder DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                                                          `json:"prefix"`
-	JSON   dataExportDestinationGetResponseExportDestinationS3ResponseJSON `json:"-"`
+	Prefix string `json:"prefix"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                           `json:"version"`
+	JSON    dataExportDestinationGetResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -1029,11 +1029,11 @@ type DataExportDestinationGetResponseExportDestinationS3Response struct {
 // [DataExportDestinationGetResponseExportDestinationS3Response]
 type dataExportDestinationGetResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	BucketName     apijson.Field
 	IamRoleArn     apijson.Field
 	PartitionOrder apijson.Field
 	Prefix         apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1084,13 +1084,6 @@ func (r DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrde
 type DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -1118,8 +1111,15 @@ type DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                                                                          `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                                           `json:"version"`
+	JSON    dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -1128,7 +1128,6 @@ type DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse
 // [DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse]
 type dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	PartitionOrder      apijson.Field
 	PoolID              apijson.Field
@@ -1136,6 +1135,7 @@ type dataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
@@ -1231,13 +1231,6 @@ func (r DataExportDestinationGetResponsePartitionOrder) IsKnown() bool {
 type DataExportDestinationUpdateResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -1282,16 +1275,22 @@ type DataExportDestinationUpdateResponse struct {
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                                  `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationUpdateResponseJSON `json:"-"`
-	union               DataExportDestinationUpdateResponseUnion
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                   `json:"version"`
+	JSON    dataExportDestinationUpdateResponseJSON `json:"-"`
+	union   DataExportDestinationUpdateResponseUnion
 }
 
 // dataExportDestinationUpdateResponseJSON contains the JSON metadata for the
 // struct [DataExportDestinationUpdateResponse]
 type dataExportDestinationUpdateResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	Code                apijson.Field
 	CreatedBy           apijson.Field
@@ -1307,6 +1306,7 @@ type dataExportDestinationUpdateResponseJSON struct {
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
@@ -1374,13 +1374,6 @@ func init() {
 type DataExportDestinationUpdateResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -1404,8 +1397,15 @@ type DataExportDestinationUpdateResponseExportDestinationS3Response struct {
 	PartitionOrder DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                                                             `json:"prefix"`
-	JSON   dataExportDestinationUpdateResponseExportDestinationS3ResponseJSON `json:"-"`
+	Prefix string `json:"prefix"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                              `json:"version"`
+	JSON    dataExportDestinationUpdateResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -1414,11 +1414,11 @@ type DataExportDestinationUpdateResponseExportDestinationS3Response struct {
 // [DataExportDestinationUpdateResponseExportDestinationS3Response]
 type dataExportDestinationUpdateResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	BucketName     apijson.Field
 	IamRoleArn     apijson.Field
 	PartitionOrder apijson.Field
 	Prefix         apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1469,13 +1469,6 @@ func (r DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionO
 type DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -1503,8 +1496,15 @@ type DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageRespo
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                                                                             `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                                              `json:"version"`
+	JSON    dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -1513,7 +1513,6 @@ type DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageRespo
 // [DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse]
 type dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	PartitionOrder      apijson.Field
 	PoolID              apijson.Field
@@ -1521,6 +1520,7 @@ type dataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageRespo
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
@@ -1616,13 +1616,6 @@ func (r DataExportDestinationUpdateResponsePartitionOrder) IsKnown() bool {
 type DataExportDestinationDeleteResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -1667,16 +1660,22 @@ type DataExportDestinationDeleteResponse struct {
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                                  `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationDeleteResponseJSON `json:"-"`
-	union               DataExportDestinationDeleteResponseUnion
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                   `json:"version"`
+	JSON    dataExportDestinationDeleteResponseJSON `json:"-"`
+	union   DataExportDestinationDeleteResponseUnion
 }
 
 // dataExportDestinationDeleteResponseJSON contains the JSON metadata for the
 // struct [DataExportDestinationDeleteResponse]
 type dataExportDestinationDeleteResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	Code                apijson.Field
 	CreatedBy           apijson.Field
@@ -1692,6 +1691,7 @@ type dataExportDestinationDeleteResponseJSON struct {
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
@@ -1759,13 +1759,6 @@ func init() {
 type DataExportDestinationDeleteResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -1789,8 +1782,15 @@ type DataExportDestinationDeleteResponseExportDestinationS3Response struct {
 	PartitionOrder DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionOrder `json:"partitionOrder"`
 	// Location in specified S3 bucket for the Export Destination. If no `prefix` is
 	// specified, then the root of the bucket is used.
-	Prefix string                                                             `json:"prefix"`
-	JSON   dataExportDestinationDeleteResponseExportDestinationS3ResponseJSON `json:"-"`
+	Prefix string `json:"prefix"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                              `json:"version"`
+	JSON    dataExportDestinationDeleteResponseExportDestinationS3ResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -1799,11 +1799,11 @@ type DataExportDestinationDeleteResponseExportDestinationS3Response struct {
 // [DataExportDestinationDeleteResponseExportDestinationS3Response]
 type dataExportDestinationDeleteResponseExportDestinationS3ResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	BucketName     apijson.Field
 	IamRoleArn     apijson.Field
 	PartitionOrder apijson.Field
 	Prefix         apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1854,13 +1854,6 @@ func (r DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionO
 type DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -1888,8 +1881,15 @@ type DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageRespo
 	// The export destination Web Identity Federation identity providerId.
 	ProviderID string `json:"providerId"`
 	// The export destination service account email.
-	ServiceAccountEmail string                                                                             `json:"serviceAccountEmail"`
-	JSON                dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
+	ServiceAccountEmail string `json:"serviceAccountEmail"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                                                              `json:"version"`
+	JSON    dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponseJSON `json:"-"`
 	DataExportDestinationResponse
 }
 
@@ -1898,7 +1898,6 @@ type DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageRespo
 // [DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse]
 type dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	BucketName          apijson.Field
 	PartitionOrder      apijson.Field
 	PoolID              apijson.Field
@@ -1906,6 +1905,7 @@ type dataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageRespo
 	ProjectNumber       apijson.Field
 	ProviderID          apijson.Field
 	ServiceAccountEmail apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }

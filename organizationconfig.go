@@ -323,13 +323,6 @@ func (r OrganizationConfigRequestCreditApplicationOrder) IsKnown() bool {
 type OrganizationConfigResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Grace period before bills are auto-approved. Used in combination with the field
 	// `autoApproveBillsGracePeriodUnit`.
 	AutoApproveBillsGracePeriod int64 `json:"autoApproveBillsGracePeriod"`
@@ -430,6 +423,13 @@ type OrganizationConfigResponse struct {
 	SuppressedEmptyBills bool `json:"suppressedEmptyBills"`
 	// The timezone for the Organization.
 	Timezone string `json:"timezone"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version"`
 	// The first bill date _(in ISO-8601 format)_ for weekly billing periods.
 	WeekEpoch string `json:"weekEpoch"`
 	// The first bill date _(in ISO-8601 format)_ for yearly billing periods.
@@ -441,7 +441,6 @@ type OrganizationConfigResponse struct {
 // [OrganizationConfigResponse]
 type organizationConfigResponseJSON struct {
 	ID                              apijson.Field
-	Version                         apijson.Field
 	AutoApproveBillsGracePeriod     apijson.Field
 	AutoApproveBillsGracePeriodUnit apijson.Field
 	AutoGenerateStatementMode       apijson.Field
@@ -466,6 +465,7 @@ type organizationConfigResponseJSON struct {
 	StandingChargeBillInAdvance     apijson.Field
 	SuppressedEmptyBills            apijson.Field
 	Timezone                        apijson.Field
+	Version                         apijson.Field
 	WeekEpoch                       apijson.Field
 	YearEpoch                       apijson.Field
 	raw                             string

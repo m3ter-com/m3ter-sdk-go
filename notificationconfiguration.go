@@ -181,13 +181,6 @@ type NotificationConfigurationResponse struct {
 	Description string `json:"description,required"`
 	// The name of the Notification.
 	Name string `json:"name,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A Boolean flag indicating whether or not the Notification is active.
 	//
 	// - **TRUE** - active Notification.
@@ -228,8 +221,15 @@ type NotificationConfigurationResponse struct {
 	// conditions defined by a calculation having to be met.
 	EventName string `json:"eventName"`
 	// The ID of the user who last modified this item.
-	LastModifiedBy string                                `json:"lastModifiedBy"`
-	JSON           notificationConfigurationResponseJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                 `json:"version"`
+	JSON    notificationConfigurationResponseJSON `json:"-"`
 }
 
 // notificationConfigurationResponseJSON contains the JSON metadata for the struct
@@ -239,7 +239,6 @@ type notificationConfigurationResponseJSON struct {
 	Code            apijson.Field
 	Description     apijson.Field
 	Name            apijson.Field
-	Version         apijson.Field
 	Active          apijson.Field
 	AlwaysFireEvent apijson.Field
 	Calculation     apijson.Field
@@ -248,6 +247,7 @@ type notificationConfigurationResponseJSON struct {
 	DtLastModified  apijson.Field
 	EventName       apijson.Field
 	LastModifiedBy  apijson.Field
+	Version         apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }

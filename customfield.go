@@ -75,13 +75,6 @@ func (r *CustomFieldService) Update(ctx context.Context, params CustomFieldUpdat
 type CustomFieldsResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// CustomFields added to Account entities.
 	Account map[string]CustomFieldsResponseAccountUnion `json:"account"`
 	// CustomFields added to accountPlan entities.
@@ -111,14 +104,20 @@ type CustomFieldsResponse struct {
 	PlanTemplate map[string]CustomFieldsResponsePlanTemplateUnion `json:"planTemplate"`
 	// CustomFields added to Product entities.
 	Product map[string]CustomFieldsResponseProductUnion `json:"product"`
-	JSON    customFieldsResponseJSON                    `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                    `json:"version"`
+	JSON    customFieldsResponseJSON `json:"-"`
 }
 
 // customFieldsResponseJSON contains the JSON metadata for the struct
 // [CustomFieldsResponse]
 type customFieldsResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	Account             apijson.Field
 	AccountPlan         apijson.Field
 	Aggregation         apijson.Field
@@ -133,6 +132,7 @@ type customFieldsResponseJSON struct {
 	Plan                apijson.Field
 	PlanTemplate        apijson.Field
 	Product             apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }

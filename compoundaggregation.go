@@ -187,14 +187,7 @@ func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body
 
 type CompoundAggregationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version             int64  `json:"version,required"`
+	ID                  string `json:"id,required"`
 	AccountingProductID string `json:"accountingProductId"`
 	// This field is a string that represents the formula for the calculation. This
 	// formula determines how the CompoundAggregation is calculated from the underlying
@@ -259,15 +252,21 @@ type CompoundAggregationResponse struct {
 	//
 	// Used as the label for billing, indicating to your customers what they are being
 	// charged for.
-	Unit string                          `json:"unit"`
-	JSON compoundAggregationResponseJSON `json:"-"`
+	Unit string `json:"unit"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                           `json:"version"`
+	JSON    compoundAggregationResponseJSON `json:"-"`
 }
 
 // compoundAggregationResponseJSON contains the JSON metadata for the struct
 // [CompoundAggregationResponse]
 type compoundAggregationResponseJSON struct {
 	ID                       apijson.Field
-	Version                  apijson.Field
 	AccountingProductID      apijson.Field
 	Calculation              apijson.Field
 	Code                     apijson.Field
@@ -283,6 +282,7 @@ type compoundAggregationResponseJSON struct {
 	Rounding                 apijson.Field
 	Segments                 apijson.Field
 	Unit                     apijson.Field
+	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }

@@ -29,10 +29,12 @@ func TestStatementStatementDefinitionNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Statements.StatementDefinitions.New(context.TODO(), m3ter.StatementStatementDefinitionNewParams{
-		AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionNewParamsAggregationFrequencyOriginal),
+		AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionNewParamsAggregationFrequencyDay),
 		Dimensions: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsDimension{{
-			DimensionAttributes: m3ter.F([]string{"string"}),
-			DimensionName:       m3ter.F("dimensionName"),
+			Filter:     m3ter.F([]string{"string"}),
+			Name:       m3ter.F("x"),
+			Attributes: m3ter.F([]string{"string"}),
+			MeterID:    m3ter.F("meterId"),
 		}}),
 		IncludePricePerUnit: m3ter.F(true),
 		Measures: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsMeasure{{
@@ -100,10 +102,12 @@ func TestStatementStatementDefinitionUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.StatementStatementDefinitionUpdateParams{
-			AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionUpdateParamsAggregationFrequencyOriginal),
+			AggregationFrequency: m3ter.F(m3ter.StatementStatementDefinitionUpdateParamsAggregationFrequencyDay),
 			Dimensions: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsDimension{{
-				DimensionAttributes: m3ter.F([]string{"string"}),
-				DimensionName:       m3ter.F("dimensionName"),
+				Filter:     m3ter.F([]string{"string"}),
+				Name:       m3ter.F("x"),
+				Attributes: m3ter.F([]string{"string"}),
+				MeterID:    m3ter.F("meterId"),
 			}}),
 			IncludePricePerUnit: m3ter.F(true),
 			Measures: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsMeasure{{
