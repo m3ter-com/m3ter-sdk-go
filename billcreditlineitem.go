@@ -192,13 +192,6 @@ type CreditLineItemResponse struct {
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
 	ServicePeriodStartDate time.Time `json:"servicePeriodStartDate,required" format:"date-time"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The id of the user who created this credit line item.
 	CreatedBy string `json:"createdBy"`
 	// The UUID of the credit reason for this credit line item.
@@ -208,8 +201,15 @@ type CreditLineItemResponse struct {
 	// The DateTime when the credit line item was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The id of the user who last modified this credit line item.
-	LastModifiedBy string                     `json:"lastModifiedBy"`
-	JSON           creditLineItemResponseJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                      `json:"version"`
+	JSON    creditLineItemResponseJSON `json:"-"`
 }
 
 // creditLineItemResponseJSON contains the JSON metadata for the struct
@@ -223,12 +223,12 @@ type creditLineItemResponseJSON struct {
 	ReferencedLineItemID   apijson.Field
 	ServicePeriodEndDate   apijson.Field
 	ServicePeriodStartDate apijson.Field
-	Version                apijson.Field
 	CreatedBy              apijson.Field
 	CreditReasonID         apijson.Field
 	DtCreated              apijson.Field
 	DtLastModified         apijson.Field
 	LastModifiedBy         apijson.Field
+	Version                apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }

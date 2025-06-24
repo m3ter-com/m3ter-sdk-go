@@ -169,13 +169,6 @@ func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDe
 type CurrencyResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// TRUE / FALSE flag indicating whether the data entity is archived. An entity can
 	// be archived if it is obsolete.
 	Archived bool `json:"archived"`
@@ -194,14 +187,20 @@ type CurrencyResponse struct {
 	// The name of the data entity.
 	Name         string                       `json:"name"`
 	RoundingMode CurrencyResponseRoundingMode `json:"roundingMode"`
-	JSON         currencyResponseJSON         `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                `json:"version"`
+	JSON    currencyResponseJSON `json:"-"`
 }
 
 // currencyResponseJSON contains the JSON metadata for the struct
 // [CurrencyResponse]
 type currencyResponseJSON struct {
 	ID               apijson.Field
-	Version          apijson.Field
 	Archived         apijson.Field
 	Code             apijson.Field
 	CreatedBy        apijson.Field
@@ -211,6 +210,7 @@ type currencyResponseJSON struct {
 	MaxDecimalPlaces apijson.Field
 	Name             apijson.Field
 	RoundingMode     apijson.Field
+	Version          apijson.Field
 	raw              string
 	ExtraFields      map[string]apijson.Field
 }

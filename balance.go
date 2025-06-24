@@ -114,6 +114,10 @@ func (r *BalanceService) Update(ctx context.Context, id string, params BalanceUp
 // This endpoint returns a list of all Balances associated with your organization.
 // You can filter the Balances by the end customer's Account UUID and end dates,
 // and paginate through them using the `pageSize` and `nextToken` parameters.
+//
+// **NOTE:** If a Balance has a rollover amount configured and you want to use the
+// `endDateStart` or `endDateEnd` query parameters, the `rolloverEndDate` is used
+// as the end date for the Balance.
 func (r *BalanceService) List(ctx context.Context, params BalanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[Balance], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -145,6 +149,10 @@ func (r *BalanceService) List(ctx context.Context, params BalanceListParams, opt
 // This endpoint returns a list of all Balances associated with your organization.
 // You can filter the Balances by the end customer's Account UUID and end dates,
 // and paginate through them using the `pageSize` and `nextToken` parameters.
+//
+// **NOTE:** If a Balance has a rollover amount configured and you want to use the
+// `endDateStart` or `endDateEnd` query parameters, the `rolloverEndDate` is used
+// as the end date for the Balance.
 func (r *BalanceService) ListAutoPaging(ctx context.Context, params BalanceListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[Balance] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
@@ -175,13 +183,6 @@ func (r *BalanceService) Delete(ctx context.Context, id string, body BalanceDele
 type Balance struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The unique identifier (UUID) for the end customer Account the Balance belongs
 	// to.
 	AccountID string `json:"accountId"`
@@ -242,14 +243,20 @@ type Balance struct {
 	// Balance `endDate` and continue to be drawn-down against for billing.
 	RolloverEndDate time.Time `json:"rolloverEndDate" format:"date-time"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
-	StartDate time.Time   `json:"startDate" format:"date-time"`
-	JSON      balanceJSON `json:"-"`
+	StartDate time.Time `json:"startDate" format:"date-time"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64       `json:"version"`
+	JSON    balanceJSON `json:"-"`
 }
 
 // balanceJSON contains the JSON metadata for the struct [Balance]
 type balanceJSON struct {
 	ID                              apijson.Field
-	Version                         apijson.Field
 	AccountID                       apijson.Field
 	Amount                          apijson.Field
 	BalanceDrawDownDescription      apijson.Field
@@ -273,6 +280,7 @@ type balanceJSON struct {
 	RolloverAmount                  apijson.Field
 	RolloverEndDate                 apijson.Field
 	StartDate                       apijson.Field
+	Version                         apijson.Field
 	raw                             string
 	ExtraFields                     map[string]apijson.Field
 }
@@ -597,9 +605,13 @@ type BalanceListParams struct {
 	// The unique identifier (UUID) for the end customer's account.
 	AccountID param.Field[string] `query:"accountId"`
 	Contract  param.Field[string] `query:"contract"`
-	// Only include Balances with end dates earlier than this date.
+	// Only include Balances with end dates earlier than this date. If a Balance has a
+	// rollover amount configured, then the `rolloverEndDate` will be used as the end
+	// date.
 	EndDateEnd param.Field[string] `query:"endDateEnd"`
-	// Only include Balances with end dates equal to or later than this date.
+	// Only include Balances with end dates equal to or later than this date. If a
+	// Balance has a rollover amount configured, then the `rolloverEndDate` will be
+	// used as the end date.
 	EndDateStart param.Field[string] `query:"endDateStart"`
 	// The `nextToken` for retrieving the next page of Balances. It is used to fetch
 	// the next page of Balances in a paginated list.

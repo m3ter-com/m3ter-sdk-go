@@ -162,14 +162,7 @@ func (r *CounterPricingService) Delete(ctx context.Context, id string, body Coun
 
 type CounterPricingResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version             int64  `json:"version,required"`
+	ID                  string `json:"id,required"`
 	AccountingProductID string `json:"accountingProductId"`
 	// Unique short code for the Pricing.
 	Code string `json:"code"`
@@ -239,15 +232,21 @@ type CounterPricingResponse struct {
 	RunningTotalBillInAdvance bool `json:"runningTotalBillInAdvance"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template.
-	StartDate time.Time                  `json:"startDate" format:"date-time"`
-	JSON      counterPricingResponseJSON `json:"-"`
+	StartDate time.Time `json:"startDate" format:"date-time"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                      `json:"version"`
+	JSON    counterPricingResponseJSON `json:"-"`
 }
 
 // counterPricingResponseJSON contains the JSON metadata for the struct
 // [CounterPricingResponse]
 type counterPricingResponseJSON struct {
 	ID                        apijson.Field
-	Version                   apijson.Field
 	AccountingProductID       apijson.Field
 	Code                      apijson.Field
 	CounterID                 apijson.Field
@@ -266,6 +265,7 @@ type counterPricingResponseJSON struct {
 	ProRateRunningTotal       apijson.Field
 	RunningTotalBillInAdvance apijson.Field
 	StartDate                 apijson.Field
+	Version                   apijson.Field
 	raw                       string
 	ExtraFields               map[string]apijson.Field
 }

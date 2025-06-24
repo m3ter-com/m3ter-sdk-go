@@ -162,14 +162,7 @@ func (r *PricingService) Delete(ctx context.Context, id string, body PricingDele
 
 type PricingResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version             int64  `json:"version,required"`
+	ID                  string `json:"id,required"`
 	AccountingProductID string `json:"accountingProductId"`
 	// UUID of the Aggregation used to create the Pricing. Use this when creating a
 	// Pricing for a segmented aggregation.
@@ -258,13 +251,19 @@ type PricingResponse struct {
 	//     will be capped at the total of other line items for the entire bill, which
 	//     might include other Products the Account consumes.
 	Type PricingResponseType `json:"type"`
-	JSON pricingResponseJSON `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64               `json:"version"`
+	JSON    pricingResponseJSON `json:"-"`
 }
 
 // pricingResponseJSON contains the JSON metadata for the struct [PricingResponse]
 type pricingResponseJSON struct {
 	ID                        apijson.Field
-	Version                   apijson.Field
 	AccountingProductID       apijson.Field
 	AggregationID             apijson.Field
 	AggregationType           apijson.Field
@@ -289,6 +288,7 @@ type pricingResponseJSON struct {
 	StartDate                 apijson.Field
 	TiersSpanPlan             apijson.Field
 	Type                      apijson.Field
+	Version                   apijson.Field
 	raw                       string
 	ExtraFields               map[string]apijson.Field
 }

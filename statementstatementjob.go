@@ -260,13 +260,6 @@ func (r *StatementStatementJobService) NewBatch(ctx context.Context, params Stat
 type StatementJobResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The unique identifier (UUID) of the bill associated with the StatementJob.
 	BillID string `json:"billId"`
 	// The unique identifier (UUID) of the user who created this StatementJob.
@@ -293,14 +286,20 @@ type StatementJobResponse struct {
 	// The current status of the StatementJob. The status helps track the progress and
 	// outcome of a StatementJob.
 	StatementJobStatus StatementJobResponseStatementJobStatus `json:"statementJobStatus"`
-	JSON               statementJobResponseJSON               `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                    `json:"version"`
+	JSON    statementJobResponseJSON `json:"-"`
 }
 
 // statementJobResponseJSON contains the JSON metadata for the struct
 // [StatementJobResponse]
 type statementJobResponseJSON struct {
 	ID                        apijson.Field
-	Version                   apijson.Field
 	BillID                    apijson.Field
 	CreatedBy                 apijson.Field
 	DtCreated                 apijson.Field
@@ -310,6 +309,7 @@ type statementJobResponseJSON struct {
 	OrgID                     apijson.Field
 	PresignedJsonStatementURL apijson.Field
 	StatementJobStatus        apijson.Field
+	Version                   apijson.Field
 	raw                       string
 	ExtraFields               map[string]apijson.Field
 }

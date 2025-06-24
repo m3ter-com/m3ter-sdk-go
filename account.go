@@ -230,13 +230,6 @@ func (r *AccountService) Search(ctx context.Context, params AccountSearchParams,
 type AccountResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Contact address.
 	Address Address `json:"address"`
 	// Specify whether to auto-generate statements once Bills are approved or locked.
@@ -325,14 +318,20 @@ type AccountResponse struct {
 	// See
 	// [Working with Bill Statements](https://www.m3ter.com/docs/guides/running-viewing-and-managing-bills/working-with-bill-statements)
 	// in the m3ter documentation for more details.
-	StatementDefinitionID string              `json:"statementDefinitionId"`
-	JSON                  accountResponseJSON `json:"-"`
+	StatementDefinitionID string `json:"statementDefinitionId"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64               `json:"version"`
+	JSON    accountResponseJSON `json:"-"`
 }
 
 // accountResponseJSON contains the JSON metadata for the struct [AccountResponse]
 type accountResponseJSON struct {
 	ID                        apijson.Field
-	Version                   apijson.Field
 	Address                   apijson.Field
 	AutoGenerateStatementMode apijson.Field
 	BillEpoch                 apijson.Field
@@ -351,6 +350,7 @@ type accountResponseJSON struct {
 	ParentAccountID           apijson.Field
 	PurchaseOrderNumber       apijson.Field
 	StatementDefinitionID     apijson.Field
+	Version                   apijson.Field
 	raw                       string
 	ExtraFields               map[string]apijson.Field
 }

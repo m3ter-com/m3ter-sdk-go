@@ -152,13 +152,6 @@ func (r *PlanGroupLinkService) Delete(ctx context.Context, id string, body PlanG
 type PlanGroupLinkResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The id of the user who created this plan group link.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the plan group link was created.
@@ -170,21 +163,28 @@ type PlanGroupLinkResponse struct {
 	// ID of the linked PlanGroup
 	PlanGroupID string `json:"planGroupId"`
 	// ID of the linked Plan
-	PlanID string                    `json:"planId"`
-	JSON   planGroupLinkResponseJSON `json:"-"`
+	PlanID string `json:"planId"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                     `json:"version"`
+	JSON    planGroupLinkResponseJSON `json:"-"`
 }
 
 // planGroupLinkResponseJSON contains the JSON metadata for the struct
 // [PlanGroupLinkResponse]
 type planGroupLinkResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	CreatedBy      apijson.Field
 	DtCreated      apijson.Field
 	DtLastModified apijson.Field
 	LastModifiedBy apijson.Field
 	PlanGroupID    apijson.Field
 	PlanID         apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }

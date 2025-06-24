@@ -305,24 +305,24 @@ func (r OperationalDataExportScheduleRequestSourceType) IsKnown() bool {
 type OperationalDataExportScheduleResponse struct {
 	// The id of the schedule.
 	ID string `json:"id,required"`
+	// A list of the entities whose operational data is included in the data export.
+	OperationalDataTypes []OperationalDataExportScheduleResponseOperationalDataType `json:"operationalDataTypes"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
 	//     in the response.
 	//   - **Update:** On successful Update, the version is incremented by 1 in the
 	//     response.
-	Version int64 `json:"version,required"`
-	// A list of the entities whose operational data is included in the data export.
-	OperationalDataTypes []OperationalDataExportScheduleResponseOperationalDataType `json:"operationalDataTypes"`
-	JSON                 operationalDataExportScheduleResponseJSON                  `json:"-"`
+	Version int64                                     `json:"version"`
+	JSON    operationalDataExportScheduleResponseJSON `json:"-"`
 }
 
 // operationalDataExportScheduleResponseJSON contains the JSON metadata for the
 // struct [OperationalDataExportScheduleResponse]
 type operationalDataExportScheduleResponseJSON struct {
 	ID                   apijson.Field
-	Version              apijson.Field
 	OperationalDataTypes apijson.Field
+	Version              apijson.Field
 	raw                  string
 	ExtraFields          map[string]apijson.Field
 }
@@ -583,13 +583,6 @@ func (r UsageDataExportScheduleRequestDimensionFilterParam) MarshalJSON() (data 
 type UsageDataExportScheduleResponse struct {
 	// The id of the schedule configuration.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs []string `json:"accountIds"`
 	// List of aggregations to apply
@@ -633,20 +626,27 @@ type UsageDataExportScheduleResponse struct {
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
 	TimePeriod UsageDataExportScheduleResponseTimePeriod `json:"timePeriod"`
-	JSON       usageDataExportScheduleResponseJSON       `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                               `json:"version"`
+	JSON    usageDataExportScheduleResponseJSON `json:"-"`
 }
 
 // usageDataExportScheduleResponseJSON contains the JSON metadata for the struct
 // [UsageDataExportScheduleResponse]
 type usageDataExportScheduleResponseJSON struct {
 	ID               apijson.Field
-	Version          apijson.Field
 	AccountIDs       apijson.Field
 	Aggregations     apijson.Field
 	DimensionFilters apijson.Field
 	Groups           apijson.Field
 	MeterIDs         apijson.Field
 	TimePeriod       apijson.Field
+	Version          apijson.Field
 	raw              string
 	ExtraFields      map[string]apijson.Field
 }
@@ -828,13 +828,6 @@ func (r UsageDataExportScheduleResponseTimePeriod) IsKnown() bool {
 type DataExportScheduleNewResponse struct {
 	// The id of the schedule.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -883,15 +876,21 @@ type DataExportScheduleNewResponse struct {
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
 	TimePeriod DataExportScheduleNewResponseTimePeriod `json:"timePeriod"`
-	JSON       dataExportScheduleNewResponseJSON       `json:"-"`
-	union      DataExportScheduleNewResponseUnion
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                             `json:"version"`
+	JSON    dataExportScheduleNewResponseJSON `json:"-"`
+	union   DataExportScheduleNewResponseUnion
 }
 
 // dataExportScheduleNewResponseJSON contains the JSON metadata for the struct
 // [DataExportScheduleNewResponse]
 type dataExportScheduleNewResponseJSON struct {
 	ID                   apijson.Field
-	Version              apijson.Field
 	AccountIDs           apijson.Field
 	Aggregations         apijson.Field
 	DimensionFilters     apijson.Field
@@ -899,6 +898,7 @@ type dataExportScheduleNewResponseJSON struct {
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
+	Version              apijson.Field
 	raw                  string
 	ExtraFields          map[string]apijson.Field
 }
@@ -1013,13 +1013,6 @@ func (r DataExportScheduleNewResponseTimePeriod) IsKnown() bool {
 type DataExportScheduleGetResponse struct {
 	// The id of the schedule.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -1068,15 +1061,21 @@ type DataExportScheduleGetResponse struct {
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
 	TimePeriod DataExportScheduleGetResponseTimePeriod `json:"timePeriod"`
-	JSON       dataExportScheduleGetResponseJSON       `json:"-"`
-	union      DataExportScheduleGetResponseUnion
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                             `json:"version"`
+	JSON    dataExportScheduleGetResponseJSON `json:"-"`
+	union   DataExportScheduleGetResponseUnion
 }
 
 // dataExportScheduleGetResponseJSON contains the JSON metadata for the struct
 // [DataExportScheduleGetResponse]
 type dataExportScheduleGetResponseJSON struct {
 	ID                   apijson.Field
-	Version              apijson.Field
 	AccountIDs           apijson.Field
 	Aggregations         apijson.Field
 	DimensionFilters     apijson.Field
@@ -1084,6 +1083,7 @@ type dataExportScheduleGetResponseJSON struct {
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
+	Version              apijson.Field
 	raw                  string
 	ExtraFields          map[string]apijson.Field
 }
@@ -1198,13 +1198,6 @@ func (r DataExportScheduleGetResponseTimePeriod) IsKnown() bool {
 type DataExportScheduleUpdateResponse struct {
 	// The id of the schedule.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -1253,15 +1246,21 @@ type DataExportScheduleUpdateResponse struct {
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
 	TimePeriod DataExportScheduleUpdateResponseTimePeriod `json:"timePeriod"`
-	JSON       dataExportScheduleUpdateResponseJSON       `json:"-"`
-	union      DataExportScheduleUpdateResponseUnion
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                `json:"version"`
+	JSON    dataExportScheduleUpdateResponseJSON `json:"-"`
+	union   DataExportScheduleUpdateResponseUnion
 }
 
 // dataExportScheduleUpdateResponseJSON contains the JSON metadata for the struct
 // [DataExportScheduleUpdateResponse]
 type dataExportScheduleUpdateResponseJSON struct {
 	ID                   apijson.Field
-	Version              apijson.Field
 	AccountIDs           apijson.Field
 	Aggregations         apijson.Field
 	DimensionFilters     apijson.Field
@@ -1269,6 +1268,7 @@ type dataExportScheduleUpdateResponseJSON struct {
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
+	Version              apijson.Field
 	raw                  string
 	ExtraFields          map[string]apijson.Field
 }
@@ -1382,13 +1382,6 @@ func (r DataExportScheduleUpdateResponseTimePeriod) IsKnown() bool {
 type DataExportScheduleListResponse struct {
 	// The id of the Data Export Schedule.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Unique short code of the Data Export Schedule.
 	Code string `json:"code"`
 	// The id of the user who created this Schedule.
@@ -1409,14 +1402,20 @@ type DataExportScheduleListResponse struct {
 	Period       int64                                      `json:"period"`
 	ScheduleType DataExportScheduleListResponseScheduleType `json:"scheduleType"`
 	SourceType   DataExportScheduleListResponseSourceType   `json:"sourceType"`
-	JSON         dataExportScheduleListResponseJSON         `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                              `json:"version"`
+	JSON    dataExportScheduleListResponseJSON `json:"-"`
 }
 
 // dataExportScheduleListResponseJSON contains the JSON metadata for the struct
 // [DataExportScheduleListResponse]
 type dataExportScheduleListResponseJSON struct {
 	ID               apijson.Field
-	Version          apijson.Field
 	Code             apijson.Field
 	CreatedBy        apijson.Field
 	DestinationIDs   apijson.Field
@@ -1428,6 +1427,7 @@ type dataExportScheduleListResponseJSON struct {
 	Period           apijson.Field
 	ScheduleType     apijson.Field
 	SourceType       apijson.Field
+	Version          apijson.Field
 	raw              string
 	ExtraFields      map[string]apijson.Field
 }
@@ -1492,13 +1492,6 @@ func (r DataExportScheduleListResponseSourceType) IsKnown() bool {
 type DataExportScheduleDeleteResponse struct {
 	// The id of the schedule.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -1547,15 +1540,21 @@ type DataExportScheduleDeleteResponse struct {
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
 	TimePeriod DataExportScheduleDeleteResponseTimePeriod `json:"timePeriod"`
-	JSON       dataExportScheduleDeleteResponseJSON       `json:"-"`
-	union      DataExportScheduleDeleteResponseUnion
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                `json:"version"`
+	JSON    dataExportScheduleDeleteResponseJSON `json:"-"`
+	union   DataExportScheduleDeleteResponseUnion
 }
 
 // dataExportScheduleDeleteResponseJSON contains the JSON metadata for the struct
 // [DataExportScheduleDeleteResponse]
 type dataExportScheduleDeleteResponseJSON struct {
 	ID                   apijson.Field
-	Version              apijson.Field
 	AccountIDs           apijson.Field
 	Aggregations         apijson.Field
 	DimensionFilters     apijson.Field
@@ -1563,6 +1562,7 @@ type dataExportScheduleDeleteResponseJSON struct {
 	MeterIDs             apijson.Field
 	OperationalDataTypes apijson.Field
 	TimePeriod           apijson.Field
+	Version              apijson.Field
 	raw                  string
 	ExtraFields          map[string]apijson.Field
 }

@@ -163,13 +163,6 @@ type ScheduledEventConfigurationResponse struct {
 	// The offset in days from the specified DateTime field on the referenced entity
 	// when the scheduled Event will trigger.
 	Offset int64 `json:"offset,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when this item was created _(in ISO-8601 format)_.
@@ -177,8 +170,15 @@ type ScheduledEventConfigurationResponse struct {
 	// The DateTime when this item was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The ID of the user who last modified this item.
-	LastModifiedBy string                                  `json:"lastModifiedBy"`
-	JSON           scheduledEventConfigurationResponseJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                   `json:"version"`
+	JSON    scheduledEventConfigurationResponseJSON `json:"-"`
 }
 
 // scheduledEventConfigurationResponseJSON contains the JSON metadata for the
@@ -189,11 +189,11 @@ type scheduledEventConfigurationResponseJSON struct {
 	Field          apijson.Field
 	Name           apijson.Field
 	Offset         apijson.Field
-	Version        apijson.Field
 	CreatedBy      apijson.Field
 	DtCreated      apijson.Field
 	DtLastModified apijson.Field
 	LastModifiedBy apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }

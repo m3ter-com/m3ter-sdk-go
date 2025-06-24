@@ -180,13 +180,6 @@ func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body C
 type CounterAdjustmentResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The Account ID the CounterAdjustment was created for.
 	AccountID string `json:"accountId"`
 	// The ID of the Counter that was used to make the CounterAdjustment on the
@@ -206,15 +199,21 @@ type CounterAdjustmentResponse struct {
 	// Purchase Order Number for the Counter Adjustment. _(Optional)_
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// Integer Value of the Counter that was used to make the CounterAdjustment.
-	Value int64                         `json:"value"`
-	JSON  counterAdjustmentResponseJSON `json:"-"`
+	Value int64 `json:"value"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                         `json:"version"`
+	JSON    counterAdjustmentResponseJSON `json:"-"`
 }
 
 // counterAdjustmentResponseJSON contains the JSON metadata for the struct
 // [CounterAdjustmentResponse]
 type counterAdjustmentResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	AccountID           apijson.Field
 	CounterID           apijson.Field
 	CreatedBy           apijson.Field
@@ -224,6 +223,7 @@ type counterAdjustmentResponseJSON struct {
 	LastModifiedBy      apijson.Field
 	PurchaseOrderNumber apijson.Field
 	Value               apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }
