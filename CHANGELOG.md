@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.0-alpha (2025-06-24)
+
+Full Changelog: [v0.4.0-alpha...v0.5.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.4.0-alpha...v0.5.0-alpha)
+
+### Features
+
+* **api:** Set "version" attribute to "computed_optional" in Terraform ([04417ca](https://github.com/m3ter-com/m3ter-sdk-go/commit/04417ca67566330927a9ec701c3c2e139013a9f6))
+* **client:** add debug log helper ([76a6950](https://github.com/m3ter-com/m3ter-sdk-go/commit/76a6950de118edfcd3ec56b6c87b5ba38d3e3d34))
+
+
+### Bug Fixes
+
+* **api:** terraform release readiness ([6626b97](https://github.com/m3ter-com/m3ter-sdk-go/commit/6626b97f0227a56a54bf798c95dd43bfdadcfb36))
+
+
+### Chores
+
+* **ci:** enable for pull requests ([974c0c5](https://github.com/m3ter-com/m3ter-sdk-go/commit/974c0c5d78c766362caf9abe25cfdcb3357be3e9))
+
 ## 0.4.0-alpha (2025-06-11)
 
 Full Changelog: [v0.3.0-alpha...v0.4.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.3.0-alpha...v0.4.0-alpha)
