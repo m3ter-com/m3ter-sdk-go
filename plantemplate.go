@@ -182,13 +182,6 @@ func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTe
 type PlanTemplateResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Determines the frequency at which bills are generated.
 	//
 	//   - **Daily**. Starting at midnight each day, covering the twenty-four hour period
@@ -277,15 +270,21 @@ type PlanTemplateResponse struct {
 	// the bill is issued every three months and the `standingChargeOfset` is 0, then
 	// the charge is applied to the first bill _(at three months)_; if 1, it would be
 	// applied to the second bill _(at six months)_, and so on.
-	StandingChargeOffset int64                    `json:"standingChargeOffset"`
-	JSON                 planTemplateResponseJSON `json:"-"`
+	StandingChargeOffset int64 `json:"standingChargeOffset"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                    `json:"version"`
+	JSON    planTemplateResponseJSON `json:"-"`
 }
 
 // planTemplateResponseJSON contains the JSON metadata for the struct
 // [PlanTemplateResponse]
 type planTemplateResponseJSON struct {
 	ID                          apijson.Field
-	Version                     apijson.Field
 	BillFrequency               apijson.Field
 	BillFrequencyInterval       apijson.Field
 	Code                        apijson.Field
@@ -306,6 +305,7 @@ type planTemplateResponseJSON struct {
 	StandingChargeDescription   apijson.Field
 	StandingChargeInterval      apijson.Field
 	StandingChargeOffset        apijson.Field
+	Version                     apijson.Field
 	raw                         string
 	ExtraFields                 map[string]apijson.Field
 }

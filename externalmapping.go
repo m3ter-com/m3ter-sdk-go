@@ -282,13 +282,6 @@ type ExternalMappingResponse struct {
 	M3terEntity string `json:"m3terEntity,required"`
 	// The unique identifier (UUID) of the m3ter entity.
 	M3terID string `json:"m3terId,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when this item was created _(in ISO-8601 format)_.
@@ -298,8 +291,15 @@ type ExternalMappingResponse struct {
 	// UUID of the configuration this mapping is for
 	IntegrationConfigID string `json:"integrationConfigId"`
 	// The ID of the user who last modified this item.
-	LastModifiedBy string                      `json:"lastModifiedBy"`
-	JSON           externalMappingResponseJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                       `json:"version"`
+	JSON    externalMappingResponseJSON `json:"-"`
 }
 
 // externalMappingResponseJSON contains the JSON metadata for the struct
@@ -311,12 +311,12 @@ type externalMappingResponseJSON struct {
 	ExternalTable       apijson.Field
 	M3terEntity         apijson.Field
 	M3terID             apijson.Field
-	Version             apijson.Field
 	CreatedBy           apijson.Field
 	DtCreated           apijson.Field
 	DtLastModified      apijson.Field
 	IntegrationConfigID apijson.Field
 	LastModifiedBy      apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }

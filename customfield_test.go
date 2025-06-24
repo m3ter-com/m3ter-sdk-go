@@ -67,8 +67,8 @@ func TestCustomFieldUpdateWithOptionalParams(t *testing.T) {
 		CompoundAggregation: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsCompoundAggregationUnion{
 			"foo": shared.UnionString("string"),
 		}),
-		Contract: m3ter.F(map[string]interface{}{
-			"foo": "bar",
+		Contract: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsContractUnion{
+			"foo": shared.UnionString("string"),
 		}),
 		Meter: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsMeterUnion{
 			"foo": shared.UnionString("string"),

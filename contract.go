@@ -208,13 +208,6 @@ func (r *ContractService) EndDateBillingEntities(ctx context.Context, id string,
 type ContractResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
 	AccountID string `json:"accountId"`
 	// The short code of the Contract.
@@ -249,15 +242,21 @@ type ContractResponse struct {
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate time.Time            `json:"startDate" format:"date"`
-	JSON      contractResponseJSON `json:"-"`
+	StartDate time.Time `json:"startDate" format:"date"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                `json:"version"`
+	JSON    contractResponseJSON `json:"-"`
 }
 
 // contractResponseJSON contains the JSON metadata for the struct
 // [ContractResponse]
 type contractResponseJSON struct {
 	ID                  apijson.Field
-	Version             apijson.Field
 	AccountID           apijson.Field
 	Code                apijson.Field
 	CreatedBy           apijson.Field
@@ -270,6 +269,7 @@ type contractResponseJSON struct {
 	Name                apijson.Field
 	PurchaseOrderNumber apijson.Field
 	StartDate           apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }

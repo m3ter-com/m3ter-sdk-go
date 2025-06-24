@@ -163,13 +163,6 @@ func (r *BalanceTransactionService) Summary(ctx context.Context, balanceID strin
 type TransactionResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The financial value of the transaction, as recorded in the balance.
 	Amount float64 `json:"amount"`
 	// The date _(in ISO 8601 format)_ when the balance transaction was applied, i.e.,
@@ -205,15 +198,21 @@ type TransactionResponse struct {
 	TransactionDate time.Time `json:"transactionDate" format:"date-time"`
 	// The unique identifier (UUID) for the Transaction type. This is obtained from the
 	// list of created Transaction Types within the Organization Configuration.
-	TransactionTypeID string                  `json:"transactionTypeId"`
-	JSON              transactionResponseJSON `json:"-"`
+	TransactionTypeID string `json:"transactionTypeId"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                   `json:"version"`
+	JSON    transactionResponseJSON `json:"-"`
 }
 
 // transactionResponseJSON contains the JSON metadata for the struct
 // [TransactionResponse]
 type transactionResponseJSON struct {
 	ID                apijson.Field
-	Version           apijson.Field
 	Amount            apijson.Field
 	AppliedDate       apijson.Field
 	CreatedBy         apijson.Field
@@ -227,6 +226,7 @@ type transactionResponseJSON struct {
 	Paid              apijson.Field
 	TransactionDate   apijson.Field
 	TransactionTypeID apijson.Field
+	Version           apijson.Field
 	raw               string
 	ExtraFields       map[string]apijson.Field
 }

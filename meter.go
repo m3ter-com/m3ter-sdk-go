@@ -301,13 +301,6 @@ func (r DerivedFieldParam) MarshalJSON() (data []byte, err error) {
 type MeterResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	Code string `json:"code"`
 	// The id of the user who created this meter.
@@ -344,14 +337,20 @@ type MeterResponse struct {
 	Name string `json:"name"`
 	// UUID of the Product the Meter belongs to. _(Optional)_ - if blank, the Meter is
 	// global.
-	ProductID string            `json:"productId"`
-	JSON      meterResponseJSON `json:"-"`
+	ProductID string `json:"productId"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64             `json:"version"`
+	JSON    meterResponseJSON `json:"-"`
 }
 
 // meterResponseJSON contains the JSON metadata for the struct [MeterResponse]
 type meterResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	Code           apijson.Field
 	CreatedBy      apijson.Field
 	CustomFields   apijson.Field
@@ -363,6 +362,7 @@ type meterResponseJSON struct {
 	LastModifiedBy apijson.Field
 	Name           apijson.Field
 	ProductID      apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }

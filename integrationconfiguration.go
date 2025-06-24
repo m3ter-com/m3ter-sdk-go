@@ -223,13 +223,6 @@ type IntegrationConfigurationResponse struct {
 	// - Notification
 	EntityType string                                 `json:"entityType,required"`
 	Status     IntegrationConfigurationResponseStatus `json:"status,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// The date and time the integration was completed. _(in ISO-8601 format)_.
@@ -247,8 +240,15 @@ type IntegrationConfigurationResponse struct {
 	// The ID of the user who last modified this item.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The URL of the entity in the destination system if available.
-	URL  string                               `json:"url"`
-	JSON integrationConfigurationResponseJSON `json:"-"`
+	URL string `json:"url"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                `json:"version"`
+	JSON    integrationConfigurationResponseJSON `json:"-"`
 }
 
 // integrationConfigurationResponseJSON contains the JSON metadata for the struct
@@ -259,7 +259,6 @@ type integrationConfigurationResponseJSON struct {
 	EntityID       apijson.Field
 	EntityType     apijson.Field
 	Status         apijson.Field
-	Version        apijson.Field
 	CreatedBy      apijson.Field
 	DtCompleted    apijson.Field
 	DtCreated      apijson.Field
@@ -269,6 +268,7 @@ type integrationConfigurationResponseJSON struct {
 	ExternalID     apijson.Field
 	LastModifiedBy apijson.Field
 	URL            apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -293,11 +293,12 @@ const (
 	IntegrationConfigurationResponseStatusAccountingPeriodClosed IntegrationConfigurationResponseStatus = "ACCOUNTING_PERIOD_CLOSED"
 	IntegrationConfigurationResponseStatusInvoiceAlreadyPaid     IntegrationConfigurationResponseStatus = "INVOICE_ALREADY_PAID"
 	IntegrationConfigurationResponseStatusDisabled               IntegrationConfigurationResponseStatus = "DISABLED"
+	IntegrationConfigurationResponseStatusRateLimitRetry         IntegrationConfigurationResponseStatus = "RATE_LIMIT_RETRY"
 )
 
 func (r IntegrationConfigurationResponseStatus) IsKnown() bool {
 	switch r {
-	case IntegrationConfigurationResponseStatusWaiting, IntegrationConfigurationResponseStatusStarted, IntegrationConfigurationResponseStatusComplete, IntegrationConfigurationResponseStatusError, IntegrationConfigurationResponseStatusAwaitingRetry, IntegrationConfigurationResponseStatusAuthFailed, IntegrationConfigurationResponseStatusAccountingPeriodClosed, IntegrationConfigurationResponseStatusInvoiceAlreadyPaid, IntegrationConfigurationResponseStatusDisabled:
+	case IntegrationConfigurationResponseStatusWaiting, IntegrationConfigurationResponseStatusStarted, IntegrationConfigurationResponseStatusComplete, IntegrationConfigurationResponseStatusError, IntegrationConfigurationResponseStatusAwaitingRetry, IntegrationConfigurationResponseStatusAuthFailed, IntegrationConfigurationResponseStatusAccountingPeriodClosed, IntegrationConfigurationResponseStatusInvoiceAlreadyPaid, IntegrationConfigurationResponseStatusDisabled, IntegrationConfigurationResponseStatusRateLimitRetry:
 		return true
 	}
 	return false

@@ -158,13 +158,6 @@ func (r *DebitReasonService) Delete(ctx context.Context, id string, body DebitRe
 type DebitReasonResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// TRUE / FALSE flag indicating whether the data entity is archived. An entity can
 	// be archived if it is obsolete.
 	Archived bool `json:"archived"`
@@ -179,15 +172,21 @@ type DebitReasonResponse struct {
 	// The id of the user who last modified this debit reason.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the data entity.
-	Name string                  `json:"name"`
-	JSON debitReasonResponseJSON `json:"-"`
+	Name string `json:"name"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                   `json:"version"`
+	JSON    debitReasonResponseJSON `json:"-"`
 }
 
 // debitReasonResponseJSON contains the JSON metadata for the struct
 // [DebitReasonResponse]
 type debitReasonResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	Archived       apijson.Field
 	Code           apijson.Field
 	CreatedBy      apijson.Field
@@ -195,6 +194,7 @@ type debitReasonResponseJSON struct {
 	DtLastModified apijson.Field
 	LastModifiedBy apijson.Field
 	Name           apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }

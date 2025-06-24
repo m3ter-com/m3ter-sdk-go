@@ -337,14 +337,7 @@ func (r userMeResponseJSON) RawJSON() string {
 
 type UserMeResponseOrganization struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version               int64  `json:"version,required"`
+	ID                    string `json:"id,required"`
 	AddressLine1          string `json:"addressLine1"`
 	AddressLine2          string `json:"addressLine2"`
 	AddressLine3          string `json:"addressLine3"`
@@ -373,14 +366,20 @@ type UserMeResponseOrganization struct {
 	Status              UserMeResponseOrganizationStatus `json:"status"`
 	TaxID               string                           `json:"taxId"`
 	Type                UserMeResponseOrganizationType   `json:"type"`
-	JSON                userMeResponseOrganizationJSON   `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                          `json:"version"`
+	JSON    userMeResponseOrganizationJSON `json:"-"`
 }
 
 // userMeResponseOrganizationJSON contains the JSON metadata for the struct
 // [UserMeResponseOrganization]
 type userMeResponseOrganizationJSON struct {
 	ID                      apijson.Field
-	Version                 apijson.Field
 	AddressLine1            apijson.Field
 	AddressLine2            apijson.Field
 	AddressLine3            apijson.Field
@@ -405,6 +404,7 @@ type userMeResponseOrganizationJSON struct {
 	Status                  apijson.Field
 	TaxID                   apijson.Field
 	Type                    apijson.Field
+	Version                 apijson.Field
 	raw                     string
 	ExtraFields             map[string]apijson.Field
 }

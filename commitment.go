@@ -244,13 +244,6 @@ func (r CommitmentFeeParam) MarshalJSON() (data []byte, err error) {
 type CommitmentResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
 	AccountID string `json:"accountId"`
@@ -361,15 +354,21 @@ type CommitmentResponse struct {
 	// - **FALSE** - billed together.
 	SeparateOverageUsage bool `json:"separateOverageUsage"`
 	// The start date of the Commitment period in ISO-8601 format.
-	StartDate time.Time              `json:"startDate" format:"date"`
-	JSON      commitmentResponseJSON `json:"-"`
+	StartDate time.Time `json:"startDate" format:"date"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                  `json:"version"`
+	JSON    commitmentResponseJSON `json:"-"`
 }
 
 // commitmentResponseJSON contains the JSON metadata for the struct
 // [CommitmentResponse]
 type commitmentResponseJSON struct {
 	ID                           apijson.Field
-	Version                      apijson.Field
 	AccountID                    apijson.Field
 	AccountingProductID          apijson.Field
 	Amount                       apijson.Field
@@ -400,6 +399,7 @@ type commitmentResponseJSON struct {
 	ProductIDs                   apijson.Field
 	SeparateOverageUsage         apijson.Field
 	StartDate                    apijson.Field
+	Version                      apijson.Field
 	raw                          string
 	ExtraFields                  map[string]apijson.Field
 }
@@ -458,10 +458,7 @@ func (r CommitmentResponseLineItemType) IsKnown() bool {
 }
 
 type CommitmentSearchResponse struct {
-	// The list of Commitments information.
-	Data []CommitmentResponse `json:"data"`
-	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
-	// Commitments in a paginated list.
+	Data      []CommitmentResponse         `json:"data"`
 	NextToken string                       `json:"nextToken"`
 	JSON      commitmentSearchResponseJSON `json:"-"`
 }

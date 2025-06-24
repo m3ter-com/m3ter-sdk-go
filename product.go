@@ -181,13 +181,6 @@ func (r *ProductService) Delete(ctx context.Context, id string, body ProductDele
 type ProductResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
 	Code string `json:"code"`
@@ -211,14 +204,20 @@ type ProductResponse struct {
 	// The unique identifier (UUID) of the user who last modified this Product.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Descriptive name for the Product providing context and information.
-	Name string              `json:"name"`
-	JSON productResponseJSON `json:"-"`
+	Name string `json:"name"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64               `json:"version"`
+	JSON    productResponseJSON `json:"-"`
 }
 
 // productResponseJSON contains the JSON metadata for the struct [ProductResponse]
 type productResponseJSON struct {
 	ID             apijson.Field
-	Version        apijson.Field
 	Code           apijson.Field
 	CreatedBy      apijson.Field
 	CustomFields   apijson.Field
@@ -226,6 +225,7 @@ type productResponseJSON struct {
 	DtLastModified apijson.Field
 	LastModifiedBy apijson.Field
 	Name           apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }

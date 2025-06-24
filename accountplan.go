@@ -199,13 +199,6 @@ func (r *AccountPlanService) Delete(ctx context.Context, id string, body Account
 type AccountPlanResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// The unique identifier (UUID) for the Account to which the AccountPlan or
 	// AccounPlanGroup is attached.
 	AccountID string `json:"accountId"`
@@ -270,15 +263,21 @@ type AccountPlanResponse struct {
 	ProductID string `json:"productId"`
 	// The start date _(in ISO-8601 format)_ for the when the AccountPlan or
 	// AccountPlanGroup starts to be active for the Account.
-	StartDate time.Time               `json:"startDate" format:"date-time"`
-	JSON      accountPlanResponseJSON `json:"-"`
+	StartDate time.Time `json:"startDate" format:"date-time"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                   `json:"version"`
+	JSON    accountPlanResponseJSON `json:"-"`
 }
 
 // accountPlanResponseJSON contains the JSON metadata for the struct
 // [AccountPlanResponse]
 type accountPlanResponseJSON struct {
 	ID               apijson.Field
-	Version          apijson.Field
 	AccountID        apijson.Field
 	BillEpoch        apijson.Field
 	ChildBillingMode apijson.Field
@@ -294,6 +293,7 @@ type accountPlanResponseJSON struct {
 	PlanID           apijson.Field
 	ProductID        apijson.Field
 	StartDate        apijson.Field
+	Version          apijson.Field
 	raw              string
 	ExtraFields      map[string]apijson.Field
 }

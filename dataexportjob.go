@@ -136,13 +136,6 @@ func (r *DataExportJobService) GetDownloadURL(ctx context.Context, jobID string,
 type DataExportJobResponse struct {
 	// The id of the Export Job.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// When the data Export Job was created.
 	DateCreated time.Time `json:"dateCreated" format:"date-time"`
 	// The id of the data Export Schedule.
@@ -151,19 +144,26 @@ type DataExportJobResponse struct {
 	// When the data Export Job started running
 	StartedAt time.Time                   `json:"startedAt" format:"date-time"`
 	Status    DataExportJobResponseStatus `json:"status"`
-	JSON      dataExportJobResponseJSON   `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                     `json:"version"`
+	JSON    dataExportJobResponseJSON `json:"-"`
 }
 
 // dataExportJobResponseJSON contains the JSON metadata for the struct
 // [DataExportJobResponse]
 type dataExportJobResponseJSON struct {
 	ID          apijson.Field
-	Version     apijson.Field
 	DateCreated apijson.Field
 	ScheduleID  apijson.Field
 	SourceType  apijson.Field
 	StartedAt   apijson.Field
 	Status      apijson.Field
+	Version     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

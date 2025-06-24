@@ -204,13 +204,6 @@ func (r *BillJobService) Recalculate(ctx context.Context, params BillJobRecalcul
 type BillJobResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// An array of UUIDs representing the end customer Accounts associated with the
 	// BillJob.
 	AccountIDs []string `json:"accountIds"`
@@ -302,6 +295,13 @@ type BillJobResponse struct {
 	// - **CREATE** Returned for a _Create BillJob_ call.
 	// - **RECALCULATE** Returned for a successful _Create Recalculation BillJob_ call.
 	Type BillJobResponseType `json:"type"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64 `json:"version"`
 	// The starting date _(epoch)_ for Weekly billing frequency _(in ISO 8601 format)_,
 	// determining the first Bill date for weekly Bills.
 	WeekEpoch time.Time `json:"weekEpoch" format:"date"`
@@ -314,7 +314,6 @@ type BillJobResponse struct {
 // billJobResponseJSON contains the JSON metadata for the struct [BillJobResponse]
 type billJobResponseJSON struct {
 	ID                      apijson.Field
-	Version                 apijson.Field
 	AccountIDs              apijson.Field
 	BillDate                apijson.Field
 	BillFrequencyInterval   apijson.Field
@@ -336,6 +335,7 @@ type billJobResponseJSON struct {
 	Timezone                apijson.Field
 	Total                   apijson.Field
 	Type                    apijson.Field
+	Version                 apijson.Field
 	WeekEpoch               apijson.Field
 	YearEpoch               apijson.Field
 	raw                     string

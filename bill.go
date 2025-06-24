@@ -269,14 +269,7 @@ func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUp
 
 type BillResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version               int64                        `json:"version,required"`
+	ID                    string                       `json:"id,required"`
 	AccountCode           string                       `json:"accountCode"`
 	AccountID             string                       `json:"accountId"`
 	BillDate              time.Time                    `json:"billDate" format:"date"`
@@ -345,13 +338,19 @@ type BillResponse struct {
 	StartDateTimeUtc        time.Time          `json:"startDateTimeUTC" format:"date-time"`
 	Status                  BillResponseStatus `json:"status"`
 	Timezone                string             `json:"timezone"`
-	JSON                    billResponseJSON   `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64            `json:"version"`
+	JSON    billResponseJSON `json:"-"`
 }
 
 // billResponseJSON contains the JSON metadata for the struct [BillResponse]
 type billResponseJSON struct {
 	ID                       apijson.Field
-	Version                  apijson.Field
 	AccountCode              apijson.Field
 	AccountID                apijson.Field
 	BillDate                 apijson.Field
@@ -382,6 +381,7 @@ type billResponseJSON struct {
 	StartDateTimeUtc         apijson.Field
 	Status                   apijson.Field
 	Timezone                 apijson.Field
+	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }
@@ -660,10 +660,7 @@ func (r billApproveResponseJSON) RawJSON() string {
 }
 
 type BillSearchResponse struct {
-	// An array containing the list of requested Bills.
-	Data []BillResponse `json:"data"`
-	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
-	// Bills in a paginated list.
+	Data      []BillResponse         `json:"data"`
 	NextToken string                 `json:"nextToken"`
 	JSON      billSearchResponseJSON `json:"-"`
 }

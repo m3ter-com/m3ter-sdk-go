@@ -114,13 +114,6 @@ func (r *BillLineItemService) ListAutoPaging(ctx context.Context, billID string,
 type LineItemResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A unique identifier (UUID) for the Aggregation that contributes to this Bill
 	// line item.
 	AggregationID string `json:"aggregationId"`
@@ -218,15 +211,21 @@ type LineItemResponse struct {
 	// specified in the `unit` field. For example: 400 api_calls.
 	//
 	// In this example, the unit type of **api_calls** is read from the `unit` field.
-	Units float64              `json:"units"`
-	JSON  lineItemResponseJSON `json:"-"`
+	Units float64 `json:"units"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                `json:"version"`
+	JSON    lineItemResponseJSON `json:"-"`
 }
 
 // lineItemResponseJSON contains the JSON metadata for the struct
 // [LineItemResponse]
 type lineItemResponseJSON struct {
 	ID                     apijson.Field
-	Version                apijson.Field
 	AggregationID          apijson.Field
 	AverageUnitPrice       apijson.Field
 	BalanceID              apijson.Field
@@ -267,6 +266,7 @@ type lineItemResponseJSON struct {
 	Subtotal               apijson.Field
 	Unit                   apijson.Field
 	Units                  apijson.Field
+	Version                apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
