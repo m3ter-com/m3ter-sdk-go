@@ -31,7 +31,7 @@ func TestAccountNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Accounts.New(context.TODO(), m3ter.AccountNewParams{
-		Code:         m3ter.F("JS!?Q0]r] ]$]"),
+		Code:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		EmailAddress: m3ter.F("dev@stainless.com"),
 		Name:         m3ter.F("x"),
 		Address: m3ter.F(m3ter.AddressParam{
@@ -117,7 +117,7 @@ func TestAccountUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.AccountUpdateParams{
-			Code:         m3ter.F("JS!?Q0]r] ]$]"),
+			Code:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			EmailAddress: m3ter.F("dev@stainless.com"),
 			Name:         m3ter.F("x"),
 			Address: m3ter.F(m3ter.AddressParam{

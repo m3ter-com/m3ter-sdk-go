@@ -31,7 +31,7 @@ func TestCounterNewWithOptionalParams(t *testing.T) {
 	_, err := client.Counters.New(context.TODO(), m3ter.CounterNewParams{
 		Name:      m3ter.F("x"),
 		Unit:      m3ter.F("x"),
-		Code:      m3ter.F("JS!?Q0]r] ]$]"),
+		Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		Version:   m3ter.F(int64(0)),
 	})
@@ -94,7 +94,7 @@ func TestCounterUpdateWithOptionalParams(t *testing.T) {
 		m3ter.CounterUpdateParams{
 			Name:      m3ter.F("x"),
 			Unit:      m3ter.F("x"),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
+			Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			ProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			Version:   m3ter.F(int64(0)),
 		},

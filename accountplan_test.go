@@ -35,7 +35,7 @@ func TestAccountPlanNewWithOptionalParams(t *testing.T) {
 		StartDate:        m3ter.F(time.Now()),
 		BillEpoch:        m3ter.F(time.Now()),
 		ChildBillingMode: m3ter.F(m3ter.AccountPlanNewParamsChildBillingModeParentSummary),
-		Code:             m3ter.F("JS!?Q0]r] ]$]"),
+		Code:             m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		ContractID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		CustomFields: m3ter.F(map[string]m3ter.AccountPlanNewParamsCustomFieldsUnion{
 			"foo": shared.UnionString("string"),
@@ -106,7 +106,7 @@ func TestAccountPlanUpdateWithOptionalParams(t *testing.T) {
 			StartDate:        m3ter.F(time.Now()),
 			BillEpoch:        m3ter.F(time.Now()),
 			ChildBillingMode: m3ter.F(m3ter.AccountPlanUpdateParamsChildBillingModeParentSummary),
-			Code:             m3ter.F("JS!?Q0]r] ]$]"),
+			Code:             m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			ContractID:       m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			CustomFields: m3ter.F(map[string]m3ter.AccountPlanUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),

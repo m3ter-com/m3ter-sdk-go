@@ -36,7 +36,7 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 		EndDate:                         m3ter.F(time.Now()),
 		StartDate:                       m3ter.F(time.Now()),
 		BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
-		Code:                            m3ter.F("JS!?Q0]r] ]$]"),
+		Code:                            m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		ContractID:                      m3ter.F("contractId"),
 		CustomFields: m3ter.F(map[string]m3ter.BalanceNewParamsCustomFieldsUnion{
@@ -115,7 +115,7 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 			EndDate:                         m3ter.F(time.Now()),
 			StartDate:                       m3ter.F(time.Now()),
 			BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
-			Code:                            m3ter.F("JS!?Q0]r] ]$]"),
+			Code:                            m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			ContractID:                      m3ter.F("contractId"),
 			CustomFields: m3ter.F(map[string]m3ter.BalanceUpdateParamsCustomFieldsUnion{
