@@ -36,7 +36,7 @@ func TestPlanTemplateNewWithOptionalParams(t *testing.T) {
 		ProductID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		StandingCharge:        m3ter.F(0.000000),
 		BillFrequencyInterval: m3ter.F(int64(1)),
-		Code:                  m3ter.F("JS!?Q0]r] ]$]"),
+		Code:                  m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		CustomFields: m3ter.F(map[string]m3ter.PlanTemplateNewParamsCustomFieldsUnion{
 			"foo": shared.UnionString("string"),
 		}),
@@ -113,7 +113,7 @@ func TestPlanTemplateUpdateWithOptionalParams(t *testing.T) {
 			ProductID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			StandingCharge:        m3ter.F(0.000000),
 			BillFrequencyInterval: m3ter.F(int64(1)),
-			Code:                  m3ter.F("JS!?Q0]r] ]$]"),
+			Code:                  m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			CustomFields: m3ter.F(map[string]m3ter.PlanTemplateUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),

@@ -30,7 +30,7 @@ func TestProductNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Products.New(context.TODO(), m3ter.ProductNewParams{
-		Code: m3ter.F("JS!?Q0]r] ]$]"),
+		Code: m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		Name: m3ter.F("x"),
 		CustomFields: m3ter.F(map[string]m3ter.ProductNewParamsCustomFieldsUnion{
 			"foo": shared.UnionString("string"),
@@ -94,7 +94,7 @@ func TestProductUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ProductUpdateParams{
-			Code: m3ter.F("JS!?Q0]r] ]$]"),
+			Code: m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			Name: m3ter.F("x"),
 			CustomFields: m3ter.F(map[string]m3ter.ProductUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),

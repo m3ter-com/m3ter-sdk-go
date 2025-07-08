@@ -30,7 +30,7 @@ func TestPlanNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Plans.New(context.TODO(), m3ter.PlanNewParams{
-		Code:           m3ter.F("JS!?Q0]r] ]$]"),
+		Code:           m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		Name:           m3ter.F("x"),
 		PlanTemplateID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		AccountID:      m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -106,7 +106,7 @@ func TestPlanUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.PlanUpdateParams{
-			Code:           m3ter.F("JS!?Q0]r] ]$]"),
+			Code:           m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			Name:           m3ter.F("x"),
 			PlanTemplateID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			AccountID:      m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),

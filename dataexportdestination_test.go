@@ -31,7 +31,7 @@ func TestDataExportDestinationNewWithOptionalParams(t *testing.T) {
 	_, err := client.DataExports.Destinations.New(context.TODO(), m3ter.DataExportDestinationNewParams{
 		Body: m3ter.DataExportDestinationS3RequestParam{
 			BucketName:      m3ter.F("xxx"),
-			IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/z"),
+			IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/\""),
 			DestinationType: m3ter.F(m3ter.DataExportDestinationS3RequestDestinationTypeS3),
 			PartitionOrder:  m3ter.F(m3ter.DataExportDestinationS3RequestPartitionOrderTypeFirst),
 			Prefix:          m3ter.F("prefix"),
@@ -97,7 +97,7 @@ func TestDataExportDestinationUpdateWithOptionalParams(t *testing.T) {
 		m3ter.DataExportDestinationUpdateParams{
 			Body: m3ter.DataExportDestinationS3RequestParam{
 				BucketName:      m3ter.F("xxx"),
-				IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/z"),
+				IamRoleArn:      m3ter.F("arn:aws:iam::321669910225:role/\""),
 				DestinationType: m3ter.F(m3ter.DataExportDestinationS3RequestDestinationTypeS3),
 				PartitionOrder:  m3ter.F(m3ter.DataExportDestinationS3RequestPartitionOrderTypeFirst),
 				Prefix:          m3ter.F("prefix"),
