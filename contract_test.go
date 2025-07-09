@@ -35,7 +35,7 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		EndDate:   m3ter.F(time.Now()),
 		Name:      m3ter.F("x"),
 		StartDate: m3ter.F(time.Now()),
-		Code:      m3ter.F("JS!?Q0]r] ]$]"),
+		Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		CustomFields: m3ter.F(map[string]m3ter.ContractNewParamsCustomFieldsUnion{
 			"foo": shared.UnionString("string"),
 		}),
@@ -104,7 +104,7 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 			EndDate:   m3ter.F(time.Now()),
 			Name:      m3ter.F("x"),
 			StartDate: m3ter.F(time.Now()),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
+			Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			CustomFields: m3ter.F(map[string]m3ter.ContractUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),

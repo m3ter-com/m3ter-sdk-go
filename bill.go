@@ -48,14 +48,14 @@ func NewBillService(opts ...option.RequestOption) (r *BillService) {
 //
 // This endpoint retrieves the Bill with the given unique identifier (UUID) and
 // specific Organization.
-func (r *BillService) Get(ctx context.Context, id string, query BillGetParams, opts ...option.RequestOption) (res *BillResponse, err error) {
+func (r *BillService) Get(ctx context.Context, id string, params BillGetParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
-	if query.OrgID.Value == "" {
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -63,8 +63,8 @@ func (r *BillService) Get(ctx context.Context, id string, query BillGetParams, o
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/bills/%s", query.OrgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/bills/%s", params.OrgID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
@@ -174,14 +174,14 @@ func (r *BillService) Approve(ctx context.Context, params BillApproveParams, opt
 // This endpoint retrieves the latest Bill for the given Account in the specified
 // Organization. It facilitates tracking of the most recent charges and consumption
 // details.
-func (r *BillService) LatestByAccount(ctx context.Context, accountID string, query BillLatestByAccountParams, opts ...option.RequestOption) (res *BillResponse, err error) {
+func (r *BillService) LatestByAccount(ctx context.Context, accountID string, params BillLatestByAccountParams, opts ...option.RequestOption) (res *BillResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
-	if query.OrgID.Value == "" {
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -189,8 +189,8 @@ func (r *BillService) LatestByAccount(ctx context.Context, accountID string, que
 		err = errors.New("missing required accountId parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/bills/latest/%s", query.OrgID, accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/bills/latest/%s", params.OrgID, accountID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
@@ -269,9 +269,11 @@ func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUp
 
 type BillResponse struct {
 	// The UUID of the entity.
-	ID                    string                       `json:"id,required"`
-	AccountCode           string                       `json:"accountCode"`
-	AccountID             string                       `json:"accountId"`
+	ID          string `json:"id,required"`
+	AccountCode string `json:"accountCode"`
+	AccountID   string `json:"accountId"`
+	// The id of the user who approved this bill.
+	ApprovedBy            string                       `json:"approvedBy"`
 	BillDate              time.Time                    `json:"billDate" format:"date"`
 	BillFrequencyInterval int64                        `json:"billFrequencyInterval"`
 	BillingFrequency      BillResponseBillingFrequency `json:"billingFrequency"`
@@ -289,10 +291,14 @@ type BillResponse struct {
 	CsvStatementGenerated bool                        `json:"csvStatementGenerated"`
 	Currency              string                      `json:"currency"`
 	CurrencyConversions   []shared.CurrencyConversion `json:"currencyConversions"`
+	// The DateTime when the bill was approved.
+	DtApproved time.Time `json:"dtApproved" format:"date-time"`
 	// The date and time _(in ISO 8601 format)_ when the Bill was first created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO 8601 format)_ when the Bill was last modified.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	// The DateTime when the bill was locked.
+	DtLocked       time.Time `json:"dtLocked" format:"date-time"`
 	DueDate        time.Time `json:"dueDate" format:"date"`
 	EndDate        time.Time `json:"endDate" format:"date"`
 	EndDateTimeUtc time.Time `json:"endDateTimeUTC" format:"date-time"`
@@ -326,6 +332,8 @@ type BillResponse struct {
 	// An array of the Bill line items.
 	LineItems []BillResponseLineItem `json:"lineItems"`
 	Locked    bool                   `json:"locked"`
+	// The id of the user who locked this bill.
+	LockedBy string `json:"lockedBy"`
 	// Purchase Order number linked to the Account the Bill is for.
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// The sequential invoice number of the Bill.
@@ -353,6 +361,7 @@ type billResponseJSON struct {
 	ID                       apijson.Field
 	AccountCode              apijson.Field
 	AccountID                apijson.Field
+	ApprovedBy               apijson.Field
 	BillDate                 apijson.Field
 	BillFrequencyInterval    apijson.Field
 	BillingFrequency         apijson.Field
@@ -363,8 +372,10 @@ type billResponseJSON struct {
 	CsvStatementGenerated    apijson.Field
 	Currency                 apijson.Field
 	CurrencyConversions      apijson.Field
+	DtApproved               apijson.Field
 	DtCreated                apijson.Field
 	DtLastModified           apijson.Field
+	DtLocked                 apijson.Field
 	DueDate                  apijson.Field
 	EndDate                  apijson.Field
 	EndDateTimeUtc           apijson.Field
@@ -375,6 +386,7 @@ type billResponseJSON struct {
 	LastModifiedBy           apijson.Field
 	LineItems                apijson.Field
 	Locked                   apijson.Field
+	LockedBy                 apijson.Field
 	PurchaseOrderNumber      apijson.Field
 	SequentialInvoiceNumber  apijson.Field
 	StartDate                apijson.Field
@@ -437,7 +449,8 @@ type BillResponseLineItem struct {
 	// The number of units used for the line item.
 	Units float64 `json:"units,required"`
 	// The UUID for the line item.
-	ID string `json:"id"`
+	ID         string                 `json:"id"`
+	Additional map[string]interface{} `json:"additional"`
 	// The Aggregation ID used for the line item.
 	AggregationID string `json:"aggregationId"`
 	BalanceID     string `json:"balanceId"`
@@ -503,6 +516,7 @@ type billResponseLineItemJSON struct {
 	Unit                   apijson.Field
 	Units                  apijson.Field
 	ID                     apijson.Field
+	Additional             apijson.Field
 	AggregationID          apijson.Field
 	BalanceID              apijson.Field
 	ChargeID               apijson.Field
@@ -580,7 +594,8 @@ type BillResponseLineItemsUsagePerPricingBand struct {
 	// Subtotal amount for the band.
 	BandSubtotal float64 `json:"bandSubtotal"`
 	// The number of units used within the band.
-	BandUnits float64 `json:"bandUnits"`
+	BandUnits             float64 `json:"bandUnits"`
+	ConvertedBandSubtotal float64 `json:"convertedBandSubtotal"`
 	// The UUID of the credit type.
 	CreditTypeID string `json:"creditTypeId"`
 	// Fixed price is a charge entered for certain pricing types such as Stairstep,
@@ -600,17 +615,18 @@ type BillResponseLineItemsUsagePerPricingBand struct {
 // billResponseLineItemsUsagePerPricingBandJSON contains the JSON metadata for the
 // struct [BillResponseLineItemsUsagePerPricingBand]
 type billResponseLineItemsUsagePerPricingBandJSON struct {
-	BandQuantity  apijson.Field
-	BandSubtotal  apijson.Field
-	BandUnits     apijson.Field
-	CreditTypeID  apijson.Field
-	FixedPrice    apijson.Field
-	LowerLimit    apijson.Field
-	PricingBandID apijson.Field
-	UnitPrice     apijson.Field
-	UnitSubtotal  apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	BandQuantity          apijson.Field
+	BandSubtotal          apijson.Field
+	BandUnits             apijson.Field
+	ConvertedBandSubtotal apijson.Field
+	CreditTypeID          apijson.Field
+	FixedPrice            apijson.Field
+	LowerLimit            apijson.Field
+	PricingBandID         apijson.Field
+	UnitPrice             apijson.Field
+	UnitSubtotal          apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *BillResponseLineItemsUsagePerPricingBand) UnmarshalJSON(data []byte) (err error) {
@@ -685,6 +701,16 @@ func (r billSearchResponseJSON) RawJSON() string {
 type BillGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
+	// Comma separated list of additional fields.
+	Additional param.Field[[]string] `query:"additional"`
+}
+
+// URLQuery serializes [BillGetParams]'s query parameters as `url.Values`.
+func (r BillGetParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type BillListParams struct {
@@ -693,6 +719,8 @@ type BillListParams struct {
 	// Optional filter. An Account ID - returns the Bills for the single specified
 	// Account.
 	AccountID param.Field[string] `query:"accountId"`
+	// Comma separated list of additional fields.
+	Additional param.Field[[]string] `query:"additional"`
 	// The specific date in ISO 8601 format for which you want to retrieve Bills.
 	BillDate param.Field[string] `query:"billDate"`
 	// Only include Bills with bill dates earlier than this date.
@@ -784,6 +812,17 @@ func (r BillApproveParams) URLQuery() (v url.Values) {
 type BillLatestByAccountParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
+	// Comma separated list of additional fields.
+	Additional param.Field[[]string] `query:"additional"`
+}
+
+// URLQuery serializes [BillLatestByAccountParams]'s query parameters as
+// `url.Values`.
+func (r BillLatestByAccountParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type BillLockParams struct {

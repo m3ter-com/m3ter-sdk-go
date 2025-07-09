@@ -33,7 +33,7 @@ func TestPlanGroupNewWithOptionalParams(t *testing.T) {
 		Currency:  m3ter.F("xxx"),
 		Name:      m3ter.F("x"),
 		AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		Code:      m3ter.F("JS!?Q0]r] ]$]"),
+		Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		CustomFields: m3ter.F(map[string]m3ter.PlanGroupNewParamsCustomFieldsUnion{
 			"foo": shared.UnionString("string"),
 		}),
@@ -107,7 +107,7 @@ func TestPlanGroupUpdateWithOptionalParams(t *testing.T) {
 			Currency:  m3ter.F("xxx"),
 			Name:      m3ter.F("x"),
 			AccountID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			Code:      m3ter.F("JS!?Q0]r] ]$]"),
+			Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			CustomFields: m3ter.F(map[string]m3ter.PlanGroupUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),

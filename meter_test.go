@@ -30,7 +30,7 @@ func TestMeterNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Meters.New(context.TODO(), m3ter.MeterNewParams{
-		Code: m3ter.F("JS!?Q0]r] ]$]"),
+		Code: m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		DataFields: m3ter.F([]m3ter.DataFieldParam{{
 			Category: m3ter.F(m3ter.DataFieldCategoryWho),
 			Code:     m3ter.F("{1{}}_"),
@@ -111,7 +111,7 @@ func TestMeterUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.MeterUpdateParams{
-			Code: m3ter.F("JS!?Q0]r] ]$]"),
+			Code: m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			DataFields: m3ter.F([]m3ter.DataFieldParam{{
 				Category: m3ter.F(m3ter.DataFieldCategoryWho),
 				Code:     m3ter.F("{1{}}_"),

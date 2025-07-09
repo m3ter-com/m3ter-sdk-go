@@ -29,11 +29,11 @@ func TestExternalMappingNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.New(context.TODO(), m3ter.ExternalMappingNewParams{
-		ExternalID:          m3ter.F("JS!?Q0]r] ]$]"),
-		ExternalSystem:      m3ter.F("JS!?Q0]r] ]$]"),
-		ExternalTable:       m3ter.F("JS!?Q0]r] ]$]"),
-		M3terEntity:         m3ter.F("JS!?Q0]r] ]$]"),
-		M3terID:             m3ter.F("JS!?Q0]r] ]$]"),
+		ExternalID:          m3ter.F("S?oC\"$]C] ]]]]]5]"),
+		ExternalSystem:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
+		ExternalTable:       m3ter.F("S?oC\"$]C] ]]]]]5]"),
+		M3terEntity:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
+		M3terID:             m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		IntegrationConfigID: m3ter.F("integrationConfigId"),
 		Version:             m3ter.F(int64(0)),
 	})
@@ -94,11 +94,11 @@ func TestExternalMappingUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ExternalMappingUpdateParams{
-			ExternalID:          m3ter.F("JS!?Q0]r] ]$]"),
-			ExternalSystem:      m3ter.F("JS!?Q0]r] ]$]"),
-			ExternalTable:       m3ter.F("JS!?Q0]r] ]$]"),
-			M3terEntity:         m3ter.F("JS!?Q0]r] ]$]"),
-			M3terID:             m3ter.F("JS!?Q0]r] ]$]"),
+			ExternalID:          m3ter.F("S?oC\"$]C] ]]]]]5]"),
+			ExternalSystem:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
+			ExternalTable:       m3ter.F("S?oC\"$]C] ]]]]]5]"),
+			M3terEntity:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
+			M3terID:             m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			IntegrationConfigID: m3ter.F("integrationConfigId"),
 			Version:             m3ter.F(int64(0)),
 		},

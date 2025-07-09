@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.6.0-alpha (2025-07-09)
+
+Full Changelog: [v0.5.0-alpha...v0.6.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.5.0-alpha...v0.6.0-alpha)
+
+### Features
+
+* **api:** mark `version` attribute as computed in Terraform ([83c91de](https://github.com/m3ter-com/m3ter-sdk-go/commit/83c91de16e6d72389c93128e42131513dd219d1e))
+
+
+### Bug Fixes
+
+* don't try to deserialize as json when ResponseBodyInto is []byte ([f115ace](https://github.com/m3ter-com/m3ter-sdk-go/commit/f115ace2c4dc4bb42ffa2394c2ce3e479b74a54f))
+* **pagination:** check if page data is empty in GetNextPage ([2fccbd5](https://github.com/m3ter-com/m3ter-sdk-go/commit/2fccbd5fa802e011ac1eb0d3f8c477f4bcdbb5e4))
+
+
+### Chores
+
+* **ci:** only run for pushes and fork pull requests ([c6b514d](https://github.com/m3ter-com/m3ter-sdk-go/commit/c6b514d6c717e359e7903b2fd0da25a7a9d7fabc))
+* **internal:** codegen related update ([77adec8](https://github.com/m3ter-com/m3ter-sdk-go/commit/77adec82db36084875e4cedf93af00e929898b3c))
+* **internal:** fix lint script for tests ([1c56c85](https://github.com/m3ter-com/m3ter-sdk-go/commit/1c56c852dabb3bf359865c2516b414d960338c24))
+* lint tests ([52e470e](https://github.com/m3ter-com/m3ter-sdk-go/commit/52e470e9680261e4bfdc6b0239c13135952ad570))
+
 ## 0.5.0-alpha (2025-06-24)
 
 Full Changelog: [v0.4.0-alpha...v0.5.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.4.0-alpha...v0.5.0-alpha)
