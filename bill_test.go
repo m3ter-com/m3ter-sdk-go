@@ -13,7 +13,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestBillGet(t *testing.T) {
+func TestBillGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -31,7 +31,9 @@ func TestBillGet(t *testing.T) {
 	_, err := client.Bills.Get(
 		context.TODO(),
 		"id",
-		m3ter.BillGetParams{},
+		m3ter.BillGetParams{
+			Additional: m3ter.F([]string{"string"}),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -59,6 +61,7 @@ func TestBillListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Bills.List(context.TODO(), m3ter.BillListParams{
 		AccountID:                m3ter.F("accountId"),
+		Additional:               m3ter.F([]string{"string"}),
 		BillDate:                 m3ter.F("billDate"),
 		BillDateEnd:              m3ter.F("billDateEnd"),
 		BillDateStart:            m3ter.F("billDateStart"),
@@ -141,7 +144,7 @@ func TestBillApproveWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBillLatestByAccount(t *testing.T) {
+func TestBillLatestByAccountWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,7 +162,9 @@ func TestBillLatestByAccount(t *testing.T) {
 	_, err := client.Bills.LatestByAccount(
 		context.TODO(),
 		"accountId",
-		m3ter.BillLatestByAccountParams{},
+		m3ter.BillLatestByAccountParams{
+			Additional: m3ter.F([]string{"string"}),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

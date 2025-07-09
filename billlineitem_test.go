@@ -13,7 +13,7 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestBillLineItemGet(t *testing.T) {
+func TestBillLineItemGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -32,7 +32,9 @@ func TestBillLineItemGet(t *testing.T) {
 		context.TODO(),
 		"billId",
 		"id",
-		m3ter.BillLineItemGetParams{},
+		m3ter.BillLineItemGetParams{
+			Additional: m3ter.F([]string{"string"}),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -62,8 +64,9 @@ func TestBillLineItemListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"billId",
 		m3ter.BillLineItemListParams{
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
+			Additional: m3ter.F([]string{"string"}),
+			NextToken:  m3ter.F("nextToken"),
+			PageSize:   m3ter.F(int64(1)),
 		},
 	)
 	if err != nil {
