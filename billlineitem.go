@@ -41,14 +41,14 @@ func NewBillLineItemService(opts ...option.RequestOption) (r *BillLineItemServic
 //
 // This endpoint retrieves the line item given by its unique identifier (UUID) from
 // a specific Bill.
-func (r *BillLineItemService) Get(ctx context.Context, billID string, id string, query BillLineItemGetParams, opts ...option.RequestOption) (res *LineItemResponse, err error) {
+func (r *BillLineItemService) Get(ctx context.Context, billID string, id string, params BillLineItemGetParams, opts ...option.RequestOption) (res *LineItemResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.OrgID, precfg.OrgID)
-	if query.OrgID.Value == "" {
+	requestconfig.UseDefaultParam(&params.OrgID, precfg.OrgID)
+	if params.OrgID.Value == "" {
 		err = errors.New("missing required orgId parameter")
 		return
 	}
@@ -60,8 +60,8 @@ func (r *BillLineItemService) Get(ctx context.Context, billID string, id string,
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("organizations/%s/bills/%s/lineitems/%s", query.OrgID, billID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("organizations/%s/bills/%s/lineitems/%s", params.OrgID, billID, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
@@ -113,7 +113,8 @@ func (r *BillLineItemService) ListAutoPaging(ctx context.Context, billID string,
 
 type LineItemResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID         string                 `json:"id,required"`
+	Additional map[string]interface{} `json:"additional"`
 	// A unique identifier (UUID) for the Aggregation that contributes to this Bill
 	// line item.
 	AggregationID string `json:"aggregationId"`
@@ -226,6 +227,7 @@ type LineItemResponse struct {
 // [LineItemResponse]
 type lineItemResponseJSON struct {
 	ID                     apijson.Field
+	Additional             apijson.Field
 	AggregationID          apijson.Field
 	AverageUnitPrice       apijson.Field
 	BalanceID              apijson.Field
@@ -287,7 +289,8 @@ type LineItemResponseBandUsage struct {
 	// Subtotal amount for the band.
 	BandSubtotal float64 `json:"bandSubtotal"`
 	// The number of units used within the band.
-	BandUnits float64 `json:"bandUnits"`
+	BandUnits             float64 `json:"bandUnits"`
+	ConvertedBandSubtotal float64 `json:"convertedBandSubtotal"`
 	// The UUID of the credit type.
 	CreditTypeID string `json:"creditTypeId"`
 	// Fixed price is a charge entered for certain pricing types such as Stairstep,
@@ -307,17 +310,18 @@ type LineItemResponseBandUsage struct {
 // lineItemResponseBandUsageJSON contains the JSON metadata for the struct
 // [LineItemResponseBandUsage]
 type lineItemResponseBandUsageJSON struct {
-	BandQuantity  apijson.Field
-	BandSubtotal  apijson.Field
-	BandUnits     apijson.Field
-	CreditTypeID  apijson.Field
-	FixedPrice    apijson.Field
-	LowerLimit    apijson.Field
-	PricingBandID apijson.Field
-	UnitPrice     apijson.Field
-	UnitSubtotal  apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	BandQuantity          apijson.Field
+	BandSubtotal          apijson.Field
+	BandUnits             apijson.Field
+	ConvertedBandSubtotal apijson.Field
+	CreditTypeID          apijson.Field
+	FixedPrice            apijson.Field
+	LowerLimit            apijson.Field
+	PricingBandID         apijson.Field
+	UnitPrice             apijson.Field
+	UnitSubtotal          apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *LineItemResponseBandUsage) UnmarshalJSON(data []byte) (err error) {
@@ -362,11 +366,23 @@ func (r LineItemResponseLineItemType) IsKnown() bool {
 type BillLineItemGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
+	// Comma separated list of additional fields.
+	Additional param.Field[[]string] `query:"additional"`
+}
+
+// URLQuery serializes [BillLineItemGetParams]'s query parameters as `url.Values`.
+func (r BillLineItemGetParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type BillLineItemListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
+	// Comma separated list of additional fields.
+	Additional param.Field[[]string] `query:"additional"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// line items in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`

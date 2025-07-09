@@ -122,16 +122,9 @@ func (r *AccountPlanService) Update(ctx context.Context, id string, params Accou
 	return
 }
 
-// Retrieve a list of AccountPlan and AccountPlanGroup entities for the specified
-// Organization.
-//
-// This endpoint retrieves a list of AccountPlans and AccountPlanGroups for a
-// specific Organization. The list can be paginated for easier management, and
-// supports filtering with various parameters.
-//
-// **NOTE:** You cannot use the `product` query parameter as a single filter
-// condition, but must always use it in combination with the `account` query
-// parameter.
+// Retrieves a list of AccountPlan and AccountPlanGroup entities for the specified
+// Organization. The list can be paginated for easier management, and supports
+// filtering with various query parameters.
 func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountPlanResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -158,16 +151,9 @@ func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListPar
 	return res, nil
 }
 
-// Retrieve a list of AccountPlan and AccountPlanGroup entities for the specified
-// Organization.
-//
-// This endpoint retrieves a list of AccountPlans and AccountPlanGroups for a
-// specific Organization. The list can be paginated for easier management, and
-// supports filtering with various parameters.
-//
-// **NOTE:** You cannot use the `product` query parameter as a single filter
-// condition, but must always use it in combination with the `account` query
-// parameter.
+// Retrieves a list of AccountPlan and AccountPlanGroup entities for the specified
+// Organization. The list can be paginated for easier management, and supports
+// filtering with various query parameters.
 func (r *AccountPlanService) ListAutoPaging(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountPlanResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, params, opts...))
 }
@@ -584,10 +570,22 @@ type AccountPlanListParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the Account whose AccountPlans and
 	// AccountPlanGroups you want to retrieve.
-	Account  param.Field[string] `query:"account"`
+	//
+	// **NOTE:** Only returns the currently active AccountPlans and AccountPlanGroups
+	// for the specified Account. Use in combination with the `includeall` query
+	// parameter to return both active and inactive.
+	Account param.Field[string] `query:"account"`
+	// The unique identifier (UUID) of the Contract which the AccountPlans you want to
+	// retrieve have been linked to.
+	//
+	// **NOTE:** Does not return AccountPlanGroups that have been linked to the
+	// Contract.
 	Contract param.Field[string] `query:"contract"`
-	// The specific date for which you want to retrieve active AccountPlans and
+	// The specific date for which you want to retrieve AccountPlans and
 	// AccountPlanGroups.
+	//
+	// **NOTE:** Returns both active and inactive AccountPlans and AccountPlanGroups
+	// for the specified date.
 	Date param.Field[string] `query:"date"`
 	// A list of unique identifiers (UUIDs) for specific AccountPlans and
 	// AccountPlanGroups you want to retrieve.
@@ -606,8 +604,10 @@ type AccountPlanListParams struct {
 	NextToken param.Field[string] `query:"nextToken"`
 	// The maximum number of AccountPlans and AccountPlanGroups to return per page.
 	PageSize param.Field[int64] `query:"pageSize"`
-	// The unique identifier (UUID) for the Plan or Plan Group whose associated
-	// AccountPlans or AccountPlanGroups you want to retrieve.
+	// The unique identifier (UUID) for the Plan whose associated AccountPlans you want
+	// to retrieve.
+	//
+	// **NOTE:** Does not return AccountPlanGroups if you use a `planGroupId`.
 	Plan param.Field[string] `query:"plan"`
 	// The unique identifier (UUID) for the Product whose associated AccountPlans you
 	// want to retrieve.
