@@ -35,7 +35,7 @@ func NewClientWithServiceUserAuth(opts ...option.RequestOption) *Client {
 
 			reqTime := time.Now()
 
-			tokenRes, tokenErr := (client).Authentication.GetBearerToken(req.Context(), tokenReq, basicAuthOption)
+			tokenRes, tokenErr := client.Authentication.GetBearerToken(req.Context(), tokenReq, basicAuthOption)
 			if tokenErr != nil {
 				return nil, fmt.Errorf("Failed to retrieve a token using the specified API key and API secret: %w", tokenErr)
 			}
@@ -51,7 +51,7 @@ func NewClientWithServiceUserAuth(opts ...option.RequestOption) *Client {
 	optsWithAuth := append(opts, option.WithMiddleware(authMiddleware))
 	client = NewClient(optsWithAuth...)
 	//don't use the token refresh middleware on the token refresh endpoint
-	client.Authentication.Options = opts
+	client.Authentication.Options = append(DefaultClientOptions(), opts...)
 
 	return client
 }
