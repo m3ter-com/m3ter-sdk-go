@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1-alpha (2025-07-09)
+
+Full Changelog: [v0.6.0-alpha...v0.6.1-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.0-alpha...v0.6.1-alpha)
+
 ## 0.6.0-alpha (2025-07-09)
 
 Full Changelog: [v0.5.0-alpha...v0.6.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.5.0-alpha...v0.6.0-alpha)
