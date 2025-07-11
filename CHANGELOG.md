@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.2-alpha (2025-07-11)
+
+Full Changelog: [v0.6.1-alpha...v0.6.2-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.1-alpha...v0.6.2-alpha)
+
+### Chores
+
+* lint tests in subpackages ([eaccbd0](https://github.com/m3ter-com/m3ter-sdk-go/commit/eaccbd056302afda952c5373c553d58e7419e344))
+
 ## 0.6.1-alpha (2025-07-09)
 
 Full Changelog: [v0.6.0-alpha...v0.6.1-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.0-alpha...v0.6.1-alpha)
