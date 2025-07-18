@@ -449,8 +449,11 @@ type BillResponseLineItem struct {
 	// The number of units used for the line item.
 	Units float64 `json:"units,required"`
 	// The UUID for the line item.
-	ID         string                 `json:"id"`
-	Additional map[string]interface{} `json:"additional"`
+	ID                    string                 `json:"id"`
+	AccountingProductCode string                 `json:"accountingProductCode"`
+	AccountingProductID   string                 `json:"accountingProductId"`
+	AccountingProductName string                 `json:"accountingProductName"`
+	Additional            map[string]interface{} `json:"additional"`
 	// The Aggregation ID used for the line item.
 	AggregationID string `json:"aggregationId"`
 	BalanceID     string `json:"balanceId"`
@@ -516,6 +519,9 @@ type billResponseLineItemJSON struct {
 	Unit                   apijson.Field
 	Units                  apijson.Field
 	ID                     apijson.Field
+	AccountingProductCode  apijson.Field
+	AccountingProductID    apijson.Field
+	AccountingProductName  apijson.Field
 	Additional             apijson.Field
 	AggregationID          apijson.Field
 	BalanceID              apijson.Field
