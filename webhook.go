@@ -39,7 +39,7 @@ func NewWebhookService(opts ...option.RequestOption) (r *WebhookService) {
 
 // This endpoint creates a new webhook destination. A webhook destination is a URL
 // where webhook payloads will be sent.
-func (r *WebhookService) New(ctx context.Context, params WebhookNewParams, opts ...option.RequestOption) (res *WebhookNewResponse, err error) {
+func (r *WebhookService) New(ctx context.Context, params WebhookNewParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -77,7 +77,7 @@ func (r *WebhookService) Get(ctx context.Context, id string, query WebhookGetPar
 }
 
 // Update a destination to be used for a webhook.
-func (r *WebhookService) Update(ctx context.Context, id string, params WebhookUpdateParams, opts ...option.RequestOption) (res *WebhookUpdateResponse, err error) {
+func (r *WebhookService) Update(ctx context.Context, id string, params WebhookUpdateParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -155,7 +155,7 @@ func (r *WebhookService) Delete(ctx context.Context, id string, body WebhookDele
 // Use this endpoint to activate or deactivate a webhook integration destination.
 // It toggles the `active` status of the specific wehbook destination with the
 // given ID.
-func (r *WebhookService) SetActive(ctx context.Context, id string, params WebhookSetActiveParams, opts ...option.RequestOption) (res *WebhookSetActiveResponse, err error) {
+func (r *WebhookService) SetActive(ctx context.Context, id string, params WebhookSetActiveParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -173,69 +173,6 @@ func (r *WebhookService) SetActive(ctx context.Context, id string, params Webhoo
 	path := fmt.Sprintf("organizations/%s/integrationdestinations/webhooks/%s/active", params.OrgID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
-}
-
-type M3terSignedCredentialsRequest struct {
-	// The API key provided by m3ter. This key is part of the credential set required
-	// for signing requests and authenticating with m3ter services.
-	APIKey string `json:"apiKey,required"`
-	// The secret associated with the API key. This secret is used in conjunction with
-	// the API key to generate a signature for secure authentication.
-	Secret string `json:"secret,required"`
-	// Specifies the authorization type. For this schema, it is exclusively set to
-	// M3TER_SIGNED_REQUEST.
-	Type M3terSignedCredentialsRequestType `json:"type,required"`
-	// A flag to indicate whether the credentials are empty.
-	//
-	// - TRUE - empty credentials.
-	// - FALSE - credential details required.
-	Empty bool `json:"empty"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version int64                             `json:"version"`
-	JSON    m3terSignedCredentialsRequestJSON `json:"-"`
-}
-
-// m3terSignedCredentialsRequestJSON contains the JSON metadata for the struct
-// [M3terSignedCredentialsRequest]
-type m3terSignedCredentialsRequestJSON struct {
-	APIKey      apijson.Field
-	Secret      apijson.Field
-	Type        apijson.Field
-	Empty       apijson.Field
-	Version     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *M3terSignedCredentialsRequest) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r m3terSignedCredentialsRequestJSON) RawJSON() string {
-	return r.raw
-}
-
-// Specifies the authorization type. For this schema, it is exclusively set to
-// M3TER_SIGNED_REQUEST.
-type M3terSignedCredentialsRequestType string
-
-const (
-	M3terSignedCredentialsRequestTypeM3TerSignedRequest M3terSignedCredentialsRequestType = "M3TER_SIGNED_REQUEST"
-)
-
-func (r M3terSignedCredentialsRequestType) IsKnown() bool {
-	switch r {
-	case M3terSignedCredentialsRequestTypeM3TerSignedRequest:
-		return true
-	}
-	return false
 }
 
 type M3terSignedCredentialsRequestParam struct {
@@ -266,6 +203,22 @@ type M3terSignedCredentialsRequestParam struct {
 
 func (r M3terSignedCredentialsRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Specifies the authorization type. For this schema, it is exclusively set to
+// M3TER_SIGNED_REQUEST.
+type M3terSignedCredentialsRequestType string
+
+const (
+	M3terSignedCredentialsRequestTypeM3TerSignedRequest M3terSignedCredentialsRequestType = "M3TER_SIGNED_REQUEST"
+)
+
+func (r M3terSignedCredentialsRequestType) IsKnown() bool {
+	switch r {
+	case M3terSignedCredentialsRequestTypeM3TerSignedRequest:
+		return true
+	}
+	return false
 }
 
 type M3terSignedCredentialsResponse struct {
@@ -382,135 +335,6 @@ func (r *Webhook) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r webhookJSON) RawJSON() string {
-	return r.raw
-}
-
-type WebhookNewResponse struct {
-	// This schema defines the credentials required for m3ter request signing.
-	Credentials M3terSignedCredentialsRequest `json:"credentials,required"`
-	Description string                        `json:"description,required"`
-	Name        string                        `json:"name,required"`
-	// The URL to which the webhook requests will be sent.
-	URL    string `json:"url,required"`
-	Active bool   `json:"active"`
-	Code   string `json:"code"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version int64                  `json:"version"`
-	JSON    webhookNewResponseJSON `json:"-"`
-}
-
-// webhookNewResponseJSON contains the JSON metadata for the struct
-// [WebhookNewResponse]
-type webhookNewResponseJSON struct {
-	Credentials apijson.Field
-	Description apijson.Field
-	Name        apijson.Field
-	URL         apijson.Field
-	Active      apijson.Field
-	Code        apijson.Field
-	Version     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WebhookNewResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r webhookNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type WebhookUpdateResponse struct {
-	// This schema defines the credentials required for m3ter request signing.
-	Credentials M3terSignedCredentialsRequest `json:"credentials,required"`
-	Description string                        `json:"description,required"`
-	Name        string                        `json:"name,required"`
-	// The URL to which the webhook requests will be sent.
-	URL    string `json:"url,required"`
-	Active bool   `json:"active"`
-	Code   string `json:"code"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version int64                     `json:"version"`
-	JSON    webhookUpdateResponseJSON `json:"-"`
-}
-
-// webhookUpdateResponseJSON contains the JSON metadata for the struct
-// [WebhookUpdateResponse]
-type webhookUpdateResponseJSON struct {
-	Credentials apijson.Field
-	Description apijson.Field
-	Name        apijson.Field
-	URL         apijson.Field
-	Active      apijson.Field
-	Code        apijson.Field
-	Version     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WebhookUpdateResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r webhookUpdateResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type WebhookSetActiveResponse struct {
-	// This schema defines the credentials required for m3ter request signing.
-	Credentials M3terSignedCredentialsRequest `json:"credentials,required"`
-	Description string                        `json:"description,required"`
-	Name        string                        `json:"name,required"`
-	// The URL to which the webhook requests will be sent.
-	URL    string `json:"url,required"`
-	Active bool   `json:"active"`
-	Code   string `json:"code"`
-	// The version number of the entity:
-	//
-	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
-	//     for Create_. On initial Create, version is set at 1 and listed in the
-	//     response.
-	//   - **Update Entity:** On Update, version is required and must match the existing
-	//     version because a check is performed to ensure sequential versioning is
-	//     preserved. Version is incremented by 1 and listed in the response.
-	Version int64                        `json:"version"`
-	JSON    webhookSetActiveResponseJSON `json:"-"`
-}
-
-// webhookSetActiveResponseJSON contains the JSON metadata for the struct
-// [WebhookSetActiveResponse]
-type webhookSetActiveResponseJSON struct {
-	Credentials apijson.Field
-	Description apijson.Field
-	Name        apijson.Field
-	URL         apijson.Field
-	Active      apijson.Field
-	Code        apijson.Field
-	Version     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WebhookSetActiveResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r webhookSetActiveResponseJSON) RawJSON() string {
 	return r.raw
 }
 
