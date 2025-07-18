@@ -36,7 +36,8 @@ func TestStatementStatementDefinitionNewWithOptionalParams(t *testing.T) {
 			Attributes: m3ter.F([]string{"string"}),
 			MeterID:    m3ter.F("meterId"),
 		}}),
-		IncludePricePerUnit: m3ter.F(true),
+		GenerateSlimStatements: m3ter.F(true),
+		IncludePricePerUnit:    m3ter.F(true),
 		Measures: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsMeasure{{
 			Aggregations: m3ter.F([]m3ter.StatementStatementDefinitionNewParamsMeasuresAggregation{m3ter.StatementStatementDefinitionNewParamsMeasuresAggregationSum}),
 			MeterID:      m3ter.F("meterId"),
@@ -109,7 +110,8 @@ func TestStatementStatementDefinitionUpdateWithOptionalParams(t *testing.T) {
 				Attributes: m3ter.F([]string{"string"}),
 				MeterID:    m3ter.F("meterId"),
 			}}),
-			IncludePricePerUnit: m3ter.F(true),
+			GenerateSlimStatements: m3ter.F(true),
+			IncludePricePerUnit:    m3ter.F(true),
 			Measures: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsMeasure{{
 				Aggregations: m3ter.F([]m3ter.StatementStatementDefinitionUpdateParamsMeasuresAggregation{m3ter.StatementStatementDefinitionUpdateParamsMeasuresAggregationSum}),
 				MeterID:      m3ter.F("meterId"),

@@ -185,7 +185,8 @@ type StatementDefinitionResponse struct {
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the StatementDefinition was last
 	// modified.
-	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	DtLastModified         time.Time `json:"dtLastModified" format:"date-time"`
+	GenerateSlimStatements bool      `json:"generateSlimStatements"`
 	// A Boolean indicating whether to include the price per unit in the Statement.
 	//
 	// - TRUE - includes the price per unit.
@@ -211,19 +212,20 @@ type StatementDefinitionResponse struct {
 // statementDefinitionResponseJSON contains the JSON metadata for the struct
 // [StatementDefinitionResponse]
 type statementDefinitionResponseJSON struct {
-	ID                   apijson.Field
-	AggregationFrequency apijson.Field
-	CreatedBy            apijson.Field
-	Dimensions           apijson.Field
-	DtCreated            apijson.Field
-	DtLastModified       apijson.Field
-	IncludePricePerUnit  apijson.Field
-	LastModifiedBy       apijson.Field
-	Measures             apijson.Field
-	Name                 apijson.Field
-	Version              apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
+	ID                     apijson.Field
+	AggregationFrequency   apijson.Field
+	CreatedBy              apijson.Field
+	Dimensions             apijson.Field
+	DtCreated              apijson.Field
+	DtLastModified         apijson.Field
+	GenerateSlimStatements apijson.Field
+	IncludePricePerUnit    apijson.Field
+	LastModifiedBy         apijson.Field
+	Measures               apijson.Field
+	Name                   apijson.Field
+	Version                apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
 }
 
 func (r *StatementDefinitionResponse) UnmarshalJSON(data []byte) (err error) {
@@ -370,7 +372,8 @@ type StatementStatementDefinitionNewParams struct {
 	AggregationFrequency param.Field[StatementStatementDefinitionNewParamsAggregationFrequency] `json:"aggregationFrequency,required"`
 	// An array of objects, each representing a Dimension data field from a Meter _(for
 	// Meters that have Dimensions setup)_.
-	Dimensions param.Field[[]StatementStatementDefinitionNewParamsDimension] `json:"dimensions"`
+	Dimensions             param.Field[[]StatementStatementDefinitionNewParamsDimension] `json:"dimensions"`
+	GenerateSlimStatements param.Field[bool]                                             `json:"generateSlimStatements"`
 	// A Boolean indicating whether to include the price per unit in the Statement.
 	//
 	// - TRUE - includes the price per unit.
@@ -505,7 +508,8 @@ type StatementStatementDefinitionUpdateParams struct {
 	AggregationFrequency param.Field[StatementStatementDefinitionUpdateParamsAggregationFrequency] `json:"aggregationFrequency,required"`
 	// An array of objects, each representing a Dimension data field from a Meter _(for
 	// Meters that have Dimensions setup)_.
-	Dimensions param.Field[[]StatementStatementDefinitionUpdateParamsDimension] `json:"dimensions"`
+	Dimensions             param.Field[[]StatementStatementDefinitionUpdateParamsDimension] `json:"dimensions"`
+	GenerateSlimStatements param.Field[bool]                                                `json:"generateSlimStatements"`
 	// A Boolean indicating whether to include the price per unit in the Statement.
 	//
 	// - TRUE - includes the price per unit.

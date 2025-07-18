@@ -242,7 +242,8 @@ func (r debitLineItemResponseJSON) RawJSON() string {
 
 type BillDebitLineItemNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID               param.Field[string] `path:"orgId,required"`
+	AccountingProductID param.Field[string] `json:"accountingProductId,required"`
 	// The amount for the line item.
 	Amount param.Field[float64] `json:"amount,required"`
 	// The description for the line item.
@@ -316,7 +317,8 @@ type BillDebitLineItemGetParams struct {
 
 type BillDebitLineItemUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID               param.Field[string] `path:"orgId,required"`
+	AccountingProductID param.Field[string] `json:"accountingProductId,required"`
 	// The amount for the line item.
 	Amount param.Field[float64] `json:"amount,required"`
 	// The description for the line item.

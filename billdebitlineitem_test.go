@@ -33,6 +33,7 @@ func TestBillDebitLineItemNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"billId",
 		m3ter.BillDebitLineItemNewParams{
+			AccountingProductID:    m3ter.F("accountingProductId"),
 			Amount:                 m3ter.F(1.000000),
 			Description:            m3ter.F("x"),
 			ProductID:              m3ter.F("productId"),
@@ -105,6 +106,7 @@ func TestBillDebitLineItemUpdateWithOptionalParams(t *testing.T) {
 		"billId",
 		"id",
 		m3ter.BillDebitLineItemUpdateParams{
+			AccountingProductID:    m3ter.F("accountingProductId"),
 			Amount:                 m3ter.F(1.000000),
 			Description:            m3ter.F("x"),
 			ProductID:              m3ter.F("productId"),
