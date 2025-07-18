@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.2-alpha (2025-07-18)
+
+Full Changelog: [v0.6.1-alpha...v0.6.2-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.1-alpha...v0.6.2-alpha)
+
+### Bug Fixes
+
+* **api:** use WebhookDestinationResponse in webhook endpoint response schemas ([8ca98ca](https://github.com/m3ter-com/m3ter-sdk-go/commit/8ca98ca990b6ea2be660aaa740e1029413b1a657))
+
+
+### Chores
+
+* lint tests in subpackages ([eaccbd0](https://github.com/m3ter-com/m3ter-sdk-go/commit/eaccbd056302afda952c5373c553d58e7419e344))
+
 ## 0.6.1-alpha (2025-07-09)
 
 Full Changelog: [v0.6.0-alpha...v0.6.1-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.0-alpha...v0.6.1-alpha)
