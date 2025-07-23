@@ -210,12 +210,12 @@ func (r M3terSignedCredentialsRequestParam) MarshalJSON() (data []byte, err erro
 type M3terSignedCredentialsRequestType string
 
 const (
-	M3terSignedCredentialsRequestTypeM3TerSignedRequest M3terSignedCredentialsRequestType = "M3TER_SIGNED_REQUEST"
+	M3terSignedCredentialsRequestTypeM3terSignedRequest M3terSignedCredentialsRequestType = "M3TER_SIGNED_REQUEST"
 )
 
 func (r M3terSignedCredentialsRequestType) IsKnown() bool {
 	switch r {
-	case M3terSignedCredentialsRequestTypeM3TerSignedRequest:
+	case M3terSignedCredentialsRequestTypeM3terSignedRequest:
 		return true
 	}
 	return false
