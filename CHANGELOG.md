@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.3-alpha (2025-07-23)
+
+Full Changelog: [v0.6.2-alpha...v0.6.3-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.2-alpha...v0.6.3-alpha)
+
+### Bug Fixes
+
+* **client:** bad casing ([3cbb265](https://github.com/m3ter-com/m3ter-sdk-go/commit/3cbb26546a083d926214de791dac972c85606395))
+* **client:** process custom base url ahead of time ([f53eb05](https://github.com/m3ter-com/m3ter-sdk-go/commit/f53eb05e6eda906a6f9ceeaf3675f004f7997e36))
+
 ## 0.6.2-alpha (2025-07-18)
 
 Full Changelog: [v0.6.1-alpha...v0.6.2-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.1-alpha...v0.6.2-alpha)
