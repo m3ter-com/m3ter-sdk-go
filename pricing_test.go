@@ -182,6 +182,7 @@ func TestPricingListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Pricings.List(context.TODO(), m3ter.PricingListParams{
+		AggregationID:  m3ter.F("aggregationId"),
 		Date:           m3ter.F("date"),
 		IDs:            m3ter.F([]string{"string"}),
 		NextToken:      m3ter.F("nextToken"),
