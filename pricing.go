@@ -631,6 +631,8 @@ func (r PricingUpdateParamsType) IsKnown() bool {
 type PricingListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
+	// UUID of the Aggregation to retrieve pricings for
+	AggregationID param.Field[string] `query:"aggregationId"`
 	// Date on which to retrieve active Pricings.
 	Date param.Field[string] `query:"date"`
 	// List of Pricing IDs to retrieve.
