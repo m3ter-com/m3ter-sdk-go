@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 (2025-08-01)
+
+Full Changelog: [v0.7.0-alpha...v0.8.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.7.0-alpha...v0.8.0)
+
+### Features
+
+* **api:** remove audit fields from Terraform provider ([d0e1796](https://github.com/m3ter-com/m3ter-sdk-go/commit/d0e17960a8467e4c7cf28f954c824d3c3c3797b9))
+
 ## 0.7.0-alpha (2025-07-28)
 
 Full Changelog: [v0.6.2-alpha...v0.7.0-alpha](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.6.2-alpha...v0.7.0-alpha)
