@@ -305,13 +305,14 @@ type NotificationConfigurationNewParams struct {
 	// [Creating Calculations](https://www.m3ter.com/docs/guides/utilizing-events-and-notifications/key-concepts-and-relationships#creating-calculations)
 	// in the m3ter documentation for more information.
 	Calculation param.Field[string] `json:"calculation"`
-	// The version number for the Notification:
+	// The version number of the entity:
 	//
-	//   - **Create:** Not valid for initial insertion of new entity - _do not use for
-	//     Create_. On initial Create, version is set at 1 and listed in the response.
-	//   - **Update:** On Update, version is required and must match the existing version
-	//     because a check is performed to ensure sequential versioning is preserved.
-	//     Version is incremented by 1 and listed in the response.
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
 	Version param.Field[int64] `json:"version"`
 }
 
@@ -369,13 +370,14 @@ type NotificationConfigurationUpdateParams struct {
 	// [Creating Calculations](https://www.m3ter.com/docs/guides/utilizing-events-and-notifications/key-concepts-and-relationships#creating-calculations)
 	// in the m3ter documentation for more information.
 	Calculation param.Field[string] `json:"calculation"`
-	// The version number for the Notification:
+	// The version number of the entity:
 	//
-	//   - **Create:** Not valid for initial insertion of new entity - _do not use for
-	//     Create_. On initial Create, version is set at 1 and listed in the response.
-	//   - **Update:** On Update, version is required and must match the existing version
-	//     because a check is performed to ensure sequential versioning is preserved.
-	//     Version is incremented by 1 and listed in the response.
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
+	//     version because a check is performed to ensure sequential versioning is
+	//     preserved. Version is incremented by 1 and listed in the response.
 	Version param.Field[int64] `json:"version"`
 }
 

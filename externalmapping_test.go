@@ -29,12 +29,12 @@ func TestExternalMappingNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.ExternalMappings.New(context.TODO(), m3ter.ExternalMappingNewParams{
-		ExternalID:          m3ter.F("S?oC\"$]C] ]]]]]5]"),
-		ExternalSystem:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
-		ExternalTable:       m3ter.F("S?oC\"$]C] ]]]]]5]"),
-		M3terEntity:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
-		M3terID:             m3ter.F("S?oC\"$]C] ]]]]]5]"),
-		IntegrationConfigID: m3ter.F("integrationConfigId"),
+		ExternalID:          m3ter.F("cus_00000000000000"),
+		ExternalSystem:      m3ter.F("Stripe"),
+		ExternalTable:       m3ter.F("Customer"),
+		M3terEntity:         m3ter.F("Account"),
+		M3terID:             m3ter.F("00000000-0000-0000-0000-000000000000"),
+		IntegrationConfigID: m3ter.F("00000000-0000-0000-0000-000000000000"),
 		Version:             m3ter.F(int64(0)),
 	})
 	if err != nil {
@@ -94,12 +94,12 @@ func TestExternalMappingUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ExternalMappingUpdateParams{
-			ExternalID:          m3ter.F("S?oC\"$]C] ]]]]]5]"),
-			ExternalSystem:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
-			ExternalTable:       m3ter.F("S?oC\"$]C] ]]]]]5]"),
-			M3terEntity:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
-			M3terID:             m3ter.F("S?oC\"$]C] ]]]]]5]"),
-			IntegrationConfigID: m3ter.F("integrationConfigId"),
+			ExternalID:          m3ter.F("cus_00000000000000"),
+			ExternalSystem:      m3ter.F("Stripe"),
+			ExternalTable:       m3ter.F("Customer"),
+			M3terEntity:         m3ter.F("Account"),
+			M3terID:             m3ter.F("00000000-0000-0000-0000-000000000000"),
+			IntegrationConfigID: m3ter.F("00000000-0000-0000-0000-000000000000"),
 			Version:             m3ter.F(int64(0)),
 		},
 	)
