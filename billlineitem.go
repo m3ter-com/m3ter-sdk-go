@@ -113,9 +113,12 @@ func (r *BillLineItemService) ListAutoPaging(ctx context.Context, billID string,
 
 type LineItemResponse struct {
 	// The UUID of the entity.
-	ID                    string                 `json:"id,required"`
-	AccountingProductCode string                 `json:"accountingProductCode"`
-	AccountingProductID   string                 `json:"accountingProductId"`
+	ID string `json:"id,required"`
+	// The code of the Accounting Product associated with this line item.
+	AccountingProductCode string `json:"accountingProductCode"`
+	// The unique identifier (UUID) for the associated Accounting Product.
+	AccountingProductID string `json:"accountingProductId"`
+	// The name of the Accounting Product associated with this line item.
 	AccountingProductName string                 `json:"accountingProductName"`
 	Additional            map[string]interface{} `json:"additional"`
 	// A unique identifier (UUID) for the Aggregation that contributes to this Bill
@@ -178,7 +181,8 @@ type LineItemResponse struct {
 	// A unique identifier (UUID) for the billing Plan associated with this line item,
 	PlanID string `json:"planId"`
 	// The unique identifier (UUID) of the Pricing used for this line item,
-	PricingID   string `json:"pricingId"`
+	PricingID string `json:"pricingId"`
+	// The code of the Product associated with this line item.
 	ProductCode string `json:"productCode"`
 	// The unique identifier (UUID) for the associated Product.
 	ProductID string `json:"productId"`

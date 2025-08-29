@@ -209,7 +209,8 @@ type ContractResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
-	AccountID string `json:"accountId"`
+	AccountID       string `json:"accountId"`
+	BillGroupingKey string `json:"billGroupingKey"`
 	// The short code of the Contract.
 	Code string `json:"code"`
 	// The unique identifier (UUID) of the user who created this Contract.
@@ -258,6 +259,7 @@ type ContractResponse struct {
 type contractResponseJSON struct {
 	ID                  apijson.Field
 	AccountID           apijson.Field
+	BillGroupingKey     apijson.Field
 	Code                apijson.Field
 	CreatedBy           apijson.Field
 	CustomFields        apijson.Field

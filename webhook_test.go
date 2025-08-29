@@ -30,8 +30,8 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Webhooks.New(context.TODO(), m3ter.WebhookNewParams{
 		Credentials: m3ter.F(m3ter.M3terSignedCredentialsRequestParam{
-			APIKey:  m3ter.F("x"),
-			Secret:  m3ter.F("x"),
+			APIKey:  m3ter.F("api key"),
+			Secret:  m3ter.F("api secret"),
 			Type:    m3ter.F(m3ter.M3terSignedCredentialsRequestTypeM3terSignedRequest),
 			Empty:   m3ter.F(true),
 			Version: m3ter.F(int64(0)),
@@ -101,8 +101,8 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		m3ter.WebhookUpdateParams{
 			Credentials: m3ter.F(m3ter.M3terSignedCredentialsRequestParam{
-				APIKey:  m3ter.F("x"),
-				Secret:  m3ter.F("x"),
+				APIKey:  m3ter.F("api key"),
+				Secret:  m3ter.F("api secret"),
 				Type:    m3ter.F(m3ter.M3terSignedCredentialsRequestTypeM3terSignedRequest),
 				Empty:   m3ter.F(true),
 				Version: m3ter.F(int64(0)),

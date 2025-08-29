@@ -228,11 +228,12 @@ type ScheduledEventConfigurationNewParams struct {
 	// The offset in days from the specified DateTime field on the referenced entity
 	// when the scheduled Event will trigger.
 	Offset param.Field[int64] `json:"offset,required"`
-	// The version number of the scheduled event configuration:
+	// The version number of the entity:
 	//
-	//   - **Create entity**: Not valid for initial insertion - do not use for Create. On
-	//     initial Create, version is set at 1 and listed in the response.
-	//   - **Update Entity**: On Update, version is required and must match the existing
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
 	//     version because a check is performed to ensure sequential versioning is
 	//     preserved. Version is incremented by 1 and listed in the response.
 	Version param.Field[int64] `json:"version"`
@@ -269,11 +270,12 @@ type ScheduledEventConfigurationUpdateParams struct {
 	// The offset in days from the specified DateTime field on the referenced entity
 	// when the scheduled Event will trigger.
 	Offset param.Field[int64] `json:"offset,required"`
-	// The version number of the scheduled event configuration:
+	// The version number of the entity:
 	//
-	//   - **Create entity**: Not valid for initial insertion - do not use for Create. On
-	//     initial Create, version is set at 1 and listed in the response.
-	//   - **Update Entity**: On Update, version is required and must match the existing
+	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
+	//     for Create_. On initial Create, version is set at 1 and listed in the
+	//     response.
+	//   - **Update Entity:** On Update, version is required and must match the existing
 	//     version because a check is performed to ensure sequential versioning is
 	//     preserved. Version is incremented by 1 and listed in the response.
 	Version param.Field[int64] `json:"version"`
