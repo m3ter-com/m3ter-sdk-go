@@ -293,12 +293,13 @@ const (
 	IntegrationConfigurationResponseStatusAccountingPeriodClosed IntegrationConfigurationResponseStatus = "ACCOUNTING_PERIOD_CLOSED"
 	IntegrationConfigurationResponseStatusInvoiceAlreadyPaid     IntegrationConfigurationResponseStatus = "INVOICE_ALREADY_PAID"
 	IntegrationConfigurationResponseStatusDisabled               IntegrationConfigurationResponseStatus = "DISABLED"
+	IntegrationConfigurationResponseStatusTimeoutLimitExceeded   IntegrationConfigurationResponseStatus = "TIMEOUT_LIMIT_EXCEEDED"
 	IntegrationConfigurationResponseStatusRateLimitRetry         IntegrationConfigurationResponseStatus = "RATE_LIMIT_RETRY"
 )
 
 func (r IntegrationConfigurationResponseStatus) IsKnown() bool {
 	switch r {
-	case IntegrationConfigurationResponseStatusWaiting, IntegrationConfigurationResponseStatusStarted, IntegrationConfigurationResponseStatusComplete, IntegrationConfigurationResponseStatusError, IntegrationConfigurationResponseStatusAwaitingRetry, IntegrationConfigurationResponseStatusAuthFailed, IntegrationConfigurationResponseStatusAccountingPeriodClosed, IntegrationConfigurationResponseStatusInvoiceAlreadyPaid, IntegrationConfigurationResponseStatusDisabled, IntegrationConfigurationResponseStatusRateLimitRetry:
+	case IntegrationConfigurationResponseStatusWaiting, IntegrationConfigurationResponseStatusStarted, IntegrationConfigurationResponseStatusComplete, IntegrationConfigurationResponseStatusError, IntegrationConfigurationResponseStatusAwaitingRetry, IntegrationConfigurationResponseStatusAuthFailed, IntegrationConfigurationResponseStatusAccountingPeriodClosed, IntegrationConfigurationResponseStatusInvoiceAlreadyPaid, IntegrationConfigurationResponseStatusDisabled, IntegrationConfigurationResponseStatusTimeoutLimitExceeded, IntegrationConfigurationResponseStatusRateLimitRetry:
 		return true
 	}
 	return false
@@ -311,13 +312,6 @@ type IntegrationConfigurationNewResponse struct {
 	Destination string `json:"destination,required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
 	EntityType string `json:"entityType,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -352,7 +346,14 @@ type IntegrationConfigurationNewResponse struct {
 	//
 	// Deprecated: deprecated
 	TriggerType IntegrationConfigurationNewResponseTriggerType `json:"triggerType"`
-	JSON        integrationConfigurationNewResponseJSON        `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                   `json:"version"`
+	JSON    integrationConfigurationNewResponseJSON `json:"-"`
 }
 
 // integrationConfigurationNewResponseJSON contains the JSON metadata for the
@@ -361,7 +362,6 @@ type integrationConfigurationNewResponseJSON struct {
 	ID                       apijson.Field
 	Destination              apijson.Field
 	EntityType               apijson.Field
-	Version                  apijson.Field
 	Authorized               apijson.Field
 	ConfigData               apijson.Field
 	CreatedBy                apijson.Field
@@ -374,6 +374,7 @@ type integrationConfigurationNewResponseJSON struct {
 	LastModifiedBy           apijson.Field
 	Name                     apijson.Field
 	TriggerType              apijson.Field
+	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }
@@ -409,13 +410,6 @@ type IntegrationConfigurationUpdateResponse struct {
 	Destination string `json:"destination,required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
 	EntityType string `json:"entityType,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -450,7 +444,14 @@ type IntegrationConfigurationUpdateResponse struct {
 	//
 	// Deprecated: deprecated
 	TriggerType IntegrationConfigurationUpdateResponseTriggerType `json:"triggerType"`
-	JSON        integrationConfigurationUpdateResponseJSON        `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                      `json:"version"`
+	JSON    integrationConfigurationUpdateResponseJSON `json:"-"`
 }
 
 // integrationConfigurationUpdateResponseJSON contains the JSON metadata for the
@@ -459,7 +460,6 @@ type integrationConfigurationUpdateResponseJSON struct {
 	ID                       apijson.Field
 	Destination              apijson.Field
 	EntityType               apijson.Field
-	Version                  apijson.Field
 	Authorized               apijson.Field
 	ConfigData               apijson.Field
 	CreatedBy                apijson.Field
@@ -472,6 +472,7 @@ type integrationConfigurationUpdateResponseJSON struct {
 	LastModifiedBy           apijson.Field
 	Name                     apijson.Field
 	TriggerType              apijson.Field
+	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }
@@ -507,13 +508,6 @@ type IntegrationConfigurationListResponse struct {
 	Destination string `json:"destination,required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
 	EntityType string `json:"entityType,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -548,7 +542,14 @@ type IntegrationConfigurationListResponse struct {
 	//
 	// Deprecated: deprecated
 	TriggerType IntegrationConfigurationListResponseTriggerType `json:"triggerType"`
-	JSON        integrationConfigurationListResponseJSON        `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                    `json:"version"`
+	JSON    integrationConfigurationListResponseJSON `json:"-"`
 }
 
 // integrationConfigurationListResponseJSON contains the JSON metadata for the
@@ -557,7 +558,6 @@ type integrationConfigurationListResponseJSON struct {
 	ID                       apijson.Field
 	Destination              apijson.Field
 	EntityType               apijson.Field
-	Version                  apijson.Field
 	Authorized               apijson.Field
 	ConfigData               apijson.Field
 	CreatedBy                apijson.Field
@@ -570,6 +570,7 @@ type integrationConfigurationListResponseJSON struct {
 	LastModifiedBy           apijson.Field
 	Name                     apijson.Field
 	TriggerType              apijson.Field
+	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }
@@ -605,13 +606,6 @@ type IntegrationConfigurationDeleteResponse struct {
 	Destination string `json:"destination,required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
 	EntityType string `json:"entityType,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -646,7 +640,14 @@ type IntegrationConfigurationDeleteResponse struct {
 	//
 	// Deprecated: deprecated
 	TriggerType IntegrationConfigurationDeleteResponseTriggerType `json:"triggerType"`
-	JSON        integrationConfigurationDeleteResponseJSON        `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                      `json:"version"`
+	JSON    integrationConfigurationDeleteResponseJSON `json:"-"`
 }
 
 // integrationConfigurationDeleteResponseJSON contains the JSON metadata for the
@@ -655,7 +656,6 @@ type integrationConfigurationDeleteResponseJSON struct {
 	ID                       apijson.Field
 	Destination              apijson.Field
 	EntityType               apijson.Field
-	Version                  apijson.Field
 	Authorized               apijson.Field
 	ConfigData               apijson.Field
 	CreatedBy                apijson.Field
@@ -668,6 +668,7 @@ type integrationConfigurationDeleteResponseJSON struct {
 	LastModifiedBy           apijson.Field
 	Name                     apijson.Field
 	TriggerType              apijson.Field
+	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }
@@ -703,13 +704,6 @@ type IntegrationConfigurationEnableResponse struct {
 	Destination string `json:"destination,required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
 	EntityType string `json:"entityType,required"`
-	// The version number:
-	//
-	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
-	//     in the response.
-	//   - **Update:** On successful Update, the version is incremented by 1 in the
-	//     response.
-	Version int64 `json:"version,required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -744,7 +738,14 @@ type IntegrationConfigurationEnableResponse struct {
 	//
 	// Deprecated: deprecated
 	TriggerType IntegrationConfigurationEnableResponseTriggerType `json:"triggerType"`
-	JSON        integrationConfigurationEnableResponseJSON        `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                      `json:"version"`
+	JSON    integrationConfigurationEnableResponseJSON `json:"-"`
 }
 
 // integrationConfigurationEnableResponseJSON contains the JSON metadata for the
@@ -753,7 +754,6 @@ type integrationConfigurationEnableResponseJSON struct {
 	ID                       apijson.Field
 	Destination              apijson.Field
 	EntityType               apijson.Field
-	Version                  apijson.Field
 	Authorized               apijson.Field
 	ConfigData               apijson.Field
 	CreatedBy                apijson.Field
@@ -766,6 +766,7 @@ type integrationConfigurationEnableResponseJSON struct {
 	LastModifiedBy           apijson.Field
 	Name                     apijson.Field
 	TriggerType              apijson.Field
+	Version                  apijson.Field
 	raw                      string
 	ExtraFields              map[string]apijson.Field
 }
@@ -797,25 +798,25 @@ func (r IntegrationConfigurationEnableResponseTriggerType) IsKnown() bool {
 type IntegrationConfigurationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
-	// A flexible object to include any additional configuration data specific to the
-	// integration.
-	ConfigData param.Field[map[string]interface{}] `json:"configData,required"`
-	// Base model for defining integration credentials across different types of
-	// integrations.
-	Credentials param.Field[IntegrationConfigurationNewParamsCredentials] `json:"credentials,required"`
 	// Denotes the integration destination. This field identifies the target platform
 	// or service for the integration.
 	Destination param.Field[string] `json:"destination,required"`
-	// The unique identifier (UUID) for the integration destination.
-	DestinationID param.Field[string] `json:"destinationId,required"`
-	// The unique identifier (UUID) of the entity. This field is used to specify which
-	// entity's integration configuration you're updating.
-	EntityID param.Field[string] `json:"entityId,required"`
 	// Specifies the type of entity for which the integration configuration is being
 	// updated. Must be a valid alphanumeric string.
-	EntityType               param.Field[string] `json:"entityType,required"`
-	IntegrationCredentialsID param.Field[string] `json:"integrationCredentialsId,required"`
-	Name                     param.Field[string] `json:"name,required"`
+	EntityType param.Field[string] `json:"entityType,required"`
+	// A flexible object to include any additional configuration data specific to the
+	// integration.
+	ConfigData param.Field[map[string]interface{}] `json:"configData"`
+	// Base model for defining integration credentials across different types of
+	// integrations.
+	Credentials param.Field[IntegrationConfigurationNewParamsCredentials] `json:"credentials"`
+	// The unique identifier (UUID) for the integration destination.
+	DestinationID param.Field[string] `json:"destinationId"`
+	// The unique identifier (UUID) of the entity. This field is used to specify which
+	// entity's integration configuration you're updating.
+	EntityID                 param.Field[string] `json:"entityId"`
+	IntegrationCredentialsID param.Field[string] `json:"integrationCredentialsId"`
+	Name                     param.Field[string] `json:"name"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -872,11 +873,15 @@ const (
 	IntegrationConfigurationNewParamsCredentialsTypeChargebeeAuth          IntegrationConfigurationNewParamsCredentialsType = "CHARGEBEE_AUTH"
 	IntegrationConfigurationNewParamsCredentialsTypeM3terServiceUser       IntegrationConfigurationNewParamsCredentialsType = "M3TER_SERVICE_USER"
 	IntegrationConfigurationNewParamsCredentialsTypeStripeSignedRequest    IntegrationConfigurationNewParamsCredentialsType = "STRIPE_SIGNED_REQUEST"
+	IntegrationConfigurationNewParamsCredentialsTypeHubspotAccessToken     IntegrationConfigurationNewParamsCredentialsType = "HUBSPOT_ACCESS_TOKEN"
+	IntegrationConfigurationNewParamsCredentialsTypeHubspotClientSecret    IntegrationConfigurationNewParamsCredentialsType = "HUBSPOT_CLIENT_SECRET"
+	IntegrationConfigurationNewParamsCredentialsTypeOpsgenieKey            IntegrationConfigurationNewParamsCredentialsType = "OPSGENIE_KEY"
+	IntegrationConfigurationNewParamsCredentialsTypeSapByd                 IntegrationConfigurationNewParamsCredentialsType = "SAP_BYD"
 )
 
 func (r IntegrationConfigurationNewParamsCredentialsType) IsKnown() bool {
 	switch r {
-	case IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic, IntegrationConfigurationNewParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationNewParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationNewParamsCredentialsTypeAwsIntegration, IntegrationConfigurationNewParamsCredentialsTypePaddleAuth, IntegrationConfigurationNewParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationNewParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationNewParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationNewParamsCredentialsTypeStripeSignedRequest:
+	case IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic, IntegrationConfigurationNewParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationNewParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationNewParamsCredentialsTypeAwsIntegration, IntegrationConfigurationNewParamsCredentialsTypePaddleAuth, IntegrationConfigurationNewParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationNewParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationNewParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationNewParamsCredentialsTypeStripeSignedRequest, IntegrationConfigurationNewParamsCredentialsTypeHubspotAccessToken, IntegrationConfigurationNewParamsCredentialsTypeHubspotClientSecret, IntegrationConfigurationNewParamsCredentialsTypeOpsgenieKey, IntegrationConfigurationNewParamsCredentialsTypeSapByd:
 		return true
 	}
 	return false
@@ -916,25 +921,25 @@ type IntegrationConfigurationGetParams struct {
 type IntegrationConfigurationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
-	// A flexible object to include any additional configuration data specific to the
-	// integration.
-	ConfigData param.Field[map[string]interface{}] `json:"configData,required"`
-	// Base model for defining integration credentials across different types of
-	// integrations.
-	Credentials param.Field[IntegrationConfigurationUpdateParamsCredentials] `json:"credentials,required"`
 	// Denotes the integration destination. This field identifies the target platform
 	// or service for the integration.
 	Destination param.Field[string] `json:"destination,required"`
-	// The unique identifier (UUID) for the integration destination.
-	DestinationID param.Field[string] `json:"destinationId,required"`
-	// The unique identifier (UUID) of the entity. This field is used to specify which
-	// entity's integration configuration you're updating.
-	EntityID param.Field[string] `json:"entityId,required"`
 	// Specifies the type of entity for which the integration configuration is being
 	// updated. Must be a valid alphanumeric string.
-	EntityType               param.Field[string] `json:"entityType,required"`
-	IntegrationCredentialsID param.Field[string] `json:"integrationCredentialsId,required"`
-	Name                     param.Field[string] `json:"name,required"`
+	EntityType param.Field[string] `json:"entityType,required"`
+	// A flexible object to include any additional configuration data specific to the
+	// integration.
+	ConfigData param.Field[map[string]interface{}] `json:"configData"`
+	// Base model for defining integration credentials across different types of
+	// integrations.
+	Credentials param.Field[IntegrationConfigurationUpdateParamsCredentials] `json:"credentials"`
+	// The unique identifier (UUID) for the integration destination.
+	DestinationID param.Field[string] `json:"destinationId"`
+	// The unique identifier (UUID) of the entity. This field is used to specify which
+	// entity's integration configuration you're updating.
+	EntityID                 param.Field[string] `json:"entityId"`
+	IntegrationCredentialsID param.Field[string] `json:"integrationCredentialsId"`
+	Name                     param.Field[string] `json:"name"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -991,11 +996,15 @@ const (
 	IntegrationConfigurationUpdateParamsCredentialsTypeChargebeeAuth          IntegrationConfigurationUpdateParamsCredentialsType = "CHARGEBEE_AUTH"
 	IntegrationConfigurationUpdateParamsCredentialsTypeM3terServiceUser       IntegrationConfigurationUpdateParamsCredentialsType = "M3TER_SERVICE_USER"
 	IntegrationConfigurationUpdateParamsCredentialsTypeStripeSignedRequest    IntegrationConfigurationUpdateParamsCredentialsType = "STRIPE_SIGNED_REQUEST"
+	IntegrationConfigurationUpdateParamsCredentialsTypeHubspotAccessToken     IntegrationConfigurationUpdateParamsCredentialsType = "HUBSPOT_ACCESS_TOKEN"
+	IntegrationConfigurationUpdateParamsCredentialsTypeHubspotClientSecret    IntegrationConfigurationUpdateParamsCredentialsType = "HUBSPOT_CLIENT_SECRET"
+	IntegrationConfigurationUpdateParamsCredentialsTypeOpsgenieKey            IntegrationConfigurationUpdateParamsCredentialsType = "OPSGENIE_KEY"
+	IntegrationConfigurationUpdateParamsCredentialsTypeSapByd                 IntegrationConfigurationUpdateParamsCredentialsType = "SAP_BYD"
 )
 
 func (r IntegrationConfigurationUpdateParamsCredentialsType) IsKnown() bool {
 	switch r {
-	case IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic, IntegrationConfigurationUpdateParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationUpdateParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationUpdateParamsCredentialsTypeAwsIntegration, IntegrationConfigurationUpdateParamsCredentialsTypePaddleAuth, IntegrationConfigurationUpdateParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationUpdateParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationUpdateParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationUpdateParamsCredentialsTypeStripeSignedRequest:
+	case IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic, IntegrationConfigurationUpdateParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationUpdateParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationUpdateParamsCredentialsTypeAwsIntegration, IntegrationConfigurationUpdateParamsCredentialsTypePaddleAuth, IntegrationConfigurationUpdateParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationUpdateParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationUpdateParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationUpdateParamsCredentialsTypeStripeSignedRequest, IntegrationConfigurationUpdateParamsCredentialsTypeHubspotAccessToken, IntegrationConfigurationUpdateParamsCredentialsTypeHubspotClientSecret, IntegrationConfigurationUpdateParamsCredentialsTypeOpsgenieKey, IntegrationConfigurationUpdateParamsCredentialsTypeSapByd:
 		return true
 	}
 	return false
@@ -1030,6 +1039,8 @@ func (r IntegrationConfigurationUpdateParamsCredentialsDestination) IsKnown() bo
 type IntegrationConfigurationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
+	// optional filter for a specific destination
+	DestinationID param.Field[string] `query:"destinationId"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// integration configurations in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`

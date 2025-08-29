@@ -29,13 +29,13 @@ func TestNotificationConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.NotificationConfigurations.New(context.TODO(), m3ter.NotificationConfigurationNewParams{
-		Code:            m3ter.F("x"),
-		Description:     m3ter.F("x"),
-		EventName:       m3ter.F("x"),
-		Name:            m3ter.F("x"),
+		Code:            m3ter.F("commitment_under_10_percent"),
+		Description:     m3ter.F("Commitment amount fell below 10%"),
+		EventName:       m3ter.F("configuration.commitment.updated"),
+		Name:            m3ter.F("Commitment has under 10% remaining"),
 		Active:          m3ter.F(true),
-		AlwaysFireEvent: m3ter.F(true),
-		Calculation:     m3ter.F("calculation"),
+		AlwaysFireEvent: m3ter.F(false),
+		Calculation:     m3ter.F("(new.amountSpent >= ((new.amount*90)/100)) \nAND ((old.amountSpent <= ((old.amount*90)/100)) OR (old.amountSpent == null))"),
 		Version:         m3ter.F(int64(0)),
 	})
 	if err != nil {
@@ -95,13 +95,13 @@ func TestNotificationConfigurationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.NotificationConfigurationUpdateParams{
-			Code:            m3ter.F("x"),
-			Description:     m3ter.F("x"),
-			EventName:       m3ter.F("x"),
-			Name:            m3ter.F("x"),
+			Code:            m3ter.F("commitment_under_10_percent"),
+			Description:     m3ter.F("Commitment amount fell below 10%"),
+			EventName:       m3ter.F("configuration.commitment.updated"),
+			Name:            m3ter.F("Commitment has under 10% remaining"),
 			Active:          m3ter.F(true),
-			AlwaysFireEvent: m3ter.F(true),
-			Calculation:     m3ter.F("calculation"),
+			AlwaysFireEvent: m3ter.F(false),
+			Calculation:     m3ter.F("(new.amountSpent >= ((new.amount*90)/100)) \nAND ((old.amountSpent <= ((old.amount*90)/100)) OR (old.amountSpent == null))"),
 			Version:         m3ter.F(int64(0)),
 		},
 	)

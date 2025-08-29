@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.9.0 (2025-08-29)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** Add examples to integrations and events ([9bba986](https://github.com/m3ter-com/m3ter-sdk-go/commit/9bba986e24fc140d96068794e97a673f10cc0bc2))
+* **client:** support optional json html escaping ([47a0c7e](https://github.com/m3ter-com/m3ter-sdk-go/commit/47a0c7ee7c12ea00b3541ec2cc66248bc23e9883))
+
+
+### Bug Fixes
+
+* close body before retrying ([3709db5](https://github.com/m3ter-com/m3ter-sdk-go/commit/3709db54a573176b531fd5033165d9d87d1c15a2))
+
+
+### Chores
+
+* **internal:** update comment in script ([f5def98](https://github.com/m3ter-com/m3ter-sdk-go/commit/f5def982f21a4a2b0c942c4f92fe6c30aab7ede6))
+* update @stainless-api/prism-cli to v5.15.0 ([702447e](https://github.com/m3ter-com/m3ter-sdk-go/commit/702447eb487f32d09bf96ae7222bd96e50543a11))
+
 ## 0.8.0 (2025-08-01)
 
 Full Changelog: [v0.7.0-alpha...v0.8.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.7.0-alpha...v0.8.0)

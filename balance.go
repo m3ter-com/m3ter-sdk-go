@@ -322,11 +322,12 @@ const (
 	BalanceLineItemTypeMinimumSpend              BalanceLineItemType = "MINIMUM_SPEND"
 	BalanceLineItemTypeCounterRunningTotalCharge BalanceLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
 	BalanceLineItemTypeCounterAdjustmentDebit    BalanceLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	BalanceLineItemTypeAdHoc                     BalanceLineItemType = "AD_HOC"
 )
 
 func (r BalanceLineItemType) IsKnown() bool {
 	switch r {
-	case BalanceLineItemTypeStandingCharge, BalanceLineItemTypeUsage, BalanceLineItemTypeMinimumSpend, BalanceLineItemTypeCounterRunningTotalCharge, BalanceLineItemTypeCounterAdjustmentDebit:
+	case BalanceLineItemTypeStandingCharge, BalanceLineItemTypeUsage, BalanceLineItemTypeMinimumSpend, BalanceLineItemTypeCounterRunningTotalCharge, BalanceLineItemTypeCounterAdjustmentDebit, BalanceLineItemTypeAdHoc:
 		return true
 	}
 	return false
@@ -453,11 +454,12 @@ const (
 	BalanceNewParamsLineItemTypeMinimumSpend              BalanceNewParamsLineItemType = "MINIMUM_SPEND"
 	BalanceNewParamsLineItemTypeCounterRunningTotalCharge BalanceNewParamsLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
 	BalanceNewParamsLineItemTypeCounterAdjustmentDebit    BalanceNewParamsLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	BalanceNewParamsLineItemTypeAdHoc                     BalanceNewParamsLineItemType = "AD_HOC"
 )
 
 func (r BalanceNewParamsLineItemType) IsKnown() bool {
 	switch r {
-	case BalanceNewParamsLineItemTypeStandingCharge, BalanceNewParamsLineItemTypeUsage, BalanceNewParamsLineItemTypeMinimumSpend, BalanceNewParamsLineItemTypeCounterRunningTotalCharge, BalanceNewParamsLineItemTypeCounterAdjustmentDebit:
+	case BalanceNewParamsLineItemTypeStandingCharge, BalanceNewParamsLineItemTypeUsage, BalanceNewParamsLineItemTypeMinimumSpend, BalanceNewParamsLineItemTypeCounterRunningTotalCharge, BalanceNewParamsLineItemTypeCounterAdjustmentDebit, BalanceNewParamsLineItemTypeAdHoc:
 		return true
 	}
 	return false
@@ -589,11 +591,12 @@ const (
 	BalanceUpdateParamsLineItemTypeMinimumSpend              BalanceUpdateParamsLineItemType = "MINIMUM_SPEND"
 	BalanceUpdateParamsLineItemTypeCounterRunningTotalCharge BalanceUpdateParamsLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
 	BalanceUpdateParamsLineItemTypeCounterAdjustmentDebit    BalanceUpdateParamsLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	BalanceUpdateParamsLineItemTypeAdHoc                     BalanceUpdateParamsLineItemType = "AD_HOC"
 )
 
 func (r BalanceUpdateParamsLineItemType) IsKnown() bool {
 	switch r {
-	case BalanceUpdateParamsLineItemTypeStandingCharge, BalanceUpdateParamsLineItemTypeUsage, BalanceUpdateParamsLineItemTypeMinimumSpend, BalanceUpdateParamsLineItemTypeCounterRunningTotalCharge, BalanceUpdateParamsLineItemTypeCounterAdjustmentDebit:
+	case BalanceUpdateParamsLineItemTypeStandingCharge, BalanceUpdateParamsLineItemTypeUsage, BalanceUpdateParamsLineItemTypeMinimumSpend, BalanceUpdateParamsLineItemTypeCounterRunningTotalCharge, BalanceUpdateParamsLineItemTypeCounterAdjustmentDebit, BalanceUpdateParamsLineItemTypeAdHoc:
 		return true
 	}
 	return false

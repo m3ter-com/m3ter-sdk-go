@@ -29,6 +29,8 @@ func TestIntegrationConfigurationNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.New(context.TODO(), m3ter.IntegrationConfigurationNewParams{
+		Destination: m3ter.F("Stripe"),
+		EntityType:  m3ter.F("Bill"),
 		ConfigData: m3ter.F(map[string]interface{}{
 			"foo": "bar",
 		}),
@@ -36,15 +38,13 @@ func TestIntegrationConfigurationNewWithOptionalParams(t *testing.T) {
 			Type:        m3ter.F(m3ter.IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic),
 			Destination: m3ter.F(m3ter.IntegrationConfigurationNewParamsCredentialsDestinationWebhook),
 			Empty:       m3ter.F(true),
-			Name:        m3ter.F("name"),
+			Name:        m3ter.F("Integration Credentials"),
 			Version:     m3ter.F(int64(0)),
 		}),
-		Destination:              m3ter.F("destination"),
-		DestinationID:            m3ter.F("destinationId"),
-		EntityID:                 m3ter.F("entityId"),
-		EntityType:               m3ter.F("entityType"),
-		IntegrationCredentialsID: m3ter.F("integrationCredentialsId"),
-		Name:                     m3ter.F("name"),
+		DestinationID:            m3ter.F("00000000-0000-0000-0000-000000000000"),
+		EntityID:                 m3ter.F("00000000-0000-0000-0000-000000000000"),
+		IntegrationCredentialsID: m3ter.F("00000000-0000-0000-0000-000000000000"),
+		Name:                     m3ter.F("My Integration"),
 		Version:                  m3ter.F(int64(0)),
 	})
 	if err != nil {
@@ -104,6 +104,8 @@ func TestIntegrationConfigurationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.IntegrationConfigurationUpdateParams{
+			Destination: m3ter.F("Stripe"),
+			EntityType:  m3ter.F("Bill"),
 			ConfigData: m3ter.F(map[string]interface{}{
 				"foo": "bar",
 			}),
@@ -111,15 +113,13 @@ func TestIntegrationConfigurationUpdateWithOptionalParams(t *testing.T) {
 				Type:        m3ter.F(m3ter.IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic),
 				Destination: m3ter.F(m3ter.IntegrationConfigurationUpdateParamsCredentialsDestinationWebhook),
 				Empty:       m3ter.F(true),
-				Name:        m3ter.F("name"),
+				Name:        m3ter.F("Integration Credentials"),
 				Version:     m3ter.F(int64(0)),
 			}),
-			Destination:              m3ter.F("destination"),
-			DestinationID:            m3ter.F("destinationId"),
-			EntityID:                 m3ter.F("entityId"),
-			EntityType:               m3ter.F("entityType"),
-			IntegrationCredentialsID: m3ter.F("integrationCredentialsId"),
-			Name:                     m3ter.F("name"),
+			DestinationID:            m3ter.F("00000000-0000-0000-0000-000000000000"),
+			EntityID:                 m3ter.F("00000000-0000-0000-0000-000000000000"),
+			IntegrationCredentialsID: m3ter.F("00000000-0000-0000-0000-000000000000"),
+			Name:                     m3ter.F("My Integration"),
 			Version:                  m3ter.F(int64(0)),
 		},
 	)
@@ -148,8 +148,9 @@ func TestIntegrationConfigurationListWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.IntegrationConfigurations.List(context.TODO(), m3ter.IntegrationConfigurationListParams{
-		NextToken: m3ter.F("nextToken"),
-		PageSize:  m3ter.F(int64(1)),
+		DestinationID: m3ter.F("destinationId"),
+		NextToken:     m3ter.F("nextToken"),
+		PageSize:      m3ter.F(int64(1)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
