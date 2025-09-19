@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -46,7 +47,7 @@ func NewCompoundAggregationService(opts ...option.RequestOption) (r *CompoundAgg
 // Organization. The request body must include all the necessary details such as
 // the Calculation formula.
 func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAggregationNewParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,7 +67,7 @@ func (r *CompoundAggregationService) New(ctx context.Context, params CompoundAgg
 // This endpoint returns a specific CompoundAggregation associated with an
 // Organization. It provides detailed information about the CompoundAggregation.
 func (r *CompoundAggregationService) Get(ctx context.Context, id string, query CompoundAggregationGetParams, opts ...option.RequestOption) (res *CompoundAggregationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -96,7 +97,7 @@ func (r *CompoundAggregationService) Get(ctx context.Context, id string, query C
 // parameter to preserve those Custom Fields. If you omit them from the update
 // request, they will be lost.
 func (r *CompoundAggregationService) Update(ctx context.Context, id string, params CompoundAggregationUpdateParams, opts ...option.RequestOption) (res *AggregationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -124,7 +125,7 @@ func (r *CompoundAggregationService) Update(ctx context.Context, id string, para
 // Product, CompoundAggregation IDs or short codes.
 func (r *CompoundAggregationService) List(ctx context.Context, params CompoundAggregationListParams, opts ...option.RequestOption) (res *pagination.Cursor[CompoundAggregationResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -166,7 +167,7 @@ func (r *CompoundAggregationService) ListAutoPaging(ctx context.Context, params 
 // CompoundAggregation that is no longer required, such as when changing pricing or
 // planning models.
 func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body CompoundAggregationDeleteParams, opts ...option.RequestOption) (res *CompoundAggregationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

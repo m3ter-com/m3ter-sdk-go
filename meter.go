@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -69,7 +70,7 @@ func NewMeterService(opts ...option.RequestOption) (r *MeterService) {
 //
 // - [Reviewing Meter Options](https://www.m3ter.com/docs/guides/setting-up-usage-data-meters-and-aggregations/reviewing-meter-options).
 func (r *MeterService) New(ctx context.Context, params MeterNewParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -86,7 +87,7 @@ func (r *MeterService) New(ctx context.Context, params MeterNewParams, opts ...o
 
 // Retrieve the Meter with the given UUID.
 func (r *MeterService) Get(ctx context.Context, id string, query MeterGetParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -111,7 +112,7 @@ func (r *MeterService) Get(ctx context.Context, id string, query MeterGetParams,
 // endpoint to update the Meter use the `customFields` parameter to preserve those
 // Custom Fields. If you omit them from the update request, they will be lost.
 func (r *MeterService) Update(ctx context.Context, id string, params MeterUpdateParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -134,7 +135,7 @@ func (r *MeterService) Update(ctx context.Context, id string, params MeterUpdate
 // short code.
 func (r *MeterService) List(ctx context.Context, params MeterListParams, opts ...option.RequestOption) (res *pagination.Cursor[MeterResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -166,7 +167,7 @@ func (r *MeterService) ListAutoPaging(ctx context.Context, params MeterListParam
 
 // Delete the Meter with the given UUID.
 func (r *MeterService) Delete(ctx context.Context, id string, body MeterDeleteParams, opts ...option.RequestOption) (res *MeterResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

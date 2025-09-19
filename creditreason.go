@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewCreditReasonService(opts ...option.RequestOption) (r *CreditReasonServic
 // Reason, it becomes available as a credit type for adding Credit line items to
 // Bills. See [Credits](https://www.m3ter.com/docs/api#tag/Credits).
 func (r *CreditReasonService) New(ctx context.Context, params CreditReasonNewParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -58,7 +59,7 @@ func (r *CreditReasonService) New(ctx context.Context, params CreditReasonNewPar
 
 // Retrieve the Credit Reason with the given UUID.
 func (r *CreditReasonService) Get(ctx context.Context, id string, query CreditReasonGetParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -79,7 +80,7 @@ func (r *CreditReasonService) Get(ctx context.Context, id string, query CreditRe
 
 // Update the Credit Reason with the given UUID.
 func (r *CreditReasonService) Update(ctx context.Context, id string, params CreditReasonUpdateParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -103,7 +104,7 @@ func (r *CreditReasonService) Update(ctx context.Context, id string, params Cred
 // short code, or by Archive status.
 func (r *CreditReasonService) List(ctx context.Context, params CreditReasonListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditReasonResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -136,7 +137,7 @@ func (r *CreditReasonService) ListAutoPaging(ctx context.Context, params CreditR
 
 // Delete the Credit Reason with the given UUID.
 func (r *CreditReasonService) Delete(ctx context.Context, id string, body CreditReasonDeleteParams, opts ...option.RequestOption) (res *CreditReasonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

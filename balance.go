@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -47,7 +48,7 @@ func NewBalanceService(opts ...option.RequestOption) (r *BalanceService) {
 // This endpoint allows you to create a new Balance for a specific end customer
 // Account. The Balance details should be provided in the request body.
 func (r *BalanceService) New(ctx context.Context, params BalanceNewParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,7 +67,7 @@ func (r *BalanceService) New(ctx context.Context, params BalanceNewParams, opts 
 //
 // This endpoint returns the details of the specified Balance.
 func (r *BalanceService) Get(ctx context.Context, id string, query BalanceGetParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -90,7 +91,7 @@ func (r *BalanceService) Get(ctx context.Context, id string, query BalanceGetPar
 // This endpoint allows you to update the details of a specific Balance. The
 // updated Balance details should be provided in the request body.
 func (r *BalanceService) Update(ctx context.Context, id string, params BalanceUpdateParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -120,7 +121,7 @@ func (r *BalanceService) Update(ctx context.Context, id string, params BalanceUp
 // as the end date for the Balance.
 func (r *BalanceService) List(ctx context.Context, params BalanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[Balance], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -161,7 +162,7 @@ func (r *BalanceService) ListAutoPaging(ctx context.Context, params BalanceListP
 //
 // This endpoint allows you to delete a specific Balance with the given UUID.
 func (r *BalanceService) Delete(ctx context.Context, id string, body BalanceDeleteParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

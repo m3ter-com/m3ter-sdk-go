@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewUsageFileUploadJobService(opts ...option.RequestOption) (r *UsageFileUpl
 //
 // Part of the file upload service for measurements ingest.
 func (r *UsageFileUploadJobService) Get(ctx context.Context, id string, query UsageFileUploadJobGetParams, opts ...option.RequestOption) (res *FileUploadJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -69,7 +70,7 @@ func (r *UsageFileUploadJobService) Get(ctx context.Context, id string, query Us
 //     all File Upload jobs are returned.
 func (r *UsageFileUploadJobService) List(ctx context.Context, params UsageFileUploadJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[FileUploadJobResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -114,7 +115,7 @@ func (r *UsageFileUploadJobService) ListAutoPaging(ctx context.Context, params U
 //
 // Part of the file upload service for submitting measurements data files.
 func (r *UsageFileUploadJobService) GetOriginalDownloadURL(ctx context.Context, id string, query UsageFileUploadJobGetOriginalDownloadURLParams, opts ...option.RequestOption) (res *UsageFileUploadJobGetOriginalDownloadURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

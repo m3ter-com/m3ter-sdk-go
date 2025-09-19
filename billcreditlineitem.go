@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewBillCreditLineItemService(opts ...option.RequestOption) (r *BillCreditLi
 // your Organization. See
 // [CreditReason](https://www.m3ter.com/docs/api#tag/CreditReason).
 func (r *BillCreditLineItemService) New(ctx context.Context, billID string, params BillCreditLineItemNewParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -64,7 +65,7 @@ func (r *BillCreditLineItemService) New(ctx context.Context, billID string, para
 
 // Retrieve the Credit line item with the given UUID.
 func (r *BillCreditLineItemService) Get(ctx context.Context, billID string, id string, query BillCreditLineItemGetParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -89,7 +90,7 @@ func (r *BillCreditLineItemService) Get(ctx context.Context, billID string, id s
 
 // Update the Credit line item with the given UUID.
 func (r *BillCreditLineItemService) Update(ctx context.Context, billID string, id string, params BillCreditLineItemUpdateParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -115,7 +116,7 @@ func (r *BillCreditLineItemService) Update(ctx context.Context, billID string, i
 // List the Credit line items for the given Bill.
 func (r *BillCreditLineItemService) List(ctx context.Context, billID string, params BillCreditLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[CreditLineItemResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -150,7 +151,7 @@ func (r *BillCreditLineItemService) ListAutoPaging(ctx context.Context, billID s
 
 // Delete the Credit line item with the given UUID.
 func (r *BillCreditLineItemService) Delete(ctx context.Context, billID string, id string, body BillCreditLineItemDeleteParams, opts ...option.RequestOption) (res *CreditLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

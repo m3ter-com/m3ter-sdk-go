@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -57,7 +58,7 @@ func NewDataExportDestinationService(opts ...option.RequestOption) (r *DataExpor
 //   - Use the **Example** selector to show the relevant request and response samples
 //     for the type of Destination.
 func (r *DataExportDestinationService) New(ctx context.Context, params DataExportDestinationNewParams, opts ...option.RequestOption) (res *DataExportDestinationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -74,7 +75,7 @@ func (r *DataExportDestinationService) New(ctx context.Context, params DataExpor
 
 // Retrieve an Export Destination for the given UUID.
 func (r *DataExportDestinationService) Get(ctx context.Context, id string, query DataExportDestinationGetParams, opts ...option.RequestOption) (res *DataExportDestinationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -110,7 +111,7 @@ func (r *DataExportDestinationService) Get(ctx context.Context, id string, query
 //   - Use the **Example** selector to show the relevant request and response samples
 //     for the type of Destination.
 func (r *DataExportDestinationService) Update(ctx context.Context, id string, params DataExportDestinationUpdateParams, opts ...option.RequestOption) (res *DataExportDestinationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -133,7 +134,7 @@ func (r *DataExportDestinationService) Update(ctx context.Context, id string, pa
 // Destinations returned by UUID.
 func (r *DataExportDestinationService) List(ctx context.Context, params DataExportDestinationListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataExportDestinationResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -169,7 +170,7 @@ func (r *DataExportDestinationService) ListAutoPaging(ctx context.Context, param
 // linked to a Data Export Schedule, an error message is returned and you won't be
 // able to delete the Destination.
 func (r *DataExportDestinationService) Delete(ctx context.Context, id string, body DataExportDestinationDeleteParams, opts ...option.RequestOption) (res *DataExportDestinationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

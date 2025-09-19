@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewPlanService(opts ...option.RequestOption) (r *PlanService) {
 
 // Create a new Plan.
 func (r *PlanService) New(ctx context.Context, params PlanNewParams, opts ...option.RequestOption) (res *PlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,7 +60,7 @@ func (r *PlanService) New(ctx context.Context, params PlanNewParams, opts ...opt
 
 // Retrieve the Plan with the given UUID.
 func (r *PlanService) Get(ctx context.Context, id string, query PlanGetParams, opts ...option.RequestOption) (res *PlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -84,7 +85,7 @@ func (r *PlanService) Get(ctx context.Context, id string, query PlanGetParams, o
 // endpoint to update the Plan use the `customFields` parameter to preserve those
 // Custom Fields. If you omit them from the update request, they will be lost.
 func (r *PlanService) Update(ctx context.Context, id string, params PlanUpdateParams, opts ...option.RequestOption) (res *PlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -106,7 +107,7 @@ func (r *PlanService) Update(ctx context.Context, id string, params PlanUpdatePa
 // Retrieve a list of Plans that can be filtered by Product, Account, or Plan ID.
 func (r *PlanService) List(ctx context.Context, params PlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -137,7 +138,7 @@ func (r *PlanService) ListAutoPaging(ctx context.Context, params PlanListParams,
 
 // Delete the Plan with the given UUID.
 func (r *PlanService) Delete(ctx context.Context, id string, body PlanDeleteParams, opts ...option.RequestOption) (res *PlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

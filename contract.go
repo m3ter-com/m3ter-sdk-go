@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewContractService(opts ...option.RequestOption) (r *ContractService) {
 // Creates a new Contract for the specified Account. The Contract includes
 // information such as the associated Account along with start and end dates.
 func (r *ContractService) New(ctx context.Context, params ContractNewParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *ContractService) New(ctx context.Context, params ContractNewParams, opt
 // Retrieves the Contract with the given UUID. Used to obtain the details of a
 // Contract.
 func (r *ContractService) Get(ctx context.Context, id string, query ContractGetParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -92,7 +93,7 @@ func (r *ContractService) Get(ctx context.Context, id string, query ContractGetP
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
 func (r *ContractService) Update(ctx context.Context, id string, params ContractUpdateParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -116,7 +117,7 @@ func (r *ContractService) Update(ctx context.Context, id string, params Contract
 // Contract IDs or short codes.
 func (r *ContractService) List(ctx context.Context, params ContractListParams, opts ...option.RequestOption) (res *pagination.Cursor[ContractResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -153,7 +154,7 @@ func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractLis
 // **Note:** This call will fail if there are any AccountPlans or Commitments that
 // have been added to the Contract.
 func (r *ContractService) Delete(ctx context.Context, id string, body ContractDeleteParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -186,7 +187,7 @@ func (r *ContractService) Delete(ctx context.Context, id string, body ContractDe
 //   - When you successfully end-date billing entities, the version number of each
 //     entity is incremented.
 func (r *ContractService) EndDateBillingEntities(ctx context.Context, id string, params ContractEndDateBillingEntitiesParams, opts ...option.RequestOption) (res *ContractEndDateBillingEntitiesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

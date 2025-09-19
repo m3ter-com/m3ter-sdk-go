@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -50,7 +51,7 @@ func NewAccountPlanService(opts ...option.RequestOption) (r *AccountPlanService)
 // AccountPlanGroup for an Account at the same time. If you want to create both for
 // an Account, you must submit two separate calls.
 func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -68,7 +69,7 @@ func (r *AccountPlanService) New(ctx context.Context, params AccountPlanNewParam
 // Retrieve the AccountPlan or AccountPlanGroup details corresponding to the given
 // UUID.
 func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPlanGetParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -103,7 +104,7 @@ func (r *AccountPlanService) Get(ctx context.Context, id string, query AccountPl
 //     preserve those Custom Fields. If you omit them from the update request, they
 //     will be lost.
 func (r *AccountPlanService) Update(ctx context.Context, id string, params AccountPlanUpdateParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -127,7 +128,7 @@ func (r *AccountPlanService) Update(ctx context.Context, id string, params Accou
 // filtering with various query parameters.
 func (r *AccountPlanService) List(ctx context.Context, params AccountPlanListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountPlanResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -163,7 +164,7 @@ func (r *AccountPlanService) ListAutoPaging(ctx context.Context, params AccountP
 // This endpoint deletes an AccountPlan or AccountPlanGroup that has been attached
 // to a specific Account in your Organization.
 func (r *AccountPlanService) Delete(ctx context.Context, id string, body AccountPlanDeleteParams, opts ...option.RequestOption) (res *AccountPlanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -36,7 +37,7 @@ func NewBillConfigService(opts ...option.RequestOption) (r *BillConfigService) {
 
 // Retrieve the Organization-wide BillConfig.
 func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -57,7 +58,7 @@ func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, 
 // with a service period end date on or before the set date will be locked and
 // cannot be updated or recalculated.
 func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

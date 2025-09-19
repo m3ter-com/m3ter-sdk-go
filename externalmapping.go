@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewExternalMappingService(opts ...option.RequestOption) (r *ExternalMapping
 // Organization. You need to supply a request body with the details of the new
 // External Mapping.
 func (r *ExternalMappingService) New(ctx context.Context, params ExternalMappingNewParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *ExternalMappingService) New(ctx context.Context, params ExternalMapping
 // This endpoint enables you to retrieve the External Mapping with the specified
 // UUID for a specific Organization.
 func (r *ExternalMappingService) Get(ctx context.Context, id string, query ExternalMappingGetParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -88,7 +89,7 @@ func (r *ExternalMappingService) Get(ctx context.Context, id string, query Exter
 // identified by its UUID. You must supply a request body with the new details for
 // the External Mapping.
 func (r *ExternalMappingService) Update(ctx context.Context, id string, params ExternalMappingUpdateParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -114,7 +115,7 @@ func (r *ExternalMappingService) Update(ctx context.Context, id string, params E
 // filtering using the external system.
 func (r *ExternalMappingService) List(ctx context.Context, params ExternalMappingListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMappingResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -149,7 +150,7 @@ func (r *ExternalMappingService) ListAutoPaging(ctx context.Context, params Exte
 
 // Delete an External Mapping with the given UUID.
 func (r *ExternalMappingService) Delete(ctx context.Context, id string, body ExternalMappingDeleteParams, opts ...option.RequestOption) (res *ExternalMappingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -176,7 +177,7 @@ func (r *ExternalMappingService) Delete(ctx context.Context, id string, body Ext
 // management.
 func (r *ExternalMappingService) ListByExternalEntity(ctx context.Context, system string, externalTable string, externalID string, params ExternalMappingListByExternalEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMappingResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -228,7 +229,7 @@ func (r *ExternalMappingService) ListByExternalEntityAutoPaging(ctx context.Cont
 // with a specific m3ter entity. The list can be paginated for easier management.
 func (r *ExternalMappingService) ListByM3terEntity(ctx context.Context, entity string, m3terID string, params ExternalMappingListByM3terEntityParams, opts ...option.RequestOption) (res *pagination.Cursor[ExternalMappingResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

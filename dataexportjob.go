@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewDataExportJobService(opts ...option.RequestOption) (r *DataExportJobServ
 //     OPERATIONAL.
 //   - The status of the Export Job.
 func (r *DataExportJobService) Get(ctx context.Context, id string, query DataExportJobGetParams, opts ...option.RequestOption) (res *DataExportJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -67,7 +68,7 @@ func (r *DataExportJobService) Get(ctx context.Context, id string, query DataExp
 // Retrieve a list of Export Job entities.
 func (r *DataExportJobService) List(ctx context.Context, params DataExportJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataExportJobResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -115,7 +116,7 @@ func (r *DataExportJobService) ListAutoPaging(ctx context.Context, params DataEx
 // [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
 // for Beta release definition.
 func (r *DataExportJobService) GetDownloadURL(ctx context.Context, jobID string, query DataExportJobGetDownloadURLParams, opts ...option.RequestOption) (res *DataExportJobGetDownloadURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

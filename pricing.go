@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -44,7 +45,7 @@ func NewPricingService(opts ...option.RequestOption) (r *PricingService) {
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
 func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -61,7 +62,7 @@ func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts 
 
 // Retrieve the Pricing with the given UUID.
 func (r *PricingService) Get(ctx context.Context, id string, query PricingGetParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -86,7 +87,7 @@ func (r *PricingService) Get(ctx context.Context, id string, query PricingGetPar
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
 func (r *PricingService) Update(ctx context.Context, id string, params PricingUpdateParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -109,7 +110,7 @@ func (r *PricingService) Update(ctx context.Context, id string, params PricingUp
 // Pricing ID.
 func (r *PricingService) List(ctx context.Context, params PricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[PricingResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -141,7 +142,7 @@ func (r *PricingService) ListAutoPaging(ctx context.Context, params PricingListP
 
 // Delete the Pricing with the given UUID.
 func (r *PricingService) Delete(ctx context.Context, id string, body PricingDeleteParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
