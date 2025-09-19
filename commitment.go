@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -53,7 +54,7 @@ func NewCommitmentService(opts ...option.RequestOption) (r *CommitmentService) {
 //     `feeDates` request parameter to define a precise schedule of bill dates and
 //     amounts.
 func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -74,7 +75,7 @@ func (r *CommitmentService) New(ctx context.Context, params CommitmentNewParams,
 // comprehensive information about the Commitment, such as the agreed amount,
 // overage surcharge percentage, and other related details.
 func (r *CommitmentService) Get(ctx context.Context, id string, query CommitmentGetParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -99,7 +100,7 @@ func (r *CommitmentService) Get(ctx context.Context, id string, query Commitment
 // adjust Commitment parameters such as the fixed amount, overage surcharge
 // percentage, or associated contract details.
 func (r *CommitmentService) Update(ctx context.Context, id string, params CommitmentUpdateParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -125,7 +126,7 @@ func (r *CommitmentService) Update(ctx context.Context, id string, params Commit
 // Commitments based on Account, Product, date, and end dates.
 func (r *CommitmentService) List(ctx context.Context, params CommitmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CommitmentResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -163,7 +164,7 @@ func (r *CommitmentService) ListAutoPaging(ctx context.Context, params Commitmen
 // Deletes the Commitment with the given UUID. Use this endpoint when a Commitment
 // is no longer valid or needs to be removed from the system.
 func (r *CommitmentService) Delete(ctx context.Context, id string, body CommitmentDeleteParams, opts ...option.RequestOption) (res *CommitmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -189,7 +190,7 @@ func (r *CommitmentService) Delete(ctx context.Context, id string, body Commitme
 // complex nested conditions and sorting. The returned list of Commitments can be
 // paginated for easier management.
 func (r *CommitmentService) Search(ctx context.Context, params CommitmentSearchParams, opts ...option.RequestOption) (res *CommitmentSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

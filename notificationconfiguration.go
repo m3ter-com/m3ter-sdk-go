@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewNotificationConfigurationService(opts ...option.RequestOption) (r *Notif
 // Organization. You need to supply a request body with the details of the new
 // Notification.
 func (r *NotificationConfigurationService) New(ctx context.Context, params NotificationConfigurationNewParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *NotificationConfigurationService) New(ctx context.Context, params Notif
 // field and which defines further conditions that must be met to trigger the
 // Notification when the Event occurs.
 func (r *NotificationConfigurationService) Get(ctx context.Context, id string, query NotificationConfigurationGetParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -88,7 +89,7 @@ func (r *NotificationConfigurationService) Get(ctx context.Context, id string, q
 // You can change the Event that triggers the Notification and/or update the
 // conditions for sending the Notification.
 func (r *NotificationConfigurationService) Update(ctx context.Context, id string, params NotificationConfigurationUpdateParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -114,7 +115,7 @@ func (r *NotificationConfigurationService) Update(ctx context.Context, id string
 // list also supports filtering by parameters such as Notification UUID.
 func (r *NotificationConfigurationService) List(ctx context.Context, params NotificationConfigurationListParams, opts ...option.RequestOption) (res *pagination.Cursor[NotificationConfigurationResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -152,7 +153,7 @@ func (r *NotificationConfigurationService) ListAutoPaging(ctx context.Context, p
 // This endpoint permanently removes a specified Notification and its
 // configuration. This action cannot be undone.
 func (r *NotificationConfigurationService) Delete(ctx context.Context, id string, body NotificationConfigurationDeleteParams, opts ...option.RequestOption) (res *NotificationConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

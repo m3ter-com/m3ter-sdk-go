@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewIntegrationConfigurationService(opts ...option.RequestOption) (r *Integr
 
 // Set the integration configuration for the entity.
 func (r *IntegrationConfigurationService) New(ctx context.Context, params IntegrationConfigurationNewParams, opts ...option.RequestOption) (res *IntegrationConfigurationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -60,7 +61,7 @@ func (r *IntegrationConfigurationService) New(ctx context.Context, params Integr
 // within an organization. It is useful for obtaining the settings and parameters
 // of an integration.
 func (r *IntegrationConfigurationService) Get(ctx context.Context, id string, query IntegrationConfigurationGetParams, opts ...option.RequestOption) (res *IntegrationConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -85,7 +86,7 @@ func (r *IntegrationConfigurationService) Get(ctx context.Context, id string, qu
 // within your organization. It is used to modify settings or parameters of an
 // existing integration.
 func (r *IntegrationConfigurationService) Update(ctx context.Context, id string, params IntegrationConfigurationUpdateParams, opts ...option.RequestOption) (res *IntegrationConfigurationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -110,7 +111,7 @@ func (r *IntegrationConfigurationService) Update(ctx context.Context, id string,
 // specified Organization. The list can be paginated for easier management.
 func (r *IntegrationConfigurationService) List(ctx context.Context, params IntegrationConfigurationListParams, opts ...option.RequestOption) (res *pagination.Cursor[IntegrationConfigurationListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -148,7 +149,7 @@ func (r *IntegrationConfigurationService) ListAutoPaging(ctx context.Context, pa
 // your organization. It is intended for removing integration settings that are no
 // longer needed.
 func (r *IntegrationConfigurationService) Delete(ctx context.Context, id string, body IntegrationConfigurationDeleteParams, opts ...option.RequestOption) (res *IntegrationConfigurationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -170,7 +171,7 @@ func (r *IntegrationConfigurationService) Delete(ctx context.Context, id string,
 // Enables a previously disabled integration configuration, allowing it to be
 // operational again.
 func (r *IntegrationConfigurationService) Enable(ctx context.Context, id string, body IntegrationConfigurationEnableParams, opts ...option.RequestOption) (res *IntegrationConfigurationEnableResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -191,7 +192,7 @@ func (r *IntegrationConfigurationService) Enable(ctx context.Context, id string,
 
 // Retrieve the integration configuration for the entity
 func (r *IntegrationConfigurationService) GetByEntity(ctx context.Context, entityType string, params IntegrationConfigurationGetByEntityParams, opts ...option.RequestOption) (res *IntegrationConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

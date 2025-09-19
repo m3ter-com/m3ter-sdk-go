@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewBillDebitLineItemService(opts ...option.RequestOption) (r *BillDebitLine
 // When creating Debit line items for Bills, use the Debit Reasons created for your
 // Organization. See [DebitReason](https://www.m3ter.com/docs/api#tag/DebitReason).
 func (r *BillDebitLineItemService) New(ctx context.Context, billID string, params BillDebitLineItemNewParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *BillDebitLineItemService) New(ctx context.Context, billID string, param
 
 // Retrieve the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id string, query BillDebitLineItemGetParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -88,7 +89,7 @@ func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id st
 
 // Update the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id string, params BillDebitLineItemUpdateParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -114,7 +115,7 @@ func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id
 // List the Debit line items for the given bill.
 func (r *BillDebitLineItemService) List(ctx context.Context, billID string, params BillDebitLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitLineItemResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -149,7 +150,7 @@ func (r *BillDebitLineItemService) ListAutoPaging(ctx context.Context, billID st
 
 // Delete the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id string, body BillDebitLineItemDeleteParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

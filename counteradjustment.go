@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -49,7 +50,7 @@ func NewCounterAdjustmentService(opts ...option.RequestOption) (r *CounterAdjust
 //     granularity - you cannot create more than one CounterAdjustment for any given
 //     day using the same Counter and you'll receive an error if you try to do this.
 func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjustmentNewParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,7 +67,7 @@ func (r *CounterAdjustmentService) New(ctx context.Context, params CounterAdjust
 
 // Retrieve a CounterAdjustment for the given UUID.
 func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query CounterAdjustmentGetParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -87,7 +88,7 @@ func (r *CounterAdjustmentService) Get(ctx context.Context, id string, query Cou
 
 // Update a CounterAdjustment for an Account.
 func (r *CounterAdjustmentService) Update(ctx context.Context, id string, params CounterAdjustmentUpdateParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -118,7 +119,7 @@ func (r *CounterAdjustmentService) Update(ctx context.Context, id string, params
 //     must also use the `accountId` query parameter.
 func (r *CounterAdjustmentService) List(ctx context.Context, params CounterAdjustmentListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterAdjustmentResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -158,7 +159,7 @@ func (r *CounterAdjustmentService) ListAutoPaging(ctx context.Context, params Co
 
 // Delete a CounterAdjustment for the given UUID.
 func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body CounterAdjustmentDeleteParams, opts ...option.RequestOption) (res *CounterAdjustmentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewStatementStatementDefinitionService(opts ...option.RequestOption) (r *St
 // Organization. The details of the StatementDefinition are provided in the request
 // body.
 func (r *StatementStatementDefinitionService) New(ctx context.Context, params StatementStatementDefinitionNewParams, opts ...option.RequestOption) (res *StatementDefinitionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -64,7 +65,7 @@ func (r *StatementStatementDefinitionService) New(ctx context.Context, params St
 // Organization, using its unique identifier (UUID). This endpoint is useful when
 // you want to retrieve the complete details of a single StatementDefinition.
 func (r *StatementStatementDefinitionService) Get(ctx context.Context, id string, query StatementStatementDefinitionGetParams, opts ...option.RequestOption) (res *StatementDefinitionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -89,7 +90,7 @@ func (r *StatementStatementDefinitionService) Get(ctx context.Context, id string
 // Organization, using its unique identifier (UUID). The updated details for the
 // StatementDefinition should be sent in the request body.
 func (r *StatementStatementDefinitionService) Update(ctx context.Context, id string, params StatementStatementDefinitionUpdateParams, opts ...option.RequestOption) (res *StatementDefinitionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -114,7 +115,7 @@ func (r *StatementStatementDefinitionService) Update(ctx context.Context, id str
 // specified Organization. The list can be paginated for easier management.
 func (r *StatementStatementDefinitionService) List(ctx context.Context, params StatementStatementDefinitionListParams, opts ...option.RequestOption) (res *pagination.Cursor[StatementDefinitionResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -151,7 +152,7 @@ func (r *StatementStatementDefinitionService) ListAutoPaging(ctx context.Context
 // This endpoint deletes a specific StatementDefinition within a specified
 // Organization, using the StatementDefinition UUID.
 func (r *StatementStatementDefinitionService) Delete(ctx context.Context, id string, body StatementStatementDefinitionDeleteParams, opts ...option.RequestOption) (res *StatementDefinitionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

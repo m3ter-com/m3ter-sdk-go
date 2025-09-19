@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewOrganizationConfigService(opts ...option.RequestOption) (r *Organization
 
 // Retrieve the Organization-wide configuration details.
 func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationConfigGetParams, opts ...option.RequestOption) (res *OrganizationConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -54,7 +55,7 @@ func (r *OrganizationConfigService) Get(ctx context.Context, query OrganizationC
 
 // Update the Organization-wide configuration details.
 func (r *OrganizationConfigService) Update(ctx context.Context, params OrganizationConfigUpdateParams, opts ...option.RequestOption) (res *OrganizationConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

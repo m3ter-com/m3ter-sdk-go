@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -81,7 +82,7 @@ func NewDataExportScheduleService(opts ...option.RequestOption) (r *DataExportSc
 //   - Use the **Example** selector to show the relevant request and response samples
 //     for source data type.
 func (r *DataExportScheduleService) New(ctx context.Context, params DataExportScheduleNewParams, opts ...option.RequestOption) (res *DataExportScheduleNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -99,7 +100,7 @@ func (r *DataExportScheduleService) New(ctx context.Context, params DataExportSc
 // Retrieve a Data Export Schedule for the given UUID. Each Schedule can be
 // configured for exporting _only one_ of either Usage or Operational data.
 func (r *DataExportScheduleService) Get(ctx context.Context, id string, query DataExportScheduleGetParams, opts ...option.RequestOption) (res *DataExportScheduleGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -150,7 +151,7 @@ func (r *DataExportScheduleService) Get(ctx context.Context, id string, query Da
 //     then use the `groups` parameter to group the data by _Account_, _Dimension_,
 //     or _Time_.
 func (r *DataExportScheduleService) Update(ctx context.Context, id string, params DataExportScheduleUpdateParams, opts ...option.RequestOption) (res *DataExportScheduleUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -176,7 +177,7 @@ func (r *DataExportScheduleService) Update(ctx context.Context, id string, param
 // Export Schedules in your Organization.
 func (r *DataExportScheduleService) List(ctx context.Context, params DataExportScheduleListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataExportScheduleListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -212,7 +213,7 @@ func (r *DataExportScheduleService) ListAutoPaging(ctx context.Context, params D
 // Delete the Data Export Schedule for the given UUID. Each Schedule can be
 // configured for exporting _only one_ of either Usage or Operational data.
 func (r *DataExportScheduleService) Delete(ctx context.Context, id string, body DataExportScheduleDeleteParams, opts ...option.RequestOption) (res *DataExportScheduleDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

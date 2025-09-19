@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -72,7 +73,7 @@ func NewStatementStatementJobService(opts ...option.RequestOption) (r *Statement
 //     [Working with Bill Statements](https://www.m3ter.com/docs/guides/billing-and-usage-data/running-viewing-and-managing-bills/working-with-bill-statements)
 //     in our user Documentation.
 func (r *StatementStatementJobService) New(ctx context.Context, params StatementStatementJobNewParams, opts ...option.RequestOption) (res *StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -101,7 +102,7 @@ func (r *StatementStatementJobService) New(ctx context.Context, params Statement
 // [Working with Bill Statements](https://www.m3ter.com/docs/guides/billing-and-usage-data/running-viewing-and-managing-bills/working-with-bill-statements)
 // in our user Documentation.
 func (r *StatementStatementJobService) Get(ctx context.Context, id string, query StatementStatementJobGetParams, opts ...option.RequestOption) (res *StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -138,7 +139,7 @@ func (r *StatementStatementJobService) Get(ctx context.Context, id string, query
 //     the same call, then a 400 Bad Request is returned with an error message.
 func (r *StatementStatementJobService) List(ctx context.Context, params StatementStatementJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[StatementJobResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -188,7 +189,7 @@ func (r *StatementStatementJobService) ListAutoPaging(ctx context.Context, param
 // its UUID. This operation may be useful if you need to stop a StatementJob due to
 // unforeseen issues or changes.
 func (r *StatementStatementJobService) Cancel(ctx context.Context, id string, body StatementStatementJobCancelParams, opts ...option.RequestOption) (res *StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -242,7 +243,7 @@ func (r *StatementStatementJobService) Cancel(ctx context.Context, id string, bo
 //     [Working with Bill Statements](https://www.m3ter.com/docs/guides/billing-and-usage-data/running-viewing-and-managing-bills/working-with-bill-statements)
 //     in our user Documentation.
 func (r *StatementStatementJobService) NewBatch(ctx context.Context, params StatementStatementJobNewBatchParams, opts ...option.RequestOption) (res *[]StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

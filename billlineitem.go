@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewBillLineItemService(opts ...option.RequestOption) (r *BillLineItemServic
 // This endpoint retrieves the line item given by its unique identifier (UUID) from
 // a specific Bill.
 func (r *BillLineItemService) Get(ctx context.Context, billID string, id string, params BillLineItemGetParams, opts ...option.RequestOption) (res *LineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -73,7 +74,7 @@ func (r *BillLineItemService) Get(ctx context.Context, billID string, id string,
 // adjustments within a Bill.
 func (r *BillLineItemService) List(ctx context.Context, billID string, params BillLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[LineItemResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

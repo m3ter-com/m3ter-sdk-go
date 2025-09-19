@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewUserInvitationService(opts ...option.RequestOption) (r *UserInvitationSe
 //
 // This sends an email to someone inviting them to join your m3ter Organization.
 func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNewParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -58,7 +59,7 @@ func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNe
 
 // Retrieve the specified invitation with the given UUID.
 func (r *UserInvitationService) Get(ctx context.Context, id string, query UserInvitationGetParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -80,7 +81,7 @@ func (r *UserInvitationService) Get(ctx context.Context, id string, query UserIn
 // Retrieve a list of all invitations in the Organization.
 func (r *UserInvitationService) List(ctx context.Context, params UserInvitationListParams, opts ...option.RequestOption) (res *pagination.Cursor[InvitationResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

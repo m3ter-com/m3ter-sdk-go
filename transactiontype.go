@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewTransactionTypeService(opts ...option.RequestOption) (r *TransactionType
 // Create a new TransactionType for the specified Organization. Details of the new
 // TransactionType should be included in the request body.
 func (r *TransactionTypeService) New(ctx context.Context, params TransactionTypeNewParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -58,7 +59,7 @@ func (r *TransactionTypeService) New(ctx context.Context, params TransactionType
 // Retrieves the TransactionType with the given UUID from the specified
 // Organization.
 func (r *TransactionTypeService) Get(ctx context.Context, id string, query TransactionTypeGetParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -81,7 +82,7 @@ func (r *TransactionTypeService) Get(ctx context.Context, id string, query Trans
 // Organization. Update details for the TransactionType should be included in the
 // request body.
 func (r *TransactionTypeService) Update(ctx context.Context, id string, params TransactionTypeUpdateParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -105,7 +106,7 @@ func (r *TransactionTypeService) Update(ctx context.Context, id string, params T
 // parameters.
 func (r *TransactionTypeService) List(ctx context.Context, params TransactionTypeListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionTypeResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -138,7 +139,7 @@ func (r *TransactionTypeService) ListAutoPaging(ctx context.Context, params Tran
 
 // Deletes the TransactionType with the given UUID from the specified Organization.
 func (r *TransactionTypeService) Delete(ctx context.Context, id string, body TransactionTypeDeleteParams, opts ...option.RequestOption) (res *TransactionTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewEventService(opts ...option.RequestOption) (r *EventService) {
 // Event corresponds to a unique instance of a state change within the system,
 // classified under a specific Event Type.
 func (r *EventService) Get(ctx context.Context, id string, query EventGetParams, opts ...option.RequestOption) (res *EventResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -78,7 +79,7 @@ func (r *EventService) Get(ctx context.Context, id string, query EventGetParams,
 //     endpoint in this section. The response lists the valid Query parameters.
 func (r *EventService) List(ctx context.Context, params EventListParams, opts ...option.RequestOption) (res *pagination.Cursor[EventResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -146,7 +147,7 @@ func (r *EventService) ListAutoPaging(ctx context.Context, params EventListParam
 //     not be populated until such time as the custom fields functionality is
 //     implemented for them
 func (r *EventService) GetFields(ctx context.Context, params EventGetFieldsParams, opts ...option.RequestOption) (res *EventGetFieldsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -166,7 +167,7 @@ func (r *EventService) GetFields(ctx context.Context, params EventGetFieldsParam
 // This endpoint retrieves a list of Event Types that can have Notification rules
 // configured.
 func (r *EventService) GetTypes(ctx context.Context, query EventGetTypesParams, opts ...option.RequestOption) (res *EventGetTypesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

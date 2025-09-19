@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -44,7 +45,7 @@ func NewCounterPricingService(opts ...option.RequestOption) (r *CounterPricingSe
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
 func (r *CounterPricingService) New(ctx context.Context, params CounterPricingNewParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -61,7 +62,7 @@ func (r *CounterPricingService) New(ctx context.Context, params CounterPricingNe
 
 // Retrieve a CounterPricing for the given UUID.
 func (r *CounterPricingService) Get(ctx context.Context, id string, query CounterPricingGetParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -86,7 +87,7 @@ func (r *CounterPricingService) Get(ctx context.Context, id string, query Counte
 // for this call to be valid. If you omit both, then you will receive a validation
 // error.
 func (r *CounterPricingService) Update(ctx context.Context, id string, params CounterPricingUpdateParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -109,7 +110,7 @@ func (r *CounterPricingService) Update(ctx context.Context, id string, params Co
 // Template ID, or CounterPricing ID.
 func (r *CounterPricingService) List(ctx context.Context, params CounterPricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[CounterPricingResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -141,7 +142,7 @@ func (r *CounterPricingService) ListAutoPaging(ctx context.Context, params Count
 
 // Delete a CounterPricing for the given UUID.
 func (r *CounterPricingService) Delete(ctx context.Context, id string, body CounterPricingDeleteParams, opts ...option.RequestOption) (res *CounterPricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
