@@ -218,7 +218,7 @@ func (r *UserService) Me(ctx context.Context, query UserMeParams, opts ...option
 // Resend temporary password for user
 func (r *UserService) ResendPassword(ctx context.Context, id string, body UserResendPasswordParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
