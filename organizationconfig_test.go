@@ -63,6 +63,8 @@ func TestOrganizationConfigUpdateWithOptionalParams(t *testing.T) {
 			Timezone:                        m3ter.F("UTC"),
 			WeekEpoch:                       m3ter.F("2022-01-04"),
 			YearEpoch:                       m3ter.F("2022-01-01"),
+			AllowNegativeBalances:           m3ter.F(false),
+			AllowOverlappingPlans:           m3ter.F(false),
 			AutoApproveBillsGracePeriod:     m3ter.F(int64(2)),
 			AutoApproveBillsGracePeriodUnit: m3ter.F("DAYS"),
 			AutoGenerateStatementMode:       m3ter.F(m3ter.OrganizationConfigRequestAutoGenerateStatementModeNone),

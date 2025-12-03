@@ -111,7 +111,7 @@ func (r *UserInvitationService) ListAutoPaging(ctx context.Context, params UserI
 }
 
 type InvitationResponse struct {
-	// The UUID of the invitation.
+	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// Boolean indicating whether the user has accepted the invitation.
 	//
@@ -138,8 +138,6 @@ type InvitationResponse struct {
 	// controls the access rights and privileges that this user will have when working
 	// in the m3ter Organization.
 	PermissionPolicyIDs []string `json:"permissionPolicyIds,required"`
-	// The version number. Default value when newly created is one.
-	Version int64 `json:"version,required"`
 	// The UUID of the user who created the invitation.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the invitation was created _(in ISO-8601 format)_.
@@ -147,8 +145,15 @@ type InvitationResponse struct {
 	// The DateTime when the invitation was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The UUID of the user who last modified the invitation.
-	LastModifiedBy string                 `json:"lastModifiedBy"`
-	JSON           invitationResponseJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                  `json:"version"`
+	JSON    invitationResponseJSON `json:"-"`
 }
 
 // invitationResponseJSON contains the JSON metadata for the struct
@@ -163,11 +168,11 @@ type invitationResponseJSON struct {
 	InvitingPrincipalID apijson.Field
 	LastName            apijson.Field
 	PermissionPolicyIDs apijson.Field
-	Version             apijson.Field
 	CreatedBy           apijson.Field
 	DtCreated           apijson.Field
 	DtLastModified      apijson.Field
 	LastModifiedBy      apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }

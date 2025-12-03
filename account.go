@@ -186,7 +186,7 @@ func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, 
 }
 
 // Retrieve a list of Accounts that are children of the specified Account.
-func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
+func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *AccountGetChildrenResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -560,6 +560,29 @@ func (r *AccountEndDateBillingEntitiesResponseUpdatedEntities) UnmarshalJSON(dat
 }
 
 func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountGetChildrenResponse struct {
+	Data      []AccountResponse              `json:"data"`
+	NextToken string                         `json:"nextToken"`
+	JSON      accountGetChildrenResponseJSON `json:"-"`
+}
+
+// accountGetChildrenResponseJSON contains the JSON metadata for the struct
+// [AccountGetChildrenResponse]
+type accountGetChildrenResponseJSON struct {
+	Data        apijson.Field
+	NextToken   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGetChildrenResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGetChildrenResponseJSON) RawJSON() string {
 	return r.raw
 }
 

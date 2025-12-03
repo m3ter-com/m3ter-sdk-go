@@ -238,8 +238,8 @@ func (r *UserService) ResendPassword(ctx context.Context, id string, body UserRe
 }
 
 type UserResponse struct {
-	// The unique identifier (UUID) of this user.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.
@@ -449,7 +449,8 @@ func (r UserMeResponseOrganizationType) IsKnown() bool {
 }
 
 type UserMeResponseServiceUser struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this service user.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the service user was created.
@@ -457,10 +458,16 @@ type UserMeResponseServiceUser struct {
 	// The DateTime when the service user was last modified.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The id of the user who last modified this service user.
-	LastModifiedBy string                        `json:"lastModifiedBy"`
-	Name           string                        `json:"name"`
-	Version        int64                         `json:"version"`
-	JSON           userMeResponseServiceUserJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	Name           string `json:"name"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                         `json:"version"`
+	JSON    userMeResponseServiceUserJSON `json:"-"`
 }
 
 // userMeResponseServiceUserJSON contains the JSON metadata for the struct
@@ -486,8 +493,8 @@ func (r userMeResponseServiceUserJSON) RawJSON() string {
 }
 
 type UserMeResponseUser struct {
-	// The unique identifier (UUID) of this user.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.

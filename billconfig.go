@@ -74,9 +74,8 @@ func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateP
 }
 
 type BillConfigResponse struct {
-	// The Organization UUID. The Organization represents your company as a direct
-	// customer of the m3ter service.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The global lock date _(in ISO 8601 format)_ when all Bills will be locked.
 	//
 	// For example: `"2024-03-01"`.
@@ -91,8 +90,10 @@ type BillConfigResponse struct {
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The version number:
 	//
-	// - Default value when newly created is one.
-	// - Incremented by 1 each time it is updated.
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
 	Version int64                  `json:"version"`
 	JSON    billConfigResponseJSON `json:"-"`
 }

@@ -279,11 +279,12 @@ const (
 	OperationalDataExportScheduleRequestOperationalDataTypePlanTemplates        OperationalDataExportScheduleRequestOperationalDataType = "PLAN_TEMPLATES"
 	OperationalDataExportScheduleRequestOperationalDataTypeBalanceTransactions  OperationalDataExportScheduleRequestOperationalDataType = "BALANCE_TRANSACTIONS"
 	OperationalDataExportScheduleRequestOperationalDataTypeTransactionTypes     OperationalDataExportScheduleRequestOperationalDataType = "TRANSACTION_TYPES"
+	OperationalDataExportScheduleRequestOperationalDataTypeCharges              OperationalDataExportScheduleRequestOperationalDataType = "CHARGES"
 )
 
 func (r OperationalDataExportScheduleRequestOperationalDataType) IsKnown() bool {
 	switch r {
-	case OperationalDataExportScheduleRequestOperationalDataTypeBills, OperationalDataExportScheduleRequestOperationalDataTypeCommitments, OperationalDataExportScheduleRequestOperationalDataTypeAccounts, OperationalDataExportScheduleRequestOperationalDataTypeBalances, OperationalDataExportScheduleRequestOperationalDataTypeContracts, OperationalDataExportScheduleRequestOperationalDataTypeAccountPlans, OperationalDataExportScheduleRequestOperationalDataTypeAggregations, OperationalDataExportScheduleRequestOperationalDataTypePlans, OperationalDataExportScheduleRequestOperationalDataTypePricing, OperationalDataExportScheduleRequestOperationalDataTypePricingBands, OperationalDataExportScheduleRequestOperationalDataTypeBillLineItems, OperationalDataExportScheduleRequestOperationalDataTypeMeters, OperationalDataExportScheduleRequestOperationalDataTypeProducts, OperationalDataExportScheduleRequestOperationalDataTypeCompoundAggregations, OperationalDataExportScheduleRequestOperationalDataTypePlanGroups, OperationalDataExportScheduleRequestOperationalDataTypePlanGroupLinks, OperationalDataExportScheduleRequestOperationalDataTypePlanTemplates, OperationalDataExportScheduleRequestOperationalDataTypeBalanceTransactions, OperationalDataExportScheduleRequestOperationalDataTypeTransactionTypes:
+	case OperationalDataExportScheduleRequestOperationalDataTypeBills, OperationalDataExportScheduleRequestOperationalDataTypeCommitments, OperationalDataExportScheduleRequestOperationalDataTypeAccounts, OperationalDataExportScheduleRequestOperationalDataTypeBalances, OperationalDataExportScheduleRequestOperationalDataTypeContracts, OperationalDataExportScheduleRequestOperationalDataTypeAccountPlans, OperationalDataExportScheduleRequestOperationalDataTypeAggregations, OperationalDataExportScheduleRequestOperationalDataTypePlans, OperationalDataExportScheduleRequestOperationalDataTypePricing, OperationalDataExportScheduleRequestOperationalDataTypePricingBands, OperationalDataExportScheduleRequestOperationalDataTypeBillLineItems, OperationalDataExportScheduleRequestOperationalDataTypeMeters, OperationalDataExportScheduleRequestOperationalDataTypeProducts, OperationalDataExportScheduleRequestOperationalDataTypeCompoundAggregations, OperationalDataExportScheduleRequestOperationalDataTypePlanGroups, OperationalDataExportScheduleRequestOperationalDataTypePlanGroupLinks, OperationalDataExportScheduleRequestOperationalDataTypePlanTemplates, OperationalDataExportScheduleRequestOperationalDataTypeBalanceTransactions, OperationalDataExportScheduleRequestOperationalDataTypeTransactionTypes, OperationalDataExportScheduleRequestOperationalDataTypeCharges:
 		return true
 	}
 	return false
@@ -367,11 +368,12 @@ const (
 	OperationalDataExportScheduleResponseOperationalDataTypePlanTemplates        OperationalDataExportScheduleResponseOperationalDataType = "PLAN_TEMPLATES"
 	OperationalDataExportScheduleResponseOperationalDataTypeBalanceTransactions  OperationalDataExportScheduleResponseOperationalDataType = "BALANCE_TRANSACTIONS"
 	OperationalDataExportScheduleResponseOperationalDataTypeTransactionTypes     OperationalDataExportScheduleResponseOperationalDataType = "TRANSACTION_TYPES"
+	OperationalDataExportScheduleResponseOperationalDataTypeCharges              OperationalDataExportScheduleResponseOperationalDataType = "CHARGES"
 )
 
 func (r OperationalDataExportScheduleResponseOperationalDataType) IsKnown() bool {
 	switch r {
-	case OperationalDataExportScheduleResponseOperationalDataTypeBills, OperationalDataExportScheduleResponseOperationalDataTypeCommitments, OperationalDataExportScheduleResponseOperationalDataTypeAccounts, OperationalDataExportScheduleResponseOperationalDataTypeBalances, OperationalDataExportScheduleResponseOperationalDataTypeContracts, OperationalDataExportScheduleResponseOperationalDataTypeAccountPlans, OperationalDataExportScheduleResponseOperationalDataTypeAggregations, OperationalDataExportScheduleResponseOperationalDataTypePlans, OperationalDataExportScheduleResponseOperationalDataTypePricing, OperationalDataExportScheduleResponseOperationalDataTypePricingBands, OperationalDataExportScheduleResponseOperationalDataTypeBillLineItems, OperationalDataExportScheduleResponseOperationalDataTypeMeters, OperationalDataExportScheduleResponseOperationalDataTypeProducts, OperationalDataExportScheduleResponseOperationalDataTypeCompoundAggregations, OperationalDataExportScheduleResponseOperationalDataTypePlanGroups, OperationalDataExportScheduleResponseOperationalDataTypePlanGroupLinks, OperationalDataExportScheduleResponseOperationalDataTypePlanTemplates, OperationalDataExportScheduleResponseOperationalDataTypeBalanceTransactions, OperationalDataExportScheduleResponseOperationalDataTypeTransactionTypes:
+	case OperationalDataExportScheduleResponseOperationalDataTypeBills, OperationalDataExportScheduleResponseOperationalDataTypeCommitments, OperationalDataExportScheduleResponseOperationalDataTypeAccounts, OperationalDataExportScheduleResponseOperationalDataTypeBalances, OperationalDataExportScheduleResponseOperationalDataTypeContracts, OperationalDataExportScheduleResponseOperationalDataTypeAccountPlans, OperationalDataExportScheduleResponseOperationalDataTypeAggregations, OperationalDataExportScheduleResponseOperationalDataTypePlans, OperationalDataExportScheduleResponseOperationalDataTypePricing, OperationalDataExportScheduleResponseOperationalDataTypePricingBands, OperationalDataExportScheduleResponseOperationalDataTypeBillLineItems, OperationalDataExportScheduleResponseOperationalDataTypeMeters, OperationalDataExportScheduleResponseOperationalDataTypeProducts, OperationalDataExportScheduleResponseOperationalDataTypeCompoundAggregations, OperationalDataExportScheduleResponseOperationalDataTypePlanGroups, OperationalDataExportScheduleResponseOperationalDataTypePlanGroupLinks, OperationalDataExportScheduleResponseOperationalDataTypePlanTemplates, OperationalDataExportScheduleResponseOperationalDataTypeBalanceTransactions, OperationalDataExportScheduleResponseOperationalDataTypeTransactionTypes, OperationalDataExportScheduleResponseOperationalDataTypeCharges:
 		return true
 	}
 	return false
@@ -1389,6 +1391,9 @@ type DataExportScheduleListResponse struct {
 	Code string `json:"code"`
 	// The id of the user who created this Schedule.
 	CreatedBy string `json:"createdBy"`
+	// A cron expression (https://en.wikipedia.org/wiki/Cron) describing the frequency
+	// of the expression. Executions cannot be more frequent than every 15 minutes.
+	CronExpression string `json:"cronExpression"`
 	// The Export Destination ids.
 	DestinationIDs []string `json:"destinationIds"`
 	// The DateTime when the Data Export Schedule was created.
@@ -1400,6 +1405,10 @@ type DataExportScheduleListResponse struct {
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the Data Export Schedule.
 	Name string `json:"name"`
+	// Offset indicating starting point of the export within the configured
+	// scheduleType. For DAY, offset is in hours. For HOUR, offset is in minutes.
+	// Offset is not valid for MINUTE.
+	Offset int64 `json:"offset"`
 	// Defines the Schedule frequency for the Data Export to run in Hours, Days, or
 	// Minutes. Used in conjunction with the `scheduleType` parameter.
 	Period       int64                                      `json:"period"`
@@ -1421,12 +1430,14 @@ type dataExportScheduleListResponseJSON struct {
 	ID               apijson.Field
 	Code             apijson.Field
 	CreatedBy        apijson.Field
+	CronExpression   apijson.Field
 	DestinationIDs   apijson.Field
 	DtCreated        apijson.Field
 	DtLastModified   apijson.Field
 	ExportFileFormat apijson.Field
 	LastModifiedBy   apijson.Field
 	Name             apijson.Field
+	Offset           apijson.Field
 	Period           apijson.Field
 	ScheduleType     apijson.Field
 	SourceType       apijson.Field
@@ -1447,13 +1458,12 @@ type DataExportScheduleListResponseExportFileFormat string
 
 const (
 	DataExportScheduleListResponseExportFileFormatCsv   DataExportScheduleListResponseExportFileFormat = "CSV"
-	DataExportScheduleListResponseExportFileFormatJson  DataExportScheduleListResponseExportFileFormat = "JSON"
 	DataExportScheduleListResponseExportFileFormatJSONL DataExportScheduleListResponseExportFileFormat = "JSONL"
 )
 
 func (r DataExportScheduleListResponseExportFileFormat) IsKnown() bool {
 	switch r {
-	case DataExportScheduleListResponseExportFileFormatCsv, DataExportScheduleListResponseExportFileFormatJson, DataExportScheduleListResponseExportFileFormatJSONL:
+	case DataExportScheduleListResponseExportFileFormatCsv, DataExportScheduleListResponseExportFileFormatJSONL:
 		return true
 	}
 	return false
