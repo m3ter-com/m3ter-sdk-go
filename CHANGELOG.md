@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.10.0 (2025-12-03)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* **api:** spec update ([bba4c00](https://github.com/m3ter-com/m3ter-sdk-go/commit/bba4c00581a3580dc35582b327cc4b87c8722e2e))
+
+
+### Bug Fixes
+
+* bugfix for setting JSON keys with special characters ([f3957b7](https://github.com/m3ter-com/m3ter-sdk-go/commit/f3957b75660e97821e3d3e39ffa3d3276ad27f3f))
+* **client:** correctly specify Accept header with */* instead of empty ([6bfa321](https://github.com/m3ter-com/m3ter-sdk-go/commit/6bfa321c4276a3f4b2f37c5afbd45fd9723b6f59))
+* remove null from release please manifest ([f47a32e](https://github.com/m3ter-com/m3ter-sdk-go/commit/f47a32ecc517331684a6e4b667605130f03ecb2f))
+* use release please annotations on more places ([c2b0050](https://github.com/m3ter-com/m3ter-sdk-go/commit/c2b0050f22350c21c43d2fde6576b898a1f8ef89))
+* use slices.Concat instead of sometimes modifying r.Options ([2b4ecb0](https://github.com/m3ter-com/m3ter-sdk-go/commit/2b4ecb0b9c1b9895df1801d372aec37db6cd275e))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([6e7bb94](https://github.com/m3ter-com/m3ter-sdk-go/commit/6e7bb940711c161f16c37d72287476fe7c65d14e))
+* do not install brew dependencies in ./scripts/bootstrap by default ([4d84e92](https://github.com/m3ter-com/m3ter-sdk-go/commit/4d84e92c22462b4e671b72bc0c560718ad48166a))
+* update more docs for 1.22 ([28f5daa](https://github.com/m3ter-com/m3ter-sdk-go/commit/28f5daadf35c0b23a31fc355db02c40219b5a979))
+
 ## 0.9.0 (2025-08-29)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.8.0...v0.9.0)
