@@ -375,8 +375,8 @@ func (r *PermissionPolicyService) RemoveFromUserGroup(ctx context.Context, permi
 }
 
 type PermissionPolicyResponse struct {
-	// The unique identifier (UUID) for this Permission Policy.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The unique identifier (UUID) of the user who created this Permission Policy.
 	CreatedBy string `json:"createdBy"`
 	// The date and time _(in ISO-8601 format)_ when the Permission Policy was created.
@@ -393,7 +393,12 @@ type PermissionPolicyResponse struct {
 	Name string `json:"name"`
 	// Array containing the Permission Policies information.
 	PermissionPolicy []PermissionStatementResponse `json:"permissionPolicy"`
-	// The version number. Default value when newly created is one.
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
 	Version int64                        `json:"version"`
 	JSON    permissionPolicyResponseJSON `json:"-"`
 }
@@ -487,11 +492,12 @@ const (
 	PermissionStatementResponseActionExportsDownload          PermissionStatementResponseAction = "EXPORTS_DOWNLOAD"
 	PermissionStatementResponseActionMarketplaceUsageCreate   PermissionStatementResponseAction = "MARKETPLACE_USAGE_CREATE"
 	PermissionStatementResponseActionMarketplaceUsageRetrieve PermissionStatementResponseAction = "MARKETPLACE_USAGE_RETRIEVE"
+	PermissionStatementResponseActionAuditRetrieve            PermissionStatementResponseAction = "AUDIT_RETRIEVE"
 )
 
 func (r PermissionStatementResponseAction) IsKnown() bool {
 	switch r {
-	case PermissionStatementResponseActionAll, PermissionStatementResponseActionConfigCreate, PermissionStatementResponseActionConfigRetrieve, PermissionStatementResponseActionConfigUpdate, PermissionStatementResponseActionConfigDelete, PermissionStatementResponseActionConfigExport, PermissionStatementResponseActionAnalyticsQuery, PermissionStatementResponseActionMeasurementsUpload, PermissionStatementResponseActionMeasurementsFileupload, PermissionStatementResponseActionMeasurementsRetrieve, PermissionStatementResponseActionMeasurementsExport, PermissionStatementResponseActionForecastRetrieve, PermissionStatementResponseActionHealthscoresRetrieve, PermissionStatementResponseActionAnomaliesRetrieve, PermissionStatementResponseActionExportsDownload, PermissionStatementResponseActionMarketplaceUsageCreate, PermissionStatementResponseActionMarketplaceUsageRetrieve:
+	case PermissionStatementResponseActionAll, PermissionStatementResponseActionConfigCreate, PermissionStatementResponseActionConfigRetrieve, PermissionStatementResponseActionConfigUpdate, PermissionStatementResponseActionConfigDelete, PermissionStatementResponseActionConfigExport, PermissionStatementResponseActionAnalyticsQuery, PermissionStatementResponseActionMeasurementsUpload, PermissionStatementResponseActionMeasurementsFileupload, PermissionStatementResponseActionMeasurementsRetrieve, PermissionStatementResponseActionMeasurementsExport, PermissionStatementResponseActionForecastRetrieve, PermissionStatementResponseActionHealthscoresRetrieve, PermissionStatementResponseActionAnomaliesRetrieve, PermissionStatementResponseActionExportsDownload, PermissionStatementResponseActionMarketplaceUsageCreate, PermissionStatementResponseActionMarketplaceUsageRetrieve, PermissionStatementResponseActionAuditRetrieve:
 		return true
 	}
 	return false
@@ -565,7 +571,8 @@ func (r PrincipalPermissionRequestParam) MarshalJSON() (data []byte, err error) 
 }
 
 type PermissionPolicyAddToServiceUserResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -630,7 +637,8 @@ func (r PermissionPolicyAddToServiceUserResponsePrincipalType) IsKnown() bool {
 }
 
 type PermissionPolicyAddToSupportUserResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -695,7 +703,8 @@ func (r PermissionPolicyAddToSupportUserResponsePrincipalType) IsKnown() bool {
 }
 
 type PermissionPolicyAddToUserResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -760,7 +769,8 @@ func (r PermissionPolicyAddToUserResponsePrincipalType) IsKnown() bool {
 }
 
 type PermissionPolicyAddToUserGroupResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -825,7 +835,8 @@ func (r PermissionPolicyAddToUserGroupResponsePrincipalType) IsKnown() bool {
 }
 
 type PermissionPolicyRemoveFromServiceUserResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -890,7 +901,8 @@ func (r PermissionPolicyRemoveFromServiceUserResponsePrincipalType) IsKnown() bo
 }
 
 type PermissionPolicyRemoveFromSupportUserResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -955,7 +967,8 @@ func (r PermissionPolicyRemoveFromSupportUserResponsePrincipalType) IsKnown() bo
 }
 
 type PermissionPolicyRemoveFromUserResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -1020,7 +1033,8 @@ func (r PermissionPolicyRemoveFromUserResponsePrincipalType) IsKnown() bool {
 }
 
 type PermissionPolicyRemoveFromUserGroupResponse struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.

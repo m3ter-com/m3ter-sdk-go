@@ -143,6 +143,12 @@ type OrganizationConfigRequestParam struct {
 	//     1st, 2024 and so on.
 	//   - The date is in ISO-8601 format.
 	YearEpoch param.Field[string] `json:"yearEpoch,required"`
+	// Allow balance amounts to fall below zero. This feature is enabled on request.
+	// Please get in touch with m3ter Support or your m3ter contact if you would like
+	// it enabling for your organization(s).
+	AllowNegativeBalances param.Field[bool] `json:"allowNegativeBalances"`
+	// Allows plans to overlap time periods for different contracts.
+	AllowOverlappingPlans param.Field[bool] `json:"allowOverlappingPlans"`
 	// Grace period before bills are auto-approved. Used in combination with
 	// `autoApproveBillsGracePeriodUnit` parameter.
 	//
@@ -324,6 +330,12 @@ func (r OrganizationConfigRequestCreditApplicationOrder) IsKnown() bool {
 type OrganizationConfigResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
+	// Allow balance amounts to fall below zero. This feature is enabled on request.
+	// Please get in touch with m3ter Support or your m3ter contact if you would like
+	// it enabling for your organization(s).
+	AllowNegativeBalances bool `json:"allowNegativeBalances"`
+	// Allows plans to overlap time periods for different contracts.
+	AllowOverlappingPlans bool `json:"allowOverlappingPlans"`
 	// Grace period before bills are auto-approved. Used in combination with the field
 	// `autoApproveBillsGracePeriodUnit`.
 	AutoApproveBillsGracePeriod int64 `json:"autoApproveBillsGracePeriod"`
@@ -442,6 +454,8 @@ type OrganizationConfigResponse struct {
 // [OrganizationConfigResponse]
 type organizationConfigResponseJSON struct {
 	ID                              apijson.Field
+	AllowNegativeBalances           apijson.Field
+	AllowOverlappingPlans           apijson.Field
 	AutoApproveBillsGracePeriod     apijson.Field
 	AutoApproveBillsGracePeriodUnit apijson.Field
 	AutoGenerateStatementMode       apijson.Field

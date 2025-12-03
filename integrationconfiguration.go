@@ -226,6 +226,8 @@ type IntegrationConfigurationResponse struct {
 	Status     IntegrationConfigurationResponseStatus `json:"status,required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
+	// Identifier of the destination
+	DestinationID string `json:"destinationId"`
 	// The date and time the integration was completed. _(in ISO-8601 format)_.
 	DtCompleted time.Time `json:"dtCompleted" format:"date-time"`
 	// The DateTime when this item was created _(in ISO-8601 format)_.
@@ -240,6 +242,8 @@ type IntegrationConfigurationResponse struct {
 	ExternalID string `json:"externalId"`
 	// The ID of the user who last modified this item.
 	LastModifiedBy string `json:"lastModifiedBy"`
+	// ID of the parent integration run, or null if this is a parent integration run
+	ParentIntegrationRunID string `json:"parentIntegrationRunId"`
 	// The URL of the entity in the destination system if available.
 	URL string `json:"url"`
 	// The version number:
@@ -255,23 +259,25 @@ type IntegrationConfigurationResponse struct {
 // integrationConfigurationResponseJSON contains the JSON metadata for the struct
 // [IntegrationConfigurationResponse]
 type integrationConfigurationResponseJSON struct {
-	ID             apijson.Field
-	Destination    apijson.Field
-	EntityID       apijson.Field
-	EntityType     apijson.Field
-	Status         apijson.Field
-	CreatedBy      apijson.Field
-	DtCompleted    apijson.Field
-	DtCreated      apijson.Field
-	DtLastModified apijson.Field
-	DtStarted      apijson.Field
-	Error          apijson.Field
-	ExternalID     apijson.Field
-	LastModifiedBy apijson.Field
-	URL            apijson.Field
-	Version        apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
+	ID                     apijson.Field
+	Destination            apijson.Field
+	EntityID               apijson.Field
+	EntityType             apijson.Field
+	Status                 apijson.Field
+	CreatedBy              apijson.Field
+	DestinationID          apijson.Field
+	DtCompleted            apijson.Field
+	DtCreated              apijson.Field
+	DtLastModified         apijson.Field
+	DtStarted              apijson.Field
+	Error                  apijson.Field
+	ExternalID             apijson.Field
+	LastModifiedBy         apijson.Field
+	ParentIntegrationRunID apijson.Field
+	URL                    apijson.Field
+	Version                apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
 }
 
 func (r *IntegrationConfigurationResponse) UnmarshalJSON(data []byte) (err error) {
@@ -865,24 +871,27 @@ func (r IntegrationConfigurationNewParamsCredentials) MarshalJSON() (data []byte
 type IntegrationConfigurationNewParamsCredentialsType string
 
 const (
-	IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic              IntegrationConfigurationNewParamsCredentialsType = "HTTP_BASIC"
-	IntegrationConfigurationNewParamsCredentialsTypeOAuthClientCredentials IntegrationConfigurationNewParamsCredentialsType = "OAUTH_CLIENT_CREDENTIALS"
-	IntegrationConfigurationNewParamsCredentialsTypeM3terSignedRequest     IntegrationConfigurationNewParamsCredentialsType = "M3TER_SIGNED_REQUEST"
-	IntegrationConfigurationNewParamsCredentialsTypeAwsIntegration         IntegrationConfigurationNewParamsCredentialsType = "AWS_INTEGRATION"
-	IntegrationConfigurationNewParamsCredentialsTypePaddleAuth             IntegrationConfigurationNewParamsCredentialsType = "PADDLE_AUTH"
-	IntegrationConfigurationNewParamsCredentialsTypeNetsuiteAuth           IntegrationConfigurationNewParamsCredentialsType = "NETSUITE_AUTH"
-	IntegrationConfigurationNewParamsCredentialsTypeChargebeeAuth          IntegrationConfigurationNewParamsCredentialsType = "CHARGEBEE_AUTH"
-	IntegrationConfigurationNewParamsCredentialsTypeM3terServiceUser       IntegrationConfigurationNewParamsCredentialsType = "M3TER_SERVICE_USER"
-	IntegrationConfigurationNewParamsCredentialsTypeStripeSignedRequest    IntegrationConfigurationNewParamsCredentialsType = "STRIPE_SIGNED_REQUEST"
-	IntegrationConfigurationNewParamsCredentialsTypeHubspotAccessToken     IntegrationConfigurationNewParamsCredentialsType = "HUBSPOT_ACCESS_TOKEN"
-	IntegrationConfigurationNewParamsCredentialsTypeHubspotClientSecret    IntegrationConfigurationNewParamsCredentialsType = "HUBSPOT_CLIENT_SECRET"
-	IntegrationConfigurationNewParamsCredentialsTypeOpsgenieKey            IntegrationConfigurationNewParamsCredentialsType = "OPSGENIE_KEY"
-	IntegrationConfigurationNewParamsCredentialsTypeSapByd                 IntegrationConfigurationNewParamsCredentialsType = "SAP_BYD"
+	IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic                    IntegrationConfigurationNewParamsCredentialsType = "HTTP_BASIC"
+	IntegrationConfigurationNewParamsCredentialsTypeOAuthClientCredentials       IntegrationConfigurationNewParamsCredentialsType = "OAUTH_CLIENT_CREDENTIALS"
+	IntegrationConfigurationNewParamsCredentialsTypeM3terSignedRequest           IntegrationConfigurationNewParamsCredentialsType = "M3TER_SIGNED_REQUEST"
+	IntegrationConfigurationNewParamsCredentialsTypeAwsIntegration               IntegrationConfigurationNewParamsCredentialsType = "AWS_INTEGRATION"
+	IntegrationConfigurationNewParamsCredentialsTypePaddleAuth                   IntegrationConfigurationNewParamsCredentialsType = "PADDLE_AUTH"
+	IntegrationConfigurationNewParamsCredentialsTypeNetsuiteAuth                 IntegrationConfigurationNewParamsCredentialsType = "NETSUITE_AUTH"
+	IntegrationConfigurationNewParamsCredentialsTypeChargebeeAuth                IntegrationConfigurationNewParamsCredentialsType = "CHARGEBEE_AUTH"
+	IntegrationConfigurationNewParamsCredentialsTypeM3terAppSignature            IntegrationConfigurationNewParamsCredentialsType = "M3TER_APP_SIGNATURE"
+	IntegrationConfigurationNewParamsCredentialsTypeM3terServiceUser             IntegrationConfigurationNewParamsCredentialsType = "M3TER_SERVICE_USER"
+	IntegrationConfigurationNewParamsCredentialsTypeStripeSignedRequest          IntegrationConfigurationNewParamsCredentialsType = "STRIPE_SIGNED_REQUEST"
+	IntegrationConfigurationNewParamsCredentialsTypeHubspotAccessToken           IntegrationConfigurationNewParamsCredentialsType = "HUBSPOT_ACCESS_TOKEN"
+	IntegrationConfigurationNewParamsCredentialsTypeHubspotClientSecret          IntegrationConfigurationNewParamsCredentialsType = "HUBSPOT_CLIENT_SECRET"
+	IntegrationConfigurationNewParamsCredentialsTypeOpsgenieKey                  IntegrationConfigurationNewParamsCredentialsType = "OPSGENIE_KEY"
+	IntegrationConfigurationNewParamsCredentialsTypeSapByd                       IntegrationConfigurationNewParamsCredentialsType = "SAP_BYD"
+	IntegrationConfigurationNewParamsCredentialsTypeSlackWebhook                 IntegrationConfigurationNewParamsCredentialsType = "SLACK_WEBHOOK"
+	IntegrationConfigurationNewParamsCredentialsTypeSageIntacctClientCredentials IntegrationConfigurationNewParamsCredentialsType = "SAGE_INTACCT_CLIENT_CREDENTIALS"
 )
 
 func (r IntegrationConfigurationNewParamsCredentialsType) IsKnown() bool {
 	switch r {
-	case IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic, IntegrationConfigurationNewParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationNewParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationNewParamsCredentialsTypeAwsIntegration, IntegrationConfigurationNewParamsCredentialsTypePaddleAuth, IntegrationConfigurationNewParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationNewParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationNewParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationNewParamsCredentialsTypeStripeSignedRequest, IntegrationConfigurationNewParamsCredentialsTypeHubspotAccessToken, IntegrationConfigurationNewParamsCredentialsTypeHubspotClientSecret, IntegrationConfigurationNewParamsCredentialsTypeOpsgenieKey, IntegrationConfigurationNewParamsCredentialsTypeSapByd:
+	case IntegrationConfigurationNewParamsCredentialsTypeHTTPBasic, IntegrationConfigurationNewParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationNewParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationNewParamsCredentialsTypeAwsIntegration, IntegrationConfigurationNewParamsCredentialsTypePaddleAuth, IntegrationConfigurationNewParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationNewParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationNewParamsCredentialsTypeM3terAppSignature, IntegrationConfigurationNewParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationNewParamsCredentialsTypeStripeSignedRequest, IntegrationConfigurationNewParamsCredentialsTypeHubspotAccessToken, IntegrationConfigurationNewParamsCredentialsTypeHubspotClientSecret, IntegrationConfigurationNewParamsCredentialsTypeOpsgenieKey, IntegrationConfigurationNewParamsCredentialsTypeSapByd, IntegrationConfigurationNewParamsCredentialsTypeSlackWebhook, IntegrationConfigurationNewParamsCredentialsTypeSageIntacctClientCredentials:
 		return true
 	}
 	return false
@@ -988,24 +997,27 @@ func (r IntegrationConfigurationUpdateParamsCredentials) MarshalJSON() (data []b
 type IntegrationConfigurationUpdateParamsCredentialsType string
 
 const (
-	IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic              IntegrationConfigurationUpdateParamsCredentialsType = "HTTP_BASIC"
-	IntegrationConfigurationUpdateParamsCredentialsTypeOAuthClientCredentials IntegrationConfigurationUpdateParamsCredentialsType = "OAUTH_CLIENT_CREDENTIALS"
-	IntegrationConfigurationUpdateParamsCredentialsTypeM3terSignedRequest     IntegrationConfigurationUpdateParamsCredentialsType = "M3TER_SIGNED_REQUEST"
-	IntegrationConfigurationUpdateParamsCredentialsTypeAwsIntegration         IntegrationConfigurationUpdateParamsCredentialsType = "AWS_INTEGRATION"
-	IntegrationConfigurationUpdateParamsCredentialsTypePaddleAuth             IntegrationConfigurationUpdateParamsCredentialsType = "PADDLE_AUTH"
-	IntegrationConfigurationUpdateParamsCredentialsTypeNetsuiteAuth           IntegrationConfigurationUpdateParamsCredentialsType = "NETSUITE_AUTH"
-	IntegrationConfigurationUpdateParamsCredentialsTypeChargebeeAuth          IntegrationConfigurationUpdateParamsCredentialsType = "CHARGEBEE_AUTH"
-	IntegrationConfigurationUpdateParamsCredentialsTypeM3terServiceUser       IntegrationConfigurationUpdateParamsCredentialsType = "M3TER_SERVICE_USER"
-	IntegrationConfigurationUpdateParamsCredentialsTypeStripeSignedRequest    IntegrationConfigurationUpdateParamsCredentialsType = "STRIPE_SIGNED_REQUEST"
-	IntegrationConfigurationUpdateParamsCredentialsTypeHubspotAccessToken     IntegrationConfigurationUpdateParamsCredentialsType = "HUBSPOT_ACCESS_TOKEN"
-	IntegrationConfigurationUpdateParamsCredentialsTypeHubspotClientSecret    IntegrationConfigurationUpdateParamsCredentialsType = "HUBSPOT_CLIENT_SECRET"
-	IntegrationConfigurationUpdateParamsCredentialsTypeOpsgenieKey            IntegrationConfigurationUpdateParamsCredentialsType = "OPSGENIE_KEY"
-	IntegrationConfigurationUpdateParamsCredentialsTypeSapByd                 IntegrationConfigurationUpdateParamsCredentialsType = "SAP_BYD"
+	IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic                    IntegrationConfigurationUpdateParamsCredentialsType = "HTTP_BASIC"
+	IntegrationConfigurationUpdateParamsCredentialsTypeOAuthClientCredentials       IntegrationConfigurationUpdateParamsCredentialsType = "OAUTH_CLIENT_CREDENTIALS"
+	IntegrationConfigurationUpdateParamsCredentialsTypeM3terSignedRequest           IntegrationConfigurationUpdateParamsCredentialsType = "M3TER_SIGNED_REQUEST"
+	IntegrationConfigurationUpdateParamsCredentialsTypeAwsIntegration               IntegrationConfigurationUpdateParamsCredentialsType = "AWS_INTEGRATION"
+	IntegrationConfigurationUpdateParamsCredentialsTypePaddleAuth                   IntegrationConfigurationUpdateParamsCredentialsType = "PADDLE_AUTH"
+	IntegrationConfigurationUpdateParamsCredentialsTypeNetsuiteAuth                 IntegrationConfigurationUpdateParamsCredentialsType = "NETSUITE_AUTH"
+	IntegrationConfigurationUpdateParamsCredentialsTypeChargebeeAuth                IntegrationConfigurationUpdateParamsCredentialsType = "CHARGEBEE_AUTH"
+	IntegrationConfigurationUpdateParamsCredentialsTypeM3terAppSignature            IntegrationConfigurationUpdateParamsCredentialsType = "M3TER_APP_SIGNATURE"
+	IntegrationConfigurationUpdateParamsCredentialsTypeM3terServiceUser             IntegrationConfigurationUpdateParamsCredentialsType = "M3TER_SERVICE_USER"
+	IntegrationConfigurationUpdateParamsCredentialsTypeStripeSignedRequest          IntegrationConfigurationUpdateParamsCredentialsType = "STRIPE_SIGNED_REQUEST"
+	IntegrationConfigurationUpdateParamsCredentialsTypeHubspotAccessToken           IntegrationConfigurationUpdateParamsCredentialsType = "HUBSPOT_ACCESS_TOKEN"
+	IntegrationConfigurationUpdateParamsCredentialsTypeHubspotClientSecret          IntegrationConfigurationUpdateParamsCredentialsType = "HUBSPOT_CLIENT_SECRET"
+	IntegrationConfigurationUpdateParamsCredentialsTypeOpsgenieKey                  IntegrationConfigurationUpdateParamsCredentialsType = "OPSGENIE_KEY"
+	IntegrationConfigurationUpdateParamsCredentialsTypeSapByd                       IntegrationConfigurationUpdateParamsCredentialsType = "SAP_BYD"
+	IntegrationConfigurationUpdateParamsCredentialsTypeSlackWebhook                 IntegrationConfigurationUpdateParamsCredentialsType = "SLACK_WEBHOOK"
+	IntegrationConfigurationUpdateParamsCredentialsTypeSageIntacctClientCredentials IntegrationConfigurationUpdateParamsCredentialsType = "SAGE_INTACCT_CLIENT_CREDENTIALS"
 )
 
 func (r IntegrationConfigurationUpdateParamsCredentialsType) IsKnown() bool {
 	switch r {
-	case IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic, IntegrationConfigurationUpdateParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationUpdateParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationUpdateParamsCredentialsTypeAwsIntegration, IntegrationConfigurationUpdateParamsCredentialsTypePaddleAuth, IntegrationConfigurationUpdateParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationUpdateParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationUpdateParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationUpdateParamsCredentialsTypeStripeSignedRequest, IntegrationConfigurationUpdateParamsCredentialsTypeHubspotAccessToken, IntegrationConfigurationUpdateParamsCredentialsTypeHubspotClientSecret, IntegrationConfigurationUpdateParamsCredentialsTypeOpsgenieKey, IntegrationConfigurationUpdateParamsCredentialsTypeSapByd:
+	case IntegrationConfigurationUpdateParamsCredentialsTypeHTTPBasic, IntegrationConfigurationUpdateParamsCredentialsTypeOAuthClientCredentials, IntegrationConfigurationUpdateParamsCredentialsTypeM3terSignedRequest, IntegrationConfigurationUpdateParamsCredentialsTypeAwsIntegration, IntegrationConfigurationUpdateParamsCredentialsTypePaddleAuth, IntegrationConfigurationUpdateParamsCredentialsTypeNetsuiteAuth, IntegrationConfigurationUpdateParamsCredentialsTypeChargebeeAuth, IntegrationConfigurationUpdateParamsCredentialsTypeM3terAppSignature, IntegrationConfigurationUpdateParamsCredentialsTypeM3terServiceUser, IntegrationConfigurationUpdateParamsCredentialsTypeStripeSignedRequest, IntegrationConfigurationUpdateParamsCredentialsTypeHubspotAccessToken, IntegrationConfigurationUpdateParamsCredentialsTypeHubspotClientSecret, IntegrationConfigurationUpdateParamsCredentialsTypeOpsgenieKey, IntegrationConfigurationUpdateParamsCredentialsTypeSapByd, IntegrationConfigurationUpdateParamsCredentialsTypeSlackWebhook, IntegrationConfigurationUpdateParamsCredentialsTypeSageIntacctClientCredentials:
 		return true
 	}
 	return false
@@ -1077,6 +1089,10 @@ type IntegrationConfigurationGetByEntityParams struct {
 	DestinationID param.Field[string] `query:"destinationId"`
 	// UUID of the entity to retrieve IntegrationConfigs for
 	EntityID param.Field[string] `query:"entityId"`
+	// nextToken for multi page retrievals
+	NextToken param.Field[string] `query:"nextToken"`
+	// Number of configs to retrieve per page
+	PageSize param.Field[int64] `query:"pageSize"`
 }
 
 // URLQuery serializes [IntegrationConfigurationGetByEntityParams]'s query

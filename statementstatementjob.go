@@ -264,7 +264,8 @@ type StatementJobResponse struct {
 	// The unique identifier (UUID) of the bill associated with the StatementJob.
 	BillID string `json:"billId"`
 	// The unique identifier (UUID) of the user who created this StatementJob.
-	CreatedBy string `json:"createdBy"`
+	CreatedBy          string                                 `json:"createdBy"`
+	CsvStatementStatus StatementJobResponseCsvStatementStatus `json:"csvStatementStatus"`
 	// The date and time _(in ISO-8601 format)_ when the StatementJob was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the StatementJob was last
@@ -275,15 +276,17 @@ type StatementJobResponse struct {
 	//
 	// - TRUE - includes the statement in CSV format.
 	// - FALSE - no CSV format statement.
-	IncludeCsvFormat bool `json:"includeCsvFormat"`
+	IncludeCsvFormat    bool                                    `json:"includeCsvFormat"`
+	JsonStatementStatus StatementJobResponseJsonStatementStatus `json:"jsonStatementStatus"`
 	// The unique identifier (UUID) of the user who last modified this StatementJob.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The unique identifier (UUID) of your Organization. The Organization represents
 	// your company as a direct customer of our service.
-	OrgID string `json:"orgId"`
+	OrgID                    string `json:"orgId"`
+	PresignedCsvStatementURL string `json:"presignedCsvStatementUrl"`
 	// The URL to access the generated statement in JSON format. This URL is temporary
 	// and has a limited lifetime.
-	PresignedJsonStatementURL string `json:"presignedJsonStatementUrl" format:"url"`
+	PresignedJsonStatementURL string `json:"presignedJsonStatementUrl"`
 	// The current status of the StatementJob. The status helps track the progress and
 	// outcome of a StatementJob.
 	StatementJobStatus StatementJobResponseStatementJobStatus `json:"statementJobStatus"`
@@ -303,11 +306,14 @@ type statementJobResponseJSON struct {
 	ID                        apijson.Field
 	BillID                    apijson.Field
 	CreatedBy                 apijson.Field
+	CsvStatementStatus        apijson.Field
 	DtCreated                 apijson.Field
 	DtLastModified            apijson.Field
 	IncludeCsvFormat          apijson.Field
+	JsonStatementStatus       apijson.Field
 	LastModifiedBy            apijson.Field
 	OrgID                     apijson.Field
+	PresignedCsvStatementURL  apijson.Field
 	PresignedJsonStatementURL apijson.Field
 	StatementJobStatus        apijson.Field
 	Version                   apijson.Field
@@ -321,6 +327,38 @@ func (r *StatementJobResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r statementJobResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type StatementJobResponseCsvStatementStatus string
+
+const (
+	StatementJobResponseCsvStatementStatusLatest      StatementJobResponseCsvStatementStatus = "LATEST"
+	StatementJobResponseCsvStatementStatusStale       StatementJobResponseCsvStatementStatus = "STALE"
+	StatementJobResponseCsvStatementStatusInvalidated StatementJobResponseCsvStatementStatus = "INVALIDATED"
+)
+
+func (r StatementJobResponseCsvStatementStatus) IsKnown() bool {
+	switch r {
+	case StatementJobResponseCsvStatementStatusLatest, StatementJobResponseCsvStatementStatusStale, StatementJobResponseCsvStatementStatusInvalidated:
+		return true
+	}
+	return false
+}
+
+type StatementJobResponseJsonStatementStatus string
+
+const (
+	StatementJobResponseJsonStatementStatusLatest      StatementJobResponseJsonStatementStatus = "LATEST"
+	StatementJobResponseJsonStatementStatusStale       StatementJobResponseJsonStatementStatus = "STALE"
+	StatementJobResponseJsonStatementStatusInvalidated StatementJobResponseJsonStatementStatus = "INVALIDATED"
+)
+
+func (r StatementJobResponseJsonStatementStatus) IsKnown() bool {
+	switch r {
+	case StatementJobResponseJsonStatementStatusLatest, StatementJobResponseJsonStatementStatusStale, StatementJobResponseJsonStatementStatusInvalidated:
+		return true
+	}
+	return false
 }
 
 // The current status of the StatementJob. The status helps track the progress and

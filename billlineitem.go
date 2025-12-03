@@ -128,88 +128,75 @@ type LineItemResponse struct {
 	// Represents the average unit price calculated across all pricing bands or tiers
 	// for this line item.
 	AverageUnitPrice float64 `json:"averageUnitPrice"`
-	BalanceID        string  `json:"balanceId"`
+	// The unique identifier (UUID) for the Balance associated with this line item.
+	BalanceID string `json:"balanceId"`
 	// Array containing the pricing band information, which shows the details for each
 	// pricing band or tier.
 	BandUsage []LineItemResponseBandUsage `json:"bandUsage"`
 	// The unique identifier (UUID) for the Bill that includes this line item.
-	BillID   string `json:"billId"`
+	BillID string `json:"billId"`
+	// The unique identifier (UUID) for the Charge associated with this line item.
 	ChargeID string `json:"chargeId"`
-	// The unique identifier (UUID) of the Commitment _(if this is used)_.
+	// The unique identifier (UUID) of the Commitment associated with this line item.
 	CommitmentID string `json:"commitmentId"`
 	// A unique identifier (UUID) for the Compound Aggregation, if applicable.
 	CompoundAggregationID string `json:"compoundAggregationId"`
-	// The unique identifier (UUID) for the contract associated with this line item.
+	// The unique identifier (UUID) for the Contract associated with this line item.
 	ContractID string `json:"contractId"`
 	// The currency conversion rate _(if used)_ for the line item.
 	ConversionRate float64 `json:"conversionRate"`
 	// The subtotal amount for this line item after currency conversion, if applicable.
 	ConvertedSubtotal float64 `json:"convertedSubtotal"`
-	CounterID         string  `json:"counterId"`
-	// The unique identifier (UUID) for the user who created the Bill line item.
+	// The unique identifier (UUID) for the Counter associated with this line item.
+	CounterID string `json:"counterId"`
+	// The ID of the user who created this line item.
 	CreatedBy string `json:"createdBy"`
 	// The unique identifier (UUID) for the type of credit applied to this line item.
 	CreditTypeID string `json:"creditTypeId"`
 	// The currency in which the line item is billed, represented as a currency code.
 	// For example, USD, GBP, or EUR.
-	Currency string `json:"currency"`
-	// A detailed description providing context for the line item within the Bill.
+	Currency    string `json:"currency"`
 	Description string `json:"description"`
-	// The date and time _(in ISO 8601 format)_ when the Bill line item was first
-	// created.
+	// The DateTime when the line item was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
-	// The date and time _(in ISO 8601 format)_ when the Bill line item was last
-	// modified.
+	// The DateTime when the line item was last modified.
 	DtLastModified time.Time         `json:"dtLastModified" format:"date-time"`
 	Group          map[string]string `json:"group"`
 	// Boolean flag indicating whether the Bill line item has associated statement
 	// usage in JSON format. When a Bill statement is generated, usage line items have
 	// their usage stored in JSON format.
 	//
-	// See
-	// [Working with Bill Statements](https://www.m3ter.com/docs/guides/running-viewing-and-managing-bills/working-with-bill-statements)
-	// for more information.
+	// Deprecated: deprecated
 	JsonUsageGenerated bool `json:"jsonUsageGenerated"`
-	// The unique identifier (UUID) for the user who last modified this Bill line item.
+	// The ID of the user who last modified this line item.
 	LastModifiedBy string                       `json:"lastModifiedBy"`
 	LineItemType   LineItemResponseLineItemType `json:"lineItemType"`
 	// The unique identifier (UUID) of the Meter responsible for tracking usage.
 	MeterID string `json:"meterId"`
-	// The UUID of the PlanGroup.
-	//
-	// The unique identifier (UUID) for the PlanGroup, if applicable.
+	// The unique identifier (UUID) of the Plan Group associated with this line item.
 	PlanGroupID string `json:"planGroupId"`
-	// A unique identifier (UUID) for the billing Plan associated with this line item,
+	// A unique identifier (UUID) for the billing Plan associated with this line item.
 	PlanID string `json:"planId"`
 	// The unique identifier (UUID) of the Pricing used for this line item,
 	PricingID string `json:"pricingId"`
 	// The code of the Product associated with this line item.
 	ProductCode string `json:"productCode"`
-	// The unique identifier (UUID) for the associated Product.
-	ProductID string `json:"productId"`
+	ProductID   string `json:"productId"`
 	// The name of the Product associated with this line item.
 	ProductName string `json:"productName"`
 	// The amount of the product or service used in this line item.
 	Quantity float64 `json:"quantity"`
-	// The UUID of the reason used for the line item.
-	//
 	// A unique identifier (UUID) for the reason or justification for this line item,
 	// if applicable.
-	ReasonID string `json:"reasonId"`
-	// A unique identifier (UUID) for a Bill that this line item may be related to or
-	// derived from.
-	ReferencedBillID string `json:"referencedBillId"`
-	// A unique identifier (UUID) for another line item that this line item may be
-	// related to or derived from.
+	ReasonID             string `json:"reasonId"`
+	ReferencedBillID     string `json:"referencedBillId"`
 	ReferencedLineItemID string `json:"referencedLineItemId"`
 	// Specifies the segment name or identifier when segmented Aggregation is used.
 	// This is relevant for more complex billing structures.
 	Segment map[string]string `json:"segment"`
-	// The number used for sequential invoices.
-	SequenceNumber int64 `json:"sequenceNumber"`
-	// The _(exclusive)_ end date for the service period in ISO 68601 format.
-	ServicePeriodEndDate time.Time `json:"servicePeriodEndDate" format:"date-time"`
-	// The _(inclusive)_ start date for the service period in ISO 8601 format.
+	// The line item sequence number.
+	SequenceNumber         int64     `json:"sequenceNumber"`
+	ServicePeriodEndDate   time.Time `json:"servicePeriodEndDate" format:"date-time"`
 	ServicePeriodStartDate time.Time `json:"servicePeriodStartDate" format:"date-time"`
 	// The subtotal amount when not currency converted _(in the cases where currency
 	// conversion is required)_.
@@ -364,11 +351,12 @@ const (
 	LineItemResponseLineItemTypeOverageUsage              LineItemResponseLineItemType = "OVERAGE_USAGE"
 	LineItemResponseLineItemTypeBalanceConsumed           LineItemResponseLineItemType = "BALANCE_CONSUMED"
 	LineItemResponseLineItemTypeBalanceFee                LineItemResponseLineItemType = "BALANCE_FEE"
+	LineItemResponseLineItemTypeAdHoc                     LineItemResponseLineItemType = "AD_HOC"
 )
 
 func (r LineItemResponseLineItemType) IsKnown() bool {
 	switch r {
-	case LineItemResponseLineItemTypeStandingCharge, LineItemResponseLineItemTypeUsage, LineItemResponseLineItemTypeCounterRunningTotalCharge, LineItemResponseLineItemTypeCounterAdjustmentDebit, LineItemResponseLineItemTypeCounterAdjustmentCredit, LineItemResponseLineItemTypeUsageCredit, LineItemResponseLineItemTypeMinimumSpend, LineItemResponseLineItemTypeMinimumSpendRefund, LineItemResponseLineItemTypeCreditDeduction, LineItemResponseLineItemTypeManualAdjustment, LineItemResponseLineItemTypeCreditMemo, LineItemResponseLineItemTypeDebitMemo, LineItemResponseLineItemTypeCommitmentConsumed, LineItemResponseLineItemTypeCommitmentFee, LineItemResponseLineItemTypeOverageSurcharge, LineItemResponseLineItemTypeOverageUsage, LineItemResponseLineItemTypeBalanceConsumed, LineItemResponseLineItemTypeBalanceFee:
+	case LineItemResponseLineItemTypeStandingCharge, LineItemResponseLineItemTypeUsage, LineItemResponseLineItemTypeCounterRunningTotalCharge, LineItemResponseLineItemTypeCounterAdjustmentDebit, LineItemResponseLineItemTypeCounterAdjustmentCredit, LineItemResponseLineItemTypeUsageCredit, LineItemResponseLineItemTypeMinimumSpend, LineItemResponseLineItemTypeMinimumSpendRefund, LineItemResponseLineItemTypeCreditDeduction, LineItemResponseLineItemTypeManualAdjustment, LineItemResponseLineItemTypeCreditMemo, LineItemResponseLineItemTypeDebitMemo, LineItemResponseLineItemTypeCommitmentConsumed, LineItemResponseLineItemTypeCommitmentFee, LineItemResponseLineItemTypeOverageSurcharge, LineItemResponseLineItemTypeOverageUsage, LineItemResponseLineItemTypeBalanceConsumed, LineItemResponseLineItemTypeBalanceFee, LineItemResponseLineItemTypeAdHoc:
 		return true
 	}
 	return false

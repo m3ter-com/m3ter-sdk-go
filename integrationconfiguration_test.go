@@ -241,6 +241,8 @@ func TestIntegrationConfigurationGetByEntityWithOptionalParams(t *testing.T) {
 			Destination:   m3ter.F("destination"),
 			DestinationID: m3ter.F("destinationId"),
 			EntityID:      m3ter.F("entityId"),
+			NextToken:     m3ter.F("nextToken"),
+			PageSize:      m3ter.F(int64(1)),
 		},
 	)
 	if err != nil {

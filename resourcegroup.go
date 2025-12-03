@@ -301,8 +301,8 @@ func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string,
 }
 
 type ResourceGroupResponse struct {
-	// The unique identifier (UUID) of the Resource Group.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The unique identifier (UUID) of the user who created this Resource Group.
 	CreatedBy string `json:"createdBy"`
 	// The date and time _(in ISO-8601 format)_ when the Resource Group was created.
@@ -314,7 +314,12 @@ type ResourceGroupResponse struct {
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the Resource Group.
 	Name string `json:"name"`
-	// The version number. Default value when newly created is one.
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
 	Version int64                     `json:"version"`
 	JSON    resourceGroupResponseJSON `json:"-"`
 }

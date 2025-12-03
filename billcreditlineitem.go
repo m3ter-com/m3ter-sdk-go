@@ -177,32 +177,25 @@ func (r *BillCreditLineItemService) Delete(ctx context.Context, billID string, i
 type CreditLineItemResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// The amount for the line item.
-	Amount float64 `json:"amount,required"`
-	// The description of the line item.
-	Description string `json:"description,required"`
-	// The UUID of the Product.
-	ProductID string `json:"productId,required"`
-	// The UUID of the bill for the line item.
-	ReferencedBillID string `json:"referencedBillId,required"`
-	// The UUID of the line item.
-	ReferencedLineItemID string `json:"referencedLineItemId,required"`
-	// The service period end date in ISO-8601 format. _(exclusive of the ending
-	// date)_.
-	ServicePeriodEndDate time.Time `json:"servicePeriodEndDate,required" format:"date-time"`
-	// The service period start date in ISO-8601 format. _(inclusive of the starting
-	// date)_.
-	ServicePeriodStartDate time.Time `json:"servicePeriodStartDate,required" format:"date-time"`
-	// The id of the user who created this credit line item.
+	// The credit amount.
+	Amount float64 `json:"amount"`
+	// The ID of the user who created this line item.
 	CreatedBy string `json:"createdBy"`
 	// The UUID of the credit reason for this credit line item.
 	CreditReasonID string `json:"creditReasonId"`
-	// The DateTime when the credit line item was created _(in ISO-8601 format)_.
+	Description    string `json:"description"`
+	// The DateTime when the line item was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
-	// The DateTime when the credit line item was last modified _(in ISO-8601 format)_.
+	// The DateTime when the line item was last modified.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
-	// The id of the user who last modified this credit line item.
-	LastModifiedBy string `json:"lastModifiedBy"`
+	// The ID of the user who last modified this line item.
+	LastModifiedBy         string                             `json:"lastModifiedBy"`
+	LineItemType           CreditLineItemResponseLineItemType `json:"lineItemType"`
+	ProductID              string                             `json:"productId"`
+	ReferencedBillID       string                             `json:"referencedBillId"`
+	ReferencedLineItemID   string                             `json:"referencedLineItemId"`
+	ServicePeriodEndDate   time.Time                          `json:"servicePeriodEndDate" format:"date-time"`
+	ServicePeriodStartDate time.Time                          `json:"servicePeriodStartDate" format:"date-time"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
@@ -218,17 +211,18 @@ type CreditLineItemResponse struct {
 type creditLineItemResponseJSON struct {
 	ID                     apijson.Field
 	Amount                 apijson.Field
+	CreatedBy              apijson.Field
+	CreditReasonID         apijson.Field
 	Description            apijson.Field
+	DtCreated              apijson.Field
+	DtLastModified         apijson.Field
+	LastModifiedBy         apijson.Field
+	LineItemType           apijson.Field
 	ProductID              apijson.Field
 	ReferencedBillID       apijson.Field
 	ReferencedLineItemID   apijson.Field
 	ServicePeriodEndDate   apijson.Field
 	ServicePeriodStartDate apijson.Field
-	CreatedBy              apijson.Field
-	CreditReasonID         apijson.Field
-	DtCreated              apijson.Field
-	DtLastModified         apijson.Field
-	LastModifiedBy         apijson.Field
 	Version                apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
@@ -240,6 +234,38 @@ func (r *CreditLineItemResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r creditLineItemResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type CreditLineItemResponseLineItemType string
+
+const (
+	CreditLineItemResponseLineItemTypeStandingCharge            CreditLineItemResponseLineItemType = "STANDING_CHARGE"
+	CreditLineItemResponseLineItemTypeUsage                     CreditLineItemResponseLineItemType = "USAGE"
+	CreditLineItemResponseLineItemTypeCounterRunningTotalCharge CreditLineItemResponseLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
+	CreditLineItemResponseLineItemTypeCounterAdjustmentDebit    CreditLineItemResponseLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	CreditLineItemResponseLineItemTypeCounterAdjustmentCredit   CreditLineItemResponseLineItemType = "COUNTER_ADJUSTMENT_CREDIT"
+	CreditLineItemResponseLineItemTypeUsageCredit               CreditLineItemResponseLineItemType = "USAGE_CREDIT"
+	CreditLineItemResponseLineItemTypeMinimumSpend              CreditLineItemResponseLineItemType = "MINIMUM_SPEND"
+	CreditLineItemResponseLineItemTypeMinimumSpendRefund        CreditLineItemResponseLineItemType = "MINIMUM_SPEND_REFUND"
+	CreditLineItemResponseLineItemTypeCreditDeduction           CreditLineItemResponseLineItemType = "CREDIT_DEDUCTION"
+	CreditLineItemResponseLineItemTypeManualAdjustment          CreditLineItemResponseLineItemType = "MANUAL_ADJUSTMENT"
+	CreditLineItemResponseLineItemTypeCreditMemo                CreditLineItemResponseLineItemType = "CREDIT_MEMO"
+	CreditLineItemResponseLineItemTypeDebitMemo                 CreditLineItemResponseLineItemType = "DEBIT_MEMO"
+	CreditLineItemResponseLineItemTypeCommitmentConsumed        CreditLineItemResponseLineItemType = "COMMITMENT_CONSUMED"
+	CreditLineItemResponseLineItemTypeCommitmentFee             CreditLineItemResponseLineItemType = "COMMITMENT_FEE"
+	CreditLineItemResponseLineItemTypeOverageSurcharge          CreditLineItemResponseLineItemType = "OVERAGE_SURCHARGE"
+	CreditLineItemResponseLineItemTypeOverageUsage              CreditLineItemResponseLineItemType = "OVERAGE_USAGE"
+	CreditLineItemResponseLineItemTypeBalanceConsumed           CreditLineItemResponseLineItemType = "BALANCE_CONSUMED"
+	CreditLineItemResponseLineItemTypeBalanceFee                CreditLineItemResponseLineItemType = "BALANCE_FEE"
+	CreditLineItemResponseLineItemTypeAdHoc                     CreditLineItemResponseLineItemType = "AD_HOC"
+)
+
+func (r CreditLineItemResponseLineItemType) IsKnown() bool {
+	switch r {
+	case CreditLineItemResponseLineItemTypeStandingCharge, CreditLineItemResponseLineItemTypeUsage, CreditLineItemResponseLineItemTypeCounterRunningTotalCharge, CreditLineItemResponseLineItemTypeCounterAdjustmentDebit, CreditLineItemResponseLineItemTypeCounterAdjustmentCredit, CreditLineItemResponseLineItemTypeUsageCredit, CreditLineItemResponseLineItemTypeMinimumSpend, CreditLineItemResponseLineItemTypeMinimumSpendRefund, CreditLineItemResponseLineItemTypeCreditDeduction, CreditLineItemResponseLineItemTypeManualAdjustment, CreditLineItemResponseLineItemTypeCreditMemo, CreditLineItemResponseLineItemTypeDebitMemo, CreditLineItemResponseLineItemTypeCommitmentConsumed, CreditLineItemResponseLineItemTypeCommitmentFee, CreditLineItemResponseLineItemTypeOverageSurcharge, CreditLineItemResponseLineItemTypeOverageUsage, CreditLineItemResponseLineItemTypeBalanceConsumed, CreditLineItemResponseLineItemTypeBalanceFee, CreditLineItemResponseLineItemTypeAdHoc:
+		return true
+	}
+	return false
 }
 
 type BillCreditLineItemNewParams struct {
@@ -261,6 +287,7 @@ type BillCreditLineItemNewParams struct {
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
 	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The UUID of the credit reason.
 	CreditReasonID param.Field[string]                                  `json:"creditReasonId"`
 	LineItemType   param.Field[BillCreditLineItemNewParamsLineItemType] `json:"lineItemType"`
@@ -302,11 +329,12 @@ const (
 	BillCreditLineItemNewParamsLineItemTypeOverageUsage              BillCreditLineItemNewParamsLineItemType = "OVERAGE_USAGE"
 	BillCreditLineItemNewParamsLineItemTypeBalanceConsumed           BillCreditLineItemNewParamsLineItemType = "BALANCE_CONSUMED"
 	BillCreditLineItemNewParamsLineItemTypeBalanceFee                BillCreditLineItemNewParamsLineItemType = "BALANCE_FEE"
+	BillCreditLineItemNewParamsLineItemTypeAdHoc                     BillCreditLineItemNewParamsLineItemType = "AD_HOC"
 )
 
 func (r BillCreditLineItemNewParamsLineItemType) IsKnown() bool {
 	switch r {
-	case BillCreditLineItemNewParamsLineItemTypeStandingCharge, BillCreditLineItemNewParamsLineItemTypeUsage, BillCreditLineItemNewParamsLineItemTypeCounterRunningTotalCharge, BillCreditLineItemNewParamsLineItemTypeCounterAdjustmentDebit, BillCreditLineItemNewParamsLineItemTypeCounterAdjustmentCredit, BillCreditLineItemNewParamsLineItemTypeUsageCredit, BillCreditLineItemNewParamsLineItemTypeMinimumSpend, BillCreditLineItemNewParamsLineItemTypeMinimumSpendRefund, BillCreditLineItemNewParamsLineItemTypeCreditDeduction, BillCreditLineItemNewParamsLineItemTypeManualAdjustment, BillCreditLineItemNewParamsLineItemTypeCreditMemo, BillCreditLineItemNewParamsLineItemTypeDebitMemo, BillCreditLineItemNewParamsLineItemTypeCommitmentConsumed, BillCreditLineItemNewParamsLineItemTypeCommitmentFee, BillCreditLineItemNewParamsLineItemTypeOverageSurcharge, BillCreditLineItemNewParamsLineItemTypeOverageUsage, BillCreditLineItemNewParamsLineItemTypeBalanceConsumed, BillCreditLineItemNewParamsLineItemTypeBalanceFee:
+	case BillCreditLineItemNewParamsLineItemTypeStandingCharge, BillCreditLineItemNewParamsLineItemTypeUsage, BillCreditLineItemNewParamsLineItemTypeCounterRunningTotalCharge, BillCreditLineItemNewParamsLineItemTypeCounterAdjustmentDebit, BillCreditLineItemNewParamsLineItemTypeCounterAdjustmentCredit, BillCreditLineItemNewParamsLineItemTypeUsageCredit, BillCreditLineItemNewParamsLineItemTypeMinimumSpend, BillCreditLineItemNewParamsLineItemTypeMinimumSpendRefund, BillCreditLineItemNewParamsLineItemTypeCreditDeduction, BillCreditLineItemNewParamsLineItemTypeManualAdjustment, BillCreditLineItemNewParamsLineItemTypeCreditMemo, BillCreditLineItemNewParamsLineItemTypeDebitMemo, BillCreditLineItemNewParamsLineItemTypeCommitmentConsumed, BillCreditLineItemNewParamsLineItemTypeCommitmentFee, BillCreditLineItemNewParamsLineItemTypeOverageSurcharge, BillCreditLineItemNewParamsLineItemTypeOverageUsage, BillCreditLineItemNewParamsLineItemTypeBalanceConsumed, BillCreditLineItemNewParamsLineItemTypeBalanceFee, BillCreditLineItemNewParamsLineItemTypeAdHoc:
 		return true
 	}
 	return false
@@ -336,6 +364,7 @@ type BillCreditLineItemUpdateParams struct {
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
 	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The UUID of the credit reason.
 	CreditReasonID param.Field[string]                                     `json:"creditReasonId"`
 	LineItemType   param.Field[BillCreditLineItemUpdateParamsLineItemType] `json:"lineItemType"`
@@ -377,11 +406,12 @@ const (
 	BillCreditLineItemUpdateParamsLineItemTypeOverageUsage              BillCreditLineItemUpdateParamsLineItemType = "OVERAGE_USAGE"
 	BillCreditLineItemUpdateParamsLineItemTypeBalanceConsumed           BillCreditLineItemUpdateParamsLineItemType = "BALANCE_CONSUMED"
 	BillCreditLineItemUpdateParamsLineItemTypeBalanceFee                BillCreditLineItemUpdateParamsLineItemType = "BALANCE_FEE"
+	BillCreditLineItemUpdateParamsLineItemTypeAdHoc                     BillCreditLineItemUpdateParamsLineItemType = "AD_HOC"
 )
 
 func (r BillCreditLineItemUpdateParamsLineItemType) IsKnown() bool {
 	switch r {
-	case BillCreditLineItemUpdateParamsLineItemTypeStandingCharge, BillCreditLineItemUpdateParamsLineItemTypeUsage, BillCreditLineItemUpdateParamsLineItemTypeCounterRunningTotalCharge, BillCreditLineItemUpdateParamsLineItemTypeCounterAdjustmentDebit, BillCreditLineItemUpdateParamsLineItemTypeCounterAdjustmentCredit, BillCreditLineItemUpdateParamsLineItemTypeUsageCredit, BillCreditLineItemUpdateParamsLineItemTypeMinimumSpend, BillCreditLineItemUpdateParamsLineItemTypeMinimumSpendRefund, BillCreditLineItemUpdateParamsLineItemTypeCreditDeduction, BillCreditLineItemUpdateParamsLineItemTypeManualAdjustment, BillCreditLineItemUpdateParamsLineItemTypeCreditMemo, BillCreditLineItemUpdateParamsLineItemTypeDebitMemo, BillCreditLineItemUpdateParamsLineItemTypeCommitmentConsumed, BillCreditLineItemUpdateParamsLineItemTypeCommitmentFee, BillCreditLineItemUpdateParamsLineItemTypeOverageSurcharge, BillCreditLineItemUpdateParamsLineItemTypeOverageUsage, BillCreditLineItemUpdateParamsLineItemTypeBalanceConsumed, BillCreditLineItemUpdateParamsLineItemTypeBalanceFee:
+	case BillCreditLineItemUpdateParamsLineItemTypeStandingCharge, BillCreditLineItemUpdateParamsLineItemTypeUsage, BillCreditLineItemUpdateParamsLineItemTypeCounterRunningTotalCharge, BillCreditLineItemUpdateParamsLineItemTypeCounterAdjustmentDebit, BillCreditLineItemUpdateParamsLineItemTypeCounterAdjustmentCredit, BillCreditLineItemUpdateParamsLineItemTypeUsageCredit, BillCreditLineItemUpdateParamsLineItemTypeMinimumSpend, BillCreditLineItemUpdateParamsLineItemTypeMinimumSpendRefund, BillCreditLineItemUpdateParamsLineItemTypeCreditDeduction, BillCreditLineItemUpdateParamsLineItemTypeManualAdjustment, BillCreditLineItemUpdateParamsLineItemTypeCreditMemo, BillCreditLineItemUpdateParamsLineItemTypeDebitMemo, BillCreditLineItemUpdateParamsLineItemTypeCommitmentConsumed, BillCreditLineItemUpdateParamsLineItemTypeCommitmentFee, BillCreditLineItemUpdateParamsLineItemTypeOverageSurcharge, BillCreditLineItemUpdateParamsLineItemTypeOverageUsage, BillCreditLineItemUpdateParamsLineItemTypeBalanceConsumed, BillCreditLineItemUpdateParamsLineItemTypeBalanceFee, BillCreditLineItemUpdateParamsLineItemTypeAdHoc:
 		return true
 	}
 	return false

@@ -342,11 +342,13 @@ type BillResponse struct {
 	// **NOTE:** If you have not defined a `billPrefix` for your Organization, a
 	// `sequentialInvoiceNumber` is not returned in the response. See
 	// [Update OrganizationConfig](https://www.m3ter.com/docs/api#tag/OrganizationConfig/operation/UpdateOrganizationConfig)
-	SequentialInvoiceNumber string             `json:"sequentialInvoiceNumber"`
-	StartDate               time.Time          `json:"startDate" format:"date"`
-	StartDateTimeUtc        time.Time          `json:"startDateTimeUTC" format:"date-time"`
-	Status                  BillResponseStatus `json:"status"`
-	Timezone                string             `json:"timezone"`
+	SequentialInvoiceNumber string    `json:"sequentialInvoiceNumber"`
+	StartDate               time.Time `json:"startDate" format:"date"`
+	StartDateTimeUtc        time.Time `json:"startDateTimeUTC" format:"date-time"`
+	// True if the existing bill statement (JSON or CSV) is marked as stale/outdated.
+	StatementStale bool               `json:"statementStale"`
+	Status         BillResponseStatus `json:"status"`
+	Timezone       string             `json:"timezone"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
@@ -392,6 +394,7 @@ type billResponseJSON struct {
 	SequentialInvoiceNumber  apijson.Field
 	StartDate                apijson.Field
 	StartDateTimeUtc         apijson.Field
+	StatementStale           apijson.Field
 	Status                   apijson.Field
 	Timezone                 apijson.Field
 	Version                  apijson.Field
@@ -583,11 +586,12 @@ const (
 	BillResponseLineItemsLineItemTypeOverageUsage              BillResponseLineItemsLineItemType = "OVERAGE_USAGE"
 	BillResponseLineItemsLineItemTypeBalanceConsumed           BillResponseLineItemsLineItemType = "BALANCE_CONSUMED"
 	BillResponseLineItemsLineItemTypeBalanceFee                BillResponseLineItemsLineItemType = "BALANCE_FEE"
+	BillResponseLineItemsLineItemTypeAdHoc                     BillResponseLineItemsLineItemType = "AD_HOC"
 )
 
 func (r BillResponseLineItemsLineItemType) IsKnown() bool {
 	switch r {
-	case BillResponseLineItemsLineItemTypeStandingCharge, BillResponseLineItemsLineItemTypeUsage, BillResponseLineItemsLineItemTypeCounterRunningTotalCharge, BillResponseLineItemsLineItemTypeCounterAdjustmentDebit, BillResponseLineItemsLineItemTypeCounterAdjustmentCredit, BillResponseLineItemsLineItemTypeUsageCredit, BillResponseLineItemsLineItemTypeMinimumSpend, BillResponseLineItemsLineItemTypeMinimumSpendRefund, BillResponseLineItemsLineItemTypeCreditDeduction, BillResponseLineItemsLineItemTypeManualAdjustment, BillResponseLineItemsLineItemTypeCreditMemo, BillResponseLineItemsLineItemTypeDebitMemo, BillResponseLineItemsLineItemTypeCommitmentConsumed, BillResponseLineItemsLineItemTypeCommitmentFee, BillResponseLineItemsLineItemTypeOverageSurcharge, BillResponseLineItemsLineItemTypeOverageUsage, BillResponseLineItemsLineItemTypeBalanceConsumed, BillResponseLineItemsLineItemTypeBalanceFee:
+	case BillResponseLineItemsLineItemTypeStandingCharge, BillResponseLineItemsLineItemTypeUsage, BillResponseLineItemsLineItemTypeCounterRunningTotalCharge, BillResponseLineItemsLineItemTypeCounterAdjustmentDebit, BillResponseLineItemsLineItemTypeCounterAdjustmentCredit, BillResponseLineItemsLineItemTypeUsageCredit, BillResponseLineItemsLineItemTypeMinimumSpend, BillResponseLineItemsLineItemTypeMinimumSpendRefund, BillResponseLineItemsLineItemTypeCreditDeduction, BillResponseLineItemsLineItemTypeManualAdjustment, BillResponseLineItemsLineItemTypeCreditMemo, BillResponseLineItemsLineItemTypeDebitMemo, BillResponseLineItemsLineItemTypeCommitmentConsumed, BillResponseLineItemsLineItemTypeCommitmentFee, BillResponseLineItemsLineItemTypeOverageSurcharge, BillResponseLineItemsLineItemTypeOverageUsage, BillResponseLineItemsLineItemTypeBalanceConsumed, BillResponseLineItemsLineItemTypeBalanceFee, BillResponseLineItemsLineItemTypeAdHoc:
 		return true
 	}
 	return false
@@ -735,6 +739,8 @@ type BillListParams struct {
 	// Only include Bills with bill dates equal to or later than this date.
 	BillDateStart    param.Field[string] `query:"billDateStart"`
 	BillingFrequency param.Field[string] `query:"billingFrequency"`
+	// List Bill entities by the bill job that last calculated them.
+	BillJobID param.Field[string] `query:"billJobId"`
 	// Exclude Line Items
 	ExcludeLineItems param.Field[bool] `query:"excludeLineItems"`
 	// Only include Bills with external invoice dates earlier than this date.

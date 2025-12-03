@@ -66,6 +66,7 @@ func TestBillListWithOptionalParams(t *testing.T) {
 		BillDateEnd:              m3ter.F("billDateEnd"),
 		BillDateStart:            m3ter.F("billDateStart"),
 		BillingFrequency:         m3ter.F("billingFrequency"),
+		BillJobID:                m3ter.F("billJobId"),
 		ExcludeLineItems:         m3ter.F(true),
 		ExternalInvoiceDateEnd:   m3ter.F("externalInvoiceDateEnd"),
 		ExternalInvoiceDateStart: m3ter.F("externalInvoiceDateStart"),
