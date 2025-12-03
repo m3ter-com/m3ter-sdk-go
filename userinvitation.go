@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewUserInvitationService(opts ...option.RequestOption) (r *UserInvitationSe
 //
 // This sends an email to someone inviting them to join your m3ter Organization.
 func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNewParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -58,7 +59,7 @@ func (r *UserInvitationService) New(ctx context.Context, params UserInvitationNe
 
 // Retrieve the specified invitation with the given UUID.
 func (r *UserInvitationService) Get(ctx context.Context, id string, query UserInvitationGetParams, opts ...option.RequestOption) (res *InvitationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -80,7 +81,7 @@ func (r *UserInvitationService) Get(ctx context.Context, id string, query UserIn
 // Retrieve a list of all invitations in the Organization.
 func (r *UserInvitationService) List(ctx context.Context, params UserInvitationListParams, opts ...option.RequestOption) (res *pagination.Cursor[InvitationResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -110,7 +111,7 @@ func (r *UserInvitationService) ListAutoPaging(ctx context.Context, params UserI
 }
 
 type InvitationResponse struct {
-	// The UUID of the invitation.
+	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// Boolean indicating whether the user has accepted the invitation.
 	//
@@ -137,8 +138,6 @@ type InvitationResponse struct {
 	// controls the access rights and privileges that this user will have when working
 	// in the m3ter Organization.
 	PermissionPolicyIDs []string `json:"permissionPolicyIds,required"`
-	// The version number. Default value when newly created is one.
-	Version int64 `json:"version,required"`
 	// The UUID of the user who created the invitation.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the invitation was created _(in ISO-8601 format)_.
@@ -146,8 +145,15 @@ type InvitationResponse struct {
 	// The DateTime when the invitation was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The UUID of the user who last modified the invitation.
-	LastModifiedBy string                 `json:"lastModifiedBy"`
-	JSON           invitationResponseJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                  `json:"version"`
+	JSON    invitationResponseJSON `json:"-"`
 }
 
 // invitationResponseJSON contains the JSON metadata for the struct
@@ -162,11 +168,11 @@ type invitationResponseJSON struct {
 	InvitingPrincipalID apijson.Field
 	LastName            apijson.Field
 	PermissionPolicyIDs apijson.Field
-	Version             apijson.Field
 	CreatedBy           apijson.Field
 	DtCreated           apijson.Field
 	DtLastModified      apijson.Field
 	LastModifiedBy      apijson.Field
+	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
 }

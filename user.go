@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -44,7 +45,7 @@ func NewUserService(opts ...option.RequestOption) (r *UserService) {
 // Retrieves detailed information for a specific user within an Organization, using
 // their unique identifier (UUID).
 func (r *UserService) Get(ctx context.Context, id string, query UserGetParams, opts ...option.RequestOption) (res *UserResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -69,7 +70,7 @@ func (r *UserService) Get(ctx context.Context, id string, query UserGetParams, o
 // unique identifier (UUID). Use this endpoint when you need to modify user
 // information such as their permission policy.
 func (r *UserService) Update(ctx context.Context, id string, params UserUpdateParams, opts ...option.RequestOption) (res *UserResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -95,7 +96,7 @@ func (r *UserService) Update(ctx context.Context, id string, params UserUpdatePa
 // paginated for easier management.
 func (r *UserService) List(ctx context.Context, params UserListParams, opts ...option.RequestOption) (res *pagination.Cursor[UserResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -133,7 +134,7 @@ func (r *UserService) ListAutoPaging(ctx context.Context, params UserListParams,
 // Retrieves a list of all permissions associated with a specific user in an
 // Organization using their UUID. The list can be paginated for easier management.
 func (r *UserService) GetPermissions(ctx context.Context, id string, params UserGetPermissionsParams, opts ...option.RequestOption) (res *PermissionPolicyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -178,7 +179,7 @@ func (r *UserService) GetPermissions(ctx context.Context, id string, params User
 //   - If `inherited = FALSE`, then only those User Resource Groups to which the
 //     user belongs are returned.
 func (r *UserService) GetUserGroups(ctx context.Context, id string, params UserGetUserGroupsParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -199,7 +200,7 @@ func (r *UserService) GetUserGroups(ctx context.Context, id string, params UserG
 
 // Retrieve information about the current user
 func (r *UserService) Me(ctx context.Context, query UserMeParams, opts ...option.RequestOption) (res *UserMeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -216,8 +217,8 @@ func (r *UserService) Me(ctx context.Context, query UserMeParams, opts ...option
 
 // Resend temporary password for user
 func (r *UserService) ResendPassword(ctx context.Context, id string, body UserResendPasswordParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -237,8 +238,8 @@ func (r *UserService) ResendPassword(ctx context.Context, id string, body UserRe
 }
 
 type UserResponse struct {
-	// The unique identifier (UUID) of this user.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.
@@ -448,7 +449,8 @@ func (r UserMeResponseOrganizationType) IsKnown() bool {
 }
 
 type UserMeResponseServiceUser struct {
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this service user.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the service user was created.
@@ -456,10 +458,16 @@ type UserMeResponseServiceUser struct {
 	// The DateTime when the service user was last modified.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The id of the user who last modified this service user.
-	LastModifiedBy string                        `json:"lastModifiedBy"`
-	Name           string                        `json:"name"`
-	Version        int64                         `json:"version"`
-	JSON           userMeResponseServiceUserJSON `json:"-"`
+	LastModifiedBy string `json:"lastModifiedBy"`
+	Name           string `json:"name"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                         `json:"version"`
+	JSON    userMeResponseServiceUserJSON `json:"-"`
 }
 
 // userMeResponseServiceUserJSON contains the JSON metadata for the struct
@@ -485,8 +493,8 @@ func (r userMeResponseServiceUserJSON) RawJSON() string {
 }
 
 type UserMeResponseUser struct {
-	// The unique identifier (UUID) of this user.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.

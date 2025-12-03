@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -40,11 +41,16 @@ func NewPricingService(opts ...option.RequestOption) (r *PricingService) {
 
 // Create a new Pricing.
 //
-// **Note:** Either `planId` or `planTemplateId` request parameters are required
-// for this call to be valid. If you omit both, then you will receive a validation
-// error.
+// **Notes:**
+//
+//   - Exactly one of `planId` or `planTemplateId` request parameters are required
+//     for this call to be valid. If you omit both, then you will receive a
+//     validation error.
+//   - Exactly one of `aggregationId` or `compoundAggregationId` request parameters
+//     are required for this call to be valid. If you omit both, then you will
+//     receive a validation error.
 func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -61,7 +67,7 @@ func (r *PricingService) New(ctx context.Context, params PricingNewParams, opts 
 
 // Retrieve the Pricing with the given UUID.
 func (r *PricingService) Get(ctx context.Context, id string, query PricingGetParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -82,11 +88,16 @@ func (r *PricingService) Get(ctx context.Context, id string, query PricingGetPar
 
 // Update Pricing for the given UUID.
 //
-// **Note:** Either `planId` or `planTemplateId` request parameters are required
-// for this call to be valid. If you omit both, then you will receive a validation
-// error.
+// **Notes:**
+//
+//   - Exactly one of `planId` or `planTemplateId` request parameters are required
+//     for this call to be valid. If you omit both, then you will receive a
+//     validation error.
+//   - Exactly one of `aggregationId` or `compoundAggregationId` request parameters
+//     are required for this call to be valid. If you omit both, then you will
+//     receive a validation error.
 func (r *PricingService) Update(ctx context.Context, id string, params PricingUpdateParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -109,7 +120,7 @@ func (r *PricingService) Update(ctx context.Context, id string, params PricingUp
 // Pricing ID.
 func (r *PricingService) List(ctx context.Context, params PricingListParams, opts ...option.RequestOption) (res *pagination.Cursor[PricingResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -141,7 +152,7 @@ func (r *PricingService) ListAutoPaging(ctx context.Context, params PricingListP
 
 // Delete the Pricing with the given UUID.
 func (r *PricingService) Delete(ctx context.Context, id string, body PricingDeleteParams, opts ...option.RequestOption) (res *PricingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -397,7 +408,19 @@ type PricingNewParams struct {
 	// Minimum spend description _(displayed on the bill line item)_.
 	MinimumSpendDescription param.Field[string] `json:"minimumSpendDescription"`
 	// Specify Prepayment/Balance overage pricing in pricing bands for the case of a
-	// **Tiered** pricing structure.
+	// **Tiered** pricing structure. The overage pricing rates will be used to charge
+	// for usage if the Account has a Commitment/Prepayment or Balance applied to it
+	// and the entire Commitment/Prepayment or Balance amount has been consumed.
+	//
+	// **Constraints:**
+	//
+	//   - Can only be used for a **Tiered** pricing structure. If cumulative is
+	//     **FALSE** and you defined `overagePricingBands`, then you'll receive an error.
+	//   - If `tiersSpanPlan` is set to **TRUE** for usage accumulates over entire
+	//     contract period, then cannot be used.
+	//   - If the Commitment/Prepayement or Balance has an `overageSurchargePercent`
+	//     defined, then this will override any `overagePricingBands` you've defined for
+	//     the pricing.
 	OveragePricingBands param.Field[[]shared.PricingBandParam] `json:"overagePricingBands"`
 	// UUID of the Plan the Pricing is created for.
 	PlanID param.Field[string] `json:"planId"`
@@ -542,7 +565,19 @@ type PricingUpdateParams struct {
 	// Minimum spend description _(displayed on the bill line item)_.
 	MinimumSpendDescription param.Field[string] `json:"minimumSpendDescription"`
 	// Specify Prepayment/Balance overage pricing in pricing bands for the case of a
-	// **Tiered** pricing structure.
+	// **Tiered** pricing structure. The overage pricing rates will be used to charge
+	// for usage if the Account has a Commitment/Prepayment or Balance applied to it
+	// and the entire Commitment/Prepayment or Balance amount has been consumed.
+	//
+	// **Constraints:**
+	//
+	//   - Can only be used for a **Tiered** pricing structure. If cumulative is
+	//     **FALSE** and you defined `overagePricingBands`, then you'll receive an error.
+	//   - If `tiersSpanPlan` is set to **TRUE** for usage accumulates over entire
+	//     contract period, then cannot be used.
+	//   - If the Commitment/Prepayement or Balance has an `overageSurchargePercent`
+	//     defined, then this will override any `overagePricingBands` you've defined for
+	//     the pricing.
 	OveragePricingBands param.Field[[]shared.PricingBandParam] `json:"overagePricingBands"`
 	// UUID of the Plan the Pricing is created for.
 	PlanID param.Field[string] `json:"planId"`

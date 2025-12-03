@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewCurrencyService(opts ...option.RequestOption) (r *CurrencyService) {
 //
 // Used to create a Currency that your Organization will start to use.
 func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,7 +60,7 @@ func (r *CurrencyService) New(ctx context.Context, params CurrencyNewParams, opt
 // Retrieve the specified Currency with the given UUID. Used to obtain the details
 // of a specified existing Currency in your Organization.
 func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -83,7 +84,7 @@ func (r *CurrencyService) Get(ctx context.Context, id string, query CurrencyGetP
 // Used to update the attributes of the specified Currency for the specified
 // Organization.
 func (r *CurrencyService) Update(ctx context.Context, id string, params CurrencyUpdateParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -109,7 +110,7 @@ func (r *CurrencyService) Update(ctx context.Context, id string, params Currency
 // Currencies based on Currency ID, and short codes.
 func (r *CurrencyService) List(ctx context.Context, params CurrencyListParams, opts ...option.RequestOption) (res *pagination.Cursor[CurrencyResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -147,7 +148,7 @@ func (r *CurrencyService) ListAutoPaging(ctx context.Context, params CurrencyLis
 // Used to remove an existing Currency from your Organization that is no longer
 // required.
 func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDeleteParams, opts ...option.RequestOption) (res *CurrencyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

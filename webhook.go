@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewWebhookService(opts ...option.RequestOption) (r *WebhookService) {
 // This endpoint creates a new webhook destination. A webhook destination is a URL
 // where webhook payloads will be sent.
 func (r *WebhookService) New(ctx context.Context, params WebhookNewParams, opts ...option.RequestOption) (res *Webhook, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -57,7 +58,7 @@ func (r *WebhookService) New(ctx context.Context, params WebhookNewParams, opts 
 
 // Retrieve the webhook Destination for the UUID.
 func (r *WebhookService) Get(ctx context.Context, id string, query WebhookGetParams, opts ...option.RequestOption) (res *Webhook, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -78,7 +79,7 @@ func (r *WebhookService) Get(ctx context.Context, id string, query WebhookGetPar
 
 // Update a destination to be used for a webhook.
 func (r *WebhookService) Update(ctx context.Context, id string, params WebhookUpdateParams, opts ...option.RequestOption) (res *Webhook, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -100,7 +101,7 @@ func (r *WebhookService) Update(ctx context.Context, id string, params WebhookUp
 // Retrieve a list of all Destinations created in the Organization.
 func (r *WebhookService) List(ctx context.Context, params WebhookListParams, opts ...option.RequestOption) (res *pagination.Cursor[Webhook], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -131,7 +132,7 @@ func (r *WebhookService) ListAutoPaging(ctx context.Context, params WebhookListP
 
 // This endpoint deletes a specific webhook destination identified by its UUID.
 func (r *WebhookService) Delete(ctx context.Context, id string, body WebhookDeleteParams, opts ...option.RequestOption) (res *Webhook, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -156,7 +157,7 @@ func (r *WebhookService) Delete(ctx context.Context, id string, body WebhookDele
 // It toggles the `active` status of the specific wehbook destination with the
 // given ID.
 func (r *WebhookService) SetActive(ctx context.Context, id string, params WebhookSetActiveParams, opts ...option.RequestOption) (res *Webhook, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

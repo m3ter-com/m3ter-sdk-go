@@ -32,11 +32,12 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Balances.New(context.TODO(), m3ter.BalanceNewParams{
 		AccountID:                       m3ter.F("x"),
+		Code:                            m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		Currency:                        m3ter.F("x"),
 		EndDate:                         m3ter.F(time.Now()),
+		Name:                            m3ter.F("x"),
 		StartDate:                       m3ter.F(time.Now()),
 		BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
-		Code:                            m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		ContractID:                      m3ter.F("contractId"),
 		CustomFields: m3ter.F(map[string]m3ter.BalanceNewParamsCustomFieldsUnion{
@@ -45,7 +46,6 @@ func TestBalanceNewWithOptionalParams(t *testing.T) {
 		Description:             m3ter.F("description"),
 		FeesAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 		LineItemTypes:           m3ter.F([]m3ter.BalanceNewParamsLineItemType{m3ter.BalanceNewParamsLineItemTypeStandingCharge}),
-		Name:                    m3ter.F("name"),
 		OverageDescription:      m3ter.F("overageDescription"),
 		OverageSurchargePercent: m3ter.F(0.000000),
 		ProductIDs:              m3ter.F([]string{"string"}),
@@ -111,11 +111,12 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		m3ter.BalanceUpdateParams{
 			AccountID:                       m3ter.F("x"),
+			Code:                            m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			Currency:                        m3ter.F("x"),
 			EndDate:                         m3ter.F(time.Now()),
+			Name:                            m3ter.F("x"),
 			StartDate:                       m3ter.F(time.Now()),
 			BalanceDrawDownDescription:      m3ter.F("balanceDrawDownDescription"),
-			Code:                            m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			ConsumptionsAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			ContractID:                      m3ter.F("contractId"),
 			CustomFields: m3ter.F(map[string]m3ter.BalanceUpdateParamsCustomFieldsUnion{
@@ -124,7 +125,6 @@ func TestBalanceUpdateWithOptionalParams(t *testing.T) {
 			Description:             m3ter.F("description"),
 			FeesAccountingProductID: m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
 			LineItemTypes:           m3ter.F([]m3ter.BalanceUpdateParamsLineItemType{m3ter.BalanceUpdateParamsLineItemTypeStandingCharge}),
-			Name:                    m3ter.F("name"),
 			OverageDescription:      m3ter.F("overageDescription"),
 			OverageSurchargePercent: m3ter.F(0.000000),
 			ProductIDs:              m3ter.F([]string{"string"}),
@@ -160,8 +160,10 @@ func TestBalanceListWithOptionalParams(t *testing.T) {
 	_, err := client.Balances.List(context.TODO(), m3ter.BalanceListParams{
 		AccountID:    m3ter.F("accountId"),
 		Contract:     m3ter.F("contract"),
+		ContractID:   m3ter.F("contractId"),
 		EndDateEnd:   m3ter.F("endDateEnd"),
 		EndDateStart: m3ter.F("endDateStart"),
+		IDs:          m3ter.F([]string{"string"}),
 		NextToken:    m3ter.F("nextToken"),
 		PageSize:     m3ter.F(int64(1)),
 	})

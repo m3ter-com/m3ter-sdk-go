@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -54,7 +55,7 @@ func NewBalanceTransactionService(opts ...option.RequestOption) (r *BalanceTrans
 // you might add a Transaction amount of 200 USD to a Balance on a customer Account
 // where the customer actually paid you 50 units in virtual currency X.
 func (r *BalanceTransactionService) New(ctx context.Context, balanceID string, params BalanceTransactionNewParams, opts ...option.RequestOption) (res *TransactionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -80,7 +81,7 @@ func (r *BalanceTransactionService) New(ctx context.Context, balanceID string, p
 // `nextToken` parameters.
 func (r *BalanceTransactionService) List(ctx context.Context, balanceID string, params BalanceTransactionListParams, opts ...option.RequestOption) (res *pagination.Cursor[TransactionResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -141,7 +142,7 @@ func (r *BalanceTransactionService) ListAutoPaging(ctx context.Context, balanceI
 //     Balance end date is reached or the available Balance amount reaches zero,
 //     after which it will be unchanged.
 func (r *BalanceTransactionService) Summary(ctx context.Context, balanceID string, query BalanceTransactionSummaryParams, opts ...option.RequestOption) (res *BalanceTransactionSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

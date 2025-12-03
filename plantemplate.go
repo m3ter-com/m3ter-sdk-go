@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -46,7 +47,7 @@ func NewPlanTemplateService(opts ...option.RequestOption) (r *PlanTemplateServic
 // identified by its unique UUID. The request body should contain the necessary
 // information for the new PlanTemplate.
 func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,7 +67,7 @@ func (r *PlanTemplateService) New(ctx context.Context, params PlanTemplateNewPar
 // This endpoint allows you to retrieve a specific PlanTemplate within a specific
 // Organization, both identified by their unique identifiers (UUIDs).
 func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemplateGetParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -96,7 +97,7 @@ func (r *PlanTemplateService) Get(ctx context.Context, id string, query PlanTemp
 // preserve those Custom Fields. If you omit them from the update request, they
 // will be lost.
 func (r *PlanTemplateService) Update(ctx context.Context, id string, params PlanTemplateUpdateParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -122,7 +123,7 @@ func (r *PlanTemplateService) Update(ctx context.Context, id string, params Plan
 // list by PlanTemplate IDs or Product IDs for more focused retrieval.
 func (r *PlanTemplateService) List(ctx context.Context, params PlanTemplateListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanTemplateResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -160,7 +161,7 @@ func (r *PlanTemplateService) ListAutoPaging(ctx context.Context, params PlanTem
 // This endpoint enables you to delete a specific PlanTemplate within a specific
 // Organization, both identified by their unique identifiers (UUIDs).
 func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTemplateDeleteParams, opts ...option.RequestOption) (res *PlanTemplateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

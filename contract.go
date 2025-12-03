@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewContractService(opts ...option.RequestOption) (r *ContractService) {
 // Creates a new Contract for the specified Account. The Contract includes
 // information such as the associated Account along with start and end dates.
 func (r *ContractService) New(ctx context.Context, params ContractNewParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *ContractService) New(ctx context.Context, params ContractNewParams, opt
 // Retrieves the Contract with the given UUID. Used to obtain the details of a
 // Contract.
 func (r *ContractService) Get(ctx context.Context, id string, query ContractGetParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -92,7 +93,7 @@ func (r *ContractService) Get(ctx context.Context, id string, query ContractGetP
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
 func (r *ContractService) Update(ctx context.Context, id string, params ContractUpdateParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -116,7 +117,7 @@ func (r *ContractService) Update(ctx context.Context, id string, params Contract
 // Contract IDs or short codes.
 func (r *ContractService) List(ctx context.Context, params ContractListParams, opts ...option.RequestOption) (res *pagination.Cursor[ContractResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -153,7 +154,7 @@ func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractLis
 // **Note:** This call will fail if there are any AccountPlans or Commitments that
 // have been added to the Contract.
 func (r *ContractService) Delete(ctx context.Context, id string, body ContractDeleteParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -186,7 +187,7 @@ func (r *ContractService) Delete(ctx context.Context, id string, body ContractDe
 //   - When you successfully end-date billing entities, the version number of each
 //     entity is incremented.
 func (r *ContractService) EndDateBillingEntities(ctx context.Context, id string, params ContractEndDateBillingEntitiesParams, opts ...option.RequestOption) (res *ContractEndDateBillingEntitiesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -209,8 +210,9 @@ type ContractResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
-	AccountID       string `json:"accountId"`
-	BillGroupingKey string `json:"billGroupingKey"`
+	AccountID                 string `json:"accountId"`
+	ApplyContractPeriodLimits bool   `json:"applyContractPeriodLimits"`
+	BillGroupingKeyID         string `json:"billGroupingKeyId"`
 	// The short code of the Contract.
 	Code string `json:"code"`
 	// The unique identifier (UUID) of the user who created this Contract.
@@ -243,7 +245,8 @@ type ContractResponse struct {
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate time.Time `json:"startDate" format:"date"`
+	StartDate    time.Time                     `json:"startDate" format:"date"`
+	UsageFilters []ContractResponseUsageFilter `json:"usageFilters"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
@@ -257,23 +260,25 @@ type ContractResponse struct {
 // contractResponseJSON contains the JSON metadata for the struct
 // [ContractResponse]
 type contractResponseJSON struct {
-	ID                  apijson.Field
-	AccountID           apijson.Field
-	BillGroupingKey     apijson.Field
-	Code                apijson.Field
-	CreatedBy           apijson.Field
-	CustomFields        apijson.Field
-	Description         apijson.Field
-	DtCreated           apijson.Field
-	DtLastModified      apijson.Field
-	EndDate             apijson.Field
-	LastModifiedBy      apijson.Field
-	Name                apijson.Field
-	PurchaseOrderNumber apijson.Field
-	StartDate           apijson.Field
-	Version             apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
+	ID                        apijson.Field
+	AccountID                 apijson.Field
+	ApplyContractPeriodLimits apijson.Field
+	BillGroupingKeyID         apijson.Field
+	Code                      apijson.Field
+	CreatedBy                 apijson.Field
+	CustomFields              apijson.Field
+	Description               apijson.Field
+	DtCreated                 apijson.Field
+	DtLastModified            apijson.Field
+	EndDate                   apijson.Field
+	LastModifiedBy            apijson.Field
+	Name                      apijson.Field
+	PurchaseOrderNumber       apijson.Field
+	StartDate                 apijson.Field
+	UsageFilters              apijson.Field
+	Version                   apijson.Field
+	raw                       string
+	ExtraFields               map[string]apijson.Field
 }
 
 func (r *ContractResponse) UnmarshalJSON(data []byte) (err error) {
@@ -302,6 +307,47 @@ func init() {
 			Type:       reflect.TypeOf(shared.UnionFloat(0)),
 		},
 	)
+}
+
+// Filters that determine which usage records are included in contract billing
+type ContractResponseUsageFilter struct {
+	DimensionCode string                           `json:"dimensionCode,required"`
+	Mode          ContractResponseUsageFiltersMode `json:"mode,required"`
+	Value         string                           `json:"value,required"`
+	JSON          contractResponseUsageFilterJSON  `json:"-"`
+}
+
+// contractResponseUsageFilterJSON contains the JSON metadata for the struct
+// [ContractResponseUsageFilter]
+type contractResponseUsageFilterJSON struct {
+	DimensionCode apijson.Field
+	Mode          apijson.Field
+	Value         apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ContractResponseUsageFilter) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r contractResponseUsageFilterJSON) RawJSON() string {
+	return r.raw
+}
+
+type ContractResponseUsageFiltersMode string
+
+const (
+	ContractResponseUsageFiltersModeInclude ContractResponseUsageFiltersMode = "INCLUDE"
+	ContractResponseUsageFiltersModeExclude ContractResponseUsageFiltersMode = "EXCLUDE"
+)
+
+func (r ContractResponseUsageFiltersMode) IsKnown() bool {
+	switch r {
+	case ContractResponseUsageFiltersModeInclude, ContractResponseUsageFiltersModeExclude:
+		return true
+	}
+	return false
 }
 
 type ContractEndDateBillingEntitiesResponse struct {
@@ -408,7 +454,9 @@ type ContractNewParams struct {
 	Name param.Field[string] `json:"name,required"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate                 param.Field[time.Time] `json:"startDate,required" format:"date"`
+	ApplyContractPeriodLimits param.Field[bool]      `json:"applyContractPeriodLimits"`
+	BillGroupingKeyID         param.Field[string]    `json:"billGroupingKeyId"`
 	// The short code of the Contract.
 	Code param.Field[string] `json:"code"`
 	// User defined fields enabling you to attach custom data. The value for a custom
@@ -425,7 +473,8 @@ type ContractNewParams struct {
 	// The description of the Contract, which provides context and information.
 	Description param.Field[string] `json:"description"`
 	// The Purchase Order Number associated with the Contract.
-	PurchaseOrderNumber param.Field[string] `json:"purchaseOrderNumber"`
+	PurchaseOrderNumber param.Field[string]                         `json:"purchaseOrderNumber"`
+	UsageFilters        param.Field[[]ContractNewParamsUsageFilter] `json:"usageFilters"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -446,6 +495,32 @@ type ContractNewParamsCustomFieldsUnion interface {
 	ImplementsContractNewParamsCustomFieldsUnion()
 }
 
+// Filters that determine which usage records are included in contract billing
+type ContractNewParamsUsageFilter struct {
+	DimensionCode param.Field[string]                            `json:"dimensionCode,required"`
+	Mode          param.Field[ContractNewParamsUsageFiltersMode] `json:"mode,required"`
+	Value         param.Field[string]                            `json:"value,required"`
+}
+
+func (r ContractNewParamsUsageFilter) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractNewParamsUsageFiltersMode string
+
+const (
+	ContractNewParamsUsageFiltersModeInclude ContractNewParamsUsageFiltersMode = "INCLUDE"
+	ContractNewParamsUsageFiltersModeExclude ContractNewParamsUsageFiltersMode = "EXCLUDE"
+)
+
+func (r ContractNewParamsUsageFiltersMode) IsKnown() bool {
+	switch r {
+	case ContractNewParamsUsageFiltersModeInclude, ContractNewParamsUsageFiltersModeExclude:
+		return true
+	}
+	return false
+}
+
 type ContractGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
@@ -463,7 +538,9 @@ type ContractUpdateParams struct {
 	Name param.Field[string] `json:"name,required"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate                 param.Field[time.Time] `json:"startDate,required" format:"date"`
+	ApplyContractPeriodLimits param.Field[bool]      `json:"applyContractPeriodLimits"`
+	BillGroupingKeyID         param.Field[string]    `json:"billGroupingKeyId"`
 	// The short code of the Contract.
 	Code param.Field[string] `json:"code"`
 	// User defined fields enabling you to attach custom data. The value for a custom
@@ -480,7 +557,8 @@ type ContractUpdateParams struct {
 	// The description of the Contract, which provides context and information.
 	Description param.Field[string] `json:"description"`
 	// The Purchase Order Number associated with the Contract.
-	PurchaseOrderNumber param.Field[string] `json:"purchaseOrderNumber"`
+	PurchaseOrderNumber param.Field[string]                            `json:"purchaseOrderNumber"`
+	UsageFilters        param.Field[[]ContractUpdateParamsUsageFilter] `json:"usageFilters"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -499,6 +577,32 @@ func (r ContractUpdateParams) MarshalJSON() (data []byte, err error) {
 // Satisfied by [shared.UnionString], [shared.UnionFloat].
 type ContractUpdateParamsCustomFieldsUnion interface {
 	ImplementsContractUpdateParamsCustomFieldsUnion()
+}
+
+// Filters that determine which usage records are included in contract billing
+type ContractUpdateParamsUsageFilter struct {
+	DimensionCode param.Field[string]                               `json:"dimensionCode,required"`
+	Mode          param.Field[ContractUpdateParamsUsageFiltersMode] `json:"mode,required"`
+	Value         param.Field[string]                               `json:"value,required"`
+}
+
+func (r ContractUpdateParamsUsageFilter) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ContractUpdateParamsUsageFiltersMode string
+
+const (
+	ContractUpdateParamsUsageFiltersModeInclude ContractUpdateParamsUsageFiltersMode = "INCLUDE"
+	ContractUpdateParamsUsageFiltersModeExclude ContractUpdateParamsUsageFiltersMode = "EXCLUDE"
+)
+
+func (r ContractUpdateParamsUsageFiltersMode) IsKnown() bool {
+	switch r {
+	case ContractUpdateParamsUsageFiltersModeInclude, ContractUpdateParamsUsageFiltersModeExclude:
+		return true
+	}
+	return false
 }
 
 type ContractListParams struct {

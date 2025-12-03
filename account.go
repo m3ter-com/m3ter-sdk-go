@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountService(opts ...option.RequestOption) (r *AccountService) {
 
 // Create a new Account within the Organization.
 func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,7 +60,7 @@ func (r *AccountService) New(ctx context.Context, params AccountNewParams, opts 
 
 // Retrieve the Account with the given Account UUID.
 func (r *AccountService) Get(ctx context.Context, id string, query AccountGetParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -85,7 +86,7 @@ func (r *AccountService) Get(ctx context.Context, id string, query AccountGetPar
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
 func (r *AccountService) Update(ctx context.Context, id string, params AccountUpdateParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -107,7 +108,7 @@ func (r *AccountService) Update(ctx context.Context, id string, params AccountUp
 // Retrieve a list of Accounts that can be filtered by Account ID or Account Code.
 func (r *AccountService) List(ctx context.Context, params AccountListParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -139,7 +140,7 @@ func (r *AccountService) ListAutoPaging(ctx context.Context, params AccountListP
 // Delete the Account with the given UUID. This may fail if there are any
 // AccountPlans that reference the Account being deleted.
 func (r *AccountService) Delete(ctx context.Context, id string, body AccountDeleteParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -165,7 +166,7 @@ func (r *AccountService) Delete(ctx context.Context, id string, body AccountDele
 //   - When you successfully end-date billing entities, the version number of each
 //     entity is incremented.
 func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, params AccountEndDateBillingEntitiesParams, opts ...option.RequestOption) (res *AccountEndDateBillingEntitiesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -185,8 +186,8 @@ func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, 
 }
 
 // Retrieve a list of Accounts that are children of the specified Account.
-func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *AccountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *AccountGetChildrenResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -212,7 +213,7 @@ func (r *AccountService) GetChildren(ctx context.Context, id string, params Acco
 // conditions and sorting. The returned list of Accounts can be paginated for
 // easier management.
 func (r *AccountService) Search(ctx context.Context, params AccountSearchParams, opts ...option.RequestOption) (res *AccountSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -559,6 +560,29 @@ func (r *AccountEndDateBillingEntitiesResponseUpdatedEntities) UnmarshalJSON(dat
 }
 
 func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountGetChildrenResponse struct {
+	Data      []AccountResponse              `json:"data"`
+	NextToken string                         `json:"nextToken"`
+	JSON      accountGetChildrenResponseJSON `json:"-"`
+}
+
+// accountGetChildrenResponseJSON contains the JSON metadata for the struct
+// [AccountGetChildrenResponse]
+type accountGetChildrenResponseJSON struct {
+	Data        apijson.Field
+	NextToken   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGetChildrenResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGetChildrenResponseJSON) RawJSON() string {
 	return r.raw
 }
 

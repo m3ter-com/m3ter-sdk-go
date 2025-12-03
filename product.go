@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewProductService(opts ...option.RequestOption) (r *ProductService) {
 // This endpoint creates a new Product within the specified Organization. The
 // details of the Product are provided in the request body.
 func (r *ProductService) New(ctx context.Context, params ProductNewParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -65,7 +66,7 @@ func (r *ProductService) New(ctx context.Context, params ProductNewParams, opts 
 // This endpoint retrieves the details of a specific Product within a specified
 // Organization, using the Product UUID.
 func (r *ProductService) Get(ctx context.Context, id string, query ProductGetParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -95,7 +96,7 @@ func (r *ProductService) Get(ctx context.Context, id string, query ProductGetPar
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
 func (r *ProductService) Update(ctx context.Context, id string, params ProductUpdateParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -121,7 +122,7 @@ func (r *ProductService) Update(ctx context.Context, id string, params ProductUp
 // Product IDs.
 func (r *ProductService) List(ctx context.Context, params ProductListParams, opts ...option.RequestOption) (res *pagination.Cursor[ProductResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -159,7 +160,7 @@ func (r *ProductService) ListAutoPaging(ctx context.Context, params ProductListP
 // This endpoint deletes a specific Product within a specified Organization, using
 // the Product UUID.
 func (r *ProductService) Delete(ctx context.Context, id string, body ProductDeleteParams, opts ...option.RequestOption) (res *ProductResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

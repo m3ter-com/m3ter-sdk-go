@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewScheduledEventConfigurationService(opts ...option.RequestOption) (r *Sch
 
 // Create a new ScheduledEventConfiguration.
 func (r *ScheduledEventConfigurationService) New(ctx context.Context, params ScheduledEventConfigurationNewParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -56,7 +57,7 @@ func (r *ScheduledEventConfigurationService) New(ctx context.Context, params Sch
 
 // Retrieve a ScheduledEventConfiguration for the given UUID.
 func (r *ScheduledEventConfigurationService) Get(ctx context.Context, id string, query ScheduledEventConfigurationGetParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -77,7 +78,7 @@ func (r *ScheduledEventConfigurationService) Get(ctx context.Context, id string,
 
 // Update a ScheduledEventConfiguration for the given UUID.
 func (r *ScheduledEventConfigurationService) Update(ctx context.Context, id string, params ScheduledEventConfigurationUpdateParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -99,7 +100,7 @@ func (r *ScheduledEventConfigurationService) Update(ctx context.Context, id stri
 // Retrieve a list of ScheduledEventConfiguration entities
 func (r *ScheduledEventConfigurationService) List(ctx context.Context, params ScheduledEventConfigurationListParams, opts ...option.RequestOption) (res *pagination.Cursor[ScheduledEventConfigurationResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -130,7 +131,7 @@ func (r *ScheduledEventConfigurationService) ListAutoPaging(ctx context.Context,
 
 // Delete the ScheduledEventConfiguration for the given UUID.
 func (r *ScheduledEventConfigurationService) Delete(ctx context.Context, id string, body ScheduledEventConfigurationDeleteParams, opts ...option.RequestOption) (res *ScheduledEventConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

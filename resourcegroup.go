@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewResourceGroupService(opts ...option.RequestOption) (r *ResourceGroupServ
 
 // Create a ResourceGroup for the UUID
 func (r *ResourceGroupService) New(ctx context.Context, type_ string, params ResourceGroupNewParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -60,7 +61,7 @@ func (r *ResourceGroupService) New(ctx context.Context, type_ string, params Res
 
 // Retrieve the ResourceGroup for the UUID
 func (r *ResourceGroupService) Get(ctx context.Context, type_ string, id string, query ResourceGroupGetParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -85,7 +86,7 @@ func (r *ResourceGroupService) Get(ctx context.Context, type_ string, id string,
 
 // Update the ResourceGroup for the UUID
 func (r *ResourceGroupService) Update(ctx context.Context, type_ string, id string, params ResourceGroupUpdateParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -111,7 +112,7 @@ func (r *ResourceGroupService) Update(ctx context.Context, type_ string, id stri
 // Retrieve a list of ResourceGroup entities
 func (r *ResourceGroupService) List(ctx context.Context, type_ string, params ResourceGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[ResourceGroupResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -146,7 +147,7 @@ func (r *ResourceGroupService) ListAutoPaging(ctx context.Context, type_ string,
 
 // Delete a ResourceGroup for the UUID
 func (r *ResourceGroupService) Delete(ctx context.Context, type_ string, id string, body ResourceGroupDeleteParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -171,7 +172,7 @@ func (r *ResourceGroupService) Delete(ctx context.Context, type_ string, id stri
 
 // Add an item to a ResourceGroup.
 func (r *ResourceGroupService) AddResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupAddResourceParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -197,7 +198,7 @@ func (r *ResourceGroupService) AddResource(ctx context.Context, type_ string, re
 // Retrieve a list of items for a ResourceGroup
 func (r *ResourceGroupService) ListContents(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListContentsParams, opts ...option.RequestOption) (res *pagination.Cursor[ResourceGroupListContentsResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -237,7 +238,7 @@ func (r *ResourceGroupService) ListContentsAutoPaging(ctx context.Context, type_
 // Retrieve a list of permission policies for a ResourceGroup
 func (r *ResourceGroupService) ListPermissions(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupListPermissionsParams, opts ...option.RequestOption) (res *pagination.Cursor[PermissionPolicyResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -276,7 +277,7 @@ func (r *ResourceGroupService) ListPermissionsAutoPaging(ctx context.Context, ty
 
 // Remove an item from a ResourceGroup.
 func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string, resourceGroupID string, params ResourceGroupRemoveResourceParams, opts ...option.RequestOption) (res *ResourceGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -300,8 +301,8 @@ func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string,
 }
 
 type ResourceGroupResponse struct {
-	// The unique identifier (UUID) of the Resource Group.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The unique identifier (UUID) of the user who created this Resource Group.
 	CreatedBy string `json:"createdBy"`
 	// The date and time _(in ISO-8601 format)_ when the Resource Group was created.
@@ -313,7 +314,12 @@ type ResourceGroupResponse struct {
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The name of the Resource Group.
 	Name string `json:"name"`
-	// The version number. Default value when newly created is one.
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
 	Version int64                     `json:"version"`
 	JSON    resourceGroupResponseJSON `json:"-"`
 }

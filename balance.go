@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -47,7 +48,7 @@ func NewBalanceService(opts ...option.RequestOption) (r *BalanceService) {
 // This endpoint allows you to create a new Balance for a specific end customer
 // Account. The Balance details should be provided in the request body.
 func (r *BalanceService) New(ctx context.Context, params BalanceNewParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,7 +67,7 @@ func (r *BalanceService) New(ctx context.Context, params BalanceNewParams, opts 
 //
 // This endpoint returns the details of the specified Balance.
 func (r *BalanceService) Get(ctx context.Context, id string, query BalanceGetParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -90,7 +91,7 @@ func (r *BalanceService) Get(ctx context.Context, id string, query BalanceGetPar
 // This endpoint allows you to update the details of a specific Balance. The
 // updated Balance details should be provided in the request body.
 func (r *BalanceService) Update(ctx context.Context, id string, params BalanceUpdateParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -120,7 +121,7 @@ func (r *BalanceService) Update(ctx context.Context, id string, params BalanceUp
 // as the end date for the Balance.
 func (r *BalanceService) List(ctx context.Context, params BalanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[Balance], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -161,7 +162,7 @@ func (r *BalanceService) ListAutoPaging(ctx context.Context, params BalanceListP
 //
 // This endpoint allows you to delete a specific Balance with the given UUID.
 func (r *BalanceService) Delete(ctx context.Context, id string, body BalanceDeleteParams, opts ...option.RequestOption) (res *Balance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -192,9 +193,13 @@ type Balance struct {
 	// Balance.
 	BalanceDrawDownDescription string `json:"balanceDrawDownDescription"`
 	// A unique short code assigned to the Balance.
-	Code                            string `json:"code"`
+	Code string `json:"code"`
+	// Product ID that any Balance Consumed line items will be attributed to for
+	// accounting purposes.(_Optional_)
 	ConsumptionsAccountingProductID string `json:"consumptionsAccountingProductId"`
-	ContractID                      string `json:"contractId"`
+	// The unique identifier (UUID) for a Contract on the Account the Balance has been
+	// added to.
+	ContractID string `json:"contractId"`
 	// The unique identifier (UUID) for the user who created the Balance.
 	CreatedBy string `json:"createdBy"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
@@ -218,8 +223,10 @@ type Balance struct {
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be
 	// active.
-	EndDate                 time.Time `json:"endDate" format:"date-time"`
-	FeesAccountingProductID string    `json:"feesAccountingProductId"`
+	EndDate time.Time `json:"endDate" format:"date-time"`
+	// Product ID that any Balance Fees line items will be attributed to for accounting
+	// purposes.(_Optional_)
+	FeesAccountingProductID string `json:"feesAccountingProductId"`
 	// The unique identifier (UUID) for the user who last modified the Balance.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// A list of line item charge types that can draw-down against the Balance amount
@@ -338,6 +345,8 @@ type BalanceNewParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account.
 	AccountID param.Field[string] `json:"accountId,required"`
+	// Unique short code for the Balance.
+	Code param.Field[string] `json:"code,required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
 	Currency param.Field[string] `json:"currency,required"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be active
@@ -347,17 +356,19 @@ type BalanceNewParams struct {
 	// extended grace period for continued draw-down against the Balance if any amount
 	// remains when the specified `endDate` is reached.
 	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	// The official name for the Balance.
+	Name param.Field[string] `json:"name,required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
 	// A description for the bill line items for draw-down charges against the Balance.
 	// _(Optional)._
 	BalanceDrawDownDescription param.Field[string] `json:"balanceDrawDownDescription"`
-	// Unique short code for the Balance.
-	Code param.Field[string] `json:"code"`
-	// Optional Product ID this Balance Consumptions should be attributed to for
-	// accounting purposes
+	// Product ID that any Balance Consumed line items will be attributed to for
+	// accounting purposes.(_Optional_)
 	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
-	ContractID                      param.Field[string] `json:"contractId"`
+	// The unique identifier (UUID) of a Contract on the Account that the Balance will
+	// be added to.
+	ContractID param.Field[string] `json:"contractId"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -371,8 +382,8 @@ type BalanceNewParams struct {
 	CustomFields param.Field[map[string]BalanceNewParamsCustomFieldsUnion] `json:"customFields"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
-	// Optional Product ID this Balance Fees should be attributed to for accounting
-	// purposes
+	// Product ID that any Balance Fees line items will be attributed to for accounting
+	// purposes.(_Optional_)
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Balance amount. Options are:
@@ -382,12 +393,11 @@ type BalanceNewParams struct {
 	// - `"USAGE"`
 	// - `"COUNTER_RUNNING_TOTAL_CHARGE"`
 	// - `"COUNTER_ADJUSTMENT_DEBIT"`
+	// - `AD_HOC`
 	//
 	// **NOTE:** If no charge types are specified, by default _all types_ can draw-down
 	// against the Balance amount at billing.
 	LineItemTypes param.Field[[]BalanceNewParamsLineItemType] `json:"lineItemTypes"`
-	// The official name for the Balance.
-	Name param.Field[string] `json:"name"`
 	// A description for Bill line items overage charges.
 	OverageDescription param.Field[string] `json:"overageDescription"`
 	// Define a surcharge level, as a percentage of regular usage rating, applied to
@@ -475,6 +485,8 @@ type BalanceUpdateParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) for the end customer Account.
 	AccountID param.Field[string] `json:"accountId,required"`
+	// Unique short code for the Balance.
+	Code param.Field[string] `json:"code,required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
 	Currency param.Field[string] `json:"currency,required"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be active
@@ -484,17 +496,19 @@ type BalanceUpdateParams struct {
 	// extended grace period for continued draw-down against the Balance if any amount
 	// remains when the specified `endDate` is reached.
 	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	// The official name for the Balance.
+	Name param.Field[string] `json:"name,required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
 	// A description for the bill line items for draw-down charges against the Balance.
 	// _(Optional)._
 	BalanceDrawDownDescription param.Field[string] `json:"balanceDrawDownDescription"`
-	// Unique short code for the Balance.
-	Code param.Field[string] `json:"code"`
-	// Optional Product ID this Balance Consumptions should be attributed to for
-	// accounting purposes
+	// Product ID that any Balance Consumed line items will be attributed to for
+	// accounting purposes.(_Optional_)
 	ConsumptionsAccountingProductID param.Field[string] `json:"consumptionsAccountingProductId"`
-	ContractID                      param.Field[string] `json:"contractId"`
+	// The unique identifier (UUID) of a Contract on the Account that the Balance will
+	// be added to.
+	ContractID param.Field[string] `json:"contractId"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -508,8 +522,8 @@ type BalanceUpdateParams struct {
 	CustomFields param.Field[map[string]BalanceUpdateParamsCustomFieldsUnion] `json:"customFields"`
 	// A description of the Balance.
 	Description param.Field[string] `json:"description"`
-	// Optional Product ID this Balance Fees should be attributed to for accounting
-	// purposes
+	// Product ID that any Balance Fees line items will be attributed to for accounting
+	// purposes.(_Optional_)
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Balance amount. Options are:
@@ -519,12 +533,11 @@ type BalanceUpdateParams struct {
 	// - `"USAGE"`
 	// - `"COUNTER_RUNNING_TOTAL_CHARGE"`
 	// - `"COUNTER_ADJUSTMENT_DEBIT"`
+	// - `AD_HOC`
 	//
 	// **NOTE:** If no charge types are specified, by default _all types_ can draw-down
 	// against the Balance amount at billing.
 	LineItemTypes param.Field[[]BalanceUpdateParamsLineItemType] `json:"lineItemTypes"`
-	// The official name for the Balance.
-	Name param.Field[string] `json:"name"`
 	// A description for Bill line items overage charges.
 	OverageDescription param.Field[string] `json:"overageDescription"`
 	// Define a surcharge level, as a percentage of regular usage rating, applied to
@@ -608,6 +621,9 @@ type BalanceListParams struct {
 	// The unique identifier (UUID) for the end customer's account.
 	AccountID param.Field[string] `query:"accountId"`
 	Contract  param.Field[string] `query:"contract"`
+	// Filter Balances by contract id. Use ” with accountId to fetch unlinked
+	// balances.
+	ContractID param.Field[string] `query:"contractId"`
 	// Only include Balances with end dates earlier than this date. If a Balance has a
 	// rollover amount configured, then the `rolloverEndDate` will be used as the end
 	// date.
@@ -616,6 +632,8 @@ type BalanceListParams struct {
 	// Balance has a rollover amount configured, then the `rolloverEndDate` will be
 	// used as the end date.
 	EndDateStart param.Field[string] `query:"endDateStart"`
+	// A list of unique identifiers (UUIDs) for specific Balances to retrieve.
+	IDs param.Field[[]string] `query:"ids"`
 	// The `nextToken` for retrieving the next page of Balances. It is used to fetch
 	// the next page of Balances in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`

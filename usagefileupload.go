@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
@@ -51,7 +52,7 @@ func NewUsageFileUploadService(opts ...option.RequestOption) (r *UsageFileUpload
 //
 // Part of the file upload service for submitting measurements data files.
 func (r *UsageFileUploadService) GenerateUploadURL(ctx context.Context, params UsageFileUploadGenerateUploadURLParams, opts ...option.RequestOption) (res *UsageFileUploadGenerateUploadURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

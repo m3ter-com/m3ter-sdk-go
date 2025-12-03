@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewCustomFieldService(opts ...option.RequestOption) (r *CustomFieldService)
 // Retrieve all Custom Fields added at Organizational level for the entities that
 // support them.
 func (r *CustomFieldService) Get(ctx context.Context, query CustomFieldGetParams, opts ...option.RequestOption) (res *CustomFieldsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -57,7 +58,7 @@ func (r *CustomFieldService) Get(ctx context.Context, query CustomFieldGetParams
 
 // Update Custom Fields added at Organization level to entities that support them.
 func (r *CustomFieldService) Update(ctx context.Context, params CustomFieldUpdateParams, opts ...option.RequestOption) (res *CustomFieldsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

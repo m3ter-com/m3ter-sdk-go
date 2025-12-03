@@ -5,6 +5,7 @@ package m3ter
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
@@ -33,7 +34,7 @@ func NewAuthenticationService(opts ...option.RequestOption) (r *AuthenticationSe
 
 // Get authentication token
 func (r *AuthenticationService) GetBearerToken(ctx context.Context, body AuthenticationGetBearerTokenParams, opts ...option.RequestOption) (res *AuthenticationGetBearerTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "oauth/token"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

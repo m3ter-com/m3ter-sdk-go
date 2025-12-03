@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewBillDebitLineItemService(opts ...option.RequestOption) (r *BillDebitLine
 // When creating Debit line items for Bills, use the Debit Reasons created for your
 // Organization. See [DebitReason](https://www.m3ter.com/docs/api#tag/DebitReason).
 func (r *BillDebitLineItemService) New(ctx context.Context, billID string, params BillDebitLineItemNewParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *BillDebitLineItemService) New(ctx context.Context, billID string, param
 
 // Retrieve the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id string, query BillDebitLineItemGetParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -88,7 +89,7 @@ func (r *BillDebitLineItemService) Get(ctx context.Context, billID string, id st
 
 // Update the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id string, params BillDebitLineItemUpdateParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -114,7 +115,7 @@ func (r *BillDebitLineItemService) Update(ctx context.Context, billID string, id
 // List the Debit line items for the given bill.
 func (r *BillDebitLineItemService) List(ctx context.Context, billID string, params BillDebitLineItemListParams, opts ...option.RequestOption) (res *pagination.Cursor[DebitLineItemResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -149,7 +150,7 @@ func (r *BillDebitLineItemService) ListAutoPaging(ctx context.Context, billID st
 
 // Delete the Debit line item with the given UUID.
 func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id string, body BillDebitLineItemDeleteParams, opts ...option.RequestOption) (res *DebitLineItemResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -174,33 +175,25 @@ func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id
 
 type DebitLineItemResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
-	// The amount for the line item.
-	Amount float64 `json:"amount,required"`
-	// The description of the line item.
-	Description string `json:"description,required"`
-	// The UUID of the Product.
-	ProductID string `json:"productId,required"`
-	// The UUID of the bill for the line item.
-	ReferencedBillID string `json:"referencedBillId,required"`
-	// The UUID of the line item.
-	ReferencedLineItemID string `json:"referencedLineItemId,required"`
-	// The service period end date in ISO-8601 format. _(exclusive of the ending
-	// date)_.
-	ServicePeriodEndDate time.Time `json:"servicePeriodEndDate,required" format:"date-time"`
-	// The service period start date in ISO-8601 format. _(inclusive of the starting
-	// date)_.
-	ServicePeriodStartDate time.Time `json:"servicePeriodStartDate,required" format:"date-time"`
-	// The id of the user who created this debit line item.
+	ID     string  `json:"id,required"`
+	Amount float64 `json:"amount"`
+	// The ID of the user who created this line item.
 	CreatedBy string `json:"createdBy"`
 	// The UUID of the debit reason for this debit line item.
 	DebitReasonID string `json:"debitReasonId"`
-	// The DateTime when the debit line item was created _(in ISO-8601 format)_.
+	Description   string `json:"description"`
+	// The DateTime when the line item was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
-	// The DateTime when the debit line item was last modified _(in ISO-8601 format)_.
+	// The DateTime when the line item was last modified.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
-	// The id of the user who last modified this debit line item.
-	LastModifiedBy string `json:"lastModifiedBy"`
+	// The ID of the user who last modified this line item.
+	LastModifiedBy         string                            `json:"lastModifiedBy"`
+	LineItemType           DebitLineItemResponseLineItemType `json:"lineItemType"`
+	ProductID              string                            `json:"productId"`
+	ReferencedBillID       string                            `json:"referencedBillId"`
+	ReferencedLineItemID   string                            `json:"referencedLineItemId"`
+	ServicePeriodEndDate   time.Time                         `json:"servicePeriodEndDate" format:"date-time"`
+	ServicePeriodStartDate time.Time                         `json:"servicePeriodStartDate" format:"date-time"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
@@ -216,17 +209,18 @@ type DebitLineItemResponse struct {
 type debitLineItemResponseJSON struct {
 	ID                     apijson.Field
 	Amount                 apijson.Field
+	CreatedBy              apijson.Field
+	DebitReasonID          apijson.Field
 	Description            apijson.Field
+	DtCreated              apijson.Field
+	DtLastModified         apijson.Field
+	LastModifiedBy         apijson.Field
+	LineItemType           apijson.Field
 	ProductID              apijson.Field
 	ReferencedBillID       apijson.Field
 	ReferencedLineItemID   apijson.Field
 	ServicePeriodEndDate   apijson.Field
 	ServicePeriodStartDate apijson.Field
-	CreatedBy              apijson.Field
-	DebitReasonID          apijson.Field
-	DtCreated              apijson.Field
-	DtLastModified         apijson.Field
-	LastModifiedBy         apijson.Field
 	Version                apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
@@ -238,6 +232,38 @@ func (r *DebitLineItemResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r debitLineItemResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type DebitLineItemResponseLineItemType string
+
+const (
+	DebitLineItemResponseLineItemTypeStandingCharge            DebitLineItemResponseLineItemType = "STANDING_CHARGE"
+	DebitLineItemResponseLineItemTypeUsage                     DebitLineItemResponseLineItemType = "USAGE"
+	DebitLineItemResponseLineItemTypeCounterRunningTotalCharge DebitLineItemResponseLineItemType = "COUNTER_RUNNING_TOTAL_CHARGE"
+	DebitLineItemResponseLineItemTypeCounterAdjustmentDebit    DebitLineItemResponseLineItemType = "COUNTER_ADJUSTMENT_DEBIT"
+	DebitLineItemResponseLineItemTypeCounterAdjustmentCredit   DebitLineItemResponseLineItemType = "COUNTER_ADJUSTMENT_CREDIT"
+	DebitLineItemResponseLineItemTypeUsageCredit               DebitLineItemResponseLineItemType = "USAGE_CREDIT"
+	DebitLineItemResponseLineItemTypeMinimumSpend              DebitLineItemResponseLineItemType = "MINIMUM_SPEND"
+	DebitLineItemResponseLineItemTypeMinimumSpendRefund        DebitLineItemResponseLineItemType = "MINIMUM_SPEND_REFUND"
+	DebitLineItemResponseLineItemTypeCreditDeduction           DebitLineItemResponseLineItemType = "CREDIT_DEDUCTION"
+	DebitLineItemResponseLineItemTypeManualAdjustment          DebitLineItemResponseLineItemType = "MANUAL_ADJUSTMENT"
+	DebitLineItemResponseLineItemTypeCreditMemo                DebitLineItemResponseLineItemType = "CREDIT_MEMO"
+	DebitLineItemResponseLineItemTypeDebitMemo                 DebitLineItemResponseLineItemType = "DEBIT_MEMO"
+	DebitLineItemResponseLineItemTypeCommitmentConsumed        DebitLineItemResponseLineItemType = "COMMITMENT_CONSUMED"
+	DebitLineItemResponseLineItemTypeCommitmentFee             DebitLineItemResponseLineItemType = "COMMITMENT_FEE"
+	DebitLineItemResponseLineItemTypeOverageSurcharge          DebitLineItemResponseLineItemType = "OVERAGE_SURCHARGE"
+	DebitLineItemResponseLineItemTypeOverageUsage              DebitLineItemResponseLineItemType = "OVERAGE_USAGE"
+	DebitLineItemResponseLineItemTypeBalanceConsumed           DebitLineItemResponseLineItemType = "BALANCE_CONSUMED"
+	DebitLineItemResponseLineItemTypeBalanceFee                DebitLineItemResponseLineItemType = "BALANCE_FEE"
+	DebitLineItemResponseLineItemTypeAdHoc                     DebitLineItemResponseLineItemType = "AD_HOC"
+)
+
+func (r DebitLineItemResponseLineItemType) IsKnown() bool {
+	switch r {
+	case DebitLineItemResponseLineItemTypeStandingCharge, DebitLineItemResponseLineItemTypeUsage, DebitLineItemResponseLineItemTypeCounterRunningTotalCharge, DebitLineItemResponseLineItemTypeCounterAdjustmentDebit, DebitLineItemResponseLineItemTypeCounterAdjustmentCredit, DebitLineItemResponseLineItemTypeUsageCredit, DebitLineItemResponseLineItemTypeMinimumSpend, DebitLineItemResponseLineItemTypeMinimumSpendRefund, DebitLineItemResponseLineItemTypeCreditDeduction, DebitLineItemResponseLineItemTypeManualAdjustment, DebitLineItemResponseLineItemTypeCreditMemo, DebitLineItemResponseLineItemTypeDebitMemo, DebitLineItemResponseLineItemTypeCommitmentConsumed, DebitLineItemResponseLineItemTypeCommitmentFee, DebitLineItemResponseLineItemTypeOverageSurcharge, DebitLineItemResponseLineItemTypeOverageUsage, DebitLineItemResponseLineItemTypeBalanceConsumed, DebitLineItemResponseLineItemTypeBalanceFee, DebitLineItemResponseLineItemTypeAdHoc:
+		return true
+	}
+	return false
 }
 
 type BillDebitLineItemNewParams struct {
@@ -259,6 +285,7 @@ type BillDebitLineItemNewParams struct {
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
 	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The ID of the Debit Reason given for this debit line item.
 	DebitReasonID param.Field[string]                                 `json:"debitReasonId"`
 	LineItemType  param.Field[BillDebitLineItemNewParamsLineItemType] `json:"lineItemType"`
@@ -300,11 +327,12 @@ const (
 	BillDebitLineItemNewParamsLineItemTypeOverageUsage              BillDebitLineItemNewParamsLineItemType = "OVERAGE_USAGE"
 	BillDebitLineItemNewParamsLineItemTypeBalanceConsumed           BillDebitLineItemNewParamsLineItemType = "BALANCE_CONSUMED"
 	BillDebitLineItemNewParamsLineItemTypeBalanceFee                BillDebitLineItemNewParamsLineItemType = "BALANCE_FEE"
+	BillDebitLineItemNewParamsLineItemTypeAdHoc                     BillDebitLineItemNewParamsLineItemType = "AD_HOC"
 )
 
 func (r BillDebitLineItemNewParamsLineItemType) IsKnown() bool {
 	switch r {
-	case BillDebitLineItemNewParamsLineItemTypeStandingCharge, BillDebitLineItemNewParamsLineItemTypeUsage, BillDebitLineItemNewParamsLineItemTypeCounterRunningTotalCharge, BillDebitLineItemNewParamsLineItemTypeCounterAdjustmentDebit, BillDebitLineItemNewParamsLineItemTypeCounterAdjustmentCredit, BillDebitLineItemNewParamsLineItemTypeUsageCredit, BillDebitLineItemNewParamsLineItemTypeMinimumSpend, BillDebitLineItemNewParamsLineItemTypeMinimumSpendRefund, BillDebitLineItemNewParamsLineItemTypeCreditDeduction, BillDebitLineItemNewParamsLineItemTypeManualAdjustment, BillDebitLineItemNewParamsLineItemTypeCreditMemo, BillDebitLineItemNewParamsLineItemTypeDebitMemo, BillDebitLineItemNewParamsLineItemTypeCommitmentConsumed, BillDebitLineItemNewParamsLineItemTypeCommitmentFee, BillDebitLineItemNewParamsLineItemTypeOverageSurcharge, BillDebitLineItemNewParamsLineItemTypeOverageUsage, BillDebitLineItemNewParamsLineItemTypeBalanceConsumed, BillDebitLineItemNewParamsLineItemTypeBalanceFee:
+	case BillDebitLineItemNewParamsLineItemTypeStandingCharge, BillDebitLineItemNewParamsLineItemTypeUsage, BillDebitLineItemNewParamsLineItemTypeCounterRunningTotalCharge, BillDebitLineItemNewParamsLineItemTypeCounterAdjustmentDebit, BillDebitLineItemNewParamsLineItemTypeCounterAdjustmentCredit, BillDebitLineItemNewParamsLineItemTypeUsageCredit, BillDebitLineItemNewParamsLineItemTypeMinimumSpend, BillDebitLineItemNewParamsLineItemTypeMinimumSpendRefund, BillDebitLineItemNewParamsLineItemTypeCreditDeduction, BillDebitLineItemNewParamsLineItemTypeManualAdjustment, BillDebitLineItemNewParamsLineItemTypeCreditMemo, BillDebitLineItemNewParamsLineItemTypeDebitMemo, BillDebitLineItemNewParamsLineItemTypeCommitmentConsumed, BillDebitLineItemNewParamsLineItemTypeCommitmentFee, BillDebitLineItemNewParamsLineItemTypeOverageSurcharge, BillDebitLineItemNewParamsLineItemTypeOverageUsage, BillDebitLineItemNewParamsLineItemTypeBalanceConsumed, BillDebitLineItemNewParamsLineItemTypeBalanceFee, BillDebitLineItemNewParamsLineItemTypeAdHoc:
 		return true
 	}
 	return false
@@ -334,6 +362,7 @@ type BillDebitLineItemUpdateParams struct {
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
 	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The ID of the Debit Reason given for this debit line item.
 	DebitReasonID param.Field[string]                                    `json:"debitReasonId"`
 	LineItemType  param.Field[BillDebitLineItemUpdateParamsLineItemType] `json:"lineItemType"`
@@ -375,11 +404,12 @@ const (
 	BillDebitLineItemUpdateParamsLineItemTypeOverageUsage              BillDebitLineItemUpdateParamsLineItemType = "OVERAGE_USAGE"
 	BillDebitLineItemUpdateParamsLineItemTypeBalanceConsumed           BillDebitLineItemUpdateParamsLineItemType = "BALANCE_CONSUMED"
 	BillDebitLineItemUpdateParamsLineItemTypeBalanceFee                BillDebitLineItemUpdateParamsLineItemType = "BALANCE_FEE"
+	BillDebitLineItemUpdateParamsLineItemTypeAdHoc                     BillDebitLineItemUpdateParamsLineItemType = "AD_HOC"
 )
 
 func (r BillDebitLineItemUpdateParamsLineItemType) IsKnown() bool {
 	switch r {
-	case BillDebitLineItemUpdateParamsLineItemTypeStandingCharge, BillDebitLineItemUpdateParamsLineItemTypeUsage, BillDebitLineItemUpdateParamsLineItemTypeCounterRunningTotalCharge, BillDebitLineItemUpdateParamsLineItemTypeCounterAdjustmentDebit, BillDebitLineItemUpdateParamsLineItemTypeCounterAdjustmentCredit, BillDebitLineItemUpdateParamsLineItemTypeUsageCredit, BillDebitLineItemUpdateParamsLineItemTypeMinimumSpend, BillDebitLineItemUpdateParamsLineItemTypeMinimumSpendRefund, BillDebitLineItemUpdateParamsLineItemTypeCreditDeduction, BillDebitLineItemUpdateParamsLineItemTypeManualAdjustment, BillDebitLineItemUpdateParamsLineItemTypeCreditMemo, BillDebitLineItemUpdateParamsLineItemTypeDebitMemo, BillDebitLineItemUpdateParamsLineItemTypeCommitmentConsumed, BillDebitLineItemUpdateParamsLineItemTypeCommitmentFee, BillDebitLineItemUpdateParamsLineItemTypeOverageSurcharge, BillDebitLineItemUpdateParamsLineItemTypeOverageUsage, BillDebitLineItemUpdateParamsLineItemTypeBalanceConsumed, BillDebitLineItemUpdateParamsLineItemTypeBalanceFee:
+	case BillDebitLineItemUpdateParamsLineItemTypeStandingCharge, BillDebitLineItemUpdateParamsLineItemTypeUsage, BillDebitLineItemUpdateParamsLineItemTypeCounterRunningTotalCharge, BillDebitLineItemUpdateParamsLineItemTypeCounterAdjustmentDebit, BillDebitLineItemUpdateParamsLineItemTypeCounterAdjustmentCredit, BillDebitLineItemUpdateParamsLineItemTypeUsageCredit, BillDebitLineItemUpdateParamsLineItemTypeMinimumSpend, BillDebitLineItemUpdateParamsLineItemTypeMinimumSpendRefund, BillDebitLineItemUpdateParamsLineItemTypeCreditDeduction, BillDebitLineItemUpdateParamsLineItemTypeManualAdjustment, BillDebitLineItemUpdateParamsLineItemTypeCreditMemo, BillDebitLineItemUpdateParamsLineItemTypeDebitMemo, BillDebitLineItemUpdateParamsLineItemTypeCommitmentConsumed, BillDebitLineItemUpdateParamsLineItemTypeCommitmentFee, BillDebitLineItemUpdateParamsLineItemTypeOverageSurcharge, BillDebitLineItemUpdateParamsLineItemTypeOverageUsage, BillDebitLineItemUpdateParamsLineItemTypeBalanceConsumed, BillDebitLineItemUpdateParamsLineItemTypeBalanceFee, BillDebitLineItemUpdateParamsLineItemTypeAdHoc:
 		return true
 	}
 	return false

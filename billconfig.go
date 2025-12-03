@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -36,7 +37,7 @@ func NewBillConfigService(opts ...option.RequestOption) (r *BillConfigService) {
 
 // Retrieve the Organization-wide BillConfig.
 func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -57,7 +58,7 @@ func (r *BillConfigService) Get(ctx context.Context, query BillConfigGetParams, 
 // with a service period end date on or before the set date will be locked and
 // cannot be updated or recalculated.
 func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateParams, opts ...option.RequestOption) (res *BillConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -73,9 +74,8 @@ func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateP
 }
 
 type BillConfigResponse struct {
-	// The Organization UUID. The Organization represents your company as a direct
-	// customer of the m3ter service.
-	ID string `json:"id"`
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The global lock date _(in ISO 8601 format)_ when all Bills will be locked.
 	//
 	// For example: `"2024-03-01"`.
@@ -90,8 +90,10 @@ type BillConfigResponse struct {
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The version number:
 	//
-	// - Default value when newly created is one.
-	// - Incremented by 1 each time it is updated.
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
 	Version int64                  `json:"version"`
 	JSON    billConfigResponseJSON `json:"-"`
 }

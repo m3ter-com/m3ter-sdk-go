@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -72,7 +73,7 @@ func NewStatementStatementJobService(opts ...option.RequestOption) (r *Statement
 //     [Working with Bill Statements](https://www.m3ter.com/docs/guides/billing-and-usage-data/running-viewing-and-managing-bills/working-with-bill-statements)
 //     in our user Documentation.
 func (r *StatementStatementJobService) New(ctx context.Context, params StatementStatementJobNewParams, opts ...option.RequestOption) (res *StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -101,7 +102,7 @@ func (r *StatementStatementJobService) New(ctx context.Context, params Statement
 // [Working with Bill Statements](https://www.m3ter.com/docs/guides/billing-and-usage-data/running-viewing-and-managing-bills/working-with-bill-statements)
 // in our user Documentation.
 func (r *StatementStatementJobService) Get(ctx context.Context, id string, query StatementStatementJobGetParams, opts ...option.RequestOption) (res *StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -138,7 +139,7 @@ func (r *StatementStatementJobService) Get(ctx context.Context, id string, query
 //     the same call, then a 400 Bad Request is returned with an error message.
 func (r *StatementStatementJobService) List(ctx context.Context, params StatementStatementJobListParams, opts ...option.RequestOption) (res *pagination.Cursor[StatementJobResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -188,7 +189,7 @@ func (r *StatementStatementJobService) ListAutoPaging(ctx context.Context, param
 // its UUID. This operation may be useful if you need to stop a StatementJob due to
 // unforeseen issues or changes.
 func (r *StatementStatementJobService) Cancel(ctx context.Context, id string, body StatementStatementJobCancelParams, opts ...option.RequestOption) (res *StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -242,7 +243,7 @@ func (r *StatementStatementJobService) Cancel(ctx context.Context, id string, bo
 //     [Working with Bill Statements](https://www.m3ter.com/docs/guides/billing-and-usage-data/running-viewing-and-managing-bills/working-with-bill-statements)
 //     in our user Documentation.
 func (r *StatementStatementJobService) NewBatch(ctx context.Context, params StatementStatementJobNewBatchParams, opts ...option.RequestOption) (res *[]StatementJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -263,7 +264,8 @@ type StatementJobResponse struct {
 	// The unique identifier (UUID) of the bill associated with the StatementJob.
 	BillID string `json:"billId"`
 	// The unique identifier (UUID) of the user who created this StatementJob.
-	CreatedBy string `json:"createdBy"`
+	CreatedBy          string                                 `json:"createdBy"`
+	CsvStatementStatus StatementJobResponseCsvStatementStatus `json:"csvStatementStatus"`
 	// The date and time _(in ISO-8601 format)_ when the StatementJob was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the StatementJob was last
@@ -274,15 +276,17 @@ type StatementJobResponse struct {
 	//
 	// - TRUE - includes the statement in CSV format.
 	// - FALSE - no CSV format statement.
-	IncludeCsvFormat bool `json:"includeCsvFormat"`
+	IncludeCsvFormat    bool                                    `json:"includeCsvFormat"`
+	JsonStatementStatus StatementJobResponseJsonStatementStatus `json:"jsonStatementStatus"`
 	// The unique identifier (UUID) of the user who last modified this StatementJob.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The unique identifier (UUID) of your Organization. The Organization represents
 	// your company as a direct customer of our service.
-	OrgID string `json:"orgId"`
+	OrgID                    string `json:"orgId"`
+	PresignedCsvStatementURL string `json:"presignedCsvStatementUrl"`
 	// The URL to access the generated statement in JSON format. This URL is temporary
 	// and has a limited lifetime.
-	PresignedJsonStatementURL string `json:"presignedJsonStatementUrl" format:"url"`
+	PresignedJsonStatementURL string `json:"presignedJsonStatementUrl"`
 	// The current status of the StatementJob. The status helps track the progress and
 	// outcome of a StatementJob.
 	StatementJobStatus StatementJobResponseStatementJobStatus `json:"statementJobStatus"`
@@ -302,11 +306,14 @@ type statementJobResponseJSON struct {
 	ID                        apijson.Field
 	BillID                    apijson.Field
 	CreatedBy                 apijson.Field
+	CsvStatementStatus        apijson.Field
 	DtCreated                 apijson.Field
 	DtLastModified            apijson.Field
 	IncludeCsvFormat          apijson.Field
+	JsonStatementStatus       apijson.Field
 	LastModifiedBy            apijson.Field
 	OrgID                     apijson.Field
+	PresignedCsvStatementURL  apijson.Field
 	PresignedJsonStatementURL apijson.Field
 	StatementJobStatus        apijson.Field
 	Version                   apijson.Field
@@ -320,6 +327,38 @@ func (r *StatementJobResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r statementJobResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type StatementJobResponseCsvStatementStatus string
+
+const (
+	StatementJobResponseCsvStatementStatusLatest      StatementJobResponseCsvStatementStatus = "LATEST"
+	StatementJobResponseCsvStatementStatusStale       StatementJobResponseCsvStatementStatus = "STALE"
+	StatementJobResponseCsvStatementStatusInvalidated StatementJobResponseCsvStatementStatus = "INVALIDATED"
+)
+
+func (r StatementJobResponseCsvStatementStatus) IsKnown() bool {
+	switch r {
+	case StatementJobResponseCsvStatementStatusLatest, StatementJobResponseCsvStatementStatusStale, StatementJobResponseCsvStatementStatusInvalidated:
+		return true
+	}
+	return false
+}
+
+type StatementJobResponseJsonStatementStatus string
+
+const (
+	StatementJobResponseJsonStatementStatusLatest      StatementJobResponseJsonStatementStatus = "LATEST"
+	StatementJobResponseJsonStatementStatusStale       StatementJobResponseJsonStatementStatus = "STALE"
+	StatementJobResponseJsonStatementStatusInvalidated StatementJobResponseJsonStatementStatus = "INVALIDATED"
+)
+
+func (r StatementJobResponseJsonStatementStatus) IsKnown() bool {
+	switch r {
+	case StatementJobResponseJsonStatementStatusLatest, StatementJobResponseJsonStatementStatusStale, StatementJobResponseJsonStatementStatusInvalidated:
+		return true
+	}
+	return false
 }
 
 // The current status of the StatementJob. The status helps track the progress and

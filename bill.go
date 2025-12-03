@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -49,7 +50,7 @@ func NewBillService(opts ...option.RequestOption) (r *BillService) {
 // This endpoint retrieves the Bill with the given unique identifier (UUID) and
 // specific Organization.
 func (r *BillService) Get(ctx context.Context, id string, params BillGetParams, opts ...option.RequestOption) (res *BillResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -76,7 +77,7 @@ func (r *BillService) Get(ctx context.Context, id string, params BillGetParams, 
 // management.
 func (r *BillService) List(ctx context.Context, params BillListParams, opts ...option.RequestOption) (res *pagination.Cursor[BillResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -118,7 +119,7 @@ func (r *BillService) ListAutoPaging(ctx context.Context, params BillListParams,
 // Where end-customer invoices for Bills have been sent to customers, Bills should
 // not be deleted to ensure you have an audit trail of how the invoice was created.
 func (r *BillService) Delete(ctx context.Context, id string, body BillDeleteParams, opts ...option.RequestOption) (res *BillResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -154,7 +155,7 @@ func (r *BillService) Delete(ctx context.Context, id string, body BillDeletePara
 // **Important!** If you use the `billIds` Request Body Schema parameter, any Query
 // parameters you might have also used are ignored when the call is processed.
 func (r *BillService) Approve(ctx context.Context, params BillApproveParams, opts ...option.RequestOption) (res *BillApproveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -175,7 +176,7 @@ func (r *BillService) Approve(ctx context.Context, params BillApproveParams, opt
 // Organization. It facilitates tracking of the most recent charges and consumption
 // details.
 func (r *BillService) LatestByAccount(ctx context.Context, accountID string, params BillLatestByAccountParams, opts ...option.RequestOption) (res *BillResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -202,7 +203,7 @@ func (r *BillService) LatestByAccount(ctx context.Context, accountID string, par
 // [Approve Bills](https://www.m3ter.com/docs/api#tag/Bill/operation/ApproveBills)
 // call to approve a Bill before you can lock it.
 func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, opts ...option.RequestOption) (res *BillResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -228,7 +229,7 @@ func (r *BillService) Lock(ctx context.Context, id string, body BillLockParams, 
 // conditions and sorting. The returned list of Bills can be paginated for easier
 // management.
 func (r *BillService) Search(ctx context.Context, params BillSearchParams, opts ...option.RequestOption) (res *BillSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -248,7 +249,7 @@ func (r *BillService) Search(ctx context.Context, params BillSearchParams, opts 
 // This endpoint allows you to transition a Bill's status through various stages,
 // such as from "Pending" to "Approved".
 func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUpdateStatusParams, opts ...option.RequestOption) (res *BillResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -341,11 +342,13 @@ type BillResponse struct {
 	// **NOTE:** If you have not defined a `billPrefix` for your Organization, a
 	// `sequentialInvoiceNumber` is not returned in the response. See
 	// [Update OrganizationConfig](https://www.m3ter.com/docs/api#tag/OrganizationConfig/operation/UpdateOrganizationConfig)
-	SequentialInvoiceNumber string             `json:"sequentialInvoiceNumber"`
-	StartDate               time.Time          `json:"startDate" format:"date"`
-	StartDateTimeUtc        time.Time          `json:"startDateTimeUTC" format:"date-time"`
-	Status                  BillResponseStatus `json:"status"`
-	Timezone                string             `json:"timezone"`
+	SequentialInvoiceNumber string    `json:"sequentialInvoiceNumber"`
+	StartDate               time.Time `json:"startDate" format:"date"`
+	StartDateTimeUtc        time.Time `json:"startDateTimeUTC" format:"date-time"`
+	// True if the existing bill statement (JSON or CSV) is marked as stale/outdated.
+	StatementStale bool               `json:"statementStale"`
+	Status         BillResponseStatus `json:"status"`
+	Timezone       string             `json:"timezone"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
@@ -391,6 +394,7 @@ type billResponseJSON struct {
 	SequentialInvoiceNumber  apijson.Field
 	StartDate                apijson.Field
 	StartDateTimeUtc         apijson.Field
+	StatementStale           apijson.Field
 	Status                   apijson.Field
 	Timezone                 apijson.Field
 	Version                  apijson.Field
@@ -582,11 +586,12 @@ const (
 	BillResponseLineItemsLineItemTypeOverageUsage              BillResponseLineItemsLineItemType = "OVERAGE_USAGE"
 	BillResponseLineItemsLineItemTypeBalanceConsumed           BillResponseLineItemsLineItemType = "BALANCE_CONSUMED"
 	BillResponseLineItemsLineItemTypeBalanceFee                BillResponseLineItemsLineItemType = "BALANCE_FEE"
+	BillResponseLineItemsLineItemTypeAdHoc                     BillResponseLineItemsLineItemType = "AD_HOC"
 )
 
 func (r BillResponseLineItemsLineItemType) IsKnown() bool {
 	switch r {
-	case BillResponseLineItemsLineItemTypeStandingCharge, BillResponseLineItemsLineItemTypeUsage, BillResponseLineItemsLineItemTypeCounterRunningTotalCharge, BillResponseLineItemsLineItemTypeCounterAdjustmentDebit, BillResponseLineItemsLineItemTypeCounterAdjustmentCredit, BillResponseLineItemsLineItemTypeUsageCredit, BillResponseLineItemsLineItemTypeMinimumSpend, BillResponseLineItemsLineItemTypeMinimumSpendRefund, BillResponseLineItemsLineItemTypeCreditDeduction, BillResponseLineItemsLineItemTypeManualAdjustment, BillResponseLineItemsLineItemTypeCreditMemo, BillResponseLineItemsLineItemTypeDebitMemo, BillResponseLineItemsLineItemTypeCommitmentConsumed, BillResponseLineItemsLineItemTypeCommitmentFee, BillResponseLineItemsLineItemTypeOverageSurcharge, BillResponseLineItemsLineItemTypeOverageUsage, BillResponseLineItemsLineItemTypeBalanceConsumed, BillResponseLineItemsLineItemTypeBalanceFee:
+	case BillResponseLineItemsLineItemTypeStandingCharge, BillResponseLineItemsLineItemTypeUsage, BillResponseLineItemsLineItemTypeCounterRunningTotalCharge, BillResponseLineItemsLineItemTypeCounterAdjustmentDebit, BillResponseLineItemsLineItemTypeCounterAdjustmentCredit, BillResponseLineItemsLineItemTypeUsageCredit, BillResponseLineItemsLineItemTypeMinimumSpend, BillResponseLineItemsLineItemTypeMinimumSpendRefund, BillResponseLineItemsLineItemTypeCreditDeduction, BillResponseLineItemsLineItemTypeManualAdjustment, BillResponseLineItemsLineItemTypeCreditMemo, BillResponseLineItemsLineItemTypeDebitMemo, BillResponseLineItemsLineItemTypeCommitmentConsumed, BillResponseLineItemsLineItemTypeCommitmentFee, BillResponseLineItemsLineItemTypeOverageSurcharge, BillResponseLineItemsLineItemTypeOverageUsage, BillResponseLineItemsLineItemTypeBalanceConsumed, BillResponseLineItemsLineItemTypeBalanceFee, BillResponseLineItemsLineItemTypeAdHoc:
 		return true
 	}
 	return false
@@ -734,6 +739,8 @@ type BillListParams struct {
 	// Only include Bills with bill dates equal to or later than this date.
 	BillDateStart    param.Field[string] `query:"billDateStart"`
 	BillingFrequency param.Field[string] `query:"billingFrequency"`
+	// List Bill entities by the bill job that last calculated them.
+	BillJobID param.Field[string] `query:"billJobId"`
 	// Exclude Line Items
 	ExcludeLineItems param.Field[bool] `query:"excludeLineItems"`
 	// Only include Bills with external invoice dates earlier than this date.

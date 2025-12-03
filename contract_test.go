@@ -31,17 +31,24 @@ func TestContractNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Contracts.New(context.TODO(), m3ter.ContractNewParams{
-		AccountID: m3ter.F("x"),
-		EndDate:   m3ter.F(time.Now()),
-		Name:      m3ter.F("x"),
-		StartDate: m3ter.F(time.Now()),
-		Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
+		AccountID:                 m3ter.F("x"),
+		EndDate:                   m3ter.F(time.Now()),
+		Name:                      m3ter.F("x"),
+		StartDate:                 m3ter.F(time.Now()),
+		ApplyContractPeriodLimits: m3ter.F(true),
+		BillGroupingKeyID:         m3ter.F("billGroupingKeyId"),
+		Code:                      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 		CustomFields: m3ter.F(map[string]m3ter.ContractNewParamsCustomFieldsUnion{
 			"foo": shared.UnionString("string"),
 		}),
 		Description:         m3ter.F("description"),
 		PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-		Version:             m3ter.F(int64(0)),
+		UsageFilters: m3ter.F([]m3ter.ContractNewParamsUsageFilter{{
+			DimensionCode: m3ter.F("x"),
+			Mode:          m3ter.F(m3ter.ContractNewParamsUsageFiltersModeInclude),
+			Value:         m3ter.F("x"),
+		}}),
+		Version: m3ter.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -100,17 +107,24 @@ func TestContractUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.ContractUpdateParams{
-			AccountID: m3ter.F("x"),
-			EndDate:   m3ter.F(time.Now()),
-			Name:      m3ter.F("x"),
-			StartDate: m3ter.F(time.Now()),
-			Code:      m3ter.F("S?oC\"$]C] ]]]]]5]"),
+			AccountID:                 m3ter.F("x"),
+			EndDate:                   m3ter.F(time.Now()),
+			Name:                      m3ter.F("x"),
+			StartDate:                 m3ter.F(time.Now()),
+			ApplyContractPeriodLimits: m3ter.F(true),
+			BillGroupingKeyID:         m3ter.F("billGroupingKeyId"),
+			Code:                      m3ter.F("S?oC\"$]C] ]]]]]5]"),
 			CustomFields: m3ter.F(map[string]m3ter.ContractUpdateParamsCustomFieldsUnion{
 				"foo": shared.UnionString("string"),
 			}),
 			Description:         m3ter.F("description"),
 			PurchaseOrderNumber: m3ter.F("purchaseOrderNumber"),
-			Version:             m3ter.F(int64(0)),
+			UsageFilters: m3ter.F([]m3ter.ContractUpdateParamsUsageFilter{{
+				DimensionCode: m3ter.F("x"),
+				Mode:          m3ter.F(m3ter.ContractUpdateParamsUsageFiltersModeInclude),
+				Value:         m3ter.F("x"),
+			}}),
+			Version: m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -92,7 +93,7 @@ func NewDataExportService(opts ...option.RequestOption) (r *DataExportService) {
 // [ExportJob](https://www.m3ter.com/docs/api#tag/ExportJob) section of this API
 // Reference.
 func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAdhocParams, opts ...option.RequestOption) (res *AdHocResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -151,11 +152,12 @@ const (
 	AdHocOperationalDataRequestOperationalDataTypePlanTemplates        AdHocOperationalDataRequestOperationalDataType = "PLAN_TEMPLATES"
 	AdHocOperationalDataRequestOperationalDataTypeBalanceTransactions  AdHocOperationalDataRequestOperationalDataType = "BALANCE_TRANSACTIONS"
 	AdHocOperationalDataRequestOperationalDataTypeTransactionTypes     AdHocOperationalDataRequestOperationalDataType = "TRANSACTION_TYPES"
+	AdHocOperationalDataRequestOperationalDataTypeCharges              AdHocOperationalDataRequestOperationalDataType = "CHARGES"
 )
 
 func (r AdHocOperationalDataRequestOperationalDataType) IsKnown() bool {
 	switch r {
-	case AdHocOperationalDataRequestOperationalDataTypeBills, AdHocOperationalDataRequestOperationalDataTypeCommitments, AdHocOperationalDataRequestOperationalDataTypeAccounts, AdHocOperationalDataRequestOperationalDataTypeBalances, AdHocOperationalDataRequestOperationalDataTypeContracts, AdHocOperationalDataRequestOperationalDataTypeAccountPlans, AdHocOperationalDataRequestOperationalDataTypeAggregations, AdHocOperationalDataRequestOperationalDataTypePlans, AdHocOperationalDataRequestOperationalDataTypePricing, AdHocOperationalDataRequestOperationalDataTypePricingBands, AdHocOperationalDataRequestOperationalDataTypeBillLineItems, AdHocOperationalDataRequestOperationalDataTypeMeters, AdHocOperationalDataRequestOperationalDataTypeProducts, AdHocOperationalDataRequestOperationalDataTypeCompoundAggregations, AdHocOperationalDataRequestOperationalDataTypePlanGroups, AdHocOperationalDataRequestOperationalDataTypePlanGroupLinks, AdHocOperationalDataRequestOperationalDataTypePlanTemplates, AdHocOperationalDataRequestOperationalDataTypeBalanceTransactions, AdHocOperationalDataRequestOperationalDataTypeTransactionTypes:
+	case AdHocOperationalDataRequestOperationalDataTypeBills, AdHocOperationalDataRequestOperationalDataTypeCommitments, AdHocOperationalDataRequestOperationalDataTypeAccounts, AdHocOperationalDataRequestOperationalDataTypeBalances, AdHocOperationalDataRequestOperationalDataTypeContracts, AdHocOperationalDataRequestOperationalDataTypeAccountPlans, AdHocOperationalDataRequestOperationalDataTypeAggregations, AdHocOperationalDataRequestOperationalDataTypePlans, AdHocOperationalDataRequestOperationalDataTypePricing, AdHocOperationalDataRequestOperationalDataTypePricingBands, AdHocOperationalDataRequestOperationalDataTypeBillLineItems, AdHocOperationalDataRequestOperationalDataTypeMeters, AdHocOperationalDataRequestOperationalDataTypeProducts, AdHocOperationalDataRequestOperationalDataTypeCompoundAggregations, AdHocOperationalDataRequestOperationalDataTypePlanGroups, AdHocOperationalDataRequestOperationalDataTypePlanGroupLinks, AdHocOperationalDataRequestOperationalDataTypePlanTemplates, AdHocOperationalDataRequestOperationalDataTypeBalanceTransactions, AdHocOperationalDataRequestOperationalDataTypeTransactionTypes, AdHocOperationalDataRequestOperationalDataTypeCharges:
 		return true
 	}
 	return false

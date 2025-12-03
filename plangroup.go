@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewPlanGroupService(opts ...option.RequestOption) (r *PlanGroupService) {
 // Create a new PlanGroup. This endpoint creates a new PlanGroup within the
 // specified organization.
 func (r *PlanGroupService) New(ctx context.Context, params PlanGroupNewParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *PlanGroupService) New(ctx context.Context, params PlanGroupNewParams, o
 // This endpoint retrieves detailed information about a specific PlanGroup
 // identified by the given UUID within a specific organization.
 func (r *PlanGroupService) Get(ctx context.Context, id string, query PlanGroupGetParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -93,7 +94,7 @@ func (r *PlanGroupService) Get(ctx context.Context, id string, query PlanGroupGe
 // those Custom Fields. If you omit them from the update request, they will be
 // lost.
 func (r *PlanGroupService) Update(ctx context.Context, id string, params PlanGroupUpdateParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -119,7 +120,7 @@ func (r *PlanGroupService) Update(ctx context.Context, id string, params PlanGro
 // for easier management.
 func (r *PlanGroupService) List(ctx context.Context, params PlanGroupListParams, opts ...option.RequestOption) (res *pagination.Cursor[PlanGroupResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -158,7 +159,7 @@ func (r *PlanGroupService) ListAutoPaging(ctx context.Context, params PlanGroupL
 // specific organization. This operation is irreversible and removes the PlanGroup
 // along with any associated settings.
 func (r *PlanGroupService) Delete(ctx context.Context, id string, body PlanGroupDeleteParams, opts ...option.RequestOption) (res *PlanGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

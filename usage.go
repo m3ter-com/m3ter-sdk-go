@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"slices"
 	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
@@ -65,7 +66,7 @@ func NewUsageService(opts ...option.RequestOption) (r *UsageService) {
 //     returned for any ingest failure Event to obtain a failed ingest file download
 //     URL for the Event.
 func (r *UsageService) GetFailedIngestDownloadURL(ctx context.Context, params UsageGetFailedIngestDownloadURLParams, opts ...option.RequestOption) (res *DownloadURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -102,7 +103,7 @@ func (r *UsageService) GetFailedIngestDownloadURL(ctx context.Context, params Us
 // - **Time**
 // - **Dimension**
 func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts ...option.RequestOption) (res *UsageQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -156,7 +157,7 @@ func (r *UsageService) Query(ctx context.Context, params UsageQueryParams, opts 
 // [Introduction section](https://www.m3ter.com/docs/api#section/Introduction)
 // above for more details.
 func (r *UsageService) Submit(ctx context.Context, params UsageSubmitParams, opts ...option.RequestOption) (res *SubmitMeasurementsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://ingest.m3ter.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

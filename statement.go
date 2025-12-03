@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/m3ter-com/m3ter-sdk-go/internal/apijson"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/param"
@@ -46,7 +47,7 @@ func NewStatementService(opts ...option.RequestOption) (r *StatementService) {
 // The response to this call returns a pre-signed `downloadUrl`, which you then use
 // with a `GET` call to obtain the Bill statement in CSV format.
 func (r *StatementService) NewCsv(ctx context.Context, id string, body StatementNewCsvParams, opts ...option.RequestOption) (res *ObjectURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -75,7 +76,7 @@ func (r *StatementService) NewCsv(ctx context.Context, id string, body Statement
 // separate `GET` call to download the actual Bill Statement. This ensures secure
 // access to the requested information.
 func (r *StatementService) GetCsv(ctx context.Context, id string, query StatementGetCsvParams, opts ...option.RequestOption) (res *ObjectURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -103,7 +104,7 @@ func (r *StatementService) GetCsv(ctx context.Context, id string, query Statemen
 // The response to this call returns a pre-signed `downloadUrl`, which you use with
 // a `GET` call to obtain the Bill Statement.
 func (r *StatementService) GetJson(ctx context.Context, id string, query StatementGetJsonParams, opts ...option.RequestOption) (res *ObjectURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
