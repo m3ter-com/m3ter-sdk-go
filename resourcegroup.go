@@ -347,6 +347,8 @@ func (r resourceGroupResponseJSON) RawJSON() string {
 }
 
 type ResourceGroupListContentsResponse struct {
+	// The UUID of the entity.
+	ID string `json:"id,required"`
 	// The id of the user who created this item for the resource group.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the item was created for the resource group.
@@ -358,18 +360,27 @@ type ResourceGroupListContentsResponse struct {
 	// The UUID of the item.
 	TargetID   string                                      `json:"targetId"`
 	TargetType ResourceGroupListContentsResponseTargetType `json:"targetType"`
-	JSON       resourceGroupListContentsResponseJSON       `json:"-"`
+	// The version number:
+	//
+	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
+	//     in the response.
+	//   - **Update:** On successful Update, the version is incremented by 1 in the
+	//     response.
+	Version int64                                 `json:"version"`
+	JSON    resourceGroupListContentsResponseJSON `json:"-"`
 }
 
 // resourceGroupListContentsResponseJSON contains the JSON metadata for the struct
 // [ResourceGroupListContentsResponse]
 type resourceGroupListContentsResponseJSON struct {
+	ID             apijson.Field
 	CreatedBy      apijson.Field
 	DtCreated      apijson.Field
 	DtLastModified apijson.Field
 	LastModifiedBy apijson.Field
 	TargetID       apijson.Field
 	TargetType     apijson.Field
+	Version        apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }

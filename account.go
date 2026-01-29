@@ -186,8 +186,10 @@ func (r *AccountService) EndDateBillingEntities(ctx context.Context, id string, 
 }
 
 // Retrieve a list of Accounts that are children of the specified Account.
-func (r *AccountService) GetChildren(ctx context.Context, id string, params AccountGetChildrenParams, opts ...option.RequestOption) (res *AccountGetChildrenResponse, err error) {
+func (r *AccountService) ListChildren(ctx context.Context, id string, params AccountListChildrenParams, opts ...option.RequestOption) (res *pagination.Cursor[AccountResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -202,8 +204,21 @@ func (r *AccountService) GetChildren(ctx context.Context, id string, params Acco
 		return
 	}
 	path := fmt.Sprintf("organizations/%s/accounts/%s/children", params.OrgID, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of Accounts that are children of the specified Account.
+func (r *AccountService) ListChildrenAutoPaging(ctx context.Context, id string, params AccountListChildrenParams, opts ...option.RequestOption) *pagination.CursorAutoPager[AccountResponse] {
+	return pagination.NewCursorAutoPager(r.ListChildren(ctx, id, params, opts...))
 }
 
 // Search for Account entities.
@@ -248,8 +263,6 @@ type AccountResponse struct {
 	BillEpoch time.Time `json:"billEpoch" format:"date"`
 	// Code of the Account. This is a unique short code used for the Account.
 	Code string `json:"code"`
-	// Configuration data for the Account
-	ConfigData map[string]interface{} `json:"configData"`
 	// The ID of the user who created the account.
 	CreatedBy string `json:"createdBy"`
 	// The order in which any Prepayment or Balance amounts on the Account are to be
@@ -337,7 +350,6 @@ type accountResponseJSON struct {
 	AutoGenerateStatementMode apijson.Field
 	BillEpoch                 apijson.Field
 	Code                      apijson.Field
-	ConfigData                apijson.Field
 	CreatedBy                 apijson.Field
 	CreditApplicationOrder    apijson.Field
 	Currency                  apijson.Field
@@ -563,29 +575,6 @@ func (r accountEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() stri
 	return r.raw
 }
 
-type AccountGetChildrenResponse struct {
-	Data      []AccountResponse              `json:"data"`
-	NextToken string                         `json:"nextToken"`
-	JSON      accountGetChildrenResponseJSON `json:"-"`
-}
-
-// accountGetChildrenResponseJSON contains the JSON metadata for the struct
-// [AccountGetChildrenResponse]
-type accountGetChildrenResponseJSON struct {
-	Data        apijson.Field
-	NextToken   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountGetChildrenResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountGetChildrenResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountSearchResponse struct {
 	Data      []AccountResponse         `json:"data"`
 	NextToken string                    `json:"nextToken"`
@@ -641,10 +630,6 @@ type AccountNewParams struct {
 	//     period at Organization level will be used instead.
 	//   - The date is in ISO-8601 format.
 	BillEpoch param.Field[time.Time] `json:"billEpoch" format:"date"`
-	// Configuration data for the Account Supported settings:
-	//
-	// - SendBillsToThirdParties ("true"/"false")
-	ConfigData param.Field[map[string]interface{}] `json:"configData"`
 	// Define the order in which any Prepayment or Balance amounts on the Account are
 	// to be drawn-down against for billing. Four options:
 	//
@@ -808,10 +793,6 @@ type AccountUpdateParams struct {
 	//     period at Organization level will be used instead.
 	//   - The date is in ISO-8601 format.
 	BillEpoch param.Field[time.Time] `json:"billEpoch" format:"date"`
-	// Configuration data for the Account Supported settings:
-	//
-	// - SendBillsToThirdParties ("true"/"false")
-	ConfigData param.Field[map[string]interface{}] `json:"configData"`
 	// Define the order in which any Prepayment or Balance amounts on the Account are
 	// to be drawn-down against for billing. Four options:
 	//
@@ -1004,16 +985,16 @@ func (r AccountEndDateBillingEntitiesParamsBillingEntity) IsKnown() bool {
 	return false
 }
 
-type AccountGetChildrenParams struct {
+type AccountListChildrenParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID     param.Field[string] `path:"orgId,required"`
 	NextToken param.Field[string] `query:"nextToken"`
 	PageSize  param.Field[int64]  `query:"pageSize"`
 }
 
-// URLQuery serializes [AccountGetChildrenParams]'s query parameters as
+// URLQuery serializes [AccountListChildrenParams]'s query parameters as
 // `url.Values`.
-func (r AccountGetChildrenParams) URLQuery() (v url.Values) {
+func (r AccountListChildrenParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

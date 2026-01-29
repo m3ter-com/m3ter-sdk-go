@@ -303,7 +303,9 @@ type CommitmentResponse struct {
 	// The unique identifier (UUID) of the user who created this Commitment.
 	CreatedBy string `json:"createdBy"`
 	// The currency used for the Commitment. For example, 'USD'.
-	Currency                     string `json:"currency"`
+	Currency string `json:"currency"`
+	// Optional Product ID this Commitment's consumptions should be attributed to for
+	// accounting purposes.
 	DrawdownsAccountingProductID string `json:"drawdownsAccountingProductId"`
 	// The date and time _(in ISO-8601 format)_ when the Commitment was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
@@ -320,8 +322,10 @@ type CommitmentResponse struct {
 	//   - `amount` - the billed amount.
 	//   - `servicePeriodStartDate` and `servicePeriodEndDate` - defines the service
 	//     period the bill covers _(in ISO-8601 format)_.
-	FeeDates                []CommitmentFee `json:"feeDates"`
-	FeesAccountingProductID string          `json:"feesAccountingProductId"`
+	FeeDates []CommitmentFee `json:"feeDates"`
+	// Optional Product ID this Commitment's fees should be attributed to for
+	// accounting purposes.
+	FeesAccountingProductID string `json:"feesAccountingProductId"`
 	// The unique identifier (UUID) of the user who last modified this Commitment.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// Specifies the line item charge types that can draw-down at billing against the
@@ -561,8 +565,8 @@ type CommitmentNewParams struct {
 	// If the Account Plan Contract and Commitment Contract do not match, then at
 	// billing the Commitment amount will not be drawn-down against.
 	ContractID param.Field[string] `json:"contractId"`
-	// Optional Product ID this Commitment consumptions should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Commitment's consumptions should be attributed to for
+	// accounting purposes.
 	DrawdownsAccountingProductID param.Field[string] `json:"drawdownsAccountingProductId"`
 	// Used for billing any outstanding Commitment fees _on a schedule_.
 	//
@@ -582,8 +586,8 @@ type CommitmentNewParams struct {
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
 	FeeDates param.Field[[]CommitmentFeeParam] `json:"feeDates"`
-	// Optional Product ID this Commitment fees should be attributed to for accounting
-	// purposes
+	// Optional Product ID this Commitment's fees should be attributed to for
+	// accounting purposes.
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Commitment amount. Options are:
@@ -778,8 +782,8 @@ type CommitmentUpdateParams struct {
 	// If the Account Plan Contract and Commitment Contract do not match, then at
 	// billing the Commitment amount will not be drawn-down against.
 	ContractID param.Field[string] `json:"contractId"`
-	// Optional Product ID this Commitment consumptions should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Commitment's consumptions should be attributed to for
+	// accounting purposes.
 	DrawdownsAccountingProductID param.Field[string] `json:"drawdownsAccountingProductId"`
 	// Used for billing any outstanding Commitment fees _on a schedule_.
 	//
@@ -799,8 +803,8 @@ type CommitmentUpdateParams struct {
 	//     date_ without receiving an error, but _please be sure_ your Commitment billing
 	//     use case requires this.
 	FeeDates param.Field[[]CommitmentFeeParam] `json:"feeDates"`
-	// Optional Product ID this Commitment fees should be attributed to for accounting
-	// purposes
+	// Optional Product ID this Commitment's fees should be attributed to for
+	// accounting purposes.
 	FeesAccountingProductID param.Field[string] `json:"feesAccountingProductId"`
 	// Specify the line item charge types that can draw-down at billing against the
 	// Commitment amount. Options are:

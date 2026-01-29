@@ -188,7 +188,9 @@ func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body
 
 type CompoundAggregationResponse struct {
 	// The UUID of the entity.
-	ID                  string `json:"id,required"`
+	ID string `json:"id,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes.
 	AccountingProductID string `json:"accountingProductId"`
 	// This field is a string that represents the formula for the calculation. This
 	// formula determines how the CompoundAggregation is calculated from the underlying
@@ -395,7 +397,7 @@ type CompoundAggregationNewParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
-	// purposes
+	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                                   `json:"code"`
@@ -522,7 +524,7 @@ type CompoundAggregationUpdateParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
-	// purposes
+	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                                      `json:"code"`

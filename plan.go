@@ -160,10 +160,10 @@ func (r *PlanService) Delete(ctx context.Context, id string, body PlanDeletePara
 type PlanResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
-	// _(Optional)_. The Account ID for which this plan was created as custom/bespoke.
+	// _(Optional)_. The Account ID for which this Plan was created as custom/bespoke.
 	// A custom/bespoke Plan can only be attached to the specified Account.
 	AccountID string `json:"accountId"`
-	// TRUE/FALSE flag indicating whether the plan is custom/bespoke for a particular
+	// TRUE/FALSE flag indicating whether the Plan is custom/bespoke for a particular
 	// Account.
 	Bespoke bool `json:"bespoke"`
 	// Unique short code reference for the Plan.
@@ -181,23 +181,23 @@ type PlanResponse struct {
 	// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
 	// in the m3ter documentation for more information.
 	CustomFields map[string]PlanResponseCustomFieldsUnion `json:"customFields"`
-	// The DateTime _(in ISO-8601 format)_ when the plan was created.
+	// The DateTime _(in ISO-8601 format)_ when the Plan was created.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
-	// The DateTime _(in ISO-8601 format)_ when the plan was last modified.
+	// The DateTime _(in ISO-8601 format)_ when the Plan was last modified.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
-	// The id of the user who last modified this plan.
+	// The id of the user who last modified this Plan.
 	LastModifiedBy string `json:"lastModifiedBy"`
 	// The product minimum spend amount per billing cycle for end customer Accounts on
 	// a priced Plan.
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	MinimumSpend float64 `json:"minimumSpend"`
-	// Optional Product ID this plan's minimum spend should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Plan's minimum spend should be attributed to for
+	// accounting purposes.
 	MinimumSpendAccountingProductID string `json:"minimumSpendAccountingProductId"`
-	// When TRUE, minimum spend is billed at the start of each billing period.
+	// When **TRUE**, minimum spend is billed at the start of each billing period.
 	//
-	// When FALSE, minimum spend is billed at the end of each billing period.
+	// When **FALSE**, minimum spend is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at PlanTemplate level for minimum spend
 	// billing in arrears/in advance.
@@ -222,12 +222,12 @@ type PlanResponse struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	StandingCharge float64 `json:"standingCharge"`
-	// Optional Product ID this plan's standing charge should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Plan's standing charge should be attributed to for
+	// accounting purposes.
 	StandingChargeAccountingProductID string `json:"standingChargeAccountingProductId"`
-	// When TRUE, standing charge is billed at the start of each billing period.
+	// When **TRUE**, standing charge is billed at the start of each billing period.
 	//
-	// When FALSE, standing charge is billed at the end of each billing period.
+	// When **FALSE**, standing charge is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at PlanTemplate level for standing charge
 	// billing in arrears/in advance.
@@ -340,12 +340,12 @@ type PlanNewParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	MinimumSpend param.Field[float64] `json:"minimumSpend"`
-	// Optional Product ID this plan's minimum spend should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Plan's minimum spend should be attributed to for
+	// accounting purposes.
 	MinimumSpendAccountingProductID param.Field[string] `json:"minimumSpendAccountingProductId"`
-	// When TRUE, minimum spend is billed at the start of each billing period.
+	// When **TRUE**, minimum spend is billed at the start of each billing period.
 	//
-	// When FALSE, minimum spend is billed at the end of each billing period.
+	// When **FALSE**, minimum spend is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at PlanTemplate level for minimum spend
 	// billing in arrears/in advance.
@@ -364,12 +364,12 @@ type PlanNewParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	StandingCharge param.Field[float64] `json:"standingCharge"`
-	// Optional Product ID this plan's standing charge should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Plan's standing charge should be attributed to for
+	// accounting purposes.
 	StandingChargeAccountingProductID param.Field[string] `json:"standingChargeAccountingProductId"`
-	// When TRUE, standing charge is billed at the start of each billing period.
+	// When **TRUE**, standing charge is billed at the start of each billing period.
 	//
-	// When FALSE, standing charge is billed at the end of each billing period.
+	// When **FALSE**, standing charge is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at PlanTemplate level for standing charge
 	// billing in arrears/in advance.
@@ -441,12 +441,12 @@ type PlanUpdateParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	MinimumSpend param.Field[float64] `json:"minimumSpend"`
-	// Optional Product ID this plan's minimum spend should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Plan's minimum spend should be attributed to for
+	// accounting purposes.
 	MinimumSpendAccountingProductID param.Field[string] `json:"minimumSpendAccountingProductId"`
-	// When TRUE, minimum spend is billed at the start of each billing period.
+	// When **TRUE**, minimum spend is billed at the start of each billing period.
 	//
-	// When FALSE, minimum spend is billed at the end of each billing period.
+	// When **FALSE**, minimum spend is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at PlanTemplate level for minimum spend
 	// billing in arrears/in advance.
@@ -465,12 +465,12 @@ type PlanUpdateParams struct {
 	//
 	// _(Optional)_. Overrides PlanTemplate value.
 	StandingCharge param.Field[float64] `json:"standingCharge"`
-	// Optional Product ID this plan's standing charge should be attributed to for
-	// accounting purposes
+	// Optional Product ID this Plan's standing charge should be attributed to for
+	// accounting purposes.
 	StandingChargeAccountingProductID param.Field[string] `json:"standingChargeAccountingProductId"`
-	// When TRUE, standing charge is billed at the start of each billing period.
+	// When **TRUE**, standing charge is billed at the start of each billing period.
 	//
-	// When FALSE, standing charge is billed at the end of each billing period.
+	// When **FALSE**, standing charge is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at PlanTemplate level for standing charge
 	// billing in arrears/in advance.

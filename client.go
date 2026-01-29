@@ -26,6 +26,7 @@ type Client struct {
 	BillConfig                   *BillConfigService
 	Commitments                  *CommitmentService
 	BillJobs                     *BillJobService
+	Charges                      *ChargeService
 	CompoundAggregations         *CompoundAggregationService
 	Contracts                    *ContractService
 	Counters                     *CounterService
@@ -39,6 +40,7 @@ type Client struct {
 	Events                       *EventService
 	ExternalMappings             *ExternalMappingService
 	IntegrationConfigurations    *IntegrationConfigurationService
+	LookupTables                 *LookupTableService
 	Meters                       *MeterService
 	NotificationConfigurations   *NotificationConfigurationService
 	OrganizationConfig           *OrganizationConfigService
@@ -100,6 +102,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.BillConfig = NewBillConfigService(opts...)
 	r.Commitments = NewCommitmentService(opts...)
 	r.BillJobs = NewBillJobService(opts...)
+	r.Charges = NewChargeService(opts...)
 	r.CompoundAggregations = NewCompoundAggregationService(opts...)
 	r.Contracts = NewContractService(opts...)
 	r.Counters = NewCounterService(opts...)
@@ -113,6 +116,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Events = NewEventService(opts...)
 	r.ExternalMappings = NewExternalMappingService(opts...)
 	r.IntegrationConfigurations = NewIntegrationConfigurationService(opts...)
+	r.LookupTables = NewLookupTableService(opts...)
 	r.Meters = NewMeterService(opts...)
 	r.NotificationConfigurations = NewNotificationConfigurationService(opts...)
 	r.OrganizationConfig = NewOrganizationConfigService(opts...)

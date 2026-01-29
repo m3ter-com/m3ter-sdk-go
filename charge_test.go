@@ -7,13 +7,14 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
-func TestWebhookNewWithOptionalParams(t *testing.T) {
+func TestChargeNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,20 +29,25 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Webhooks.New(context.TODO(), m3ter.WebhookNewParams{
-		Credentials: m3ter.F(m3ter.M3terSignedCredentialsRequestParam{
-			APIKey:  m3ter.F("api key"),
-			Secret:  m3ter.F("api secret"),
-			Type:    m3ter.F(m3ter.M3terSignedCredentialsRequestTypeM3TerSignedRequest),
-			Empty:   m3ter.F(true),
-			Version: m3ter.F(int64(0)),
-		}),
-		Description: m3ter.F("x"),
-		Name:        m3ter.F("x"),
-		URL:         m3ter.F("x"),
-		Active:      m3ter.F(true),
-		Code:        m3ter.F("code"),
-		Version:     m3ter.F(int64(0)),
+	_, err := client.Charges.New(context.TODO(), m3ter.ChargeNewParams{
+		AccountID:              m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Code:                   m3ter.F("S?oC\"$]C] ]]]]]5]"),
+		Currency:               m3ter.F("x"),
+		EntityType:             m3ter.F(m3ter.ChargeNewParamsEntityTypeAdHoc),
+		LineItemType:           m3ter.F(m3ter.ChargeNewParamsLineItemTypeBalanceFee),
+		Name:                   m3ter.F("x"),
+		ServicePeriodEndDate:   m3ter.F(time.Now()),
+		ServicePeriodStartDate: m3ter.F(time.Now()),
+		AccountingProductID:    m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		Amount:                 m3ter.F(0.000000),
+		BillDate:               m3ter.F("2022-01-04"),
+		ContractID:             m3ter.F("contractId"),
+		Description:            m3ter.F("description"),
+		EntityID:               m3ter.F("entityId"),
+		Notes:                  m3ter.F("notes"),
+		UnitPrice:              m3ter.F(0.000000),
+		Units:                  m3ter.F(0.000000),
+		Version:                m3ter.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -52,7 +58,7 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebhookGet(t *testing.T) {
+func TestChargeGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,10 +73,10 @@ func TestWebhookGet(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Webhooks.Get(
+	_, err := client.Charges.Get(
 		context.TODO(),
 		"id",
-		m3ter.WebhookGetParams{},
+		m3ter.ChargeGetParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -81,7 +87,7 @@ func TestWebhookGet(t *testing.T) {
 	}
 }
 
-func TestWebhookUpdateWithOptionalParams(t *testing.T) {
+func TestChargeUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -96,23 +102,28 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Webhooks.Update(
+	_, err := client.Charges.Update(
 		context.TODO(),
 		"id",
-		m3ter.WebhookUpdateParams{
-			Credentials: m3ter.F(m3ter.M3terSignedCredentialsRequestParam{
-				APIKey:  m3ter.F("api key"),
-				Secret:  m3ter.F("api secret"),
-				Type:    m3ter.F(m3ter.M3terSignedCredentialsRequestTypeM3TerSignedRequest),
-				Empty:   m3ter.F(true),
-				Version: m3ter.F(int64(0)),
-			}),
-			Description: m3ter.F("x"),
-			Name:        m3ter.F("x"),
-			URL:         m3ter.F("x"),
-			Active:      m3ter.F(true),
-			Code:        m3ter.F("code"),
-			Version:     m3ter.F(int64(0)),
+		m3ter.ChargeUpdateParams{
+			AccountID:              m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			Code:                   m3ter.F("S?oC\"$]C] ]]]]]5]"),
+			Currency:               m3ter.F("x"),
+			EntityType:             m3ter.F(m3ter.ChargeUpdateParamsEntityTypeAdHoc),
+			LineItemType:           m3ter.F(m3ter.ChargeUpdateParamsLineItemTypeBalanceFee),
+			Name:                   m3ter.F("x"),
+			ServicePeriodEndDate:   m3ter.F(time.Now()),
+			ServicePeriodStartDate: m3ter.F(time.Now()),
+			AccountingProductID:    m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			Amount:                 m3ter.F(0.000000),
+			BillDate:               m3ter.F("2022-01-04"),
+			ContractID:             m3ter.F("contractId"),
+			Description:            m3ter.F("description"),
+			EntityID:               m3ter.F("entityId"),
+			Notes:                  m3ter.F("notes"),
+			UnitPrice:              m3ter.F(0.000000),
+			Units:                  m3ter.F(0.000000),
+			Version:                m3ter.F(int64(0)),
 		},
 	)
 	if err != nil {
@@ -124,7 +135,7 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebhookListWithOptionalParams(t *testing.T) {
+func TestChargeListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -139,10 +150,15 @@ func TestWebhookListWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Webhooks.List(context.TODO(), m3ter.WebhookListParams{
-		IDs:       m3ter.F([]string{"string"}),
-		NextToken: m3ter.F("nextToken"),
-		PageSize:  m3ter.F(int64(1)),
+	_, err := client.Charges.List(context.TODO(), m3ter.ChargeListParams{
+		AccountID:  m3ter.F("accountId"),
+		BillDate:   m3ter.F(time.Now()),
+		EntityID:   m3ter.F("entityId"),
+		EntityType: m3ter.F(m3ter.ChargeListParamsEntityTypeAdHoc),
+		IDs:        m3ter.F([]string{"string"}),
+		NextToken:  m3ter.F("nextToken"),
+		PageSize:   m3ter.F(int64(1)),
+		ScheduleID: m3ter.F("scheduleId"),
 	})
 	if err != nil {
 		var apierr *m3ter.Error
@@ -153,7 +169,7 @@ func TestWebhookListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebhookDelete(t *testing.T) {
+func TestChargeDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -168,41 +184,10 @@ func TestWebhookDelete(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Webhooks.Delete(
+	_, err := client.Charges.Delete(
 		context.TODO(),
 		"id",
-		m3ter.WebhookDeleteParams{},
-	)
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestWebhookSetActiveWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Webhooks.SetActive(
-		context.TODO(),
-		"id",
-		m3ter.WebhookSetActiveParams{
-			Active: m3ter.F(true),
-		},
+		m3ter.ChargeDeleteParams{},
 	)
 	if err != nil {
 		var apierr *m3ter.Error

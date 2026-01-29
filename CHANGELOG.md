@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.11.0 (2026-01-29)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* **api:** updating api spec + fixes ([606c359](https://github.com/m3ter-com/m3ter-sdk-go/commit/606c359d934885d621aed37c3fa14893395184cc))
+
+
+### Bug Fixes
+
+* **docs:** add missing pointer prefix to api.md return types ([4941fac](https://github.com/m3ter-com/m3ter-sdk-go/commit/4941facfe60d5a1a500ace24a6c81fb49b9e2c52))
+* **mcp:** correct code tool API endpoint ([de72b85](https://github.com/m3ter-com/m3ter-sdk-go/commit/de72b85afa78f64ab7d6749e98dcf41b4d0dc496))
+* rename param to avoid collision ([7b1b72b](https://github.com/m3ter-com/m3ter-sdk-go/commit/7b1b72b74d23f1c16fc2cffa2a45a078916b16d4))
+
+
+### Chores
+
+* elide duplicate aliases ([c1d518a](https://github.com/m3ter-com/m3ter-sdk-go/commit/c1d518a5a0a3613a37139fd7a1950c013f51ecd3))
+* **internal:** codegen related update ([8098fef](https://github.com/m3ter-com/m3ter-sdk-go/commit/8098fef0418286638e14b2f7ac8054ced4cbb387))
+* **internal:** codegen related update ([736cc46](https://github.com/m3ter-com/m3ter-sdk-go/commit/736cc46290cc9027a00755d47302231d0dc18d4b))
+* **internal:** update `actions/checkout` version ([3986715](https://github.com/m3ter-com/m3ter-sdk-go/commit/3986715cab9b9ced54990cad5456874db24c1346))
+
 ## 0.10.0 (2025-12-03)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.9.0...v0.10.0)

@@ -147,7 +147,13 @@ type OrganizationConfigRequestParam struct {
 	// Please get in touch with m3ter Support or your m3ter contact if you would like
 	// it enabling for your organization(s).
 	AllowNegativeBalances param.Field[bool] `json:"allowNegativeBalances"`
-	// Allows plans to overlap time periods for different contracts.
+	// Boolean setting to control whether or not multiple plans for the same Product
+	// can be active on an Account at the same time:
+	//
+	//   - **TRUE** - multiple overlapping plans for the same product can be attached to
+	//     the same Account.
+	//   - **FALSE** - multiple overlapping plans for the same product cannot be attached
+	//     to the same Account.(_Default_)
 	AllowOverlappingPlans param.Field[bool] `json:"allowOverlappingPlans"`
 	// Grace period before bills are auto-approved. Used in combination with
 	// `autoApproveBillsGracePeriodUnit` parameter.
@@ -252,6 +258,10 @@ type OrganizationConfigRequestParam struct {
 	//     **24**.
 	//   - **Default.** The default is **0**, which disables scheduling.
 	ScheduledBillInterval param.Field[float64] `json:"scheduledBillInterval"`
+	// Offset (hours) within the scheduled interval to start the run, interpreted in
+	// the organization's timezone. For daily (24h) schedules this is the hour of day
+	// (0-23). Only supported when ScheduledBillInterval is 24 (daily) at present.
+	ScheduledBillOffset param.Field[int64] `json:"scheduledBillOffset"`
 	// The starting number to be used for sequential invoice numbers. This will be
 	// combined with the `billPrefix`.
 	//
@@ -420,6 +430,10 @@ type OrganizationConfigResponse struct {
 	//     **8**, **12**, or **24**.
 	//   - **Default.** The default is **0**, which disables scheduling.
 	ScheduledBillInterval float64 `json:"scheduledBillInterval"`
+	// Offset (hours) within the scheduled interval to run the job, interpreted in the
+	// organization's timezone. For daily (24h) schedules this is the hour of day
+	// (0-23). Only supported when ScheduledBillInterval is 24 (daily) at present.
+	ScheduledBillOffset int64 `json:"scheduledBillOffset"`
 	// The starting number to be used for sequential invoice numbers. This will be
 	// combined with the `billPrefix`.
 	SequenceStartNumber int64 `json:"sequenceStartNumber"`
@@ -476,6 +490,7 @@ type organizationConfigResponseJSON struct {
 	MinimumSpendBillInAdvance       apijson.Field
 	MonthEpoch                      apijson.Field
 	ScheduledBillInterval           apijson.Field
+	ScheduledBillOffset             apijson.Field
 	SequenceStartNumber             apijson.Field
 	StandingChargeBillInAdvance     apijson.Field
 	SuppressedEmptyBills            apijson.Field

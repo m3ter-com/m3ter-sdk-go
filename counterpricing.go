@@ -163,7 +163,9 @@ func (r *CounterPricingService) Delete(ctx context.Context, id string, body Coun
 
 type CounterPricingResponse struct {
 	// The UUID of the entity.
-	ID                  string `json:"id,required"`
+	ID string `json:"id,required"`
+	// Optional Product ID this Pricing should be attributed to for accounting
+	// purposes.
 	AccountingProductID string `json:"accountingProductId"`
 	// Unique short code for the Pricing.
 	Code string `json:"code"`
@@ -321,39 +323,39 @@ type CounterPricingNewParams struct {
 	PlanTemplateID param.Field[string] `json:"planTemplateId"`
 	// The default value is **TRUE**.
 	//
-	//   - When TRUE, counter adjustment credits are prorated and are billed according to
-	//     the number of days in billing period.
+	//   - When **TRUE**, counter adjustment credits are prorated and are billed
+	//     according to the number of days in billing period.
 	//
-	//   - When FALSE, counter adjustment credits are not prorated and are billed for the
-	//     entire billing period.
+	//   - When **FALSE**, counter adjustment credits are not prorated and are billed for
+	//     the entire billing period.
 	//
 	// _(Optional)_.
 	ProRateAdjustmentCredit param.Field[bool] `json:"proRateAdjustmentCredit"`
 	// The default value is **TRUE**.
 	//
-	//   - When TRUE, counter adjustment debits are prorated and are billed according to
-	//     the number of days in billing period.
+	//   - When **TRUE**, counter adjustment debits are prorated and are billed according
+	//     to the number of days in billing period.
 	//
-	//   - When FALSE, counter adjustment debits are not prorated and are billed for the
-	//     entire billing period.
+	//   - When **FALSE**, counter adjustment debits are not prorated and are billed for
+	//     the entire billing period.
 	//
 	// _(Optional)_.
 	ProRateAdjustmentDebit param.Field[bool] `json:"proRateAdjustmentDebit"`
 	// The default value is **TRUE**.
 	//
-	//   - When TRUE, counter running total charges are prorated and are billed according
-	//     to the number of days in billing period.
+	//   - When **TRUE**, counter running total charges are prorated and are billed
+	//     according to the number of days in billing period.
 	//
-	//   - When FALSE, counter running total charges are not prorated and are billed for
-	//     the entire billing period.
+	//   - When **FALSE**, counter running total charges are not prorated and are billed
+	//     for the entire billing period.
 	//
 	// _(Optional)_.
 	ProRateRunningTotal param.Field[bool] `json:"proRateRunningTotal"`
 	// The default value is **TRUE**.
 	//
-	// - When TRUE, running totals are billed at the start of each billing period.
+	// - When **TRUE**, running totals are billed at the start of each billing period.
 	//
-	// - When FALSE, running totals are billed at the end of each billing period.
+	// - When **FALSE**, running totals are billed at the end of each billing period.
 	//
 	// _(Optional)_.
 	RunningTotalBillInAdvance param.Field[bool] `json:"runningTotalBillInAdvance"`
@@ -419,39 +421,39 @@ type CounterPricingUpdateParams struct {
 	PlanTemplateID param.Field[string] `json:"planTemplateId"`
 	// The default value is **TRUE**.
 	//
-	//   - When TRUE, counter adjustment credits are prorated and are billed according to
-	//     the number of days in billing period.
+	//   - When **TRUE**, counter adjustment credits are prorated and are billed
+	//     according to the number of days in billing period.
 	//
-	//   - When FALSE, counter adjustment credits are not prorated and are billed for the
-	//     entire billing period.
+	//   - When **FALSE**, counter adjustment credits are not prorated and are billed for
+	//     the entire billing period.
 	//
 	// _(Optional)_.
 	ProRateAdjustmentCredit param.Field[bool] `json:"proRateAdjustmentCredit"`
 	// The default value is **TRUE**.
 	//
-	//   - When TRUE, counter adjustment debits are prorated and are billed according to
-	//     the number of days in billing period.
+	//   - When **TRUE**, counter adjustment debits are prorated and are billed according
+	//     to the number of days in billing period.
 	//
-	//   - When FALSE, counter adjustment debits are not prorated and are billed for the
-	//     entire billing period.
+	//   - When **FALSE**, counter adjustment debits are not prorated and are billed for
+	//     the entire billing period.
 	//
 	// _(Optional)_.
 	ProRateAdjustmentDebit param.Field[bool] `json:"proRateAdjustmentDebit"`
 	// The default value is **TRUE**.
 	//
-	//   - When TRUE, counter running total charges are prorated and are billed according
-	//     to the number of days in billing period.
+	//   - When **TRUE**, counter running total charges are prorated and are billed
+	//     according to the number of days in billing period.
 	//
-	//   - When FALSE, counter running total charges are not prorated and are billed for
-	//     the entire billing period.
+	//   - When **FALSE**, counter running total charges are not prorated and are billed
+	//     for the entire billing period.
 	//
 	// _(Optional)_.
 	ProRateRunningTotal param.Field[bool] `json:"proRateRunningTotal"`
 	// The default value is **TRUE**.
 	//
-	// - When TRUE, running totals are billed at the start of each billing period.
+	// - When **TRUE**, running totals are billed at the start of each billing period.
 	//
-	// - When FALSE, running totals are billed at the end of each billing period.
+	// - When **FALSE**, running totals are billed at the end of each billing period.
 	//
 	// _(Optional)_.
 	RunningTotalBillInAdvance param.Field[bool] `json:"runningTotalBillInAdvance"`
