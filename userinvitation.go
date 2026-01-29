@@ -117,35 +117,35 @@ type InvitationResponse struct {
 	//
 	// - TRUE - the invite has been accepted.
 	// - FALSE - the invite has not yet been accepted.
-	Accepted bool `json:"accepted,required"`
-	// The date that access will end for the user _(in ISO-8601 format)_. If this is
-	// blank, there is no end date meaning that the user has permanent access.
-	DtEndAccess time.Time `json:"dtEndAccess,required" format:"date-time"`
-	// The date when the invite expires _(in ISO-8601 format)_. After this date the
-	// invited user can no longer accept the invite. By default, any invite is valid
-	// for 30 days from the date the invite is sent.
-	DtExpiry time.Time `json:"dtExpiry,required" format:"date-time"`
-	// The email address of the invitee. The invitation will be sent to this email
-	// address.
-	Email string `json:"email,required"`
-	// The first name of the invitee.
-	FirstName string `json:"firstName,required"`
-	// The UUID of the user who sent the invite.
-	InvitingPrincipalID string `json:"invitingPrincipalId,required"`
-	// The surname of the invitee.
-	LastName string `json:"lastName,required"`
-	// The IDs of the permission policies the invited user has been assigned. This
-	// controls the access rights and privileges that this user will have when working
-	// in the m3ter Organization.
-	PermissionPolicyIDs []string `json:"permissionPolicyIds,required"`
+	Accepted bool `json:"accepted"`
 	// The UUID of the user who created the invitation.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the invitation was created _(in ISO-8601 format)_.
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
+	// The date that access will end for the user _(in ISO-8601 format)_. If this is
+	// blank, there is no end date meaning that the user has permanent access.
+	DtEndAccess time.Time `json:"dtEndAccess" format:"date-time"`
+	// The date when the invite expires _(in ISO-8601 format)_. After this date the
+	// invited user can no longer accept the invite. By default, any invite is valid
+	// for 30 days from the date the invite is sent.
+	DtExpiry time.Time `json:"dtExpiry" format:"date-time"`
 	// The DateTime when the invitation was last modified _(in ISO-8601 format)_.
 	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	// The email address of the invitee. The invitation will be sent to this email
+	// address.
+	Email string `json:"email"`
+	// The first name of the invitee.
+	FirstName string `json:"firstName"`
+	// The UUID of the user who sent the invite.
+	InvitingPrincipalID string `json:"invitingPrincipalId"`
 	// The UUID of the user who last modified the invitation.
 	LastModifiedBy string `json:"lastModifiedBy"`
+	// The surname of the invitee.
+	LastName string `json:"lastName"`
+	// The IDs of the permission policies the invited user has been assigned. This
+	// controls the access rights and privileges that this user will have when working
+	// in the m3ter Organization.
+	PermissionPolicyIDs []string `json:"permissionPolicyIds"`
 	// The version number:
 	//
 	//   - **Create:** On initial Create to insert a new entity, the version is set at 1
@@ -161,17 +161,17 @@ type InvitationResponse struct {
 type invitationResponseJSON struct {
 	ID                  apijson.Field
 	Accepted            apijson.Field
+	CreatedBy           apijson.Field
+	DtCreated           apijson.Field
 	DtEndAccess         apijson.Field
 	DtExpiry            apijson.Field
+	DtLastModified      apijson.Field
 	Email               apijson.Field
 	FirstName           apijson.Field
 	InvitingPrincipalID apijson.Field
+	LastModifiedBy      apijson.Field
 	LastName            apijson.Field
 	PermissionPolicyIDs apijson.Field
-	CreatedBy           apijson.Field
-	DtCreated           apijson.Field
-	DtLastModified      apijson.Field
-	LastModifiedBy      apijson.Field
 	Version             apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field

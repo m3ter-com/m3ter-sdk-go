@@ -29,8 +29,10 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewBalanceService] method instead.
 type BalanceService struct {
-	Options      []option.RequestOption
-	Transactions *BalanceTransactionService
+	Options              []option.RequestOption
+	Transactions         *BalanceTransactionService
+	ChargeSchedules      *BalanceChargeScheduleService
+	TransactionSchedules *BalanceTransactionScheduleService
 }
 
 // NewBalanceService generates a new service that applies the given options to each
@@ -40,6 +42,8 @@ func NewBalanceService(opts ...option.RequestOption) (r *BalanceService) {
 	r = &BalanceService{}
 	r.Options = opts
 	r.Transactions = NewBalanceTransactionService(opts...)
+	r.ChargeSchedules = NewBalanceChargeScheduleService(opts...)
+	r.TransactionSchedules = NewBalanceTransactionScheduleService(opts...)
 	return
 }
 
@@ -187,6 +191,10 @@ type Balance struct {
 	// The unique identifier (UUID) for the end customer Account the Balance belongs
 	// to.
 	AccountID string `json:"accountId"`
+	// Allow balance amounts to fall below zero. This feature is enabled on request.
+	// Please get in touch with m3ter Support or your m3ter contact if you would like
+	// it enabling for your organization(s).
+	AllowOverdraft bool `json:"allowOverdraft"`
 	// The financial value that the Balance holds.
 	Amount float64 `json:"amount"`
 	// A description for the bill line items for charges drawn-down against the
@@ -265,6 +273,7 @@ type Balance struct {
 type balanceJSON struct {
 	ID                              apijson.Field
 	AccountID                       apijson.Field
+	AllowOverdraft                  apijson.Field
 	Amount                          apijson.Field
 	BalanceDrawDownDescription      apijson.Field
 	Code                            apijson.Field
@@ -360,6 +369,10 @@ type BalanceNewParams struct {
 	Name param.Field[string] `json:"name,required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	// Allow balance amounts to fall below zero. This feature is enabled on request.
+	// Please get in touch with m3ter Support or your m3ter contact if you would like
+	// it enabling for your organization(s).
+	AllowOverdraft param.Field[bool] `json:"allowOverdraft"`
 	// A description for the bill line items for draw-down charges against the Balance.
 	// _(Optional)._
 	BalanceDrawDownDescription param.Field[string] `json:"balanceDrawDownDescription"`
@@ -500,6 +513,10 @@ type BalanceUpdateParams struct {
 	Name param.Field[string] `json:"name,required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
 	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	// Allow balance amounts to fall below zero. This feature is enabled on request.
+	// Please get in touch with m3ter Support or your m3ter contact if you would like
+	// it enabling for your organization(s).
+	AllowOverdraft param.Field[bool] `json:"allowOverdraft"`
 	// A description for the bill line items for draw-down charges against the Balance.
 	// _(Optional)._
 	BalanceDrawDownDescription param.Field[string] `json:"balanceDrawDownDescription"`

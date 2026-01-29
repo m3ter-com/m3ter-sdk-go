@@ -7,15 +7,13 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
-func TestAccountNewWithOptionalParams(t *testing.T) {
+func TestLookupTableLookupTableRevisionDataGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,61 +28,14 @@ func TestAccountNewWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Accounts.New(context.TODO(), m3ter.AccountNewParams{
-		Code:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
-		EmailAddress: m3ter.F("dev@stainless.com"),
-		Name:         m3ter.F("x"),
-		Address: m3ter.F(m3ter.AddressParam{
-			AddressLine1: m3ter.F("addressLine1"),
-			AddressLine2: m3ter.F("addressLine2"),
-			AddressLine3: m3ter.F("addressLine3"),
-			AddressLine4: m3ter.F("addressLine4"),
-			Country:      m3ter.F("country"),
-			Locality:     m3ter.F("locality"),
-			PostCode:     m3ter.F("postCode"),
-			Region:       m3ter.F("region"),
-		}),
-		AutoGenerateStatementMode: m3ter.F(m3ter.AccountNewParamsAutoGenerateStatementModeNone),
-		BillEpoch:                 m3ter.F(time.Now()),
-		CreditApplicationOrder:    m3ter.F([]m3ter.AccountNewParamsCreditApplicationOrder{m3ter.AccountNewParamsCreditApplicationOrderPrepayment}),
-		Currency:                  m3ter.F("USD"),
-		CustomFields: m3ter.F(map[string]m3ter.AccountNewParamsCustomFieldsUnion{
-			"foo": shared.UnionString("string"),
-		}),
-		DaysBeforeBillDue:     m3ter.F(int64(1)),
-		ParentAccountID:       m3ter.F("parentAccountId"),
-		PurchaseOrderNumber:   m3ter.F("purchaseOrderNumber"),
-		StatementDefinitionID: m3ter.F("statementDefinitionId"),
-		Version:               m3ter.F(int64(0)),
-	})
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAccountGet(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Accounts.Get(
+	_, err := client.LookupTables.LookupTableRevisionData.Get(
 		context.TODO(),
-		"id",
-		m3ter.AccountGetParams{},
+		"lookupTableId",
+		"lookupTableRevisionId",
+		m3ter.LookupTableLookupTableRevisionDataGetParams{
+			Additional: m3ter.F([]string{"string"}),
+			Limit:      m3ter.F(int64(0)),
+		},
 	)
 	if err != nil {
 		var apierr *m3ter.Error
@@ -95,7 +46,7 @@ func TestAccountGet(t *testing.T) {
 	}
 }
 
-func TestAccountUpdateWithOptionalParams(t *testing.T) {
+func TestLookupTableLookupTableRevisionDataUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,193 +61,248 @@ func TestAccountUpdateWithOptionalParams(t *testing.T) {
 		option.WithToken("My Token"),
 		option.WithOrgID("My Org ID"),
 	)
-	_, err := client.Accounts.Update(
+	_, err := client.LookupTables.LookupTableRevisionData.Update(
 		context.TODO(),
-		"id",
-		m3ter.AccountUpdateParams{
-			Code:         m3ter.F("S?oC\"$]C] ]]]]]5]"),
-			EmailAddress: m3ter.F("dev@stainless.com"),
-			Name:         m3ter.F("x"),
-			Address: m3ter.F(m3ter.AddressParam{
-				AddressLine1: m3ter.F("addressLine1"),
-				AddressLine2: m3ter.F("addressLine2"),
-				AddressLine3: m3ter.F("addressLine3"),
-				AddressLine4: m3ter.F("addressLine4"),
-				Country:      m3ter.F("country"),
-				Locality:     m3ter.F("locality"),
-				PostCode:     m3ter.F("postCode"),
-				Region:       m3ter.F("region"),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		m3ter.LookupTableLookupTableRevisionDataUpdateParams{
+			Items: m3ter.F([]map[string]interface{}{{
+				"foo": "bar",
+			}}),
+			Additional: m3ter.F([]string{"string"}),
+			Version:    m3ter.F(int64(0)),
+		},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLookupTableLookupTableRevisionDataDelete(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.LookupTables.LookupTableRevisionData.Delete(
+		context.TODO(),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		m3ter.LookupTableLookupTableRevisionDataDeleteParams{},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLookupTableLookupTableRevisionDataArchieve(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.LookupTables.LookupTableRevisionData.Archieve(
+		context.TODO(),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		m3ter.LookupTableLookupTableRevisionDataArchieveParams{
+			ContentType: m3ter.F(m3ter.LookupTableLookupTableRevisionDataArchieveParamsContentTypeApplicationJSONL),
+		},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLookupTableLookupTableRevisionDataCopyWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.LookupTables.LookupTableRevisionData.Copy(
+		context.TODO(),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		m3ter.LookupTableLookupTableRevisionDataCopyParams{
+			RevisionID: m3ter.F("revisionId"),
+		},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLookupTableLookupTableRevisionDataDeleteKeyWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.LookupTables.LookupTableRevisionData.DeleteKey(
+		context.TODO(),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		"lookupKey",
+		m3ter.LookupTableLookupTableRevisionDataDeleteKeyParams{
+			Version: m3ter.F(int64(0)),
+		},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLookupTableLookupTableRevisionDataGenerateDownloadURLWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.LookupTables.LookupTableRevisionData.GenerateDownloadURL(
+		context.TODO(),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		m3ter.LookupTableLookupTableRevisionDataGenerateDownloadURLParams{
+			ContentLength: m3ter.F(int64(1)),
+			ContentType:   m3ter.F(m3ter.LookupTableLookupTableRevisionDataGenerateDownloadURLParamsContentTypeApplicationJSONL),
+			FileName:      m3ter.F("x"),
+			Version:       m3ter.F(int64(0)),
+		},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLookupTableLookupTableRevisionDataGetKey(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.LookupTables.LookupTableRevisionData.GetKey(
+		context.TODO(),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		"lookupKey",
+		m3ter.LookupTableLookupTableRevisionDataGetKeyParams{},
+	)
+	if err != nil {
+		var apierr *m3ter.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLookupTableLookupTableRevisionDataUpdateKeyWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := m3ter.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+		option.WithAPISecret("My API Secret"),
+		option.WithToken("My Token"),
+		option.WithOrgID("My Org ID"),
+	)
+	_, err := client.LookupTables.LookupTableRevisionData.UpdateKey(
+		context.TODO(),
+		"lookupTableId",
+		"lookupTableRevisionId",
+		"lookupKey",
+		m3ter.LookupTableLookupTableRevisionDataUpdateKeyParams{
+			Item: m3ter.F(map[string]interface{}{
+				"foo": "bar",
 			}),
-			AutoGenerateStatementMode: m3ter.F(m3ter.AccountUpdateParamsAutoGenerateStatementModeNone),
-			BillEpoch:                 m3ter.F(time.Now()),
-			CreditApplicationOrder:    m3ter.F([]m3ter.AccountUpdateParamsCreditApplicationOrder{m3ter.AccountUpdateParamsCreditApplicationOrderPrepayment}),
-			Currency:                  m3ter.F("USD"),
-			CustomFields: m3ter.F(map[string]m3ter.AccountUpdateParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
-			DaysBeforeBillDue:     m3ter.F(int64(1)),
-			ParentAccountID:       m3ter.F("parentAccountId"),
-			PurchaseOrderNumber:   m3ter.F("purchaseOrderNumber"),
-			StatementDefinitionID: m3ter.F("statementDefinitionId"),
-			Version:               m3ter.F(int64(0)),
+			Additional: m3ter.F([]string{"string"}),
+			Version:    m3ter.F(int64(0)),
 		},
 	)
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAccountListWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Accounts.List(context.TODO(), m3ter.AccountListParams{
-		Codes:     m3ter.F([]string{"string"}),
-		IDs:       m3ter.F([]string{"string"}),
-		NextToken: m3ter.F("nextToken"),
-		PageSize:  m3ter.F(int64(1)),
-	})
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAccountDelete(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Accounts.Delete(
-		context.TODO(),
-		"id",
-		m3ter.AccountDeleteParams{},
-	)
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAccountEndDateBillingEntitiesWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Accounts.EndDateBillingEntities(
-		context.TODO(),
-		"id",
-		m3ter.AccountEndDateBillingEntitiesParams{
-			BillingEntities: m3ter.F([]m3ter.AccountEndDateBillingEntitiesParamsBillingEntity{m3ter.AccountEndDateBillingEntitiesParamsBillingEntityContract}),
-			EndDate:         m3ter.F(time.Now()),
-			ApplyToChildren: m3ter.F(true),
-		},
-	)
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAccountListChildrenWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Accounts.ListChildren(
-		context.TODO(),
-		"id",
-		m3ter.AccountListChildrenParams{
-			NextToken: m3ter.F("nextToken"),
-			PageSize:  m3ter.F(int64(1)),
-		},
-	)
-	if err != nil {
-		var apierr *m3ter.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAccountSearchWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := m3ter.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithAPISecret("My API Secret"),
-		option.WithToken("My Token"),
-		option.WithOrgID("My Org ID"),
-	)
-	_, err := client.Accounts.Search(context.TODO(), m3ter.AccountSearchParams{
-		FromDocument: m3ter.F(int64(0)),
-		Operator:     m3ter.F(m3ter.AccountSearchParamsOperatorAnd),
-		PageSize:     m3ter.F(int64(1)),
-		SearchQuery:  m3ter.F("searchQuery"),
-		SortBy:       m3ter.F("sortBy"),
-		SortOrder:    m3ter.F(m3ter.AccountSearchParamsSortOrderAsc),
-	})
 	if err != nil {
 		var apierr *m3ter.Error
 		if errors.As(err, &apierr) {
