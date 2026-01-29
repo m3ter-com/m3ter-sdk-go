@@ -398,9 +398,9 @@ type PricingNewParams struct {
 	MinimumSpend param.Field[float64] `json:"minimumSpend"`
 	// The default value is **FALSE**.
 	//
-	// - When TRUE, minimum spend is billed at the start of each billing period.
+	// - When **TRUE**, minimum spend is billed at the start of each billing period.
 	//
-	// - When FALSE, minimum spend is billed at the end of each billing period.
+	// - When **FALSE**, minimum spend is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at Organization level for minimum spend
 	// billing in arrears/in advance.
@@ -445,11 +445,11 @@ type PricingNewParams struct {
 	Segment param.Field[map[string]string] `json:"segment"`
 	// The default value is **FALSE**.
 	//
-	//   - If TRUE, usage accumulates over the entire period the priced Plan is active
-	//     for the account, and is not reset for pricing band rates at the start of each
-	//     billing period.
+	//   - If **TRUE**, usage accumulates over the entire period the priced Plan is
+	//     active for the account, and is not reset for pricing band rates at the start
+	//     of each billing period.
 	//
-	//   - If FALSE, usage does not accumulate, and is reset for pricing bands at the
+	//   - If **FALSE**, usage does not accumulate, and is reset for pricing bands at the
 	//     start of each billing period.
 	TiersSpanPlan param.Field[bool] `json:"tiersSpanPlan"`
 	//   - **DEBIT**. Default setting. The amount calculated using the Pricing is added
@@ -555,9 +555,9 @@ type PricingUpdateParams struct {
 	MinimumSpend param.Field[float64] `json:"minimumSpend"`
 	// The default value is **FALSE**.
 	//
-	// - When TRUE, minimum spend is billed at the start of each billing period.
+	// - When **TRUE**, minimum spend is billed at the start of each billing period.
 	//
-	// - When FALSE, minimum spend is billed at the end of each billing period.
+	// - When **FALSE**, minimum spend is billed at the end of each billing period.
 	//
 	// _(Optional)_. Overrides the setting at Organization level for minimum spend
 	// billing in arrears/in advance.
@@ -602,11 +602,11 @@ type PricingUpdateParams struct {
 	Segment param.Field[map[string]string] `json:"segment"`
 	// The default value is **FALSE**.
 	//
-	//   - If TRUE, usage accumulates over the entire period the priced Plan is active
-	//     for the account, and is not reset for pricing band rates at the start of each
-	//     billing period.
+	//   - If **TRUE**, usage accumulates over the entire period the priced Plan is
+	//     active for the account, and is not reset for pricing band rates at the start
+	//     of each billing period.
 	//
-	//   - If FALSE, usage does not accumulate, and is reset for pricing bands at the
+	//   - If **FALSE**, usage does not accumulate, and is reset for pricing bands at the
 	//     start of each billing period.
 	TiersSpanPlan param.Field[bool] `json:"tiersSpanPlan"`
 	//   - **DEBIT**. Default setting. The amount calculated using the Pricing is added

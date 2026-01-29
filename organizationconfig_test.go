@@ -81,6 +81,7 @@ func TestOrganizationConfigUpdateWithOptionalParams(t *testing.T) {
 			ExternalInvoiceDate:          m3ter.F("LAST_DAY_OF_ARREARS"),
 			MinimumSpendBillInAdvance:    m3ter.F(true),
 			ScheduledBillInterval:        m3ter.F(0.000000),
+			ScheduledBillOffset:          m3ter.F(int64(0)),
 			SequenceStartNumber:          m3ter.F(int64(1000)),
 			StandingChargeBillInAdvance:  m3ter.F(true),
 			SuppressedEmptyBills:         m3ter.F(true),

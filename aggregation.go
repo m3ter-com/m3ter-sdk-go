@@ -162,7 +162,9 @@ func (r *AggregationService) Delete(ctx context.Context, id string, body Aggrega
 
 type AggregationResponse struct {
 	// The UUID of the entity.
-	ID                  string `json:"id,required"`
+	ID string `json:"id,required"`
+	// Optional Product ID this Aggregation should be attributed to for accounting
+	// purposes.
 	AccountingProductID string `json:"accountingProductId"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
@@ -192,13 +194,17 @@ type AggregationResponse struct {
 	//
 	//   - **UNIQUE**. Uses unique values and returns a count of the number of unique
 	//     values. Can be applied to a **Metadata** `targetField`.
+	//
+	//   - **CUSTOM_SQL**. Uses an SQL query expression. The `customSQL` parameter is
+	//     used for the SQL query.
 	Aggregation AggregationResponseAggregation `json:"aggregation"`
 	// Code of the Aggregation. A unique short code to identify the Aggregation.
 	Code string `json:"code"`
 	// The id of the user who created this aggregation.
 	CreatedBy    string                                          `json:"createdBy"`
 	CustomFields map[string]AggregationResponseCustomFieldsUnion `json:"customFields"`
-	CustomSql    string                                          `json:"customSql"`
+	// The SQL query expression to be used for a Custom SQL Aggregation.
+	CustomSql string `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
 	//
@@ -339,6 +345,9 @@ func (r aggregationResponseJSON) RawJSON() string {
 //
 //   - **UNIQUE**. Uses unique values and returns a count of the number of unique
 //     values. Can be applied to a **Metadata** `targetField`.
+//
+//   - **CUSTOM_SQL**. Uses an SQL query expression. The `customSQL` parameter is
+//     used for the SQL query.
 type AggregationResponseAggregation string
 
 const (
@@ -418,7 +427,7 @@ type AggregationNewParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
-	// the selected targetField.
+	// the selected `targetField`.
 	//
 	// Enum:
 	//
@@ -444,6 +453,9 @@ type AggregationNewParams struct {
 	//
 	//   - **UNIQUE**. Uses unique values and returns a count of the number of unique
 	//     values. Can be applied to a **Metadata** `targetField`.
+	//
+	//   - **CUSTOM_SQL**. Uses an SQL query expression. If you select this Aggregation
+	//     type, use the `customSQL` request parameter to enter an SQL query.
 	Aggregation param.Field[AggregationNewParamsAggregation] `json:"aggregation,required"`
 	// The UUID of the Meter used as the source of usage data for the Aggregation.
 	//
@@ -483,14 +495,19 @@ type AggregationNewParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
-	// purposes
+	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                           `json:"code"`
 	CustomFields param.Field[map[string]AggregationNewParamsCustomFieldsUnion] `json:"customFields"`
-	// **NOTE:** The `customSql` Aggregation type is currently only available in Beta
-	// release and on request. If you are interested in using this feature, please get
-	// in touch with m3ter Support or your m3ter contact.
+	// Enter the SQL query expression to be used for a Custom SQL Aggregation. Custom
+	// SQL queries should be run against the Measurements table - for more details see
+	// [Custom SQL Aggregations](https://www.m3ter.com/docs/guides/usage-data-aggregations/custom-sql-aggregations)
+	// in your main User documentation.
+	//
+	// **NOTE:** The `customSql` Aggregation type is currently available in Preview
+	// release. If you are interested in using this feature, please get in touch with
+	// m3ter Support or your m3ter contact.
 	CustomSql param.Field[string] `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
@@ -537,7 +554,7 @@ func (r AggregationNewParams) MarshalJSON() (data []byte, err error) {
 
 // Specifies the computation method applied to usage data collected in
 // `targetField`. Aggregation unit value depends on the **Category** configured for
-// the selected targetField.
+// the selected `targetField`.
 //
 // Enum:
 //
@@ -563,6 +580,9 @@ func (r AggregationNewParams) MarshalJSON() (data []byte, err error) {
 //
 //   - **UNIQUE**. Uses unique values and returns a count of the number of unique
 //     values. Can be applied to a **Metadata** `targetField`.
+//
+//   - **CUSTOM_SQL**. Uses an SQL query expression. If you select this Aggregation
+//     type, use the `customSQL` request parameter to enter an SQL query.
 type AggregationNewParamsAggregation string
 
 const (
@@ -632,7 +652,7 @@ type AggregationUpdateParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
-	// the selected targetField.
+	// the selected `targetField`.
 	//
 	// Enum:
 	//
@@ -658,6 +678,9 @@ type AggregationUpdateParams struct {
 	//
 	//   - **UNIQUE**. Uses unique values and returns a count of the number of unique
 	//     values. Can be applied to a **Metadata** `targetField`.
+	//
+	//   - **CUSTOM_SQL**. Uses an SQL query expression. If you select this Aggregation
+	//     type, use the `customSQL` request parameter to enter an SQL query.
 	Aggregation param.Field[AggregationUpdateParamsAggregation] `json:"aggregation,required"`
 	// The UUID of the Meter used as the source of usage data for the Aggregation.
 	//
@@ -697,14 +720,19 @@ type AggregationUpdateParams struct {
 	// customers what they are being charged for.
 	Unit param.Field[string] `json:"unit,required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
-	// purposes
+	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Code of the new Aggregation. A unique short code to identify the Aggregation.
 	Code         param.Field[string]                                              `json:"code"`
 	CustomFields param.Field[map[string]AggregationUpdateParamsCustomFieldsUnion] `json:"customFields"`
-	// **NOTE:** The `customSql` Aggregation type is currently only available in Beta
-	// release and on request. If you are interested in using this feature, please get
-	// in touch with m3ter Support or your m3ter contact.
+	// Enter the SQL query expression to be used for a Custom SQL Aggregation. Custom
+	// SQL queries should be run against the Measurements table - for more details see
+	// [Custom SQL Aggregations](https://www.m3ter.com/docs/guides/usage-data-aggregations/custom-sql-aggregations)
+	// in your main User documentation.
+	//
+	// **NOTE:** The `customSql` Aggregation type is currently available in Preview
+	// release. If you are interested in using this feature, please get in touch with
+	// m3ter Support or your m3ter contact.
 	CustomSql param.Field[string] `json:"customSql"`
 	// Aggregation value used when no usage data is available to be aggregated.
 	// _(Optional)_.
@@ -751,7 +779,7 @@ func (r AggregationUpdateParams) MarshalJSON() (data []byte, err error) {
 
 // Specifies the computation method applied to usage data collected in
 // `targetField`. Aggregation unit value depends on the **Category** configured for
-// the selected targetField.
+// the selected `targetField`.
 //
 // Enum:
 //
@@ -777,6 +805,9 @@ func (r AggregationUpdateParams) MarshalJSON() (data []byte, err error) {
 //
 //   - **UNIQUE**. Uses unique values and returns a count of the number of unique
 //     values. Can be applied to a **Metadata** `targetField`.
+//
+//   - **CUSTOM_SQL**. Uses an SQL query expression. If you select this Aggregation
+//     type, use the `customSQL` request parameter to enter an SQL query.
 type AggregationUpdateParamsAggregation string
 
 const (

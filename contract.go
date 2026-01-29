@@ -41,10 +41,12 @@ func NewContractService(opts ...option.RequestOption) (r *ContractService) {
 	return
 }
 
-// Create a new Contract.
-//
 // Creates a new Contract for the specified Account. The Contract includes
 // information such as the associated Account along with start and end dates.
+//
+// If you intend to bill an Account on a Contract basis, you can use the
+// `billGroupingKeyId`, `applyContractPeriodLimits`, and `usageFilters` request
+// parameters to control Contract billing.
 func (r *ContractService) New(ctx context.Context, params ContractNewParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -151,8 +153,9 @@ func (r *ContractService) ListAutoPaging(ctx context.Context, params ContractLis
 // Deletes the Contract with the specified UUID. Used to remove an existing
 // Contract from an Account.
 //
-// **Note:** This call will fail if there are any AccountPlans or Commitments that
-// have been added to the Contract.
+// **Note:** This call will fail if there are any other billing entities associated
+// with the Account and that have been added to the Contract, such as AccountPlans,
+// Balance, or Commitments.
 func (r *ContractService) Delete(ctx context.Context, id string, body ContractDeleteParams, opts ...option.RequestOption) (res *ContractResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -210,9 +213,18 @@ type ContractResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
-	AccountID                 string `json:"accountId"`
-	ApplyContractPeriodLimits bool   `json:"applyContractPeriodLimits"`
-	BillGroupingKeyID         string `json:"billGroupingKeyId"`
+	AccountID string `json:"accountId"`
+	// For Contract billing, a boolean setting for restricting the charges billed to
+	// the period defined for the Contract:
+	//
+	//   - **TRUE** - Contract billing for the Account will be restricted to charge
+	//     amounts that fall within the defined Contract period.
+	//   - **FALSE** - The period for amounts billed under the Contract will be
+	//     determined by the Account Plan attached to the Account and linked to the
+	//     Contract.(_Default_)
+	ApplyContractPeriodLimits bool `json:"applyContractPeriodLimits"`
+	// The ID of the Bill Grouping Key assigned to the Contract.
+	BillGroupingKeyID string `json:"billGroupingKeyId"`
 	// The short code of the Contract.
 	Code string `json:"code"`
 	// The unique identifier (UUID) of the user who created this Contract.
@@ -245,7 +257,14 @@ type ContractResponse struct {
 	PurchaseOrderNumber string `json:"purchaseOrderNumber"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate    time.Time                     `json:"startDate" format:"date"`
+	StartDate time.Time `json:"startDate" format:"date"`
+	// Used to control Contract billing and charge at billing only for usage where
+	// Product Meter dimensions equal specific defined values:
+	//
+	//   - Usage filters are defined to either _include_ or _exclude_ charges for usage
+	//     associated with specific Meter dimensions.
+	//   - The Meter dimensions must be present in the data field schema of the Meter
+	//     used to submit usage data measurements.
 	UsageFilters []ContractResponseUsageFilter `json:"usageFilters"`
 	// The version number:
 	//
@@ -454,9 +473,28 @@ type ContractNewParams struct {
 	Name param.Field[string] `json:"name,required"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate                 param.Field[time.Time] `json:"startDate,required" format:"date"`
-	ApplyContractPeriodLimits param.Field[bool]      `json:"applyContractPeriodLimits"`
-	BillGroupingKeyID         param.Field[string]    `json:"billGroupingKeyId"`
+	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	// For Contract billing, a boolean setting for restricting the charges billed to
+	// the period defined for the Contract:
+	//
+	//   - **TRUE** - Contract billing for the Account will be restricted to charge
+	//     amounts that fall within the defined Contract period.
+	//   - **FALSE** - The period for amounts billed under the Contract will be
+	//     determined by the Account Plan attached to the Account and linked to the
+	//     Contract.(_Default_)
+	ApplyContractPeriodLimits param.Field[bool] `json:"applyContractPeriodLimits"`
+	// The ID of the Bill Grouping Key assigned to the Contract.
+	//
+	// If you are implementing Contract Billing for an Account, use `billGroupingKey`
+	// to control how charges linked to Contracts on the Account will be billed:
+	//
+	//   - **Independent Contract billing**. Assign an _exclusive_ Bill Grouping Key to
+	//     the Contract - only charges due against the Account and linked to the single
+	//     Contract will appear on a separate Bill.
+	//   - **Collective Contract billing**. Assign the same _non-exclusive_ Bill Grouping
+	//     Key to multiple Contracts - all charges due against the Account and linked to
+	//     the multiple Contracts will appear together on a single Bill.
+	BillGroupingKeyID param.Field[string] `json:"billGroupingKeyId"`
 	// The short code of the Contract.
 	Code param.Field[string] `json:"code"`
 	// User defined fields enabling you to attach custom data. The value for a custom
@@ -473,8 +511,15 @@ type ContractNewParams struct {
 	// The description of the Contract, which provides context and information.
 	Description param.Field[string] `json:"description"`
 	// The Purchase Order Number associated with the Contract.
-	PurchaseOrderNumber param.Field[string]                         `json:"purchaseOrderNumber"`
-	UsageFilters        param.Field[[]ContractNewParamsUsageFilter] `json:"usageFilters"`
+	PurchaseOrderNumber param.Field[string] `json:"purchaseOrderNumber"`
+	// Use `usageFilters` to control Contract billing and charge at billing only for
+	// usage where Product Meter dimensions equal specific defined values:
+	//
+	//   - Define Usage filters to either _include_ or _exclude_ charges for usage
+	//     associated with specific Meter dimensions.
+	//   - The Meter dimensions must be present in the data field schema of the Meter
+	//     used to submit usage data measurements.
+	UsageFilters param.Field[[]ContractNewParamsUsageFilter] `json:"usageFilters"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -538,9 +583,28 @@ type ContractUpdateParams struct {
 	Name param.Field[string] `json:"name,required"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate                 param.Field[time.Time] `json:"startDate,required" format:"date"`
-	ApplyContractPeriodLimits param.Field[bool]      `json:"applyContractPeriodLimits"`
-	BillGroupingKeyID         param.Field[string]    `json:"billGroupingKeyId"`
+	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	// For Contract billing, a boolean setting for restricting the charges billed to
+	// the period defined for the Contract:
+	//
+	//   - **TRUE** - Contract billing for the Account will be restricted to charge
+	//     amounts that fall within the defined Contract period.
+	//   - **FALSE** - The period for amounts billed under the Contract will be
+	//     determined by the Account Plan attached to the Account and linked to the
+	//     Contract.(_Default_)
+	ApplyContractPeriodLimits param.Field[bool] `json:"applyContractPeriodLimits"`
+	// The ID of the Bill Grouping Key assigned to the Contract.
+	//
+	// If you are implementing Contract Billing for an Account, use `billGroupingKey`
+	// to control how charges linked to Contracts on the Account will be billed:
+	//
+	//   - **Independent Contract billing**. Assign an _exclusive_ Bill Grouping Key to
+	//     the Contract - only charges due against the Account and linked to the single
+	//     Contract will appear on a separate Bill.
+	//   - **Collective Contract billing**. Assign the same _non-exclusive_ Bill Grouping
+	//     Key to multiple Contracts - all charges due against the Account and linked to
+	//     the multiple Contracts will appear together on a single Bill.
+	BillGroupingKeyID param.Field[string] `json:"billGroupingKeyId"`
 	// The short code of the Contract.
 	Code param.Field[string] `json:"code"`
 	// User defined fields enabling you to attach custom data. The value for a custom
@@ -557,8 +621,15 @@ type ContractUpdateParams struct {
 	// The description of the Contract, which provides context and information.
 	Description param.Field[string] `json:"description"`
 	// The Purchase Order Number associated with the Contract.
-	PurchaseOrderNumber param.Field[string]                            `json:"purchaseOrderNumber"`
-	UsageFilters        param.Field[[]ContractUpdateParamsUsageFilter] `json:"usageFilters"`
+	PurchaseOrderNumber param.Field[string] `json:"purchaseOrderNumber"`
+	// Use `usageFilters` to control Contract billing and charge at billing only for
+	// usage where Product Meter dimensions equal specific defined values:
+	//
+	//   - Define Usage filters to either _include_ or _exclude_ charges for usage
+	//     associated with specific Meter dimensions.
+	//   - The Meter dimensions must be present in the data field schema of the Meter
+	//     used to submit usage data measurements.
+	UsageFilters param.Field[[]ContractUpdateParamsUsageFilter] `json:"usageFilters"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
