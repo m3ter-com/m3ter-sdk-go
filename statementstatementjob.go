@@ -261,7 +261,8 @@ type StatementStatementJobNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The unique identifier (UUID) of the bill associated with the StatementJob.
-	BillID param.Field[string] `json:"billId,required"`
+	BillID  param.Field[string]                                `json:"billId,required"`
+	Filters param.Field[StatementStatementJobNewParamsFilters] `json:"filters"`
 	// A Boolean value indicating whether the generated statement includes a CSV
 	// format.
 	//
@@ -280,6 +281,15 @@ type StatementStatementJobNewParams struct {
 }
 
 func (r StatementStatementJobNewParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type StatementStatementJobNewParamsFilters struct {
+	// Include usage line items whose meterId matches one of these values.
+	MeterIDs param.Field[[]string] `json:"meterIds"`
+}
+
+func (r StatementStatementJobNewParamsFilters) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -333,7 +343,8 @@ type StatementStatementJobNewBatchParams struct {
 	OrgID param.Field[string] `path:"orgId,required"`
 	// The list of unique identifiers (UUIDs) of the bills associated with the
 	// StatementJob.
-	BillIDs param.Field[[]string] `json:"billIds,required"`
+	BillIDs param.Field[[]string]                                   `json:"billIds,required"`
+	Filters param.Field[StatementStatementJobNewBatchParamsFilters] `json:"filters"`
 	// A Boolean value indicating whether the generated statement includes a CSV
 	// format.
 	//
@@ -352,5 +363,14 @@ type StatementStatementJobNewBatchParams struct {
 }
 
 func (r StatementStatementJobNewBatchParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type StatementStatementJobNewBatchParamsFilters struct {
+	// Include usage line items whose meterId matches one of these values.
+	MeterIDs param.Field[[]string] `json:"meterIds"`
+}
+
+func (r StatementStatementJobNewBatchParamsFilters) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }

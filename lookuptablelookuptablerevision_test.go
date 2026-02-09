@@ -37,12 +37,12 @@ func TestLookupTableLookupTableRevisionNewWithOptionalParams(t *testing.T) {
 			LookupTableRevisionRequest: m3ter.LookupTableRevisionRequestParam{
 				Fields: m3ter.F([]m3ter.LookupTableRevisionRequestFieldParam{{
 					Type: m3ter.F(m3ter.LookupTableRevisionRequestFieldsTypeString),
-					Name: m3ter.F("lookupfield"),
+					Name: m3ter.F("lookuptablerevisionfieldkey"),
 				}, {
 					Type: m3ter.F(m3ter.LookupTableRevisionRequestFieldsTypeString),
-					Name: m3ter.F("lookupfield"),
+					Name: m3ter.F("lookuptablerevisionfieldkey"),
 				}}),
-				Keys: m3ter.F([]string{"foo", "bar", "baz"}),
+				Keys: m3ter.F([]string{"string"}),
 				Name: m3ter.F("x"),
 				CustomFields: m3ter.F(map[string]m3ter.LookupTableRevisionRequestCustomFieldsUnionParam{
 					"foo": shared.UnionString("string"),
@@ -114,12 +114,12 @@ func TestLookupTableLookupTableRevisionUpdateWithOptionalParams(t *testing.T) {
 			LookupTableRevisionRequest: m3ter.LookupTableRevisionRequestParam{
 				Fields: m3ter.F([]m3ter.LookupTableRevisionRequestFieldParam{{
 					Type: m3ter.F(m3ter.LookupTableRevisionRequestFieldsTypeString),
-					Name: m3ter.F("lookupfield"),
+					Name: m3ter.F("lookuptablerevisionfieldkey"),
 				}, {
 					Type: m3ter.F(m3ter.LookupTableRevisionRequestFieldsTypeString),
-					Name: m3ter.F("lookupfield"),
+					Name: m3ter.F("lookuptablerevisionfieldkey"),
 				}}),
-				Keys: m3ter.F([]string{"foo", "bar", "baz"}),
+				Keys: m3ter.F([]string{"string"}),
 				Name: m3ter.F("x"),
 				CustomFields: m3ter.F(map[string]m3ter.LookupTableRevisionRequestCustomFieldsUnionParam{
 					"foo": shared.UnionString("string"),
