@@ -29,7 +29,10 @@ func TestStatementStatementJobNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Statements.StatementJobs.New(context.TODO(), m3ter.StatementStatementJobNewParams{
-		BillID:           m3ter.F("x"),
+		BillID: m3ter.F("x"),
+		Filters: m3ter.F(m3ter.StatementStatementJobNewParamsFilters{
+			MeterIDs: m3ter.F([]string{"string"}),
+		}),
 		IncludeCsvFormat: m3ter.F(true),
 		Version:          m3ter.F(int64(0)),
 	})
@@ -147,7 +150,10 @@ func TestStatementStatementJobNewBatchWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.Statements.StatementJobs.NewBatch(context.TODO(), m3ter.StatementStatementJobNewBatchParams{
-		BillIDs:          m3ter.F([]string{"string"}),
+		BillIDs: m3ter.F([]string{"string"}),
+		Filters: m3ter.F(m3ter.StatementStatementJobNewBatchParamsFilters{
+			MeterIDs: m3ter.F([]string{"string"}),
+		}),
 		IncludeCsvFormat: m3ter.F(true),
 		Version:          m3ter.F(int64(0)),
 	})
