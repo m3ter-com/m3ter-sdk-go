@@ -30,9 +30,9 @@ func TestScheduledEventConfigurationNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ScheduledEventConfigurations.New(context.TODO(), m3ter.ScheduledEventConfigurationNewParams{
 		Entity:  m3ter.F("Bill"),
-		Field:   m3ter.F("dueDate"),
-		Name:    m3ter.F("10 Days After Bill Due Date"),
-		Offset:  m3ter.F(int64(10)),
+		Field:   m3ter.F("endDate"),
+		Name:    m3ter.F("scheduled.bill.enddateEvent"),
+		Offset:  m3ter.F(int64(5)),
 		Version: m3ter.F(int64(0)),
 	})
 	if err != nil {
@@ -93,9 +93,9 @@ func TestScheduledEventConfigurationUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		m3ter.ScheduledEventConfigurationUpdateParams{
 			Entity:  m3ter.F("Bill"),
-			Field:   m3ter.F("dueDate"),
-			Name:    m3ter.F("10 Days After Bill Due Date"),
-			Offset:  m3ter.F(int64(10)),
+			Field:   m3ter.F("endDate"),
+			Name:    m3ter.F("scheduled.bill.enddateEvent"),
+			Offset:  m3ter.F(int64(5)),
 			Version: m3ter.F(int64(0)),
 		},
 	)
