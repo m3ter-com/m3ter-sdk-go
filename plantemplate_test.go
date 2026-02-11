@@ -11,7 +11,6 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go"
 	"github.com/m3ter-com/m3ter-sdk-go/internal/testutil"
 	"github.com/m3ter-com/m3ter-sdk-go/option"
-	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
 func TestPlanTemplateNewWithOptionalParams(t *testing.T) {
@@ -30,24 +29,22 @@ func TestPlanTemplateNewWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.PlanTemplates.New(context.TODO(), m3ter.PlanTemplateNewParams{
-		BillFrequency:         m3ter.F(m3ter.PlanTemplateNewParamsBillFrequencyDaily),
-		Currency:              m3ter.F("xxx"),
-		Name:                  m3ter.F("x"),
-		ProductID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-		StandingCharge:        m3ter.F(0.000000),
-		BillFrequencyInterval: m3ter.F(int64(1)),
-		Code:                  m3ter.F("S?oC\"$]C] ]]]]]5]"),
-		CustomFields: m3ter.F(map[string]m3ter.PlanTemplateNewParamsCustomFieldsUnion{
-			"foo": shared.UnionString("string"),
-		}),
+		BillFrequency:               m3ter.F(m3ter.PlanTemplateNewParamsBillFrequencyDaily),
+		Currency:                    m3ter.F("USD"),
+		Name:                        m3ter.F("string"),
+		ProductID:                   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		StandingCharge:              m3ter.F(0.000000),
+		BillFrequencyInterval:       m3ter.F(int64(1)),
+		Code:                        m3ter.F("string"),
+		CustomFields:                m3ter.F(map[string]m3ter.PlanTemplateNewParamsCustomFieldsUnion{}),
 		MinimumSpend:                m3ter.F(0.000000),
 		MinimumSpendBillInAdvance:   m3ter.F(true),
-		MinimumSpendDescription:     m3ter.F("minimumSpendDescription"),
+		MinimumSpendDescription:     m3ter.F("string"),
 		Ordinal:                     m3ter.F(int64(0)),
 		StandingChargeBillInAdvance: m3ter.F(true),
-		StandingChargeDescription:   m3ter.F("standingChargeDescription"),
+		StandingChargeDescription:   m3ter.F("string"),
 		StandingChargeInterval:      m3ter.F(int64(1)),
-		StandingChargeOffset:        m3ter.F(int64(0)),
+		StandingChargeOffset:        m3ter.F(int64(364)),
 		Version:                     m3ter.F(int64(0)),
 	})
 	if err != nil {
@@ -107,24 +104,22 @@ func TestPlanTemplateUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		m3ter.PlanTemplateUpdateParams{
-			BillFrequency:         m3ter.F(m3ter.PlanTemplateUpdateParamsBillFrequencyDaily),
-			Currency:              m3ter.F("xxx"),
-			Name:                  m3ter.F("x"),
-			ProductID:             m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-			StandingCharge:        m3ter.F(0.000000),
-			BillFrequencyInterval: m3ter.F(int64(1)),
-			Code:                  m3ter.F("S?oC\"$]C] ]]]]]5]"),
-			CustomFields: m3ter.F(map[string]m3ter.PlanTemplateUpdateParamsCustomFieldsUnion{
-				"foo": shared.UnionString("string"),
-			}),
+			BillFrequency:               m3ter.F(m3ter.PlanTemplateUpdateParamsBillFrequencyDaily),
+			Currency:                    m3ter.F("USD"),
+			Name:                        m3ter.F("string"),
+			ProductID:                   m3ter.F("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+			StandingCharge:              m3ter.F(0.000000),
+			BillFrequencyInterval:       m3ter.F(int64(1)),
+			Code:                        m3ter.F("string"),
+			CustomFields:                m3ter.F(map[string]m3ter.PlanTemplateUpdateParamsCustomFieldsUnion{}),
 			MinimumSpend:                m3ter.F(0.000000),
 			MinimumSpendBillInAdvance:   m3ter.F(true),
-			MinimumSpendDescription:     m3ter.F("minimumSpendDescription"),
+			MinimumSpendDescription:     m3ter.F("string"),
 			Ordinal:                     m3ter.F(int64(0)),
 			StandingChargeBillInAdvance: m3ter.F(true),
-			StandingChargeDescription:   m3ter.F("standingChargeDescription"),
+			StandingChargeDescription:   m3ter.F("string"),
 			StandingChargeInterval:      m3ter.F(int64(1)),
-			StandingChargeOffset:        m3ter.F(int64(0)),
+			StandingChargeOffset:        m3ter.F(int64(364)),
 			Version:                     m3ter.F(int64(0)),
 		},
 	)

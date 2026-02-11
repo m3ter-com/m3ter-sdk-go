@@ -55,37 +55,26 @@ func TestCustomFieldUpdateWithOptionalParams(t *testing.T) {
 		option.WithOrgID("My Org ID"),
 	)
 	_, err := client.CustomFields.Update(context.TODO(), m3ter.CustomFieldUpdateParams{
-		Account: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsAccountUnion{
-			"foo": shared.UnionString("string"),
-		}),
+		Account: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsAccountUnion{}),
 		AccountPlan: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsAccountPlanUnion{
-			"foo": shared.UnionString("string"),
+			"New CF Test": shared.UnionString("Test Value"),
 		}),
-		Aggregation: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsAggregationUnion{
-			"foo": shared.UnionString("string"),
-		}),
-		CompoundAggregation: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsCompoundAggregationUnion{
-			"foo": shared.UnionString("string"),
-		}),
+		Aggregation:         m3ter.F(map[string]m3ter.CustomFieldUpdateParamsAggregationUnion{}),
+		CompoundAggregation: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsCompoundAggregationUnion{}),
 		Contract: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsContractUnion{
 			"foo": shared.UnionString("string"),
 		}),
-		Meter: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsMeterUnion{
-			"foo": shared.UnionString("string"),
-		}),
+		Meter: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsMeterUnion{}),
 		Organization: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsOrganizationUnion{
-			"foo": shared.UnionString("string"),
+			"Org Example 2": shared.UnionString("Sample text 2."),
+			"Org Example 1": shared.UnionString("Sample text 1."),
 		}),
-		Plan: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsPlanUnion{
-			"foo": shared.UnionString("string"),
-		}),
-		PlanTemplate: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsPlanTemplateUnion{
-			"foo": shared.UnionString("string"),
-		}),
+		Plan:         m3ter.F(map[string]m3ter.CustomFieldUpdateParamsPlanUnion{}),
+		PlanTemplate: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsPlanTemplateUnion{}),
 		Product: m3ter.F(map[string]m3ter.CustomFieldUpdateParamsProductUnion{
-			"foo": shared.UnionString("string"),
+			"Product CF Example": shared.UnionFloat(42.000000),
 		}),
-		Version: m3ter.F(int64(0)),
+		Version: m3ter.F(int64(6)),
 	})
 	if err != nil {
 		var apierr *m3ter.Error

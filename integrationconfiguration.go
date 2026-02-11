@@ -312,6 +312,7 @@ func (r IntegrationConfigurationResponseStatus) IsKnown() bool {
 	return false
 }
 
+// Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationNewResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -410,6 +411,7 @@ func (r IntegrationConfigurationNewResponseTriggerType) IsKnown() bool {
 	return false
 }
 
+// Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationUpdateResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -606,6 +608,7 @@ func (r IntegrationConfigurationListResponseTriggerType) IsKnown() bool {
 	return false
 }
 
+// Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationDeleteResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -704,6 +707,7 @@ func (r IntegrationConfigurationDeleteResponseTriggerType) IsKnown() bool {
 	return false
 }
 
+// Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationEnableResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
