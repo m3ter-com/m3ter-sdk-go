@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.0 (2026-02-11)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** Updating OpenAPI Spec ([b9ac983](https://github.com/m3ter-com/m3ter-sdk-go/commit/b9ac983f308938ec8712c17328fd86663e2d1ffc))
+
+
+### Chores
+
+* **api:** minor updates ([a43d8fb](https://github.com/m3ter-com/m3ter-sdk-go/commit/a43d8fb1db146ed8879d1db61015cbb3bbc91048))
+
 ## 0.11.0 (2026-01-29)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.10.0...v0.11.0)
