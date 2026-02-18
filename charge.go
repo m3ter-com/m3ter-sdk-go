@@ -164,6 +164,7 @@ func (r *ChargeService) Delete(ctx context.Context, id string, body ChargeDelete
 	return
 }
 
+// Response containing a Charge entity
 type ChargeNewResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -305,6 +306,7 @@ func (r ChargeNewResponseLineItemType) IsKnown() bool {
 	return false
 }
 
+// Response containing a Charge entity
 type ChargeGetResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -446,6 +448,7 @@ func (r ChargeGetResponseLineItemType) IsKnown() bool {
 	return false
 }
 
+// Response containing a Charge entity
 type ChargeUpdateResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`
@@ -728,6 +731,7 @@ func (r ChargeListResponseLineItemType) IsKnown() bool {
 	return false
 }
 
+// Response containing a Charge entity
 type ChargeDeleteResponse struct {
 	// The UUID of the entity.
 	ID string `json:"id,required"`

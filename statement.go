@@ -353,7 +353,8 @@ type StatementJobResponse struct {
 	DtCreated time.Time `json:"dtCreated" format:"date-time"`
 	// The date and time _(in ISO-8601 format)_ when the StatementJob was last
 	// modified.
-	DtLastModified time.Time `json:"dtLastModified" format:"date-time"`
+	DtLastModified time.Time                   `json:"dtLastModified" format:"date-time"`
+	Filters        StatementJobResponseFilters `json:"filters"`
 	// A Boolean value indicating whether the generated statement includes a CSV
 	// format.
 	//
@@ -392,6 +393,7 @@ type statementJobResponseJSON struct {
 	CsvStatementStatus        apijson.Field
 	DtCreated                 apijson.Field
 	DtLastModified            apijson.Field
+	Filters                   apijson.Field
 	IncludeCsvFormat          apijson.Field
 	JsonStatementStatus       apijson.Field
 	LastModifiedBy            apijson.Field
@@ -426,6 +428,28 @@ func (r StatementJobResponseCsvStatementStatus) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type StatementJobResponseFilters struct {
+	// Include usage line items whose meterId matches one of these values.
+	MeterIDs []string                        `json:"meterIds"`
+	JSON     statementJobResponseFiltersJSON `json:"-"`
+}
+
+// statementJobResponseFiltersJSON contains the JSON metadata for the struct
+// [StatementJobResponseFilters]
+type statementJobResponseFiltersJSON struct {
+	MeterIDs    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *StatementJobResponseFilters) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r statementJobResponseFiltersJSON) RawJSON() string {
+	return r.raw
 }
 
 type StatementJobResponseJsonStatementStatus string
