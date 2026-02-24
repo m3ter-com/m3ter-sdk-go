@@ -205,11 +205,11 @@ func (r downloadURLResponseJSON) RawJSON() string {
 
 type MeasurementRequestParam struct {
 	// Code of the Account the measurement is for.
-	Account param.Field[string] `json:"account,required"`
+	Account param.Field[string] `json:"account" api:"required"`
 	// Short code identifying the Meter the measurement is for.
-	Meter param.Field[string] `json:"meter,required"`
+	Meter param.Field[string] `json:"meter" api:"required"`
 	// Timestamp for the measurement _(in ISO 8601 format)_.
-	Ts param.Field[time.Time] `json:"ts,required" format:"date-time"`
+	Ts param.Field[time.Time] `json:"ts" api:"required" format:"date-time"`
 	// 'cost' values
 	Cost param.Field[map[string]float64] `json:"cost"`
 	// End timestamp for the measurement _(in ISO 8601 format)_. _(Optional)_.
@@ -241,7 +241,7 @@ func (r MeasurementRequestParam) MarshalJSON() (data []byte, err error) {
 
 type SubmitMeasurementsRequestParam struct {
 	// Request containing the usage data measurements for submission.
-	Measurements param.Field[[]MeasurementRequestParam] `json:"measurements,required"`
+	Measurements param.Field[[]MeasurementRequestParam] `json:"measurements" api:"required"`
 }
 
 func (r SubmitMeasurementsRequestParam) MarshalJSON() (data []byte, err error) {
@@ -308,7 +308,7 @@ func (r usageQueryResponseJSON) RawJSON() string {
 
 type UsageGetFailedIngestDownloadURLParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The file path
 	File param.Field[string] `query:"file"`
 }
@@ -324,7 +324,7 @@ func (r UsageGetFailedIngestDownloadURLParams) URLQuery() (v url.Values) {
 
 type UsageQueryParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Specify the Accounts you want the query to return usage data for.
 	AccountIDs param.Field[[]string] `json:"accountIds"`
 	// Define the Aggregation functions you want to apply to data fields on included
@@ -380,13 +380,13 @@ func (r UsageQueryParams) MarshalJSON() (data []byte, err error) {
 
 type UsageQueryParamsAggregation struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Type of field
-	FieldType param.Field[UsageQueryParamsAggregationsFieldType] `json:"fieldType,required"`
+	FieldType param.Field[UsageQueryParamsAggregationsFieldType] `json:"fieldType" api:"required"`
 	// Aggregation function
-	Function param.Field[UsageQueryParamsAggregationsFunction] `json:"function,required"`
+	Function param.Field[UsageQueryParamsAggregationsFunction] `json:"function" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 }
 
 func (r UsageQueryParamsAggregation) MarshalJSON() (data []byte, err error) {
@@ -432,11 +432,11 @@ func (r UsageQueryParamsAggregationsFunction) IsKnown() bool {
 
 type UsageQueryParamsDimensionFilter struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 	// Values to filter by
-	Values param.Field[[]string] `json:"values,required"`
+	Values param.Field[[]string] `json:"values" api:"required"`
 }
 
 func (r UsageQueryParamsDimensionFilter) MarshalJSON() (data []byte, err error) {
@@ -445,8 +445,8 @@ func (r UsageQueryParamsDimensionFilter) MarshalJSON() (data []byte, err error) 
 
 type UsageSubmitParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                     param.Field[string]            `path:"orgId,required"`
-	SubmitMeasurementsRequest SubmitMeasurementsRequestParam `json:"submit_measurements_request,required"`
+	OrgID                     param.Field[string]            `path:"orgId" api:"required"`
+	SubmitMeasurementsRequest SubmitMeasurementsRequestParam `json:"submit_measurements_request" api:"required"`
 }
 
 func (r UsageSubmitParams) MarshalJSON() (data []byte, err error) {

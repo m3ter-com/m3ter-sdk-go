@@ -75,7 +75,7 @@ func (r *CustomFieldService) Update(ctx context.Context, params CustomFieldUpdat
 
 type CustomFieldsResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// CustomFields added to Account entities.
 	Account map[string]CustomFieldsResponseAccountUnion `json:"account"`
 	// CustomFields added to accountPlan entities.
@@ -348,12 +348,12 @@ func init() {
 
 type CustomFieldGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CustomFieldUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Updates to Account entity CustomFields.
 	Account param.Field[map[string]CustomFieldUpdateParamsAccountUnion] `json:"account"`
 	// Updates to AccountPlan entity CustomFields.

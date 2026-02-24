@@ -112,7 +112,7 @@ func (r *UserInvitationService) ListAutoPaging(ctx context.Context, params UserI
 
 type InvitationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Boolean indicating whether the user has accepted the invitation.
 	//
 	// - TRUE - the invite has been accepted.
@@ -187,10 +187,10 @@ func (r invitationResponseJSON) RawJSON() string {
 
 type UserInvitationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID         param.Field[string] `path:"orgId,required"`
-	Email         param.Field[string] `json:"email,required" format:"email"`
-	FirstName     param.Field[string] `json:"firstName,required"`
-	LastName      param.Field[string] `json:"lastName,required"`
+	OrgID         param.Field[string] `path:"orgId" api:"required"`
+	Email         param.Field[string] `json:"email" api:"required" format:"email"`
+	FirstName     param.Field[string] `json:"firstName" api:"required"`
+	LastName      param.Field[string] `json:"lastName" api:"required"`
 	ContactNumber param.Field[string] `json:"contactNumber"`
 	// The date when access will end for the user _(in ISO-8601 format)_. Leave blank
 	// for no end date, which gives the user permanent access.
@@ -213,12 +213,12 @@ func (r UserInvitationNewParams) MarshalJSON() (data []byte, err error) {
 
 type UserInvitationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type UserInvitationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `nextToken` for multi page retrievals.
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of invitations to retrieve per page.

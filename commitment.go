@@ -206,10 +206,10 @@ func (r *CommitmentService) Search(ctx context.Context, params CommitmentSearchP
 }
 
 type CommitmentFee struct {
-	Amount                 float64           `json:"amount,required"`
-	Date                   time.Time         `json:"date,required" format:"date"`
-	ServicePeriodEndDate   time.Time         `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate time.Time         `json:"servicePeriodStartDate,required" format:"date-time"`
+	Amount                 float64           `json:"amount" api:"required"`
+	Date                   time.Time         `json:"date" api:"required" format:"date"`
+	ServicePeriodEndDate   time.Time         `json:"servicePeriodEndDate" api:"required" format:"date-time"`
+	ServicePeriodStartDate time.Time         `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	JSON                   commitmentFeeJSON `json:"-"`
 }
 
@@ -232,10 +232,10 @@ func (r commitmentFeeJSON) RawJSON() string {
 }
 
 type CommitmentFeeParam struct {
-	Amount                 param.Field[float64]   `json:"amount,required"`
-	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
-	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	Amount                 param.Field[float64]   `json:"amount" api:"required"`
+	Date                   param.Field[time.Time] `json:"date" api:"required" format:"date"`
+	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 }
 
 func (r CommitmentFeeParam) MarshalJSON() (data []byte, err error) {
@@ -244,7 +244,7 @@ func (r CommitmentFeeParam) MarshalJSON() (data []byte, err error) {
 
 type CommitmentResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
 	AccountID string `json:"accountId"`
@@ -487,23 +487,23 @@ func (r commitmentSearchResponseJSON) RawJSON() string {
 
 type CommitmentNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The total amount that the customer has committed to pay.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The currency used for the Commitment. For example: USD.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The end date of the Commitment period in ISO-8601 format.
 	//
 	// **Note:** End date is exclusive - if you set an end date of June 1st 2022, then
 	// the Commitment ceases to be active for the Account at midnight on May 31st 2022,
 	// and any Prepayment fees due are calculated up to that point in time, NOT up to
 	// midnight on June 1st
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date"`
 	// The start date of the Commitment period in ISO-8601 format.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date"`
 	// The unique identifier (UUID) for the Product linked to the Commitment for
 	// accounting purposes. _(Optional)_
 	//
@@ -699,28 +699,28 @@ func (r CommitmentNewParamsLineItemType) IsKnown() bool {
 
 type CommitmentGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CommitmentUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The total amount that the customer has committed to pay.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The currency used for the Commitment. For example: USD.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The end date of the Commitment period in ISO-8601 format.
 	//
 	// **Note:** End date is exclusive - if you set an end date of June 1st 2022, then
 	// the Commitment ceases to be active for the Account at midnight on May 31st 2022,
 	// and any Prepayment fees due are calculated up to that point in time, NOT up to
 	// midnight on June 1st
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date"`
 	// The start date of the Commitment period in ISO-8601 format.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date"`
 	// The unique identifier (UUID) for the Product linked to the Commitment for
 	// accounting purposes. _(Optional)_
 	//
@@ -916,7 +916,7 @@ func (r CommitmentUpdateParamsLineItemType) IsKnown() bool {
 
 type CommitmentListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the Account. This parameter helps filter the
 	// Commitments related to a specific end-customer Account.
 	AccountID  param.Field[string] `query:"accountId"`
@@ -953,12 +953,12 @@ func (r CommitmentListParams) URLQuery() (v url.Values) {
 
 type CommitmentDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CommitmentSearchParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
 	// Search Operator to be used while querying search.

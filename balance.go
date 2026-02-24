@@ -187,7 +187,7 @@ func (r *BalanceService) Delete(ctx context.Context, id string, body BalanceDele
 
 type Balance struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Balance belongs
 	// to.
 	AccountID string `json:"accountId"`
@@ -351,24 +351,24 @@ func (r BalanceLineItemType) IsKnown() bool {
 
 type BalanceNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// Unique short code for the Balance.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be active
 	// for the Account.
 	//
 	// **Note:** You can use the `rolloverEndDate` request parameter to define an
 	// extended grace period for continued draw-down against the Balance if any amount
 	// remains when the specified `endDate` is reached.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date-time"`
 	// The official name for the Balance.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Allow balance amounts to fall below zero. This feature is enabled on request.
 	// Please get in touch with m3ter Support or your m3ter contact if you would like
 	// it enabling for your organization(s).
@@ -490,29 +490,29 @@ func (r BalanceNewParamsLineItemType) IsKnown() bool {
 
 type BalanceGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BalanceUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// Unique short code for the Balance.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be active
 	// for the Account.
 	//
 	// **Note:** You can use the `rolloverEndDate` request parameter to define an
 	// extended grace period for continued draw-down against the Balance if any amount
 	// remains when the specified `endDate` is reached.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date-time"`
 	// The official name for the Balance.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Allow balance amounts to fall below zero. This feature is enabled on request.
 	// Please get in touch with m3ter Support or your m3ter contact if you would like
 	// it enabling for your organization(s).
@@ -634,7 +634,7 @@ func (r BalanceUpdateParamsLineItemType) IsKnown() bool {
 
 type BalanceListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer's account.
 	AccountID param.Field[string] `query:"accountId"`
 	Contract  param.Field[string] `query:"contract"`
@@ -668,5 +668,5 @@ func (r BalanceListParams) URLQuery() (v url.Values) {
 
 type BalanceDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

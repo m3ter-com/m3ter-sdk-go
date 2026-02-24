@@ -213,17 +213,17 @@ func (r *IntegrationConfigurationService) GetByEntity(ctx context.Context, entit
 
 type IntegrationConfigurationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The destination system for the integration run.
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// The unique identifier (UUID) of the entity the integration run is for.
-	EntityID string `json:"entityId,required"`
+	EntityID string `json:"entityId" api:"required"`
 	// The type of entity the integration run is for. Two options:
 	//
 	// - Bill
 	// - Notification
-	EntityType string                                 `json:"entityType,required"`
-	Status     IntegrationConfigurationResponseStatus `json:"status,required"`
+	EntityType string                                 `json:"entityType" api:"required"`
+	Status     IntegrationConfigurationResponseStatus `json:"status" api:"required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// Identifier of the destination
@@ -315,11 +315,11 @@ func (r IntegrationConfigurationResponseStatus) IsKnown() bool {
 // Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationNewResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The type of destination _(e.g. Netsuite, webhooks)_.
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
-	EntityType string `json:"entityType,required"`
+	EntityType string `json:"entityType" api:"required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -414,11 +414,11 @@ func (r IntegrationConfigurationNewResponseTriggerType) IsKnown() bool {
 // Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationUpdateResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The type of destination _(e.g. Netsuite, webhooks)_.
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
-	EntityType string `json:"entityType,required"`
+	EntityType string `json:"entityType" api:"required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -512,11 +512,11 @@ func (r IntegrationConfigurationUpdateResponseTriggerType) IsKnown() bool {
 
 type IntegrationConfigurationListResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The type of destination _(e.g. Netsuite, webhooks)_.
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
-	EntityType string `json:"entityType,required"`
+	EntityType string `json:"entityType" api:"required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -611,11 +611,11 @@ func (r IntegrationConfigurationListResponseTriggerType) IsKnown() bool {
 // Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationDeleteResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The type of destination _(e.g. Netsuite, webhooks)_.
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
-	EntityType string `json:"entityType,required"`
+	EntityType string `json:"entityType" api:"required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -710,11 +710,11 @@ func (r IntegrationConfigurationDeleteResponseTriggerType) IsKnown() bool {
 // Response containing a IntegrationConfigResponse entity.
 type IntegrationConfigurationEnableResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The type of destination _(e.g. Netsuite, webhooks)_.
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// The type of entity the integration is for _(e.g. Bill)_.
-	EntityType string `json:"entityType,required"`
+	EntityType string `json:"entityType" api:"required"`
 	// A flag indicating whether the integration configuration is authorized.
 	//
 	// - TRUE - authorized.
@@ -808,13 +808,13 @@ func (r IntegrationConfigurationEnableResponseTriggerType) IsKnown() bool {
 
 type IntegrationConfigurationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Denotes the integration destination. This field identifies the target platform
 	// or service for the integration.
-	Destination param.Field[string] `json:"destination,required"`
+	Destination param.Field[string] `json:"destination" api:"required"`
 	// Specifies the type of entity for which the integration configuration is being
 	// updated. Must be a valid alphanumeric string.
-	EntityType param.Field[string] `json:"entityType,required"`
+	EntityType param.Field[string] `json:"entityType" api:"required"`
 	// A flexible object to include any additional configuration data specific to the
 	// integration.
 	ConfigData param.Field[map[string]interface{}] `json:"configData"`
@@ -847,7 +847,7 @@ func (r IntegrationConfigurationNewParams) MarshalJSON() (data []byte, err error
 // integrations.
 type IntegrationConfigurationNewParamsCredentials struct {
 	// Specifies the type of authorization required for the integration.
-	Type        param.Field[IntegrationConfigurationNewParamsCredentialsType]        `json:"type,required"`
+	Type        param.Field[IntegrationConfigurationNewParamsCredentialsType]        `json:"type" api:"required"`
 	Destination param.Field[IntegrationConfigurationNewParamsCredentialsDestination] `json:"destination"`
 	// A flag to indicate whether the credentials are empty.
 	//
@@ -931,18 +931,18 @@ func (r IntegrationConfigurationNewParamsCredentialsDestination) IsKnown() bool 
 
 type IntegrationConfigurationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type IntegrationConfigurationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Denotes the integration destination. This field identifies the target platform
 	// or service for the integration.
-	Destination param.Field[string] `json:"destination,required"`
+	Destination param.Field[string] `json:"destination" api:"required"`
 	// Specifies the type of entity for which the integration configuration is being
 	// updated. Must be a valid alphanumeric string.
-	EntityType param.Field[string] `json:"entityType,required"`
+	EntityType param.Field[string] `json:"entityType" api:"required"`
 	// A flexible object to include any additional configuration data specific to the
 	// integration.
 	ConfigData param.Field[map[string]interface{}] `json:"configData"`
@@ -975,7 +975,7 @@ func (r IntegrationConfigurationUpdateParams) MarshalJSON() (data []byte, err er
 // integrations.
 type IntegrationConfigurationUpdateParamsCredentials struct {
 	// Specifies the type of authorization required for the integration.
-	Type        param.Field[IntegrationConfigurationUpdateParamsCredentialsType]        `json:"type,required"`
+	Type        param.Field[IntegrationConfigurationUpdateParamsCredentialsType]        `json:"type" api:"required"`
 	Destination param.Field[IntegrationConfigurationUpdateParamsCredentialsDestination] `json:"destination"`
 	// A flag to indicate whether the credentials are empty.
 	//
@@ -1059,7 +1059,7 @@ func (r IntegrationConfigurationUpdateParamsCredentialsDestination) IsKnown() bo
 
 type IntegrationConfigurationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// optional filter for a specific destination
 	DestinationID param.Field[string] `query:"destinationId"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
@@ -1080,17 +1080,17 @@ func (r IntegrationConfigurationListParams) URLQuery() (v url.Values) {
 
 type IntegrationConfigurationDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type IntegrationConfigurationEnableParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type IntegrationConfigurationGetByEntityParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Destination type to retrieve IntegrationConfigs for
 	Destination param.Field[string] `query:"destination"`
 	// UUID of the destination to retrieve IntegrationConfigs for

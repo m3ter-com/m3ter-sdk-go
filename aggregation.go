@@ -162,7 +162,7 @@ func (r *AggregationService) Delete(ctx context.Context, id string, body Aggrega
 
 type AggregationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
 	// purposes.
 	AccountingProductID string `json:"accountingProductId"`
@@ -424,7 +424,7 @@ func (r AggregationResponseRounding) IsKnown() bool {
 
 type AggregationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected `targetField`.
@@ -456,13 +456,13 @@ type AggregationNewParams struct {
 	//
 	//   - **CUSTOM_SQL**. Uses an SQL query expression. If you select this Aggregation
 	//     type, use the `customSQL` request parameter to enter an SQL query.
-	Aggregation param.Field[AggregationNewParamsAggregation] `json:"aggregation,required"`
+	Aggregation param.Field[AggregationNewParamsAggregation] `json:"aggregation" api:"required"`
 	// The UUID of the Meter used as the source of usage data for the Aggregation.
 	//
 	// Each Aggregation is a child of a Meter, so the Meter must be selected.
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 	// Descriptive name for the Aggregation.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Defines how much of a quantity equates to 1 unit. Used when setting the price
 	// per unit for billing purposes - if charging for kilobytes per second (KiBy/s) at
 	// rate of $0.25 per 500 KiBy/s, then set quantityPerUnit to 500 and price Plan at
@@ -470,7 +470,7 @@ type AggregationNewParams struct {
 	//
 	// **Note:** If `quantityPerUnit` is set to a value other than one, `rounding` is
 	// typically set to `"UP"`.
-	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit,required"`
+	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit" api:"required"`
 	// Specifies how you want to deal with non-integer, fractional number Aggregation
 	// values.
 	//
@@ -487,13 +487,13 @@ type AggregationNewParams struct {
 	//     to 98 \* 0.25 = $2.45.
 	//
 	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
-	Rounding param.Field[AggregationNewParamsRounding] `json:"rounding,required"`
+	Rounding param.Field[AggregationNewParamsRounding] `json:"rounding" api:"required"`
 	// `Code` of the target `dataField` or `derivedField` on the Meter used as the
 	// basis for the Aggregation.
-	TargetField param.Field[string] `json:"targetField,required"`
+	TargetField param.Field[string] `json:"targetField" api:"required"`
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
 	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
@@ -644,12 +644,12 @@ type AggregationNewParamsCustomFieldsUnion interface {
 
 type AggregationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type AggregationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Specifies the computation method applied to usage data collected in
 	// `targetField`. Aggregation unit value depends on the **Category** configured for
 	// the selected `targetField`.
@@ -681,13 +681,13 @@ type AggregationUpdateParams struct {
 	//
 	//   - **CUSTOM_SQL**. Uses an SQL query expression. If you select this Aggregation
 	//     type, use the `customSQL` request parameter to enter an SQL query.
-	Aggregation param.Field[AggregationUpdateParamsAggregation] `json:"aggregation,required"`
+	Aggregation param.Field[AggregationUpdateParamsAggregation] `json:"aggregation" api:"required"`
 	// The UUID of the Meter used as the source of usage data for the Aggregation.
 	//
 	// Each Aggregation is a child of a Meter, so the Meter must be selected.
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 	// Descriptive name for the Aggregation.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Defines how much of a quantity equates to 1 unit. Used when setting the price
 	// per unit for billing purposes - if charging for kilobytes per second (KiBy/s) at
 	// rate of $0.25 per 500 KiBy/s, then set quantityPerUnit to 500 and price Plan at
@@ -695,7 +695,7 @@ type AggregationUpdateParams struct {
 	//
 	// **Note:** If `quantityPerUnit` is set to a value other than one, `rounding` is
 	// typically set to `"UP"`.
-	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit,required"`
+	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit" api:"required"`
 	// Specifies how you want to deal with non-integer, fractional number Aggregation
 	// values.
 	//
@@ -712,13 +712,13 @@ type AggregationUpdateParams struct {
 	//     to 98 \* 0.25 = $2.45.
 	//
 	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
-	Rounding param.Field[AggregationUpdateParamsRounding] `json:"rounding,required"`
+	Rounding param.Field[AggregationUpdateParamsRounding] `json:"rounding" api:"required"`
 	// `Code` of the target `dataField` or `derivedField` on the Meter used as the
 	// basis for the Aggregation.
-	TargetField param.Field[string] `json:"targetField,required"`
+	TargetField param.Field[string] `json:"targetField" api:"required"`
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
 	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
@@ -869,7 +869,7 @@ type AggregationUpdateParamsCustomFieldsUnion interface {
 
 type AggregationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Aggregation codes to retrieve. These are unique short codes to identify
 	// each Aggregation.
 	Codes param.Field[[]string] `query:"codes"`
@@ -893,5 +893,5 @@ func (r AggregationListParams) URLQuery() (v url.Values) {
 
 type AggregationDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

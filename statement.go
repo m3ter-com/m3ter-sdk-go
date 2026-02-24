@@ -148,7 +148,7 @@ func (r objectURLResponseJSON) RawJSON() string {
 
 type StatementDefinitionResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// This specifies how often the Statement should aggregate data.
 	AggregationFrequency StatementDefinitionResponseAggregationFrequency `json:"aggregationFrequency"`
 	// The unique identifier (UUID) of the user who created this StatementDefinition.
@@ -236,9 +236,9 @@ func (r StatementDefinitionResponseAggregationFrequency) IsKnown() bool {
 type StatementDefinitionResponseDimension struct {
 	// The value of a Dimension to use as a filter. Use "\*" as a wildcard to filter on
 	// all Dimension values.
-	Filter []string `json:"filter,required"`
+	Filter []string `json:"filter" api:"required"`
 	// The name of the Dimension to target in the Meter.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The Dimension attribute to target.
 	Attributes []string `json:"attributes"`
 	// The unique identifier (UUID) of the Meter containing this Dimension.
@@ -343,7 +343,7 @@ func (r StatementDefinitionResponseMeasuresAggregation) IsKnown() bool {
 
 type StatementJobResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) of the bill associated with the StatementJob.
 	BillID string `json:"billId"`
 	// The unique identifier (UUID) of the user who created this StatementJob.
@@ -490,15 +490,15 @@ func (r StatementJobResponseStatementJobStatus) IsKnown() bool {
 
 type StatementNewCsvParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type StatementGetCsvParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type StatementGetJsonParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

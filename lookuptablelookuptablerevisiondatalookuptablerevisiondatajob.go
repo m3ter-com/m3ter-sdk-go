@@ -528,12 +528,12 @@ func (r lookupTableLookupTableRevisionDataLookupTableRevisionDataJobDownloadResp
 
 type LookupTableLookupTableRevisionDataLookupTableRevisionDataJobGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type LookupTableLookupTableRevisionDataLookupTableRevisionDataJobListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
 	// The number of Lookup Table Revision Data Job Responses to retrieve per page.
@@ -552,14 +552,14 @@ func (r LookupTableLookupTableRevisionDataLookupTableRevisionDataJobListParams) 
 
 type LookupTableLookupTableRevisionDataLookupTableRevisionDataJobDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type LookupTableLookupTableRevisionDataLookupTableRevisionDataJobDownloadParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The content type
-	ContentType param.Field[LookupTableLookupTableRevisionDataLookupTableRevisionDataJobDownloadParamsContentType] `json:"contentType,required"`
+	ContentType param.Field[LookupTableLookupTableRevisionDataLookupTableRevisionDataJobDownloadParamsContentType] `json:"contentType" api:"required"`
 }
 
 func (r LookupTableLookupTableRevisionDataLookupTableRevisionDataJobDownloadParams) MarshalJSON() (data []byte, err error) {

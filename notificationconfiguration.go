@@ -174,14 +174,14 @@ func (r *NotificationConfigurationService) Delete(ctx context.Context, id string
 
 type NotificationConfigurationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The short code for the Notification.
-	Code string `json:"code,required"`
+	Code string `json:"code" api:"required"`
 	// The description for the Notification providing a brief overview of its purpose
 	// and functionality.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The name of the Notification.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A Boolean flag indicating whether or not the Notification is active.
 	//
 	// - **TRUE** - active Notification.
@@ -263,12 +263,12 @@ func (r notificationConfigurationResponseJSON) RawJSON() string {
 
 type NotificationConfigurationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The short code for the Notification.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The description for the Notification providing a brief overview of its purpose
 	// and functionality.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the _Event type_ that the Notification is based on. When an Event of
 	// this type occurs and any calculation built into the Notification evaluates to
 	// `True`, the Notification is triggered.
@@ -276,9 +276,9 @@ type NotificationConfigurationNewParams struct {
 	// **Note:** If the Notification is set to always fire, then the Notification will
 	// always be sent when the Event of the type it is based on occurs, and without any
 	// other conditions defined by a calculation having to be met.
-	EventName param.Field[string] `json:"eventName,required"`
+	EventName param.Field[string] `json:"eventName" api:"required"`
 	// The name of the Notification.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Boolean flag that sets the Notification as active or inactive. Only active
 	// Notifications are sent when triggered by the Event they are based on:
 	//
@@ -323,17 +323,17 @@ func (r NotificationConfigurationNewParams) MarshalJSON() (data []byte, err erro
 
 type NotificationConfigurationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type NotificationConfigurationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The short code for the Notification.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The description for the Notification providing a brief overview of its purpose
 	// and functionality.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the _Event type_ that the Notification is based on. When an Event of
 	// this type occurs and any calculation built into the Notification evaluates to
 	// `True`, the Notification is triggered.
@@ -341,9 +341,9 @@ type NotificationConfigurationUpdateParams struct {
 	// **Note:** If the Notification is set to always fire, then the Notification will
 	// always be sent when the Event of the type it is based on occurs, and without any
 	// other conditions defined by a calculation having to be met.
-	EventName param.Field[string] `json:"eventName,required"`
+	EventName param.Field[string] `json:"eventName" api:"required"`
 	// The name of the Notification.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Boolean flag that sets the Notification as active or inactive. Only active
 	// Notifications are sent when triggered by the Event they are based on:
 	//
@@ -388,7 +388,7 @@ func (r NotificationConfigurationUpdateParams) MarshalJSON() (data []byte, err e
 
 type NotificationConfigurationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// A Boolean flag indicating whether to retrieve only active or only inactive
 	// Notifications.
 	//
@@ -418,5 +418,5 @@ func (r NotificationConfigurationListParams) URLQuery() (v url.Values) {
 
 type NotificationConfigurationDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

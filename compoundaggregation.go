@@ -188,7 +188,7 @@ func (r *CompoundAggregationService) Delete(ctx context.Context, id string, body
 
 type CompoundAggregationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
 	// purposes.
 	AccountingProductID string `json:"accountingProductId"`
@@ -353,7 +353,7 @@ func (r CompoundAggregationResponseRounding) IsKnown() bool {
 
 type CompoundAggregationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// String that represents the formula for the calculation. This formula determines
 	// how the CompoundAggregation value is calculated. The calculation can reference
 	// simple Aggregations or Custom Fields. This field is required when creating or
@@ -365,9 +365,9 @@ type CompoundAggregationNewParams struct {
 	// Aggregation referenced has a base value of 100 and has **Quantity per unit** set
 	// at 10, the Compound Aggregation calculation _will use the base value of 100 not
 	// 10_.
-	Calculation param.Field[string] `json:"calculation,required"`
+	Calculation param.Field[string] `json:"calculation" api:"required"`
 	// Descriptive name for the Aggregation.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Defines how much of a quantity equates to 1 unit. Used when setting the price
 	// per unit for billing purposes - if charging for kilobytes per second (KiBy/s) at
 	// rate of $0.25 per 500 KiBy/s, then set quantityPerUnit to 500 and price Plan at
@@ -375,7 +375,7 @@ type CompoundAggregationNewParams struct {
 	//
 	// **Note:** If `quantityPerUnit` is set to a value other than one, `rounding` is
 	// typically set to `"UP"`.
-	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit,required"`
+	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit" api:"required"`
 	// Specifies how you want to deal with non-integer, fractional number Aggregation
 	// values.
 	//
@@ -392,10 +392,10 @@ type CompoundAggregationNewParams struct {
 	//     to 98 \* 0.25 = $2.45.
 	//
 	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
-	Rounding param.Field[CompoundAggregationNewParamsRounding] `json:"rounding,required"`
+	Rounding param.Field[CompoundAggregationNewParamsRounding] `json:"rounding" api:"required"`
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
 	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
@@ -475,12 +475,12 @@ type CompoundAggregationNewParamsCustomFieldsUnion interface {
 
 type CompoundAggregationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CompoundAggregationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// String that represents the formula for the calculation. This formula determines
 	// how the CompoundAggregation value is calculated. The calculation can reference
 	// simple Aggregations or Custom Fields. This field is required when creating or
@@ -492,9 +492,9 @@ type CompoundAggregationUpdateParams struct {
 	// Aggregation referenced has a base value of 100 and has **Quantity per unit** set
 	// at 10, the Compound Aggregation calculation _will use the base value of 100 not
 	// 10_.
-	Calculation param.Field[string] `json:"calculation,required"`
+	Calculation param.Field[string] `json:"calculation" api:"required"`
 	// Descriptive name for the Aggregation.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Defines how much of a quantity equates to 1 unit. Used when setting the price
 	// per unit for billing purposes - if charging for kilobytes per second (KiBy/s) at
 	// rate of $0.25 per 500 KiBy/s, then set quantityPerUnit to 500 and price Plan at
@@ -502,7 +502,7 @@ type CompoundAggregationUpdateParams struct {
 	//
 	// **Note:** If `quantityPerUnit` is set to a value other than one, `rounding` is
 	// typically set to `"UP"`.
-	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit,required"`
+	QuantityPerUnit param.Field[float64] `json:"quantityPerUnit" api:"required"`
 	// Specifies how you want to deal with non-integer, fractional number Aggregation
 	// values.
 	//
@@ -519,10 +519,10 @@ type CompoundAggregationUpdateParams struct {
 	//     to 98 \* 0.25 = $2.45.
 	//
 	// Enum: ???UP??? ???DOWN??? ???NEAREST??? ???NONE???
-	Rounding param.Field[CompoundAggregationUpdateParamsRounding] `json:"rounding,required"`
+	Rounding param.Field[CompoundAggregationUpdateParamsRounding] `json:"rounding" api:"required"`
 	// User defined label for units shown for Bill line items, indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Optional Product ID this Aggregation should be attributed to for accounting
 	// purposes.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
@@ -602,7 +602,7 @@ type CompoundAggregationUpdateParamsCustomFieldsUnion interface {
 
 type CompoundAggregationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// An optional parameter to retrieve specific CompoundAggregations based on their
 	// short codes.
 	Codes param.Field[[]string] `query:"codes"`
@@ -630,5 +630,5 @@ func (r CompoundAggregationListParams) URLQuery() (v url.Values) {
 
 type CompoundAggregationDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

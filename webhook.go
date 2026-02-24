@@ -179,13 +179,13 @@ func (r *WebhookService) SetActive(ctx context.Context, id string, params Webhoo
 type M3terSignedCredentialsRequestParam struct {
 	// The API key provided by m3ter. This key is part of the credential set required
 	// for signing requests and authenticating with m3ter services.
-	APIKey param.Field[string] `json:"apiKey,required"`
+	APIKey param.Field[string] `json:"apiKey" api:"required"`
 	// The secret associated with the API key. This secret is used in conjunction with
 	// the API key to generate a signature for secure authentication.
-	Secret param.Field[string] `json:"secret,required"`
+	Secret param.Field[string] `json:"secret" api:"required"`
 	// Specifies the authorization type. For this schema, it is exclusively set to
 	// M3TER_SIGNED_REQUEST.
-	Type param.Field[M3terSignedCredentialsRequestType] `json:"type,required"`
+	Type param.Field[M3terSignedCredentialsRequestType] `json:"type" api:"required"`
 	// A flag to indicate whether the credentials are empty.
 	//
 	// - TRUE - empty credentials.
@@ -224,11 +224,11 @@ func (r M3terSignedCredentialsRequestType) IsKnown() bool {
 
 type M3terSignedCredentialsResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// the system the integration is for
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// the type of credentials
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The API key provided by m3ter. This key is part of the credential set required
 	// for signing requests and authenticating with m3ter services.
 	APIKey string `json:"apiKey"`
@@ -286,7 +286,7 @@ func (r m3terSignedCredentialsResponseJSON) RawJSON() string {
 
 type Webhook struct {
 	// The UUID of the entity.
-	ID     string `json:"id,required"`
+	ID     string `json:"id" api:"required"`
 	Active bool   `json:"active"`
 	Code   string `json:"code"`
 	// The ID of the user who created this item.
@@ -341,13 +341,13 @@ func (r webhookJSON) RawJSON() string {
 
 type WebhookNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// This schema defines the credentials required for m3ter request signing.
-	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials,required"`
-	Description param.Field[string]                             `json:"description,required"`
-	Name        param.Field[string]                             `json:"name,required"`
+	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials" api:"required"`
+	Description param.Field[string]                             `json:"description" api:"required"`
+	Name        param.Field[string]                             `json:"name" api:"required"`
 	// The URL to which the webhook requests will be sent.
-	URL    param.Field[string] `json:"url,required"`
+	URL    param.Field[string] `json:"url" api:"required"`
 	Active param.Field[bool]   `json:"active"`
 	Code   param.Field[string] `json:"code"`
 	// The version number of the entity:
@@ -367,18 +367,18 @@ func (r WebhookNewParams) MarshalJSON() (data []byte, err error) {
 
 type WebhookGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type WebhookUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// This schema defines the credentials required for m3ter request signing.
-	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials,required"`
-	Description param.Field[string]                             `json:"description,required"`
-	Name        param.Field[string]                             `json:"name,required"`
+	Credentials param.Field[M3terSignedCredentialsRequestParam] `json:"credentials" api:"required"`
+	Description param.Field[string]                             `json:"description" api:"required"`
+	Name        param.Field[string]                             `json:"name" api:"required"`
 	// The URL to which the webhook requests will be sent.
-	URL    param.Field[string] `json:"url,required"`
+	URL    param.Field[string] `json:"url" api:"required"`
 	Active param.Field[bool]   `json:"active"`
 	Code   param.Field[string] `json:"code"`
 	// The version number of the entity:
@@ -398,7 +398,7 @@ func (r WebhookUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type WebhookListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string]   `path:"orgId,required"`
+	OrgID param.Field[string]   `path:"orgId" api:"required"`
 	IDs   param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
@@ -416,12 +416,12 @@ func (r WebhookListParams) URLQuery() (v url.Values) {
 
 type WebhookDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type WebhookSetActiveParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// active status of the webhook
 	Active param.Field[bool] `query:"active"`
 }

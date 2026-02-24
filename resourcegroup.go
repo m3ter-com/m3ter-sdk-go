@@ -302,7 +302,7 @@ func (r *ResourceGroupService) RemoveResource(ctx context.Context, type_ string,
 
 type ResourceGroupResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) of the user who created this Resource Group.
 	CreatedBy string `json:"createdBy"`
 	// The date and time _(in ISO-8601 format)_ when the Resource Group was created.
@@ -348,7 +348,7 @@ func (r resourceGroupResponseJSON) RawJSON() string {
 
 type ResourceGroupListContentsResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this item for the resource group.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the item was created for the resource group.
@@ -410,8 +410,8 @@ func (r ResourceGroupListContentsResponseTargetType) IsKnown() bool {
 
 type ResourceGroupNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID   param.Field[string] `path:"orgId,required"`
-	Name    param.Field[string] `json:"name,required"`
+	OrgID   param.Field[string] `path:"orgId" api:"required"`
+	Name    param.Field[string] `json:"name" api:"required"`
 	Version param.Field[int64]  `json:"version"`
 }
 
@@ -421,13 +421,13 @@ func (r ResourceGroupNewParams) MarshalJSON() (data []byte, err error) {
 
 type ResourceGroupGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ResourceGroupUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID   param.Field[string] `path:"orgId,required"`
-	Name    param.Field[string] `json:"name,required"`
+	OrgID   param.Field[string] `path:"orgId" api:"required"`
+	Name    param.Field[string] `json:"name" api:"required"`
 	Version param.Field[int64]  `json:"version"`
 }
 
@@ -437,7 +437,7 @@ func (r ResourceGroupUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type ResourceGroupListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of ResourceGroups to retrieve per page
@@ -455,17 +455,17 @@ func (r ResourceGroupListParams) URLQuery() (v url.Values) {
 
 type ResourceGroupDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ResourceGroupAddResourceParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The id of the item or group you want to:
 	//
 	// - _Add Item_ call: add to a Resource Group.
 	// - _Remove Item_ call: remove from the Resource Group.
-	TargetID param.Field[string] `json:"targetId,required"`
+	TargetID param.Field[string] `json:"targetId" api:"required"`
 	// When adding to or removing from a Resource Group, specify whether a single item
 	// or group:
 	//
@@ -478,7 +478,7 @@ type ResourceGroupAddResourceParams struct {
 	//     form a nested Resource Group
 	//   - _Remove Item_ call: use remove a nested Resource Group from a Resource
 	//     Group.
-	TargetType param.Field[ResourceGroupAddResourceParamsTargetType] `json:"targetType,required"`
+	TargetType param.Field[ResourceGroupAddResourceParamsTargetType] `json:"targetType" api:"required"`
 	// The version number of the group.
 	Version param.Field[int64] `json:"version"`
 }
@@ -516,7 +516,7 @@ func (r ResourceGroupAddResourceParamsTargetType) IsKnown() bool {
 
 type ResourceGroupListContentsParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of ResourceGroupItems to retrieve per page
@@ -534,7 +534,7 @@ func (r ResourceGroupListContentsParams) URLQuery() (v url.Values) {
 
 type ResourceGroupListPermissionsParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of PermissionPolicy entities to retrieve per page
@@ -552,12 +552,12 @@ func (r ResourceGroupListPermissionsParams) URLQuery() (v url.Values) {
 
 type ResourceGroupRemoveResourceParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The id of the item or group you want to:
 	//
 	// - _Add Item_ call: add to a Resource Group.
 	// - _Remove Item_ call: remove from the Resource Group.
-	TargetID param.Field[string] `json:"targetId,required"`
+	TargetID param.Field[string] `json:"targetId" api:"required"`
 	// When adding to or removing from a Resource Group, specify whether a single item
 	// or group:
 	//
@@ -570,7 +570,7 @@ type ResourceGroupRemoveResourceParams struct {
 	//     form a nested Resource Group
 	//   - _Remove Item_ call: use remove a nested Resource Group from a Resource
 	//     Group.
-	TargetType param.Field[ResourceGroupRemoveResourceParamsTargetType] `json:"targetType,required"`
+	TargetType param.Field[ResourceGroupRemoveResourceParamsTargetType] `json:"targetType" api:"required"`
 	// The version number of the group.
 	Version param.Field[int64] `json:"version"`
 }

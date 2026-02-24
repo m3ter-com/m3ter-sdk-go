@@ -75,7 +75,7 @@ func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateP
 
 type BillConfigResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The global lock date _(in ISO 8601 format)_ when all Bills will be locked.
 	//
 	// For example: `"2024-03-01"`.
@@ -122,12 +122,12 @@ func (r billConfigResponseJSON) RawJSON() string {
 
 type BillConfigGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillConfigUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The global lock date when all Bills will be locked _(in ISO 8601 format)_.
 	//
 	// For example: `"2024-03-01"`.
