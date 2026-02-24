@@ -110,9 +110,9 @@ func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAd
 
 type AdHocOperationalDataRequestParam struct {
 	// The list of the operational data types should be exported for.
-	OperationalDataTypes param.Field[[]AdHocOperationalDataRequestOperationalDataType] `json:"operationalDataTypes,required"`
+	OperationalDataTypes param.Field[[]AdHocOperationalDataRequestOperationalDataType] `json:"operationalDataTypes" api:"required"`
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType param.Field[AdHocOperationalDataRequestSourceType] `json:"sourceType,required"`
+	SourceType param.Field[AdHocOperationalDataRequestSourceType] `json:"sourceType" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -202,7 +202,7 @@ func (r adHocResponseJSON) RawJSON() string {
 
 type AdHocUsageDataRequestParam struct {
 	// The type of data to export. Possible values are: USAGE
-	SourceType param.Field[AdHocUsageDataRequestSourceType] `json:"sourceType,required"`
+	SourceType param.Field[AdHocUsageDataRequestSourceType] `json:"sourceType" api:"required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs param.Field[[]string] `json:"accountIds"`
 	// List of aggregations to apply
@@ -249,13 +249,13 @@ func (r AdHocUsageDataRequestSourceType) IsKnown() bool {
 
 type AdHocUsageDataRequestAggregationParam struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Type of field
-	FieldType param.Field[AdHocUsageDataRequestAggregationsFieldType] `json:"fieldType,required"`
+	FieldType param.Field[AdHocUsageDataRequestAggregationsFieldType] `json:"fieldType" api:"required"`
 	// Aggregation function
-	Function param.Field[AdHocUsageDataRequestAggregationsFunction] `json:"function,required"`
+	Function param.Field[AdHocUsageDataRequestAggregationsFunction] `json:"function" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 }
 
 func (r AdHocUsageDataRequestAggregationParam) MarshalJSON() (data []byte, err error) {
@@ -301,11 +301,11 @@ func (r AdHocUsageDataRequestAggregationsFunction) IsKnown() bool {
 
 type AdHocUsageDataRequestDimensionFilterParam struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 	// Values to filter by
-	Values param.Field[[]string] `json:"values,required"`
+	Values param.Field[[]string] `json:"values" api:"required"`
 }
 
 func (r AdHocUsageDataRequestDimensionFilterParam) MarshalJSON() (data []byte, err error) {
@@ -361,9 +361,9 @@ func (r DataExplorerGroupParam) MarshalJSON() (data []byte, err error) {
 
 type DataExportNewAdhocParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Request representing an operational data export configuration.
-	Body DataExportNewAdhocParamsBodyUnion `json:"body,required"`
+	Body DataExportNewAdhocParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r DataExportNewAdhocParams) MarshalJSON() (data []byte, err error) {
@@ -373,7 +373,7 @@ func (r DataExportNewAdhocParams) MarshalJSON() (data []byte, err error) {
 // Request representing an operational data export configuration.
 type DataExportNewAdhocParamsBody struct {
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType       param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType,required"`
+	SourceType       param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType" api:"required"`
 	AccountIDs       param.Field[interface{}]                            `json:"accountIds"`
 	Aggregations     param.Field[interface{}]                            `json:"aggregations"`
 	DimensionFilters param.Field[interface{}]                            `json:"dimensionFilters"`

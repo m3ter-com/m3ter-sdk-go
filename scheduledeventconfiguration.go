@@ -152,18 +152,18 @@ func (r *ScheduledEventConfigurationService) Delete(ctx context.Context, id stri
 
 type ScheduledEventConfigurationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The referenced configuration or billing entity for which the desired scheduled
 	// Event will trigger.
-	Entity string `json:"entity,required"`
+	Entity string `json:"entity" api:"required"`
 	// A DateTime field for which the desired scheduled Event will trigger - this must
 	// be a DateTime field on the referenced billing or configuration entity.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// The name of the custom Scheduled Event Configuration.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The offset in days from the specified DateTime field on the referenced entity
 	// when the scheduled Event will trigger.
-	Offset int64 `json:"offset,required"`
+	Offset int64 `json:"offset" api:"required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when this item was created _(in ISO-8601 format)_.
@@ -209,13 +209,13 @@ func (r scheduledEventConfigurationResponseJSON) RawJSON() string {
 
 type ScheduledEventConfigurationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The referenced configuration or billing entity for which the desired scheduled
 	// Event will trigger.
-	Entity param.Field[string] `json:"entity,required"`
+	Entity param.Field[string] `json:"entity" api:"required"`
 	// A DateTime field for which the desired scheduled Event will trigger - this must
 	// be a DateTime field on the referenced billing or configuration entity.
-	Field param.Field[string] `json:"field,required"`
+	Field param.Field[string] `json:"field" api:"required"`
 	// The name of the custom Scheduled Event Configuration.
 	//
 	// This must be in the format:
@@ -225,10 +225,10 @@ type ScheduledEventConfigurationNewParams struct {
 	// For example:
 	//
 	// - `scheduled.bill.endDateEvent`
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The offset in days from the specified DateTime field on the referenced entity
 	// when the scheduled Event will trigger.
-	Offset param.Field[int64] `json:"offset,required"`
+	Offset param.Field[int64] `json:"offset" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -246,18 +246,18 @@ func (r ScheduledEventConfigurationNewParams) MarshalJSON() (data []byte, err er
 
 type ScheduledEventConfigurationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ScheduledEventConfigurationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The referenced configuration or billing entity for which the desired scheduled
 	// Event will trigger.
-	Entity param.Field[string] `json:"entity,required"`
+	Entity param.Field[string] `json:"entity" api:"required"`
 	// A DateTime field for which the desired scheduled Event will trigger - this must
 	// be a DateTime field on the referenced billing or configuration entity.
-	Field param.Field[string] `json:"field,required"`
+	Field param.Field[string] `json:"field" api:"required"`
 	// The name of the custom Scheduled Event Configuration.
 	//
 	// This must be in the format:
@@ -267,10 +267,10 @@ type ScheduledEventConfigurationUpdateParams struct {
 	// For example:
 	//
 	// - `scheduled.bill.endDateEvent`
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The offset in days from the specified DateTime field on the referenced entity
 	// when the scheduled Event will trigger.
-	Offset param.Field[int64] `json:"offset,required"`
+	Offset param.Field[int64] `json:"offset" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -288,7 +288,7 @@ func (r ScheduledEventConfigurationUpdateParams) MarshalJSON() (data []byte, err
 
 type ScheduledEventConfigurationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// list of UUIDs to retrieve
 	IDs param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
@@ -308,5 +308,5 @@ func (r ScheduledEventConfigurationListParams) URLQuery() (v url.Values) {
 
 type ScheduledEventConfigurationDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

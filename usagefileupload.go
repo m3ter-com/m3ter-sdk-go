@@ -98,20 +98,20 @@ func (r usageFileUploadGenerateUploadURLResponseJSON) RawJSON() string {
 
 type UsageFileUploadGenerateUploadURLParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The size of the body in bytes. For example: `"contentLength": 485`, where 485 is
 	// the size in bytes of the file to upload.
 	//
 	// **NOTE:** Required.
-	ContentLength param.Field[int64] `json:"contentLength,required"`
+	ContentLength param.Field[int64] `json:"contentLength" api:"required"`
 	// The media type of the entity body sent, for example:
 	// `"contentType":"text/json"`.
 	//
 	// **NOTE:** Currently only a JSON formatted file type is supported by the File
 	// Upload Service.
-	ContentType param.Field[UsageFileUploadGenerateUploadURLParamsContentType] `json:"contentType,required"`
+	ContentType param.Field[UsageFileUploadGenerateUploadURLParamsContentType] `json:"contentType" api:"required"`
 	// The name of the measurements file to be uploaded.
-	FileName param.Field[string] `json:"fileName,required"`
+	FileName param.Field[string] `json:"fileName" api:"required"`
 }
 
 func (r UsageFileUploadGenerateUploadURLParams) MarshalJSON() (data []byte, err error) {

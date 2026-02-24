@@ -239,7 +239,7 @@ func (r *UserService) ResendPassword(ctx context.Context, id string, body UserRe
 
 type UserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.
@@ -338,7 +338,7 @@ func (r userMeResponseJSON) RawJSON() string {
 
 type UserMeResponseOrganization struct {
 	// The UUID of the entity.
-	ID                    string `json:"id,required"`
+	ID                    string `json:"id" api:"required"`
 	AddressLine1          string `json:"addressLine1"`
 	AddressLine2          string `json:"addressLine2"`
 	AddressLine3          string `json:"addressLine3"`
@@ -450,7 +450,7 @@ func (r UserMeResponseOrganizationType) IsKnown() bool {
 
 type UserMeResponseServiceUser struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this service user.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the service user was created.
@@ -494,7 +494,7 @@ func (r userMeResponseServiceUserJSON) RawJSON() string {
 
 type UserMeResponseUser struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.
@@ -562,12 +562,12 @@ func (r userMeResponseUserJSON) RawJSON() string {
 
 type UserGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type UserUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The date and time _(in ISO 8601 format)_ when the user's access will end. Use
 	// this to set or update the expiration of the user's access.
 	DtEndAccess param.Field[time.Time] `json:"dtEndAccess" format:"date-time"`
@@ -594,7 +594,7 @@ func (r UserUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type UserListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// list of ids to retrieve
 	IDs param.Field[[]string] `query:"ids"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
@@ -614,7 +614,7 @@ func (r UserListParams) URLQuery() (v url.Values) {
 
 type UserGetPermissionsParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// Permission Policies in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`
@@ -633,7 +633,7 @@ func (r UserGetPermissionsParams) URLQuery() (v url.Values) {
 
 type UserGetUserGroupsParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// User Groups in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`
@@ -652,10 +652,10 @@ func (r UserGetUserGroupsParams) URLQuery() (v url.Values) {
 
 type UserMeParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type UserResendPasswordParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

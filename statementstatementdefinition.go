@@ -172,9 +172,9 @@ func (r *StatementStatementDefinitionService) Delete(ctx context.Context, id str
 
 type StatementStatementDefinitionNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// This specifies how often the Statement should aggregate data.
-	AggregationFrequency param.Field[StatementStatementDefinitionNewParamsAggregationFrequency] `json:"aggregationFrequency,required"`
+	AggregationFrequency param.Field[StatementStatementDefinitionNewParamsAggregationFrequency] `json:"aggregationFrequency" api:"required"`
 	// An array of objects, each representing a Dimension data field from a Meter _(for
 	// Meters that have Dimensions setup)_.
 	Dimensions             param.Field[[]StatementStatementDefinitionNewParamsDimension] `json:"dimensions"`
@@ -227,9 +227,9 @@ func (r StatementStatementDefinitionNewParamsAggregationFrequency) IsKnown() boo
 type StatementStatementDefinitionNewParamsDimension struct {
 	// The value of a Dimension to use as a filter. Use "\*" as a wildcard to filter on
 	// all Dimension values.
-	Filter param.Field[[]string] `json:"filter,required"`
+	Filter param.Field[[]string] `json:"filter" api:"required"`
 	// The name of the Dimension to target in the Meter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The Dimension attribute to target.
 	Attributes param.Field[[]string] `json:"attributes"`
 	// The unique identifier (UUID) of the Meter containing this Dimension.
@@ -303,14 +303,14 @@ func (r StatementStatementDefinitionNewParamsMeasuresAggregation) IsKnown() bool
 
 type StatementStatementDefinitionGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type StatementStatementDefinitionUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// This specifies how often the Statement should aggregate data.
-	AggregationFrequency param.Field[StatementStatementDefinitionUpdateParamsAggregationFrequency] `json:"aggregationFrequency,required"`
+	AggregationFrequency param.Field[StatementStatementDefinitionUpdateParamsAggregationFrequency] `json:"aggregationFrequency" api:"required"`
 	// An array of objects, each representing a Dimension data field from a Meter _(for
 	// Meters that have Dimensions setup)_.
 	Dimensions             param.Field[[]StatementStatementDefinitionUpdateParamsDimension] `json:"dimensions"`
@@ -363,9 +363,9 @@ func (r StatementStatementDefinitionUpdateParamsAggregationFrequency) IsKnown() 
 type StatementStatementDefinitionUpdateParamsDimension struct {
 	// The value of a Dimension to use as a filter. Use "\*" as a wildcard to filter on
 	// all Dimension values.
-	Filter param.Field[[]string] `json:"filter,required"`
+	Filter param.Field[[]string] `json:"filter" api:"required"`
 	// The name of the Dimension to target in the Meter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The Dimension attribute to target.
 	Attributes param.Field[[]string] `json:"attributes"`
 	// The unique identifier (UUID) of the Meter containing this Dimension.
@@ -439,7 +439,7 @@ func (r StatementStatementDefinitionUpdateParamsMeasuresAggregation) IsKnown() b
 
 type StatementStatementDefinitionListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// StatementDefinitions in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`
@@ -458,5 +458,5 @@ func (r StatementStatementDefinitionListParams) URLQuery() (v url.Values) {
 
 type StatementStatementDefinitionDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

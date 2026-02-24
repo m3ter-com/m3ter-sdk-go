@@ -175,7 +175,7 @@ func (r *BillDebitLineItemService) Delete(ctx context.Context, billID string, id
 
 type DebitLineItemResponse struct {
 	// The UUID of the entity.
-	ID     string  `json:"id,required"`
+	ID     string  `json:"id" api:"required"`
 	Amount float64 `json:"amount"`
 	// The ID of the user who created this line item.
 	CreatedBy string `json:"createdBy"`
@@ -268,23 +268,23 @@ func (r DebitLineItemResponseLineItemType) IsKnown() bool {
 
 type BillDebitLineItemNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID               param.Field[string] `path:"orgId,required"`
-	AccountingProductID param.Field[string] `json:"accountingProductId,required"`
+	OrgID               param.Field[string] `path:"orgId" api:"required"`
+	AccountingProductID param.Field[string] `json:"accountingProductId" api:"required"`
 	// The amount for the line item.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The description for the line item.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The UUID of the Product.
-	ProductID param.Field[string] `json:"productId,required"`
+	ProductID param.Field[string] `json:"productId" api:"required"`
 	// The UUID of the bill for the line item.
-	ReferencedBillID param.Field[string] `json:"referencedBillId,required"`
+	ReferencedBillID param.Field[string] `json:"referencedBillId" api:"required"`
 	// The UUID of the line item.
-	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId,required"`
+	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId" api:"required"`
 	// The service period end date in ISO-8601 format._(exclusive of the ending date)_.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The ID of the Debit Reason given for this debit line item.
 	DebitReasonID param.Field[string]                                 `json:"debitReasonId"`
@@ -340,28 +340,28 @@ func (r BillDebitLineItemNewParamsLineItemType) IsKnown() bool {
 
 type BillDebitLineItemGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillDebitLineItemUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID               param.Field[string] `path:"orgId,required"`
-	AccountingProductID param.Field[string] `json:"accountingProductId,required"`
+	OrgID               param.Field[string] `path:"orgId" api:"required"`
+	AccountingProductID param.Field[string] `json:"accountingProductId" api:"required"`
 	// The amount for the line item.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The description for the line item.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The UUID of the Product.
-	ProductID param.Field[string] `json:"productId,required"`
+	ProductID param.Field[string] `json:"productId" api:"required"`
 	// The UUID of the bill for the line item.
-	ReferencedBillID param.Field[string] `json:"referencedBillId,required"`
+	ReferencedBillID param.Field[string] `json:"referencedBillId" api:"required"`
 	// The UUID of the line item.
-	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId,required"`
+	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId" api:"required"`
 	// The service period end date in ISO-8601 format._(exclusive of the ending date)_.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The ID of the Debit Reason given for this debit line item.
 	DebitReasonID param.Field[string]                                    `json:"debitReasonId"`
@@ -417,7 +417,7 @@ func (r BillDebitLineItemUpdateParamsLineItemType) IsKnown() bool {
 
 type BillDebitLineItemListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `nextToken` for multi page retrievals.
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of line items to retrieve per page.
@@ -435,5 +435,5 @@ func (r BillDebitLineItemListParams) URLQuery() (v url.Values) {
 
 type BillDebitLineItemDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

@@ -173,9 +173,9 @@ type LookupTableRequestParam struct {
 	// **NOTE:** Code has a maximum length of 80 characters and must not contain
 	// non-printable or whitespace characters (except space), and cannot start/end with
 	// whitespace.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Descriptive name for the Lookup Table.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -209,7 +209,7 @@ type LookupTableRequestCustomFieldsUnionParam interface {
 
 type LookupTableResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Response containing a LookupTableRevision entity
 	ActiveRevision LookupTableRevisionResponse `json:"activeRevision"`
 	// The code of the Lookup Table
@@ -292,8 +292,8 @@ func init() {
 
 type LookupTableNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID              param.Field[string]     `path:"orgId,required"`
-	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request,required"`
+	OrgID              param.Field[string]     `path:"orgId" api:"required"`
+	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request" api:"required"`
 }
 
 func (r LookupTableNewParams) MarshalJSON() (data []byte, err error) {
@@ -302,7 +302,7 @@ func (r LookupTableNewParams) MarshalJSON() (data []byte, err error) {
 
 type LookupTableGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional non-default fields to be included in the
 	// response. For example,if you want to include the active Revision for the Lookup
 	// Tables returned, set `additional=activeRevision` in the query.
@@ -319,8 +319,8 @@ func (r LookupTableGetParams) URLQuery() (v url.Values) {
 
 type LookupTableUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID              param.Field[string]     `path:"orgId,required"`
-	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request,required"`
+	OrgID              param.Field[string]     `path:"orgId" api:"required"`
+	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request" api:"required"`
 }
 
 func (r LookupTableUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -329,7 +329,7 @@ func (r LookupTableUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type LookupTableListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional non-default fields to be included in the
 	// response. For example,if you want to include the active Revision for each of the
 	// Lookup Tables returned, set `additional=activeRevision` in the query.
@@ -352,5 +352,5 @@ func (r LookupTableListParams) URLQuery() (v url.Values) {
 
 type LookupTableDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

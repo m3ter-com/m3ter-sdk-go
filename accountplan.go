@@ -185,7 +185,7 @@ func (r *AccountPlanService) Delete(ctx context.Context, id string, body Account
 
 type AccountPlanResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) for the Account to which the AccountPlan or
 	// AccounPlanGroup is attached.
 	AccountID string `json:"accountId"`
@@ -341,12 +341,12 @@ func init() {
 
 type AccountPlanNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the Account.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The start date _(in ISO-8601 format)_ for the AccountPlan or AccountPlanGroup
 	// becoming active for the Account.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Optional setting to define a _billing cycle date_, which acts as a reference for
 	// when in the applied billing frequency period bills are created:
 	//
@@ -452,17 +452,17 @@ type AccountPlanNewParamsCustomFieldsUnion interface {
 
 type AccountPlanGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type AccountPlanUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the Account.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The start date _(in ISO-8601 format)_ for the AccountPlan or AccountPlanGroup
 	// becoming active for the Account.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Optional setting to define a _billing cycle date_, which acts as a reference for
 	// when in the applied billing frequency period bills are created:
 	//
@@ -568,7 +568,7 @@ type AccountPlanUpdateParamsCustomFieldsUnion interface {
 
 type AccountPlanListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the Account whose AccountPlans and
 	// AccountPlanGroups you want to retrieve.
 	//
@@ -632,5 +632,5 @@ func (r AccountPlanListParams) URLQuery() (v url.Values) {
 
 type AccountPlanDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

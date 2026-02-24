@@ -185,20 +185,20 @@ func (r *EventService) GetTypes(ctx context.Context, query EventGetTypesParams, 
 // Response containing an Event entity.
 type EventResponse struct {
 	// The uniqie identifier (UUID) of the Event.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When an Event was actioned. It follows the ISO 8601 date and time format.
 	//
 	// You can action an Event to indicate that it has been followed up and resolved -
 	// this is useful when dealing with integration error Events or ingest failure
 	// Events.
-	DtActioned time.Time `json:"dtActioned,required" format:"date-time"`
+	DtActioned time.Time `json:"dtActioned" api:"required" format:"date-time"`
 	// The name of the Event as it is registered in the system. This name is used to
 	// categorize and trigger associated actions.
-	EventName string `json:"eventName,required"`
+	EventName string `json:"eventName" api:"required"`
 	// The time when the Event was triggered, using the ISO 8601 date and time format.
-	EventTime time.Time `json:"eventTime,required" format:"date-time"`
+	EventTime time.Time `json:"eventTime" api:"required" format:"date-time"`
 	// The Data Transfer Object (DTO) containing the details of the Event.
-	M3terEvent interface{}       `json:"m3terEvent,required"`
+	M3terEvent interface{}       `json:"m3terEvent" api:"required"`
 	JSON       eventResponseJSON `json:"-"`
 }
 
@@ -276,12 +276,12 @@ func (r eventGetTypesResponseJSON) RawJSON() string {
 
 type EventGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type EventListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The Account ID associated with the Event to filter the results. Returns the
 	// Events that have been generated for the Account.
 	AccountID param.Field[string] `query:"accountId"`
@@ -326,7 +326,7 @@ func (r EventListParams) URLQuery() (v url.Values) {
 
 type EventGetFieldsParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the specific Event Type to use as a list filter, for example
 	// `configuration.commitment.created`.
 	EventName param.Field[string] `query:"eventName"`
@@ -342,5 +342,5 @@ func (r EventGetFieldsParams) URLQuery() (v url.Values) {
 
 type EventGetTypesParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

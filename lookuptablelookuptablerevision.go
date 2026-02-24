@@ -224,11 +224,11 @@ func (r *LookupTableLookupTableRevisionService) UpdateStatus(ctx context.Context
 
 type LookupTableRevisionRequestParam struct {
 	// The list of fields of the Lookup Table Revision.
-	Fields param.Field[[]LookupTableRevisionRequestFieldParam] `json:"fields,required"`
+	Fields param.Field[[]LookupTableRevisionRequestFieldParam] `json:"fields" api:"required"`
 	// The ordered keys of the Lookup Table Revision.
-	Keys param.Field[[]string] `json:"keys,required"`
+	Keys param.Field[[]string] `json:"keys" api:"required"`
 	// Descriptive name for the Lookup Table Revision.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -260,7 +260,7 @@ func (r LookupTableRevisionRequestParam) MarshalJSON() (data []byte, err error) 
 // Field of a Lookup Table Revision
 type LookupTableRevisionRequestFieldParam struct {
 	// Type of a Lookup Table Revision Field
-	Type param.Field[LookupTableRevisionRequestFieldsType] `json:"type,required"`
+	Type param.Field[LookupTableRevisionRequestFieldsType] `json:"type" api:"required"`
 	// The name of the field
 	Name param.Field[string] `json:"name"`
 }
@@ -292,7 +292,7 @@ type LookupTableRevisionRequestCustomFieldsUnionParam interface {
 
 type LookupTableRevisionResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created the Lookup Table Revision.
 	CreatedBy string `json:"createdBy"`
 	// User defined fields enabling you to attach custom data. The value for a custom
@@ -384,7 +384,7 @@ func init() {
 // Field of a Lookup Table Revision
 type LookupTableRevisionResponseField struct {
 	// Type of a Lookup Table Revision Field
-	Type LookupTableRevisionResponseFieldsType `json:"type,required"`
+	Type LookupTableRevisionResponseFieldsType `json:"type" api:"required"`
 	// The name of the field
 	Name string                               `json:"name"`
 	JSON lookupTableRevisionResponseFieldJSON `json:"-"`
@@ -471,9 +471,9 @@ func (r LookupTableRevisionStatusRequestStatus) IsKnown() bool {
 
 type LookupTableLookupTableRevisionNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Request containing a LookupTableRevision entity
-	LookupTableRevisionRequest LookupTableRevisionRequestParam `json:"lookup_table_revision_request,required"`
+	LookupTableRevisionRequest LookupTableRevisionRequestParam `json:"lookup_table_revision_request" api:"required"`
 }
 
 func (r LookupTableLookupTableRevisionNewParams) MarshalJSON() (data []byte, err error) {
@@ -482,14 +482,14 @@ func (r LookupTableLookupTableRevisionNewParams) MarshalJSON() (data []byte, err
 
 type LookupTableLookupTableRevisionGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type LookupTableLookupTableRevisionUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Request containing a LookupTableRevision entity
-	LookupTableRevisionRequest LookupTableRevisionRequestParam `json:"lookup_table_revision_request,required"`
+	LookupTableRevisionRequest LookupTableRevisionRequestParam `json:"lookup_table_revision_request" api:"required"`
 }
 
 func (r LookupTableLookupTableRevisionUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -498,7 +498,7 @@ func (r LookupTableLookupTableRevisionUpdateParams) MarshalJSON() (data []byte, 
 
 type LookupTableLookupTableRevisionListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Lookup Table Revision IDs to retrieve
 	IDs param.Field[[]string] `query:"ids"`
 	// Token to supply for multi page retrievals
@@ -518,14 +518,14 @@ func (r LookupTableLookupTableRevisionListParams) URLQuery() (v url.Values) {
 
 type LookupTableLookupTableRevisionDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type LookupTableLookupTableRevisionUpdateStatusParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Request containing the status details for a LookupTableRevision entity
-	LookupTableRevisionStatusRequest LookupTableRevisionStatusRequestParam `json:"lookup_table_revision_status_request,required"`
+	LookupTableRevisionStatusRequest LookupTableRevisionStatusRequestParam `json:"lookup_table_revision_status_request" api:"required"`
 }
 
 func (r LookupTableLookupTableRevisionUpdateStatusParams) MarshalJSON() (data []byte, err error) {

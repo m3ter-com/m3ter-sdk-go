@@ -13,9 +13,9 @@ import (
 // defined rate.
 type CurrencyConversion struct {
 	// Currency to convert from. For example: GBP.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// Currency to convert to. For example: USD.
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// Conversion rate between currencies.
 	Multiplier float64                `json:"multiplier"`
 	JSON       currencyConversionJSON `json:"-"`
@@ -45,9 +45,9 @@ func (r currencyConversionJSON) RawJSON() string {
 // defined rate.
 type CurrencyConversionParam struct {
 	// Currency to convert from. For example: GBP.
-	From param.Field[string] `json:"from,required"`
+	From param.Field[string] `json:"from" api:"required"`
 	// Currency to convert to. For example: USD.
-	To param.Field[string] `json:"to,required"`
+	To param.Field[string] `json:"to" api:"required"`
 	// Conversion rate between currencies.
 	Multiplier param.Field[float64] `json:"multiplier"`
 }
@@ -58,11 +58,11 @@ func (r CurrencyConversionParam) MarshalJSON() (data []byte, err error) {
 
 type PricingBand struct {
 	// Fixed price charged for the Pricing band.
-	FixedPrice float64 `json:"fixedPrice,required"`
+	FixedPrice float64 `json:"fixedPrice" api:"required"`
 	// Lower limit for the Pricing band.
-	LowerLimit float64 `json:"lowerLimit,required"`
+	LowerLimit float64 `json:"lowerLimit" api:"required"`
 	// Unit price charged for the Pricing band.
-	UnitPrice float64 `json:"unitPrice,required"`
+	UnitPrice float64 `json:"unitPrice" api:"required"`
 	// The ID for the Pricing band.
 	ID string `json:"id"`
 	// **OBSOLETE - this is deprecated and no longer used.**
@@ -91,11 +91,11 @@ func (r pricingBandJSON) RawJSON() string {
 
 type PricingBandParam struct {
 	// Fixed price charged for the Pricing band.
-	FixedPrice param.Field[float64] `json:"fixedPrice,required"`
+	FixedPrice param.Field[float64] `json:"fixedPrice" api:"required"`
 	// Lower limit for the Pricing band.
-	LowerLimit param.Field[float64] `json:"lowerLimit,required"`
+	LowerLimit param.Field[float64] `json:"lowerLimit" api:"required"`
 	// Unit price charged for the Pricing band.
-	UnitPrice param.Field[float64] `json:"unitPrice,required"`
+	UnitPrice param.Field[float64] `json:"unitPrice" api:"required"`
 	// The ID for the Pricing band.
 	ID param.Field[string] `json:"id"`
 	// **OBSOLETE - this is deprecated and no longer used.**

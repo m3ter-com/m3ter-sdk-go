@@ -188,15 +188,15 @@ func (r *MeterService) Delete(ctx context.Context, id string, body MeterDeletePa
 
 type DataField struct {
 	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category DataFieldCategory `json:"category,required"`
+	Category DataFieldCategory `json:"category" api:"required"`
 	// Short code to identify the field
 	//
 	// **NOTE:** Code has a maximum length of 80 characters and can only contain
 	// letters, numbers, underscore, and the dollar character, and must not start with
 	// a number.
-	Code string `json:"code,required"`
+	Code string `json:"code" api:"required"`
 	// Descriptive name of the field.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The units to measure the data with. Should conform to _Unified Code for Units of
 	// Measure_ (UCUM). Required only for numeric field categories.
 	Unit string        `json:"unit"`
@@ -245,15 +245,15 @@ func (r DataFieldCategory) IsKnown() bool {
 
 type DataFieldParam struct {
 	// The type of field (WHO, WHAT, WHERE, MEASURE, METADATA, INCOME, COST, OTHER).
-	Category param.Field[DataFieldCategory] `json:"category,required"`
+	Category param.Field[DataFieldCategory] `json:"category" api:"required"`
 	// Short code to identify the field
 	//
 	// **NOTE:** Code has a maximum length of 80 characters and can only contain
 	// letters, numbers, underscore, and the dollar character, and must not start with
 	// a number.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Descriptive name of the field.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The units to measure the data with. Should conform to _Unified Code for Units of
 	// Measure_ (UCUM). Required only for numeric field categories.
 	Unit param.Field[string] `json:"unit"`
@@ -267,7 +267,7 @@ type DerivedField struct {
 	// The calculation used to transform the value of submitted `dataFields` in usage
 	// data. Calculation can reference `dataFields`, `customFields`, or system
 	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
-	Calculation string           `json:"calculation,required"`
+	Calculation string           `json:"calculation" api:"required"`
 	JSON        derivedFieldJSON `json:"-"`
 	DataField
 }
@@ -291,7 +291,7 @@ type DerivedFieldParam struct {
 	// The calculation used to transform the value of submitted `dataFields` in usage
 	// data. Calculation can reference `dataFields`, `customFields`, or system
 	// `Timestamp` fields. _(Example: datafieldms datafieldgb)_
-	Calculation param.Field[string] `json:"calculation,required"`
+	Calculation param.Field[string] `json:"calculation" api:"required"`
 	DataFieldParam
 }
 
@@ -301,7 +301,7 @@ func (r DerivedFieldParam) MarshalJSON() (data []byte, err error) {
 
 type MeterResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	Code string `json:"code"`
 	// The id of the user who created this meter.
@@ -398,17 +398,17 @@ func init() {
 
 type MeterNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	//
 	// **NOTE:** Code has a maximum length of 80 characters and must not contain
 	// non-printable or whitespace characters (except space), and cannot start/end with
 	// whitespace.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Used to submit categorized raw usage data values for ingest into the platform -
 	// either numeric quantitative values or non-numeric data values. At least one
 	// required per Meter; maximum 15 per Meter.
-	DataFields param.Field[[]DataFieldParam] `json:"dataFields,required"`
+	DataFields param.Field[[]DataFieldParam] `json:"dataFields" api:"required"`
 	// Used to submit usage data values for ingest into the platform that are the
 	// result of a calculation performed on `dataFields`, `customFields`, or system
 	// `Timestamp` fields. Raw usage data is not submitted using `derivedFields`.
@@ -416,9 +416,9 @@ type MeterNewParams struct {
 	//
 	// **Note:** Required parameter. If you want to create a Meter without Derived
 	// Fields, use an empty array `[]`. If you use a `null`, you'll receive an error.
-	DerivedFields param.Field[[]DerivedFieldParam] `json:"derivedFields,required"`
+	DerivedFields param.Field[[]DerivedFieldParam] `json:"derivedFields" api:"required"`
 	// Descriptive name for the Meter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -457,22 +457,22 @@ type MeterNewParamsCustomFieldsUnion interface {
 
 type MeterGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type MeterUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Code of the Meter - unique short code used to identify the Meter.
 	//
 	// **NOTE:** Code has a maximum length of 80 characters and must not contain
 	// non-printable or whitespace characters (except space), and cannot start/end with
 	// whitespace.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Used to submit categorized raw usage data values for ingest into the platform -
 	// either numeric quantitative values or non-numeric data values. At least one
 	// required per Meter; maximum 15 per Meter.
-	DataFields param.Field[[]DataFieldParam] `json:"dataFields,required"`
+	DataFields param.Field[[]DataFieldParam] `json:"dataFields" api:"required"`
 	// Used to submit usage data values for ingest into the platform that are the
 	// result of a calculation performed on `dataFields`, `customFields`, or system
 	// `Timestamp` fields. Raw usage data is not submitted using `derivedFields`.
@@ -480,9 +480,9 @@ type MeterUpdateParams struct {
 	//
 	// **Note:** Required parameter. If you want to create a Meter without Derived
 	// Fields, use an empty array `[]`. If you use a `null`, you'll receive an error.
-	DerivedFields param.Field[[]DerivedFieldParam] `json:"derivedFields,required"`
+	DerivedFields param.Field[[]DerivedFieldParam] `json:"derivedFields" api:"required"`
 	// Descriptive name for the Meter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -521,7 +521,7 @@ type MeterUpdateParamsCustomFieldsUnion interface {
 
 type MeterListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Meter codes to retrieve. These are the unique short codes that identify
 	// each Meter.
 	Codes param.Field[[]string] `query:"codes"`
@@ -545,5 +545,5 @@ func (r MeterListParams) URLQuery() (v url.Values) {
 
 type MeterDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

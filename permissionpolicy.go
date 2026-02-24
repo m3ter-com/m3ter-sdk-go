@@ -376,7 +376,7 @@ func (r *PermissionPolicyService) RemoveFromUserGroup(ctx context.Context, permi
 
 type PermissionPolicyResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) of the user who created this Permission Policy.
 	CreatedBy string `json:"createdBy"`
 	// The date and time _(in ISO-8601 format)_ when the Permission Policy was created.
@@ -440,17 +440,17 @@ type PermissionStatementResponse struct {
 	// "config:retrieve",
 	// "config:update"
 	// ```
-	Action []PermissionStatementResponseAction `json:"action,required"`
+	Action []PermissionStatementResponseAction `json:"action" api:"required"`
 	// Specifies whether or not the user is allowed to perform the action on the
 	// resource.
 	//
 	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
 	// receive an error.
-	Effect PermissionStatementResponseEffect `json:"effect,required"`
+	Effect PermissionStatementResponseEffect `json:"effect" api:"required"`
 	// See
 	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
 	// for a listing of available resources for Permission Policy statements.
-	Resource []string                        `json:"resource,required"`
+	Resource []string                        `json:"resource" api:"required"`
 	JSON     permissionStatementResponseJSON `json:"-"`
 }
 
@@ -536,17 +536,17 @@ type PermissionStatementResponseParam struct {
 	// "config:retrieve",
 	// "config:update"
 	// ```
-	Action param.Field[[]PermissionStatementResponseAction] `json:"action,required"`
+	Action param.Field[[]PermissionStatementResponseAction] `json:"action" api:"required"`
 	// Specifies whether or not the user is allowed to perform the action on the
 	// resource.
 	//
 	// **NOTE:** Use lower case, for example: `"allow"`. If you use upper case, you'll
 	// receive an error.
-	Effect param.Field[PermissionStatementResponseEffect] `json:"effect,required"`
+	Effect param.Field[PermissionStatementResponseEffect] `json:"effect" api:"required"`
 	// See
 	// [Statements - Available Resources](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions#statements---available-resources)
 	// for a listing of available resources for Permission Policy statements.
-	Resource param.Field[[]string] `json:"resource,required"`
+	Resource param.Field[[]string] `json:"resource" api:"required"`
 }
 
 func (r PermissionStatementResponseParam) MarshalJSON() (data []byte, err error) {
@@ -554,7 +554,7 @@ func (r PermissionStatementResponseParam) MarshalJSON() (data []byte, err error)
 }
 
 type PrincipalPermissionRequestParam struct {
-	PrincipalID param.Field[string] `json:"principalId,required"`
+	PrincipalID param.Field[string] `json:"principalId" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -572,7 +572,7 @@ func (r PrincipalPermissionRequestParam) MarshalJSON() (data []byte, err error) 
 
 type PermissionPolicyAddToServiceUserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -638,7 +638,7 @@ func (r PermissionPolicyAddToServiceUserResponsePrincipalType) IsKnown() bool {
 
 type PermissionPolicyAddToSupportUserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -704,7 +704,7 @@ func (r PermissionPolicyAddToSupportUserResponsePrincipalType) IsKnown() bool {
 
 type PermissionPolicyAddToUserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -770,7 +770,7 @@ func (r PermissionPolicyAddToUserResponsePrincipalType) IsKnown() bool {
 
 type PermissionPolicyAddToUserGroupResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -836,7 +836,7 @@ func (r PermissionPolicyAddToUserGroupResponsePrincipalType) IsKnown() bool {
 
 type PermissionPolicyRemoveFromServiceUserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -902,7 +902,7 @@ func (r PermissionPolicyRemoveFromServiceUserResponsePrincipalType) IsKnown() bo
 
 type PermissionPolicyRemoveFromSupportUserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -968,7 +968,7 @@ func (r PermissionPolicyRemoveFromSupportUserResponsePrincipalType) IsKnown() bo
 
 type PermissionPolicyRemoveFromUserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -1034,7 +1034,7 @@ func (r PermissionPolicyRemoveFromUserResponsePrincipalType) IsKnown() bool {
 
 type PermissionPolicyRemoveFromUserGroupResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this principal permission.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the principal permission was created.
@@ -1100,9 +1100,9 @@ func (r PermissionPolicyRemoveFromUserGroupResponsePrincipalType) IsKnown() bool
 
 type PermissionPolicyNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID            param.Field[string]                             `path:"orgId,required"`
-	Name             param.Field[string]                             `json:"name,required"`
-	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy,required"`
+	OrgID            param.Field[string]                             `path:"orgId" api:"required"`
+	Name             param.Field[string]                             `json:"name" api:"required"`
+	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - do not use
@@ -1119,14 +1119,14 @@ func (r PermissionPolicyNewParams) MarshalJSON() (data []byte, err error) {
 
 type PermissionPolicyGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PermissionPolicyUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID            param.Field[string]                             `path:"orgId,required"`
-	Name             param.Field[string]                             `json:"name,required"`
-	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy,required"`
+	OrgID            param.Field[string]                             `path:"orgId" api:"required"`
+	Name             param.Field[string]                             `json:"name" api:"required"`
+	PermissionPolicy param.Field[[]PermissionStatementResponseParam] `json:"permissionPolicy" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - do not use
@@ -1143,7 +1143,7 @@ func (r PermissionPolicyUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type PermissionPolicyListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of permission polices to retrieve per page
@@ -1161,13 +1161,13 @@ func (r PermissionPolicyListParams) URLQuery() (v url.Values) {
 
 type PermissionPolicyDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PermissionPolicyAddToServiceUserParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                      param.Field[string]             `path:"orgId,required"`
-	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
+	OrgID                      param.Field[string]             `path:"orgId" api:"required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request" api:"required"`
 }
 
 func (r PermissionPolicyAddToServiceUserParams) MarshalJSON() (data []byte, err error) {
@@ -1176,7 +1176,7 @@ func (r PermissionPolicyAddToServiceUserParams) MarshalJSON() (data []byte, err 
 
 type PermissionPolicyAddToSupportUserParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -1194,8 +1194,8 @@ func (r PermissionPolicyAddToSupportUserParams) MarshalJSON() (data []byte, err 
 
 type PermissionPolicyAddToUserParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                      param.Field[string]             `path:"orgId,required"`
-	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
+	OrgID                      param.Field[string]             `path:"orgId" api:"required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request" api:"required"`
 }
 
 func (r PermissionPolicyAddToUserParams) MarshalJSON() (data []byte, err error) {
@@ -1204,8 +1204,8 @@ func (r PermissionPolicyAddToUserParams) MarshalJSON() (data []byte, err error) 
 
 type PermissionPolicyAddToUserGroupParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                      param.Field[string]             `path:"orgId,required"`
-	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
+	OrgID                      param.Field[string]             `path:"orgId" api:"required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request" api:"required"`
 }
 
 func (r PermissionPolicyAddToUserGroupParams) MarshalJSON() (data []byte, err error) {
@@ -1214,8 +1214,8 @@ func (r PermissionPolicyAddToUserGroupParams) MarshalJSON() (data []byte, err er
 
 type PermissionPolicyRemoveFromServiceUserParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                      param.Field[string]             `path:"orgId,required"`
-	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
+	OrgID                      param.Field[string]             `path:"orgId" api:"required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request" api:"required"`
 }
 
 func (r PermissionPolicyRemoveFromServiceUserParams) MarshalJSON() (data []byte, err error) {
@@ -1224,13 +1224,13 @@ func (r PermissionPolicyRemoveFromServiceUserParams) MarshalJSON() (data []byte,
 
 type PermissionPolicyRemoveFromSupportUserParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PermissionPolicyRemoveFromUserParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                      param.Field[string]             `path:"orgId,required"`
-	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
+	OrgID                      param.Field[string]             `path:"orgId" api:"required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request" api:"required"`
 }
 
 func (r PermissionPolicyRemoveFromUserParams) MarshalJSON() (data []byte, err error) {
@@ -1239,8 +1239,8 @@ func (r PermissionPolicyRemoveFromUserParams) MarshalJSON() (data []byte, err er
 
 type PermissionPolicyRemoveFromUserGroupParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                      param.Field[string]             `path:"orgId,required"`
-	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request,required"`
+	OrgID                      param.Field[string]             `path:"orgId" api:"required"`
+	PrincipalPermissionRequest PrincipalPermissionRequestParam `json:"principal_permission_request" api:"required"`
 }
 
 func (r PermissionPolicyRemoveFromUserGroupParams) MarshalJSON() (data []byte, err error) {

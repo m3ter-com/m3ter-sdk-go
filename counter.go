@@ -154,7 +154,7 @@ func (r *CounterService) Delete(ctx context.Context, id string, body CounterDele
 
 type CounterResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Code of the Counter. A unique short code to identify the Counter.
 	Code string `json:"code"`
 	// The ID of the user who created this item.
@@ -210,12 +210,12 @@ func (r counterResponseJSON) RawJSON() string {
 
 type CounterNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Descriptive name for the Counter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined label for units shown on Bill line items, and indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Code for the Counter. A unique short code to identify the Counter.
 	Code param.Field[string] `json:"code"`
 	// UUID of the product the Counter belongs to. _(Optional)_ - if left blank, the
@@ -239,17 +239,17 @@ func (r CounterNewParams) MarshalJSON() (data []byte, err error) {
 
 type CounterGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CounterUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Descriptive name for the Counter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined label for units shown on Bill line items, and indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Code for the Counter. A unique short code to identify the Counter.
 	Code param.Field[string] `json:"code"`
 	// UUID of the product the Counter belongs to. _(Optional)_ - if left blank, the
@@ -273,7 +273,7 @@ func (r CounterUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type CounterListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Counter codes to retrieve. These are unique short codes to identify each
 	// Counter.
 	Codes param.Field[[]string] `query:"codes"`
@@ -297,5 +297,5 @@ func (r CounterListParams) URLQuery() (v url.Values) {
 
 type CounterDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

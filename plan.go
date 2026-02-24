@@ -159,7 +159,7 @@ func (r *PlanService) Delete(ctx context.Context, id string, body PlanDeletePara
 
 type PlanResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// _(Optional)_. The Account ID for which this Plan was created as custom/bespoke.
 	// A custom/bespoke Plan can only be attached to the specified Account.
 	AccountID string `json:"accountId"`
@@ -302,13 +302,13 @@ func init() {
 
 type PlanNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Unique short code reference for the Plan.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Descriptive name for the Plan.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// UUID of the PlanTemplate the Plan belongs to.
-	PlanTemplateID param.Field[string] `json:"planTemplateId,required"`
+	PlanTemplateID param.Field[string] `json:"planTemplateId" api:"required"`
 	// _(Optional)_. Used to specify an Account for which the Plan will be a
 	// custom/bespoke Plan:
 	//
@@ -398,18 +398,18 @@ type PlanNewParamsCustomFieldsUnion interface {
 
 type PlanGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PlanUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Unique short code reference for the Plan.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Descriptive name for the Plan.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// UUID of the PlanTemplate the Plan belongs to.
-	PlanTemplateID param.Field[string] `json:"planTemplateId,required"`
+	PlanTemplateID param.Field[string] `json:"planTemplateId" api:"required"`
 	// _(Optional)_. Used to specify an Account for which the Plan will be a
 	// custom/bespoke Plan:
 	//
@@ -499,7 +499,7 @@ type PlanUpdateParamsCustomFieldsUnion interface {
 
 type PlanListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Account IDs the Plan belongs to.
 	AccountID param.Field[[]string] `query:"accountId"`
 	// List of Plan IDs to retrieve.
@@ -522,5 +522,5 @@ func (r PlanListParams) URLQuery() (v url.Values) {
 
 type PlanDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

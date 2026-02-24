@@ -259,9 +259,9 @@ func (r *StatementStatementJobService) NewBatch(ctx context.Context, params Stat
 
 type StatementStatementJobNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) of the bill associated with the StatementJob.
-	BillID  param.Field[string]                                `json:"billId,required"`
+	BillID  param.Field[string]                                `json:"billId" api:"required"`
 	Filters param.Field[StatementStatementJobNewParamsFilters] `json:"filters"`
 	// A Boolean value indicating whether the generated statement includes a CSV
 	// format.
@@ -295,12 +295,12 @@ func (r StatementStatementJobNewParamsFilters) MarshalJSON() (data []byte, err e
 
 type StatementStatementJobGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type StatementStatementJobListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Boolean filter on whether to only retrieve active _(i.e. not
 	// completed/cancelled)_ StatementJobs.
 	//
@@ -335,15 +335,15 @@ func (r StatementStatementJobListParams) URLQuery() (v url.Values) {
 
 type StatementStatementJobCancelParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type StatementStatementJobNewBatchParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The list of unique identifiers (UUIDs) of the bills associated with the
 	// StatementJob.
-	BillIDs param.Field[[]string]                                   `json:"billIds,required"`
+	BillIDs param.Field[[]string]                                   `json:"billIds" api:"required"`
 	Filters param.Field[StatementStatementJobNewBatchParamsFilters] `json:"filters"`
 	// A Boolean value indicating whether the generated statement includes a CSV
 	// format.
