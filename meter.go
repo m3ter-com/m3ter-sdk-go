@@ -22,6 +22,46 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting Meters.
+//
+// Use Meters to submit usage data for the consumption of your products and
+// services by end customers. This usage data then becomes the basis for setting up
+// usage-based pricing for your products and services.
+//
+// Examples of usage data collected in Meters:
+//
+// - Number of logins.
+// - Duration of session.
+// - Amount of data downloaded.
+//
+// To collect usage data and ingest it into the platform, you can define two types
+// of fields for Meters:
+//
+//   - `dataFields` Used to collect raw usage data measures - numeric quantitative
+//     data values or non-numeric point data values.
+//   - `derivedFields` Used to derive usage data measures that are the result of
+//     applying a calculation to `dataFields`, `customFields`, or system `Timestamp`
+//     fields.
+//
+// You can also:
+//
+//   - Create `customFields` for a Meter, which allows you to attach custom data to
+//     the Meter as name/value pairs.
+//   - Create Global Meters, which are not tied to a specific Product and allow you
+//     to collect usage data that will form the basis of usage-based pricing across
+//     multiple Products.
+//
+// **IMPORTANT! - use of PII:** The use of any of your end-customers' Personally
+// Identifiable Information (PII) in m3ter is restricted to a few fields on the
+// **Account** entity. Please ensure that any fields you configure for Meters, such
+// as Data Fields or Derived Fields, do not contain any end-customer PII data. See
+// the [Introduction section](https://www.m3ter.com/docs/api#section/Introduction)
+// above for more details.
+//
+// See also:
+//
+// - [Reviewing Meter Options](https://www.m3ter.com/docs/guides/setting-up-usage-data-meters-and-aggregations/reviewing-meter-options).
+//
 // MeterService contains methods and other services that help with interacting with
 // the m3ter API.
 //

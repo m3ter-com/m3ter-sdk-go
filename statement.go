@@ -16,6 +16,15 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoints for billing operations such as creating, updating,
+// listing,downloading, and deleting Bills.
+//
+// Bills are generated for an Account, and are calculated in accordance with the
+// usage-based pricing Plans applied for the Products the Account consumes. These
+// endpoints enable interaction with the billing system, allowing you to obtain
+// billing details and insights into the consumption patterns and charges of your
+// end-customer Accounts.
+//
 // StatementService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -23,8 +32,29 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewStatementService] method instead.
 type StatementService struct {
-	Options              []option.RequestOption
-	StatementJobs        *StatementStatementJobService
+	Options []option.RequestOption
+	// Endpoints for creating, retrieving, listing, and cancelling statement jobs.
+	//
+	// StatementJobs are tasks to asynchronously calculate and generate a bill
+	// statement.
+	//
+	// Bill statements are informative backing sheets to invoices. They provide a
+	// breakdown of the usage charges that appear on the bill, helping your end
+	// customers better understand those charges, and gain a clearer picture of their
+	// usage over the billing period.
+	StatementJobs *StatementStatementJobService
+	// Endpoints for listing, creating, updating, retrieving, or deleting Statement
+	// Definitions.
+	//
+	// Bill statements are informative backing sheets to invoices. They provide a
+	// breakdown of the usage charges that appear on the bill, helping your end
+	// customers better understand those charges, and gain a clearer picture of their
+	// usage over the billing period.
+	//
+	// Statement Definitions specify the way billed usage will be aggregated and
+	// compiled in the Statement. For example, if you are billing customers monthly,
+	// you might want to breakdown the usage responsible for the monthly charge on a
+	// Bill into weekly portions in Bill statements.
 	StatementDefinitions *StatementStatementDefinitionService
 }
 

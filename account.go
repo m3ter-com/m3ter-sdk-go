@@ -22,6 +22,35 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for Account related operations such as creation, update, list and
+// delete. An Account represents one of your end-customer accounts.
+//
+// Accounts do not belong to a Product to allow for cases where an end customer
+// takes more than one of your Products, and the charges for these Products differ.
+//
+// You typically attach a priced Plan or Plan Template to an Account before you can
+// generate bills for the Account:
+//
+//   - If a customer consumes several of your Products, you can attach a priced Plan
+//     or Plan Template to the Account for charging against each Product.
+//   - If an Account is charged solely on the basis of an agreed
+//     Prepayment/Commitment amount but not all of the Prepayment is prepaid, you can
+//     use a customized billing schedule for outstanding fees without having to
+//     attach a Plan to the Account to generate Bills.
+//
+// You can create Child Accounts for end customers who hold multiple Accounts with
+// you. You can then set up billing for the Parent/Child Account usage to have the
+// end-customer billed once for the Parent Account, instead of having separate
+// bills issued for usage against each of their multiple Accounts.
+//
+// **IMPORTANT! - use of PII:** The use of any of your end-customers' Personally
+// Identifiable Information (PII) in m3ter is restricted to a few fields on the
+// **Account** entity. Please ensure that only the `name`, `address`, or
+// `emailAddress` fields contain any end-customer PII data on any Accounts you
+// create. See the
+// [Introduction section](https://www.m3ter.com/docs/api#section/Introduction)
+// above for more details.
+//
 // AccountService contains methods and other services that help with interacting
 // with the m3ter API.
 //

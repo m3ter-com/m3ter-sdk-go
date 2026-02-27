@@ -19,6 +19,87 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// This section provides Endpoints for operations that allow you to retrieve
+// detailed information about individual Events, list all Events or specific Event
+// Types, and explore dynamic fields available for each Event Type.
+//
+// Events encompass specific instances of state changes within the system, such as
+// the creation of a new Prepayment/Commitment for an Account. Each Event is
+// classified under an Event Type framework, providing context about what kind of
+// change occurred to generate the Event.
+//
+// **Events for Configuration and Billing Entities**
+//
+// Many Event Types cover common configuration and billing objects, where the Event
+// is generated for a state change of one of these objects - for when the
+// configuration or billing object is **created**, **deleted**, or **updated**.
+//
+// For example:
+//
+// - configuration.commitment.created
+// - configuration.commitment.deleted
+// - configuration.commitment.updated
+// - configuration.account.created
+// - configuration.account.deleted
+// - configuration.account.updated
+// - billing.bill.created
+// - billing.bill.deleted
+// - billing.bill.created
+//
+// **Events for Errors or Failures**
+//
+// There are also Event Types for certain kinds of error that can occur:
+//
+// - For an Integration:
+//
+//   - validation
+//   - authentication
+//   - perform
+//   - missing account mapping
+//   - disabled
+//
+// - For a Usage Data Ingest Submission:
+//
+//   - validation failure
+//
+// - For Data Export Jobs:
+//   - data export job failure
+//
+// **Scheduled Events**
+//
+// In addition to system-generated Events that occur when a configuration entity
+// undergoes a state change at creation, update, or deletion of the entity, you can
+// use API calls to create and configure _Scheduled Event Configurations_.
+// Scheduled Events are custom Event types, which you can set up by referencing
+// Date/Time fields on configuration and billing entities. See the
+// [ScheduledEventConfigurations](https://www.m3ter.com/docs/api#tag/ScheduledEventConfigurations)
+// section of this API Reference for more details.
+//
+// **Notifications for Events**
+//
+// You can create Notification rules based on Events and these rules can reference
+// and apply calculations to the Event's fields. This allows you to set up
+// customized alerts to be sent out via webhooks when the Event occurs and any
+// conditions you've built into the Notification rule's calculation are satisfied.
+//
+// See the [Notifications](https://www.m3ter.com/docs/api#tag/Notifications)
+// section for more details.
+//
+// **Other Events**
+//
+// When Events occur, they can cause other Events, such as when a Notification is
+// triggered by the Event it is based on. For these Events there are currently two
+// categories:
+//
+// - Notification
+// - IntegrationEvent
+//
+// Also see
+// [Utilizing Events and Notifications](https://www.m3ter.com/docs/guides/utilizing-events-and-notifications)
+// and
+// [Object Definitions and API Calls](https://www.m3ter.com/docs/guides/utilizing-events-and-notifications/object-definitions-and-api-calls)
+// in the m3ter documentation for more guidance.
+//
 // EventService contains methods and other services that help with interacting with
 // the m3ter API.
 //

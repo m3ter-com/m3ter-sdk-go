@@ -20,6 +20,16 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting Pricing.
+//
+// Create the Pricing for a Plan/PlanTemplate with usage data Aggregations, and
+// define a usage-based pricing structure for charging end customer Accounts put on
+// the Plan.
+//
+// See
+// [Reviewing Pricing Options for Plans and Plan Templates](https://www.m3ter.com/docs/guides/pricing-plans/reviewing-pricing-options-and-pricing-plans)
+// for more information.
+//
 // PricingService contains methods and other services that help with interacting
 // with the m3ter API.
 //

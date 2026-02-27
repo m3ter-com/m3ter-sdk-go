@@ -19,6 +19,13 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for PlanGroupLink related operations such as creation, update, list
+// and delete.
+//
+// PlanGroupLinks are the intersection table between a PlanGroup and its associated
+// Plans. A PlanGroupLink is only created when at least 1 Plan is linked to a
+// PlanGroup.
+//
 // PlanGroupLinkService contains methods and other services that help with
 // interacting with the m3ter API.
 //

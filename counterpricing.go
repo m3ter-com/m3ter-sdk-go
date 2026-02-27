@@ -20,6 +20,16 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting
+// CounterPricing.
+//
+// Create the CounterPricing for a Plan/PlanTemplate using a Counter, and define a
+// unit-based pricing structure for charging end customer Accounts put on the Plan.
+//
+// See
+// [Creating Counters and Pricing Plans](https://www.m3ter.com/docs/guides/recurring-charges-counters/creating-counters)
+// for more information.
+//
 // CounterPricingService contains methods and other services that help with
 // interacting with the m3ter API.
 //

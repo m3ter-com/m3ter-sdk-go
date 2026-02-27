@@ -22,6 +22,42 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for Compound Aggregation related operations such as creation, update,
+// list and delete.
+//
+// Use Compound Aggregations to create numerical measures from usage data by
+// applying a calculation to one or more simple Aggregations or Custom Fields.
+// These numerical measures can then be used as pricing metrics to price your
+// Product Plans, enabling you to implement a wide range of usage-based pricing use
+// cases.
+//
+// You can create two types of Compound Aggregation:
+//
+// **Global**
+//
+//   - Pricing: Not tied to any specific product and can be used to price Plans
+//     belonging to any Product.
+//   - Calculation: can reference all simple Aggregations - both Global simple
+//     Aggregations and any product-specific simple Aggregations.
+//
+// **Product-specific**
+//
+//   - Pricing: belong to a specific Product and can only be used to price Plans
+//     belonging to the same Product.
+//   - Calculation: can reference any simple Aggregations belonging to the same
+//     Product and any Global simple Aggregations.
+//
+// **IMPORTANT!** If a simple Aggregation referenced by a Compound Aggregation has
+// a **Quantity per unit** defined or a **Rounding** defined, these will not be
+// factored into the value used by the calculation. For example, if the simple
+// Aggregation referenced has a base value of 100 and has **Quantity per unit** set
+// at 10, the Compound Aggregation calculation _will use the base value of 100 not
+// 10_.
+//
+// To better understand and use Compound Aggregations, refer to the example
+// [Compound Aggregation Use Case](https://www.m3ter.com/docs/guides/setting-up-usage-data-meters-and-aggregations/compound-aggregations#example-use-case)
+// in the m3ter documentation.
+//
 // CompoundAggregationService contains methods and other services that help with
 // interacting with the m3ter API.
 //

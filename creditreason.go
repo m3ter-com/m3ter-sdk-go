@@ -19,6 +19,13 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for CreditReason operations such as creation, update, list, and
+// delete.
+//
+// You can create CreditReasons for your Organization, and then use them when
+// creating a credit line item on a bill, or applying a product credit to a bill.
+// CreditReasons provide contextual information as to why a credit was applied.
+//
 // CreditReasonService contains methods and other services that help with
 // interacting with the m3ter API.
 //

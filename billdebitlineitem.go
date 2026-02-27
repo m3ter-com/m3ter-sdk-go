@@ -19,6 +19,15 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for Debit line item related operations such as creation, update, list
+// and delete. These are line items on Bills that are specifically related to
+// Debits.
+//
+// You use the Debit Reasons created for your Organization when you create Debit
+// line items for Bills. See the
+// [DebitReason](https://www.m3ter.com/docs/api#tag/DebitReason) section for calls
+// you can use to create and manage Debit Reasons for your Organization.
+//
 // BillDebitLineItemService contains methods and other services that help with
 // interacting with the m3ter API.
 //

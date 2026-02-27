@@ -19,6 +19,18 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for Permission Policy related operations such as creation, update, add
+// and retrieve.
+//
+// Permission Policies can restrict or grant access to specific resources for both
+// Users _(people)_ and Service Users _(automated processes with direct API
+// access)_. This enables you to control precisely what a User can do in your m3ter
+// Organization.
+//
+// For more details, see
+// [Understanding, Creating, and Managing Permission Policies](https://www.m3ter.com/docs/guides/organization-and-access-management/creating-and-managing-permissions#permission-policy-statements---available-actions-and-resources)
+// in our main Documentation.
+//
 // PermissionPolicyService contains methods and other services that help with
 // interacting with the m3ter API.
 //

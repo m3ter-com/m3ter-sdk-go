@@ -16,6 +16,18 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoints for updating and retreiving the Bill Configuration for an
+// Organization. The Organization represents your company as a direct customer of
+// the m3ter service.
+//
+// You can use the **Update BillConfig** endpoint to set a global lock date for
+// **all** Bills - any Bill with a service period end date on or before the set
+// date will be locked and cannot be updated.
+//
+// **Warning: Ensure all Bills are Approved!** If you try to set a global lock date
+// when there remains Bills in a _Pending_ state whose service period end date is
+// on or before the specified lock date, then you'll receive an error.
+//
 // BillConfigService contains methods and other services that help with interacting
 // with the m3ter API.
 //

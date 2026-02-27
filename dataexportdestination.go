@@ -21,6 +21,34 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating, updating, retrieving, or deleting Data Export
+// Destinations.
+//
+// Before you can configure and run either
+// [Export Schedules](https://www.m3ter.com/docs/api#tag/ExportSchedule) or
+// [Ad-Hoc Exports](https://www.m3ter.com/docs/api#tag/ExportAdHoc), you can set up
+// Export Destinations. Currently, two options for setting up Data Export
+// Destinations are available:
+//
+// - S3 buckets on your AWS account.
+// - Buckets in your Google Cloud Storage account.
+//
+// **NOTE: Exporting without a Destination?** When a Data Export runs, the data is
+// sent through to the specified Destination. However, the export file is also made
+// available for you to download it locally. You can set up and run Data Exports
+// without defining a Destination. The data is not exported but the compiled export
+// file is made available for downloading locally.
+//
+// **Preview Version!** The Data Export feature is currently available only in
+// Preview release version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Preview release definition. ExportDestination endpoints will only be
+// available if Data Export has been enabled for your Organization. For more
+// details see
+// [Data Export(Preview)](https://www.m3ter.com/docs/guides/data-exports) in our
+// main User documentation. If you're interested in previewing the Data Export
+// feature, please get in touch with m3ter Support or your m3ter contact.
+//
 // DataExportDestinationService contains methods and other services that help with
 // interacting with the m3ter API.
 //

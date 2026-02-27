@@ -19,6 +19,15 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for billing operations such as creating, updating,
+// listing,downloading, and deleting Bills.
+//
+// Bills are generated for an Account, and are calculated in accordance with the
+// usage-based pricing Plans applied for the Products the Account consumes. These
+// endpoints enable interaction with the billing system, allowing you to obtain
+// billing details and insights into the consumption patterns and charges of your
+// end-customer Accounts.
+//
 // BillLineItemService contains methods and other services that help with
 // interacting with the m3ter API.
 //

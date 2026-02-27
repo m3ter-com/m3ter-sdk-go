@@ -22,6 +22,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating/updating/deleting BalanceChargeSchedules.
+//
+// **NOTE!** The BalanceChargeSchedule feature is available in Beta release
+// version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Beta release definition.
+//
 // BalanceChargeScheduleService contains methods and other services that help with
 // interacting with the m3ter API.
 //

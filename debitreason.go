@@ -19,6 +19,12 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for DebitReason operations such as creation, update, list, and delete.
+//
+// You can create DebitReasons for your Organization, and then use them when
+// creating a debit line item on a bill, or applying a product debit to a bill.
+// DebitReasons provide contextual information as to why a debit was applied.
+//
 // DebitReasonService contains methods and other services that help with
 // interacting with the m3ter API.
 //

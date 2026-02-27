@@ -19,6 +19,26 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// A suite of endpoints for configuring and managing third party integrations
+// within the m3ter platform. The integration endpoints in this section facilitate
+// various operations such as creating, updating, listing, and deletion of
+// integrations.
+//
+// m3ter integrations enable seamless data synchronization and mapping with
+// external systems required in core business processes. These processes often
+// include sales, pricing, billing and invoicing, and general finance.
+//
+// With m3ter integrations, you can establish robust connections with popular
+// business platforms, enhancing your operational capabilities. For example:
+//
+// - Chargebee
+// - Salesforce
+// - Stripe
+// - Netsuite
+// - Paddle
+// - Xero
+// - QuickBooks
+//
 // WebhookService contains methods and other services that help with interacting
 // with the m3ter API.
 //

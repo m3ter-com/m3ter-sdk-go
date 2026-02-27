@@ -20,6 +20,15 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for billing operations such as creating, updating,
+// listing,downloading, and deleting Bills.
+//
+// Bills are generated for an Account, and are calculated in accordance with the
+// usage-based pricing Plans applied for the Products the Account consumes. These
+// endpoints enable interaction with the billing system, allowing you to obtain
+// billing details and insights into the consumption patterns and charges of your
+// end-customer Accounts.
+//
 // BillService contains methods and other services that help with interacting with
 // the m3ter API.
 //
@@ -27,10 +36,33 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewBillService] method instead.
 type BillService struct {
-	Options         []option.RequestOption
+	Options []option.RequestOption
+	// Endpoints for Credit line item related operations such as creation, update, list
+	// and delete. These are line items on Bills that are specifically related to
+	// Credits.
+	//
+	// You use the Credit Reasons created for your Organization when you create Credit
+	// line items for Bills. See
+	// [CreditReason](https://www.m3ter.com/docs/api#tag/CreditReason).
 	CreditLineItems *BillCreditLineItemService
-	DebitLineItems  *BillDebitLineItemService
-	LineItems       *BillLineItemService
+	// Endpoints for Debit line item related operations such as creation, update, list
+	// and delete. These are line items on Bills that are specifically related to
+	// Debits.
+	//
+	// You use the Debit Reasons created for your Organization when you create Debit
+	// line items for Bills. See the
+	// [DebitReason](https://www.m3ter.com/docs/api#tag/DebitReason) section for calls
+	// you can use to create and manage Debit Reasons for your Organization.
+	DebitLineItems *BillDebitLineItemService
+	// Endpoints for billing operations such as creating, updating,
+	// listing,downloading, and deleting Bills.
+	//
+	// Bills are generated for an Account, and are calculated in accordance with the
+	// usage-based pricing Plans applied for the Products the Account consumes. These
+	// endpoints enable interaction with the billing system, allowing you to obtain
+	// billing details and insights into the consumption patterns and charges of your
+	// end-customer Accounts.
+	LineItems *BillLineItemService
 }
 
 // NewBillService generates a new service that applies the given options to each
