@@ -22,6 +22,17 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting
+// PlanTemplates.
+//
+// Use PlanTemplates to define default values for Plans. These default values
+// control the billing operations you want applied to your products. PlanTemplates
+// avoid repetition in configuration work - many Plans will share settings for
+// billing operations and differ only in the details of their pricing structures.
+//
+// A PlanTemplate is linked to a Product, and each Plan is a child of a
+// PlanTemplate.
+//
 // PlanTemplateService contains methods and other services that help with
 // interacting with the m3ter API.
 //

@@ -18,6 +18,19 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting Statement
+// Definitions.
+//
+// Bill statements are informative backing sheets to invoices. They provide a
+// breakdown of the usage charges that appear on the bill, helping your end
+// customers better understand those charges, and gain a clearer picture of their
+// usage over the billing period.
+//
+// Statement Definitions specify the way billed usage will be aggregated and
+// compiled in the Statement. For example, if you are billing customers monthly,
+// you might want to breakdown the usage responsible for the monthly charge on a
+// Bill into weekly portions in Bill statements.
+//
 // StatementStatementDefinitionService contains methods and other services that
 // help with interacting with the m3ter API.
 //

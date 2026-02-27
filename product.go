@@ -22,6 +22,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting Products.
+//
+// A Product represents the products and services you offer to your end customers.
+// Products act as a container for the Meters, Aggregations, Pricing, and Plans
+// required to implement usage-based and other pricing models for your
+// Organization.
+//
 // ProductService contains methods and other services that help with interacting
 // with the m3ter API.
 //

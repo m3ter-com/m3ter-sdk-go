@@ -19,6 +19,95 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for retrieving and updating Custom Fields at the Organization level
+// for all entities that support them.
+//
+// Custom Fields in m3ter allow you to store custom data in the form of number or
+// string values against m3ter entities in a way that does not directly affect the
+// normal working operation of the m3ter platform. Having this capability to store
+// data in a free-hand fashion can prove very useful in helping you to meet
+// specific usage-based pricing and other operational business use cases.
+//
+// However, you can exploit the values stored on Custom Fields in a more direct way
+// by referencing them in Derived Field and Compound Aggregation calculations.
+// Given the key role these calculations can play when implementing usage-based
+// pricing schema, any Custom Fields you reference will then affect how the
+// platform behaves. Referencing Custom Field values in your calculations offers a
+// much wider scope of options when it comes to resolving complex usage-based
+// pricing use cases.
+//
+// Custom Fields can be added to the following entities at Organizational level:
+//
+// - Organization
+// - Account
+// - AccountPlan
+// - Aggregation
+// - Compound Aggregation
+// - Meter
+// - Product
+// - Plan
+// - PlanTemplate
+// - Contract
+//
+// These all follow the same pattern - a new _(optional)_ field is available on the
+// entity request and response bodies called "customFields" which is a object in
+// this format:
+//
+// ```
+//
+//	"customFields": {
+//			"exampleCustomField1": 7.1,
+//			"exampleCustomField2": "stringValue"
+//	}
+//
+// ```
+//
+// The value for a Custom Field can be a string or a number.
+//
+// **Using Custom Field values in calculations:**
+//
+//   - You can add Custom Fields at two levels - the Organization level and the
+//     individual entity level.
+//   - The Organizational level field provides a default value and _must be added_ if
+//     you want to also add a Custom Field of the same name at the corresponding
+//     individual entity level. If you reference the Custom Field in a calculation,
+//     the value for the individual entity level field is used. If no field is
+//     defined at individual entity level, then the Organization level field value is
+//     used.
+//
+// **Important: Constraints and Exceptions!**
+//
+// **Custom Fields at Organization Level**. Currently, you cannot create Custom
+// Fields at the Organization-level for the following enitites:
+//
+// - Plan Group
+// - Balance
+// - Balance Transaction Schedule
+// - Balance Charge Schedule
+//
+// Therefore you cannot reference the Custom Fields values created at the
+// individual entity level for these entities in your Derived Field or Compound
+// Aggregation calculations.
+//
+// **Derived Field Calculations**. You can _only reference Custom Fields_ for the
+// following entities:
+//
+// - Organization
+// - Meter
+// - Account
+//
+// However, if you are using Meters belonging to _a specific Product_, that is, not
+// _Global Meters_, you can also reference Custom Fields added to a Product in
+// Derived Field calculations.
+//
+// **Compound Aggregation Calculations - Meter Custom Fields**. The value of the
+// _Organization level Meter Custom Field will always be used_, even if you have
+// defined a corresponding field at the individual Meter level.
+//
+// See
+// [Working with Custom Fields](https://www.m3ter.com/docs/guides/creating-and-managing-products/working-with-custom-fields)
+// in the m3ter documentation for more information.
+//
 // CustomFieldService contains methods and other services that help with
 // interacting with the m3ter API.
 //

@@ -22,6 +22,31 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating/updating/deleting Lookup Table Revisions.
+//
+// Lookup Tables utilize a "Table and Revision" model, which lets you update data
+// cleanly, and extend the schema without modifying existing calculations:
+//
+//   - Create Revisions for a Lookup Table, which you can use to define data schema
+//     and lookup keys.
+//   - Populate draft Revisions with data values. You can create and edit multiple
+//     draft Revisions, but only one can be published at any given time.
+//   - Publish a Revision to activate it. When you use Lookup functions in your
+//     calculations that reference the Lookup Table, the data values defined for the
+//     published Revision are used.
+//   - When you want different, updated data values to be used, publish the draft
+//     Revision containing the required new values. The currently published Revision
+//     is archived automatically.
+//
+// **Beta Version!** The Lookup Table feature is currently available in Beta
+// release version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Beta release definition. Lookup Table Revision endpoints will only be
+// available if Lookup Tables have been enabled for your Organization. For more
+// details see
+// [Lookup Tables (Beta)](https://www.m3ter.com/docs/guides/lookup-tables) in our
+// main User documentation.
+//
 // LookupTableLookupTableRevisionService contains methods and other services that
 // help with interacting with the m3ter API.
 //

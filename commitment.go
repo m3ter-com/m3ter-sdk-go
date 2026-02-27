@@ -19,6 +19,58 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints that manage Commitments _(also known as Prepayments)_ in the context
+// of usage-based pricing and billing. A Commitment represents an agreement where
+// the end-customer has agreed to pay a fixed minimum amount throughout the
+// contract period. **_The commitment amount is payable regardless of the actual
+// usage by the customer of your service or product._**
+//
+// These endpoints enable the creation, updating, retrieval, and deletion of
+// Commitments. Use them to manage your customer's Commitments and ensure optimal
+// revenue recognition:
+//
+//   - Specify which type of charges can draw-down against a Commitment amount on an
+//     Account at billing: usage, minimum spend, standing charges, or recurring
+//     charges.
+//   - Define overage surcharge percentages, which are applied when the usage charges
+//     exceed the agreed Commitment amount within the contract duration.
+//
+// #### What is the difference between Balances and Commitments/Prepayments?
+//
+// To manage credit amounts for your end-customer Accounts, you can use Balances or
+// Commitments/Prepayments. However, these two kinds of credits for Accounts serve
+// different purposes.
+//
+// Commitments/Prepayments are used for amounts end-customers have agreed to pay
+// for consuming your product or services across a full contract term. A customer
+// might pay the entire or only part of the agreed amount upfront, but **_the
+// prepayment amount is payable regardless of the actual usage by the customer of
+// your service or product._**
+//
+// In contrast, a Balance - often referred to as a Top-Up or Prepaid draw-down - is
+// used when a customer wants to add a credit amount to their Account at any time
+// during the service period or when you as service provider want to add a credit
+// to a customer Account. This Balance credit can then be drawn-down against for
+// billing the Account for usage, minimum spend, standing charges, or recurring
+// charges due. Balances therefore serve payment use cases in a more flexible way,
+// for example to be used for a "Free Credit" sign-up scheme you offer to encourage
+// sales or to enhance customer satisfaction by adding credit to an Account to
+// compensate for service delivery issues.
+//
+// You can use Prepayments/Commitments and Balances together on Account, and define
+// at Organization or individual Account level the order in which any
+// Balance/Prepayment credit on an Account is drawn-down - Balance amounts first or
+// Prepayment amounts first.
+//
+// #### Billing for Commitments
+//
+// If not all of an agreed Commitment amount is paid at the start of an
+// end-customer contract period, you can choose one of two options for billing the
+// outstanding fees due on the customer Account:
+//
+// - Select a Product _Plan to bill with_.
+// - Define a _schedule of billing dates_.
+//
 // CommitmentService contains methods and other services that help with interacting
 // with the m3ter API.
 //

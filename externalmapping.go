@@ -19,6 +19,19 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for managing External Mapping related operations such as creation,
+// update, list and delete.
+//
+// When you integrate your 3rd-party systems with the m3ter platform, a mapping
+// between entities in the local system _(m3ter)_ and external systems is
+// constructed. This _External Mapping_ is crucial in scenarios where data from
+// external systems is consumed or where data from the local system is to be
+// synchronized with external systems.
+//
+// When you are working to set up your Integrations and want to test or
+// troubleshoot your implementation before going live, you might need to create
+// External Mappings manually and, at a later date, edit or delete them.
+//
 // ExternalMappingService contains methods and other services that help with
 // interacting with the m3ter API.
 //

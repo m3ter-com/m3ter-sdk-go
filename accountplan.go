@@ -22,6 +22,69 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for AccountPlan and AccountPlanGroup related operations such as
+// creation, update, list and delete.
+//
+// **AccountPlans** An Account represents one of your end-customer accounts. To
+// create an AccountPlan, you attach a Product Plan to an Account. The AccountPlan
+// then determines the charges incurred at billing by your end customer for
+// consuming the Product the Plan is for:
+//
+//   - **AccountPlan Active/Inactive**. Set start and end dates to define the period
+//     the AccountPlan is active for the Account.
+//   - **AccountPlan per Product**. If an end customer consumes multiple Products,
+//     create separate AccountPlans to charge for each Product.
+//
+// **AccountPlan Constraints:**
+//
+//   - Only one AccountPlan per Product can be active at any one time for an Account.
+//   - If you create a Plan as a custom Plan for a specific Account, you can only use
+//     it to create an AccountPlan for that Account.
+//
+// **AccountPlanGroups** Plan Groups are used when you want to apply a minimum
+// spend amount at billing across several of your Products each of which are priced
+// separately - when you create the Plan Group, you define an overall minimum spend
+// and then add any priced Plans you want to include in the Group. To create an
+// AccounPlanGroup, you can attach a Plan Group to an Account that consumes the
+// separate Products which are priced using the included Plans. At billing, the
+// minimum spend you've defined for the Plan Group is applied:
+//
+//   - **Active AccountPlanGroup**. Set the start and end dates to define the period
+//     for which the Plan Group will be active for the Account.
+//
+// **Plan Group Notes:**
+//
+//   - You can only add _one Plan for the same Product_ to a Plan Group. See the
+//     [Plan Group](https://www.m3ter.com/docs/api#tag/PlanGroup) in this API
+//     Reference for more details on creating Plan Groups.
+//   - You can create a _custom Plan Group_ for an Account, which means the Plan
+//     Group can only be attached to that Account to create an AccountPlanGroup.
+//
+// **AcountPlanGroup - Notes and Constraints:**
+//
+//   - **AccountPlanGroup is type of AccountPlan** When you attach a Plan Group to an
+//     Account, this creates an AccountPlanGroup. However, the m3ter data model _does
+//     not support a separate AccountPlanGroup entity_, and an AccountPlanGroup is a
+//     type of AccountPlan where a `planGroupId` is used instead of a `planId` when
+//     it's created. See the
+//     [Create AccountPlan](https://www.m3ter.com/docs/api#tag/AccountPlan/operation/PostAccountPlan)
+//     call in this section and
+//     [Attaching Plan Groups to an Account](https://www.m3ter.com/docs/guides/end-customer-accounts/attaching-plan-groups-to-an-account)
+//     in our main User Documentation.
+//   - **Multiple AccountPlan Groups:** You can attach more than one Plan Group to an
+//     Account to create multiple AccountPlanGroups, but the rule that _only one
+//     attached Plan per Product can be active at any one time for an Account_ is
+//     preserved:
+//   - Multiple attached Plan Groups on an Account can have overlapping dates only
+//     if none of the Plan Groups contain a Plan belonging to the same Product. If
+//     you try to attach a Plan Group to an Account with Plan Groups already
+//     attached and:
+//   - The new Plan Group contains a Product Plan that also belongs to a Plan
+//     Group already attached to the Account.
+//   - The dates for these "matched Plan" Plan Groups being active for the
+//     Account would overlap.
+//   - Then you'll receive an error and the attachment will be blocked.
+//
 // AccountPlanService contains methods and other services that help with
 // interacting with the m3ter API.
 //

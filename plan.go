@@ -22,6 +22,25 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting Plans.
+//
+// A Plan is based on a PlanTemplate and represents a specific pricing plan for one
+// of your products or services. Each Plan inherits general billing attributes or
+// pricing structure from its parent Plan Template. Some attributes can be
+// overriden for the specific Plan.
+//
+// When you've created the Plan Templates and Plans you need for your Products, you
+// can configure the exact pricing structures for Plans to charge customers that
+// consume one or more of your Products.
+//
+// You can then attach the appropriately priced Plans to customer Accounts to
+// create [Account Plans](https://www.m3ter.com/docs/api#tag/AccountPlan) and
+// enable charges to be calculated correctly for billing against those Accounts.
+//
+// See also:
+//
+// - [Reviewing Options for Plans and Plan Templates](https://www.m3ter.com/docs/guides/working-with-plan-templates-and-plans/reviewing-configuration-options-for-plans-and-plan-templates).
+//
 // PlanService contains methods and other services that help with interacting with
 // the m3ter API.
 //

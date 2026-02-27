@@ -19,6 +19,18 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting
+// CounterAdjustments.
+//
+// If you attach a Plan to an Account which is priced using a Counter to apply
+// unit-based pricing, you can then create CounterAdjustments for the Account using
+// that Counter to ensure the Account is billed according to the number of Counter
+// units the Account subscribes to in a given billing period.
+//
+// See
+// [Understanding and Creating Counter Adjustments for Accounts](https://www.m3ter.com/docs/guides/recurring-charges-counters/creating-counter-adjustments-for-accounts)
+// for more information.
+//
 // CounterAdjustmentService contains methods and other services that help with
 // interacting with the m3ter API.
 //

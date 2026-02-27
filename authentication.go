@@ -13,6 +13,12 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoint for retrieving a JSON Web Token (JWT) bearer token for a ServiceUser
+// using the Client Credentials Grant flow.
+//
+// A ServiceUser represents the automated process you want to grant access to your
+// Organization - that is, as an API user.
+//
 // AuthenticationService contains methods and other services that help with
 // interacting with the m3ter API.
 //

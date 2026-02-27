@@ -18,6 +18,13 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for creating/updating/deleting BalanceTransactionSchedules.
+//
+// **NOTE!** The BalanceTransactionSchedule feature is available in Beta release
+// version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Beta release definition.
+//
 // BalanceTransactionScheduleService contains methods and other services that help
 // with interacting with the m3ter API.
 //

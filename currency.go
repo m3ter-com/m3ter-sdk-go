@@ -19,6 +19,24 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for Currency operations such as creation, update, list, and delete.
+// Currencies are stored for your Organization, and can then be used to specify
+// currencies on various entities such as plan groups and plan templates.
+//
+// **IMPORTANT!** The Currencies you want to use in your Organization must be
+// created first.
+//
+// The currency you select for your Organization determines the billing currency
+// and overrides any currency settings in your pricing Plans. For example, if the
+// Organization currency is set to USD and a pricing Plan used for an Account is
+// set to GBP, the bill for an Account using that Plan is calculated in GBP, and
+// then each bill line item converted to USD amounts.
+//
+// Currency conversion rates are setup in the _OrganizationConfig_. For more
+// details, see
+// [Creating and Managing Currencies](https://www.m3ter.com/docs/guides/organization-and-access-management/viewing-and-editing-organization#creating-and-managing-currencies)
+// in the m3ter Documentation.
+//
 // CurrencyService contains methods and other services that help with interacting
 // with the m3ter API.
 //

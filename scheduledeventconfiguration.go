@@ -19,6 +19,17 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for retrieving and managing scheduled Events' configurations.
+//
+// Scheduled Event Configurations define custom Event types that reference
+// Date/Time fields belonging to configuration and billing entities. They therefore
+// provide you with an extra degree of flexibility over and above system-generated
+// Events for setting up Notifications based on Events.
+//
+// For more details, see the
+// [Working with Scheduled Events](https://www.m3ter.com/docs/guides/alerts-events-and-notifications/utilizing-events-and-notifications/working-with-scheduled-events)
+// in our Documenation.
+//
 // ScheduledEventConfigurationService contains methods and other services that help
 // with interacting with the m3ter API.
 //

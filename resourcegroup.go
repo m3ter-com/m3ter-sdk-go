@@ -19,6 +19,57 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for ResourceGroup related operations such as creation, update, list
+// and delete.
+//
+// ResourceGroups are used in the context of Permission Policies, which controls
+// what a User who has been given access to your Organization can and cannot do.
+// For example, you might want to create a Permissions Policy that denies Users the
+// ability to retrieve Meters.
+//
+// Resources are defined as m3ter Resource Identifiers _(MRIs)_ in the format:
+//
+// ```
+// service:resource-type/item-type/id
+// ```
+//
+// Where:
+//
+//   - service is a distinct part of the overall m3ter system, and which forms a
+//     natural functional grouping, such as "config" or "billing".
+//
+//   - resource-type is the resource type item accessed - for example: "Plan",
+//     "Meter", "Bill"
+//
+// - item-type is one of:
+//
+//   - "item" - to specify an individual item.
+//
+//   - "group" - to specify a resource group.
+//
+// - id is the resource group id or the resource item id
+//
+// Resources can be assigned to one or more ResourceGroups. For example, a Plan can
+// be assigned to Plan ResourceGroups, a Meter can be assigned to Meter
+// ResourceGroups, and so on. This is useful for cases where you want to create
+// Permission Policies which allow or deny access to a specific subset of
+// resources. For example, grant a user access to only some of the Plans in your
+// Organization.
+//
+// This concept of grouping resources applies to every resource in m3ter, including
+// ResourceGroups themselves. This allows you to nest ResourceGroups to support
+// hierarchies of groups.
+//
+// See
+// [Understanding, Creating, and Managing Permission Policies](https://www.m3ter.com/docs/guides/managing-organization-and-users/creating-and-managing-permissions)
+// in the m3ter documentation for more information.
+//
+// **Note: User Resource Groups** You can create a User Resource Group to group
+// resources of type = `user`. You can then retrieve a list of the User Resource
+// Groups a user belongs to. For more details, see the
+// [Retrieve OrgUser Groups](https://www.m3ter.com/docs/api#tag/OrgUsers/operation/GetOrgUserGroups)
+// call in the OrgUsers section.
+//
 // ResourceGroupService contains methods and other services that help with
 // interacting with the m3ter API.
 //

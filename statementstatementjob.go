@@ -18,6 +18,16 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for creating, retrieving, listing, and cancelling statement jobs.
+//
+// StatementJobs are tasks to asynchronously calculate and generate a bill
+// statement.
+//
+// Bill statements are informative backing sheets to invoices. They provide a
+// breakdown of the usage charges that appear on the bill, helping your end
+// customers better understand those charges, and gain a clearer picture of their
+// usage over the billing period.
+//
 // StatementStatementJobService contains methods and other services that help with
 // interacting with the m3ter API.
 //
