@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.12.1 (2026-02-28)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.12.0...v0.12.1)
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([fa4a866](https://github.com/m3ter-com/m3ter-sdk-go/commit/fa4a866578620e1532a12d8574027a939793f0a8))
+
+
+### Chores
+
+* **ci:** add build step ([d71ef5a](https://github.com/m3ter-com/m3ter-sdk-go/commit/d71ef5a9d22c12020eec0d400cd9a3cfa91ff567))
+* **docs:** add missing descriptions ([16d8a8a](https://github.com/m3ter-com/m3ter-sdk-go/commit/16d8a8abbf46d92726f19c4e64a7a7ffa15b7a8f))
+* **internal:** move custom custom `json` tags to `api` ([4a26bff](https://github.com/m3ter-com/m3ter-sdk-go/commit/4a26bffdfc71c068b58cdadcec3244bdda2d7063))
+* update mock server docs ([d83e769](https://github.com/m3ter-com/m3ter-sdk-go/commit/d83e76973086690f80da3065fa5b37c4f1fc126f))
+
 ## 0.12.0 (2026-02-11)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/m3ter-com/m3ter-sdk-go/compare/v0.11.0...v0.12.0)
