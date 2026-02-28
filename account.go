@@ -22,6 +22,35 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for Account related operations such as creation, update, list and
+// delete. An Account represents one of your end-customer accounts.
+//
+// Accounts do not belong to a Product to allow for cases where an end customer
+// takes more than one of your Products, and the charges for these Products differ.
+//
+// You typically attach a priced Plan or Plan Template to an Account before you can
+// generate bills for the Account:
+//
+//   - If a customer consumes several of your Products, you can attach a priced Plan
+//     or Plan Template to the Account for charging against each Product.
+//   - If an Account is charged solely on the basis of an agreed
+//     Prepayment/Commitment amount but not all of the Prepayment is prepaid, you can
+//     use a customized billing schedule for outstanding fees without having to
+//     attach a Plan to the Account to generate Bills.
+//
+// You can create Child Accounts for end customers who hold multiple Accounts with
+// you. You can then set up billing for the Parent/Child Account usage to have the
+// end-customer billed once for the Parent Account, instead of having separate
+// bills issued for usage against each of their multiple Accounts.
+//
+// **IMPORTANT! - use of PII:** The use of any of your end-customers' Personally
+// Identifiable Information (PII) in m3ter is restricted to a few fields on the
+// **Account** entity. Please ensure that only the `name`, `address`, or
+// `emailAddress` fields contain any end-customer PII data on any Accounts you
+// create. See the
+// [Introduction section](https://www.m3ter.com/docs/api#section/Introduction)
+// above for more details.
+//
 // AccountService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -245,7 +274,7 @@ func (r *AccountService) Search(ctx context.Context, params AccountSearchParams,
 
 type AccountResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Contact address.
 	Address Address `json:"address"`
 	// Specify whether to auto-generate statements once Bills are approved or locked.
@@ -600,13 +629,13 @@ func (r accountSearchResponseJSON) RawJSON() string {
 
 type AccountNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Code of the Account. This is a unique short code used for the Account.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Contact email for the Account.
-	EmailAddress param.Field[string] `json:"emailAddress,required" format:"email"`
+	EmailAddress param.Field[string] `json:"emailAddress" api:"required" format:"email"`
 	// Name of the Account.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Contact address.
 	Address param.Field[AddressParam] `json:"address"`
 	// Specify whether to auto-generate statements once Bills are approved or locked.
@@ -758,18 +787,18 @@ type AccountNewParamsCustomFieldsUnion interface {
 
 type AccountGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type AccountUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Code of the Account. This is a unique short code used for the Account.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Contact email for the Account.
-	EmailAddress param.Field[string] `json:"emailAddress,required" format:"email"`
+	EmailAddress param.Field[string] `json:"emailAddress" api:"required" format:"email"`
 	// Name of the Account.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Contact address.
 	Address param.Field[AddressParam] `json:"address"`
 	// Specify whether to auto-generate statements once Bills are approved or locked.
@@ -921,7 +950,7 @@ type AccountUpdateParamsCustomFieldsUnion interface {
 
 type AccountListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Account Codes to retrieve. These are unique short codes for each
 	// Account.
 	Codes param.Field[[]string] `query:"codes"`
@@ -943,20 +972,20 @@ func (r AccountListParams) URLQuery() (v url.Values) {
 
 type AccountDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type AccountEndDateBillingEntitiesParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Defines which billing entities associated with the Account will have the
 	// specified end-date applied. For example, if you want the specified end-date to
 	// be applied to all Prepayments/Commitments created for the Account use
 	// `"PREPAYMENT"`.
-	BillingEntities param.Field[[]AccountEndDateBillingEntitiesParamsBillingEntity] `json:"billingEntities,required"`
+	BillingEntities param.Field[[]AccountEndDateBillingEntitiesParamsBillingEntity] `json:"billingEntities" api:"required"`
 	// The end date and time applied to the specified billing entities _(in ISO 8601
 	// format)_.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date-time"`
 	// A Boolean TRUE/FALSE flag. For Parent Accounts, set to TRUE if you want the
 	// specified end-date to be applied to any billing entities associated with Child
 	// Accounts. _(Optional)_
@@ -987,7 +1016,7 @@ func (r AccountEndDateBillingEntitiesParamsBillingEntity) IsKnown() bool {
 
 type AccountListChildrenParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID     param.Field[string] `path:"orgId,required"`
+	OrgID     param.Field[string] `path:"orgId" api:"required"`
 	NextToken param.Field[string] `query:"nextToken"`
 	PageSize  param.Field[int64]  `query:"pageSize"`
 }
@@ -1003,7 +1032,7 @@ func (r AccountListChildrenParams) URLQuery() (v url.Values) {
 
 type AccountSearchParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
 	// Search Operator to be used while querying search.

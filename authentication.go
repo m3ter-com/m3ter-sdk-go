@@ -13,6 +13,12 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoint for retrieving a JSON Web Token (JWT) bearer token for a ServiceUser
+// using the Client Credentials Grant flow.
+//
+// A ServiceUser represents the automated process you want to grant access to your
+// Organization - that is, as an API user.
+//
 // AuthenticationService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -42,9 +48,9 @@ func (r *AuthenticationService) GetBearerToken(ctx context.Context, body Authent
 
 type AuthenticationGetBearerTokenResponse struct {
 	// The access token.
-	AccessToken string `json:"access_token,required"`
+	AccessToken string `json:"access_token" api:"required"`
 	// Token expiry time in seconds.
-	ExpiresIn int64 `json:"expires_in,required"`
+	ExpiresIn int64 `json:"expires_in" api:"required"`
 	// Not used.
 	Scope string `json:"scope"`
 	// The token type, which in this case is "bearer".
@@ -73,7 +79,7 @@ func (r authenticationGetBearerTokenResponseJSON) RawJSON() string {
 
 type AuthenticationGetBearerTokenParams struct {
 	// The grant type.
-	GrantType param.Field[AuthenticationGetBearerTokenParamsGrantType] `json:"grant_type,required"`
+	GrantType param.Field[AuthenticationGetBearerTokenParamsGrantType] `json:"grant_type" api:"required"`
 	// Not used. The JWT scope.
 	Scope param.Field[string] `json:"scope"`
 }

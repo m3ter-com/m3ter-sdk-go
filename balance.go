@@ -22,6 +22,61 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating/retrieving/updating/deleting Balances on Accounts.
+//
+// When you have created a Balance for an Account, you can create a positive or
+// negative Transaction amounts for the Balance. To do this, you must first define
+// Transaction Types for your Organization, and then use one of these Transaction
+// Types when you add a specific Transaction to a Balance - see the
+// [Create TransactionType](https://www.m3ter.com/docs/api#tag/TransactionType/operation/CreateTransactionType)
+// call in the Transaction Type section in this API Reference for more details.
+//
+// Balances are typically used when a customer prepays an amount to add a credit to
+// their Account, which can then be draw-down against charges due for product or
+// service consumption. You can include options to top-up the original Balance.
+//
+// Examples of how Balances for end customer Accounts can be used:
+//
+//   - Onboarding Balance/Free Trials. Offering an onboarding incentive to new
+//     customers as an initial free credit Balance on their Account.
+//
+//   - Balance as initial commitment. Add a Balance amount to a new customer Account.
+//     This acts as an initial commitment, which allows them to use the service and
+//     gain an accurate insight into their usage level.
+//
+//   - Managing Customer Satisfaction. Use Balance as credits that will be applied to
+//     subsequent Bills as compensation for acknowledged service delivery issues.
+//
+// - Facilitating Balance Adjustments:
+//   - Apply negative amounts to immediately write-off outstanding Balances.
+//
+// #### What is the difference between Balances and Commitments/Prepayments?
+//
+// To manage credit amounts for your end-customer Accounts, you can use Balances or
+// Commitments/Prepayments. However, these two kinds of credits for Accounts serve
+// different purposes.
+//
+// Commitments - also referred to as Prepayments - are used for amounts
+// end-customers have agreed to pay for consuming your product or services across a
+// full contract term. A customer might pay the entire or only part of the agreed
+// amount upfront, but **_the commitment or prepayment amount is payable regardless
+// of the actual usage by the customer of your service or product._**
+//
+// In contrast, a Balance - often referred to as a Top-Up or Prepaid draw-down - is
+// used when a customer wants to add a credit amount to their Account at any time
+// during the service period or when you as service provider want to add a credit
+// to a customer Account. This Balance credit can then be drawn-down against for
+// billing the Account for usage, minimum spend, standing charges, or recurring
+// charges due. Balances therefore serve payment use cases in a more flexible way,
+// for example to be used for a "Free Credit" sign-up scheme you offer to encourage
+// sales or to enhance customer satisfaction by adding credit to an Account to
+// compensate for service delivery issues.
+//
+// You can use Commitments/Prepayments and Balances together on Account, and define
+// at Organization or individual Account level the order in which any
+// Balance/Commitment credit on an Account is drawn-down - Balance amounts first or
+// Commitment/Prepayment amounts first.
+//
 // BalanceService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -29,9 +84,75 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewBalanceService] method instead.
 type BalanceService struct {
-	Options              []option.RequestOption
-	Transactions         *BalanceTransactionService
-	ChargeSchedules      *BalanceChargeScheduleService
+	Options []option.RequestOption
+	// Endpoints for creating/retrieving/updating/deleting Balances on Accounts.
+	//
+	// When you have created a Balance for an Account, you can create a positive or
+	// negative Transaction amounts for the Balance. To do this, you must first define
+	// Transaction Types for your Organization, and then use one of these Transaction
+	// Types when you add a specific Transaction to a Balance - see the
+	// [Create TransactionType](https://www.m3ter.com/docs/api#tag/TransactionType/operation/CreateTransactionType)
+	// call in the Transaction Type section in this API Reference for more details.
+	//
+	// Balances are typically used when a customer prepays an amount to add a credit to
+	// their Account, which can then be draw-down against charges due for product or
+	// service consumption. You can include options to top-up the original Balance.
+	//
+	// Examples of how Balances for end customer Accounts can be used:
+	//
+	//   - Onboarding Balance/Free Trials. Offering an onboarding incentive to new
+	//     customers as an initial free credit Balance on their Account.
+	//
+	//   - Balance as initial commitment. Add a Balance amount to a new customer Account.
+	//     This acts as an initial commitment, which allows them to use the service and
+	//     gain an accurate insight into their usage level.
+	//
+	//   - Managing Customer Satisfaction. Use Balance as credits that will be applied to
+	//     subsequent Bills as compensation for acknowledged service delivery issues.
+	//
+	// - Facilitating Balance Adjustments:
+	//   - Apply negative amounts to immediately write-off outstanding Balances.
+	//
+	// #### What is the difference between Balances and Commitments/Prepayments?
+	//
+	// To manage credit amounts for your end-customer Accounts, you can use Balances or
+	// Commitments/Prepayments. However, these two kinds of credits for Accounts serve
+	// different purposes.
+	//
+	// Commitments - also referred to as Prepayments - are used for amounts
+	// end-customers have agreed to pay for consuming your product or services across a
+	// full contract term. A customer might pay the entire or only part of the agreed
+	// amount upfront, but **_the commitment or prepayment amount is payable regardless
+	// of the actual usage by the customer of your service or product._**
+	//
+	// In contrast, a Balance - often referred to as a Top-Up or Prepaid draw-down - is
+	// used when a customer wants to add a credit amount to their Account at any time
+	// during the service period or when you as service provider want to add a credit
+	// to a customer Account. This Balance credit can then be drawn-down against for
+	// billing the Account for usage, minimum spend, standing charges, or recurring
+	// charges due. Balances therefore serve payment use cases in a more flexible way,
+	// for example to be used for a "Free Credit" sign-up scheme you offer to encourage
+	// sales or to enhance customer satisfaction by adding credit to an Account to
+	// compensate for service delivery issues.
+	//
+	// You can use Commitments/Prepayments and Balances together on Account, and define
+	// at Organization or individual Account level the order in which any
+	// Balance/Commitment credit on an Account is drawn-down - Balance amounts first or
+	// Commitment/Prepayment amounts first.
+	Transactions *BalanceTransactionService
+	// Endpoints for creating/updating/deleting BalanceChargeSchedules.
+	//
+	// **NOTE!** The BalanceChargeSchedule feature is available in Beta release
+	// version. See
+	// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+	// for Beta release definition.
+	ChargeSchedules *BalanceChargeScheduleService
+	// Endpoints for creating/updating/deleting BalanceTransactionSchedules.
+	//
+	// **NOTE!** The BalanceTransactionSchedule feature is available in Beta release
+	// version. See
+	// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+	// for Beta release definition.
 	TransactionSchedules *BalanceTransactionScheduleService
 }
 
@@ -187,7 +308,7 @@ func (r *BalanceService) Delete(ctx context.Context, id string, body BalanceDele
 
 type Balance struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Balance belongs
 	// to.
 	AccountID string `json:"accountId"`
@@ -351,24 +472,24 @@ func (r BalanceLineItemType) IsKnown() bool {
 
 type BalanceNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// Unique short code for the Balance.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be active
 	// for the Account.
 	//
 	// **Note:** You can use the `rolloverEndDate` request parameter to define an
 	// extended grace period for continued draw-down against the Balance if any amount
 	// remains when the specified `endDate` is reached.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date-time"`
 	// The official name for the Balance.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Allow balance amounts to fall below zero. This feature is enabled on request.
 	// Please get in touch with m3ter Support or your m3ter contact if you would like
 	// it enabling for your organization(s).
@@ -490,29 +611,29 @@ func (r BalanceNewParamsLineItemType) IsKnown() bool {
 
 type BalanceGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BalanceUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// Unique short code for the Balance.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The currency code used for the Balance amount. For example: USD, GBP or EUR.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The date _(in ISO 8601 format)_ after which the Balance will no longer be active
 	// for the Account.
 	//
 	// **Note:** You can use the `rolloverEndDate` request parameter to define an
 	// extended grace period for continued draw-down against the Balance if any amount
 	// remains when the specified `endDate` is reached.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date-time"`
 	// The official name for the Balance.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The date _(in ISO 8601 format)_ when the Balance becomes active.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Allow balance amounts to fall below zero. This feature is enabled on request.
 	// Please get in touch with m3ter Support or your m3ter contact if you would like
 	// it enabling for your organization(s).
@@ -634,7 +755,7 @@ func (r BalanceUpdateParamsLineItemType) IsKnown() bool {
 
 type BalanceListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer's account.
 	AccountID param.Field[string] `query:"accountId"`
 	Contract  param.Field[string] `query:"contract"`
@@ -668,5 +789,5 @@ func (r BalanceListParams) URLQuery() (v url.Values) {
 
 type BalanceDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

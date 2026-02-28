@@ -19,6 +19,28 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for creating and retrieving user invitations. Use invitations to
+// invite other people to join your m3ter Organization.
+//
+// An invitation sends an email inviting someone to join your Organization. When
+// you set up an invitation, you can:
+//
+//   - Assign the required permission policies to control what the invitee can do
+//     when they accept the invite and join your Organization.
+//   - Set a date for when the invitation will expire.
+//   - Set a date for when the invited user's access will expire.
+//
+// When the invitee receives the invitation email:
+//
+//   - If the invitee is already a m3ter user and has a m3ter account, they can click
+//     a link and use their credentials to log into your Organization.
+//   - If the invitee is not a m3ter user and does not have a m3ter account, they'll
+//     be invited to create a m3ter account before logging into your Organization.
+//
+// See
+// [Inviting Users to your Organization](https://www.m3ter.com/docs/guides/organization-and-access-management/managing-users#inviting-users-to-your-organization)
+// in our user documentation for more details.
+//
 // UserInvitationService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -112,7 +134,7 @@ func (r *UserInvitationService) ListAutoPaging(ctx context.Context, params UserI
 
 type InvitationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Boolean indicating whether the user has accepted the invitation.
 	//
 	// - TRUE - the invite has been accepted.
@@ -187,10 +209,10 @@ func (r invitationResponseJSON) RawJSON() string {
 
 type UserInvitationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID         param.Field[string] `path:"orgId,required"`
-	Email         param.Field[string] `json:"email,required" format:"email"`
-	FirstName     param.Field[string] `json:"firstName,required"`
-	LastName      param.Field[string] `json:"lastName,required"`
+	OrgID         param.Field[string] `path:"orgId" api:"required"`
+	Email         param.Field[string] `json:"email" api:"required" format:"email"`
+	FirstName     param.Field[string] `json:"firstName" api:"required"`
+	LastName      param.Field[string] `json:"lastName" api:"required"`
 	ContactNumber param.Field[string] `json:"contactNumber"`
 	// The date when access will end for the user _(in ISO-8601 format)_. Leave blank
 	// for no end date, which gives the user permanent access.
@@ -213,12 +235,12 @@ func (r UserInvitationNewParams) MarshalJSON() (data []byte, err error) {
 
 type UserInvitationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type UserInvitationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `nextToken` for multi page retrievals.
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of invitations to retrieve per page.

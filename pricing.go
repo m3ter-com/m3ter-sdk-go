@@ -20,6 +20,16 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting Pricing.
+//
+// Create the Pricing for a Plan/PlanTemplate with usage data Aggregations, and
+// define a usage-based pricing structure for charging end customer Accounts put on
+// the Plan.
+//
+// See
+// [Reviewing Pricing Options for Plans and Plan Templates](https://www.m3ter.com/docs/guides/pricing-plans/reviewing-pricing-options-and-pricing-plans)
+// for more information.
+//
 // PricingService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -173,7 +183,7 @@ func (r *PricingService) Delete(ctx context.Context, id string, body PricingDele
 
 type PricingResponse struct {
 	// The UUID of the entity.
-	ID                  string `json:"id,required"`
+	ID                  string `json:"id" api:"required"`
 	AccountingProductID string `json:"accountingProductId"`
 	// UUID of the Aggregation used to create the Pricing. Use this when creating a
 	// Pricing for a segmented aggregation.
@@ -356,11 +366,11 @@ func (r PricingResponseType) IsKnown() bool {
 
 type PricingNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID        param.Field[string]                    `path:"orgId,required"`
-	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
+	OrgID        param.Field[string]                    `path:"orgId" api:"required"`
+	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands" api:"required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Optional Product ID this Pricing should be attributed to for accounting purposes
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// UUID of the Aggregation used to create the Pricing. Use this when creating a
@@ -508,16 +518,16 @@ func (r PricingNewParamsType) IsKnown() bool {
 
 type PricingGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PricingUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID        param.Field[string]                    `path:"orgId,required"`
-	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
+	OrgID        param.Field[string]                    `path:"orgId" api:"required"`
+	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands" api:"required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Optional Product ID this Pricing should be attributed to for accounting purposes
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// UUID of the Aggregation used to create the Pricing. Use this when creating a
@@ -665,7 +675,7 @@ func (r PricingUpdateParamsType) IsKnown() bool {
 
 type PricingListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// UUID of the Aggregation to retrieve pricings for
 	AggregationID param.Field[string] `query:"aggregationId"`
 	// Date on which to retrieve active Pricings.
@@ -692,5 +702,5 @@ func (r PricingListParams) URLQuery() (v url.Values) {
 
 type PricingDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

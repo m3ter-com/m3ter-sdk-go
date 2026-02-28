@@ -15,6 +15,34 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoints for submitting usage data measurements to the m3ter platform:
+//
+//   - **Directly:** You can use the **Submit Measurements** call to submit raw data
+//     measurements directly using the **Ingest API**.
+//   - **Indirectly:** You can use the platform's file upload service calls to
+//     prepare for and submit a file for data ingest using the **Config API**.
+//
+// To use the file upload service:
+//
+//   - First, make a **Generate an upload URL** call to obtain a temporary upload URL
+//     and an upload job ID.
+//   - You can then upload your data measurements file using a `PUT` request using
+//     the upload URL as the endpoint.
+//   - Any errors are reported via the normal
+//     [Alerts](https://www.m3ter.com/docs/guides/viewing-and-managing-alerts)
+//     service in the Console UI.
+//   - If any issues occur with a file upload, you can use the upload job ID with
+//     other file upload service calls we provide to troubleshoot and resolve issues.
+//
+// **Note:** You can also perform a File Upload via a Meter's Details page in the
+// m3ter Console using a `CSV` formatted file you've prepared for usage data
+// measurements ingest for the Meter.
+//
+// In the m3ter documentation, see also:
+//
+// - [Optimizing Measurement Submissions](https://www.m3ter.com/docs/guides/m3ter-apis/ingest-api-limits).
+// - [File Uploads for Data Ingest](https://www.m3ter.com/docs/guides/submitting-usage-data/file-uploads-for-data-ingest)
+//
 // UsageFileUploadService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -23,7 +51,34 @@ import (
 // the [NewUsageFileUploadService] method instead.
 type UsageFileUploadService struct {
 	Options []option.RequestOption
-	Jobs    *UsageFileUploadJobService
+	// Endpoints for submitting usage data measurements to the m3ter platform:
+	//
+	//   - **Directly:** You can use the **Submit Measurements** call to submit raw data
+	//     measurements directly using the **Ingest API**.
+	//   - **Indirectly:** You can use the platform's file upload service calls to
+	//     prepare for and submit a file for data ingest using the **Config API**.
+	//
+	// To use the file upload service:
+	//
+	//   - First, make a **Generate an upload URL** call to obtain a temporary upload URL
+	//     and an upload job ID.
+	//   - You can then upload your data measurements file using a `PUT` request using
+	//     the upload URL as the endpoint.
+	//   - Any errors are reported via the normal
+	//     [Alerts](https://www.m3ter.com/docs/guides/viewing-and-managing-alerts)
+	//     service in the Console UI.
+	//   - If any issues occur with a file upload, you can use the upload job ID with
+	//     other file upload service calls we provide to troubleshoot and resolve issues.
+	//
+	// **Note:** You can also perform a File Upload via a Meter's Details page in the
+	// m3ter Console using a `CSV` formatted file you've prepared for usage data
+	// measurements ingest for the Meter.
+	//
+	// In the m3ter documentation, see also:
+	//
+	// - [Optimizing Measurement Submissions](https://www.m3ter.com/docs/guides/m3ter-apis/ingest-api-limits).
+	// - [File Uploads for Data Ingest](https://www.m3ter.com/docs/guides/submitting-usage-data/file-uploads-for-data-ingest)
+	Jobs *UsageFileUploadJobService
 }
 
 // NewUsageFileUploadService generates a new service that applies the given options
@@ -98,20 +153,20 @@ func (r usageFileUploadGenerateUploadURLResponseJSON) RawJSON() string {
 
 type UsageFileUploadGenerateUploadURLParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The size of the body in bytes. For example: `"contentLength": 485`, where 485 is
 	// the size in bytes of the file to upload.
 	//
 	// **NOTE:** Required.
-	ContentLength param.Field[int64] `json:"contentLength,required"`
+	ContentLength param.Field[int64] `json:"contentLength" api:"required"`
 	// The media type of the entity body sent, for example:
 	// `"contentType":"text/json"`.
 	//
 	// **NOTE:** Currently only a JSON formatted file type is supported by the File
 	// Upload Service.
-	ContentType param.Field[UsageFileUploadGenerateUploadURLParamsContentType] `json:"contentType,required"`
+	ContentType param.Field[UsageFileUploadGenerateUploadURLParamsContentType] `json:"contentType" api:"required"`
 	// The name of the measurements file to be uploaded.
-	FileName param.Field[string] `json:"fileName,required"`
+	FileName param.Field[string] `json:"fileName" api:"required"`
 }
 
 func (r UsageFileUploadGenerateUploadURLParams) MarshalJSON() (data []byte, err error) {

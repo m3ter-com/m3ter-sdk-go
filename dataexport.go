@@ -16,6 +16,35 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoints for triggering one-off, ad-hoc Data Exports. You can set up and run
+// ad-hoc Exports to export two kinds of data from your m3ter Organization:
+//
+// - Usage data.
+// - Operational data for entities.
+//
+// **Ad-Hoc Export Destinations** When setting up and running an ad-hoc Export:
+//
+//   - You can define one or more Export Destinations - see the
+//     [ExportDestination](https://www.m3ter.com/docs/api#tag/ExportDestination)
+//     section of this API Reference. When the export runs, the data is sent through
+//     to the sepecified Destination. However, the export file is also made available
+//     for you to download it locally.
+//   - You can set up and run Data Exports without defining a Destination. The data
+//     is not exported but the compiled export file is made available for downloading
+//     locally.
+//   - For details on downloading an export file, see the
+//     [Get Data Export File Download URL](https://www.m3ter.com/docs/api#tag/ExportDestination/operation/GenerateDataExportFileDownloadUrl)
+//     endpoint in this API Reference.
+//
+// **Preview Version!** The Data Export feature is currently available only in
+// Preview release version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Preview release definition. ExportAdHoc endpoints will only be available if
+// Data Export has been enabled for your Organization. For more details see
+// [Data Export(Preview)](https://www.m3ter.com/docs/guides/data-exports) in our
+// main User documentation. If you're interested in previewing the Data Export
+// feature, please get in touch with m3ter Support or your m3ter contact.
+//
 // DataExportService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -23,10 +52,66 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDataExportService] method instead.
 type DataExportService struct {
-	Options      []option.RequestOption
+	Options []option.RequestOption
+	// Endpoints for creating, updating, retrieving, or deleting Data Export
+	// Destinations.
+	//
+	// Before you can configure and run either
+	// [Export Schedules](https://www.m3ter.com/docs/api#tag/ExportSchedule) or
+	// [Ad-Hoc Exports](https://www.m3ter.com/docs/api#tag/ExportAdHoc), you can set up
+	// Export Destinations. Currently, two options for setting up Data Export
+	// Destinations are available:
+	//
+	// - S3 buckets on your AWS account.
+	// - Buckets in your Google Cloud Storage account.
+	//
+	// **NOTE: Exporting without a Destination?** When a Data Export runs, the data is
+	// sent through to the specified Destination. However, the export file is also made
+	// available for you to download it locally. You can set up and run Data Exports
+	// without defining a Destination. The data is not exported but the compiled export
+	// file is made available for downloading locally.
+	//
+	// **Preview Version!** The Data Export feature is currently available only in
+	// Preview release version. See
+	// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+	// for Preview release definition. ExportDestination endpoints will only be
+	// available if Data Export has been enabled for your Organization. For more
+	// details see
+	// [Data Export(Preview)](https://www.m3ter.com/docs/guides/data-exports) in our
+	// main User documentation. If you're interested in previewing the Data Export
+	// feature, please get in touch with m3ter Support or your m3ter contact.
 	Destinations *DataExportDestinationService
 	Jobs         *DataExportJobService
-	Schedules    *DataExportScheduleService
+	// Endpoints for creating, updating, retrieving, or deleting Data Export schedules.
+	// You can set up an Export Schedule to export one of two types of data from your
+	// m3ter Organization - either _Usage data_ or _Operational data_ for entities.
+	//
+	// **NOTE:** You cannot create a single Export Schedule for exporting _both types
+	// of data under a single Schedule_.
+	//
+	// **Export Destinations** When creating an Export Schedule:
+	//
+	//   - You can define one or more Export Destinations - see the
+	//     [ExportDestination](https://www.m3ter.com/docs/api#tag/ExportDestination)
+	//     section of this API Reference. When the export runs, the data is sent through
+	//     to the sepecified Destination. However, the export file is also made available
+	//     for you to download it locally.
+	//   - You can set up and run Data Exports without defining a Destination. The data
+	//     is not exported but the compiled export file is made available for downloading
+	//     locally.
+	//   - For details on downloading an export file, see the
+	//     [Get Data Export File Download URL](https://www.m3ter.com/docs/api#tag/ExportDestination/operation/GenerateDataExportFileDownloadUrl)
+	//     endpoint in this API Reference.
+	//
+	// **Preview Version!** The Data Export feature is currently available only in
+	// Preview release version. See
+	// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+	// for Preview release definition. ExportSchedule endpoints will only be available
+	// if Data Export has been enabled for your Organization. For more details see
+	// [Data Export(Preview)](https://www.m3ter.com/docs/guides/data-exports) in our
+	// main User documentation. If you're interested in previewing the Data Export
+	// feature, please get in touch with m3ter Support or your m3ter contact.
+	Schedules *DataExportScheduleService
 }
 
 // NewDataExportService generates a new service that applies the given options to
@@ -110,9 +195,9 @@ func (r *DataExportService) NewAdhoc(ctx context.Context, params DataExportNewAd
 
 type AdHocOperationalDataRequestParam struct {
 	// The list of the operational data types should be exported for.
-	OperationalDataTypes param.Field[[]AdHocOperationalDataRequestOperationalDataType] `json:"operationalDataTypes,required"`
+	OperationalDataTypes param.Field[[]AdHocOperationalDataRequestOperationalDataType] `json:"operationalDataTypes" api:"required"`
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType param.Field[AdHocOperationalDataRequestSourceType] `json:"sourceType,required"`
+	SourceType param.Field[AdHocOperationalDataRequestSourceType] `json:"sourceType" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -202,7 +287,7 @@ func (r adHocResponseJSON) RawJSON() string {
 
 type AdHocUsageDataRequestParam struct {
 	// The type of data to export. Possible values are: USAGE
-	SourceType param.Field[AdHocUsageDataRequestSourceType] `json:"sourceType,required"`
+	SourceType param.Field[AdHocUsageDataRequestSourceType] `json:"sourceType" api:"required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs param.Field[[]string] `json:"accountIds"`
 	// List of aggregations to apply
@@ -249,13 +334,13 @@ func (r AdHocUsageDataRequestSourceType) IsKnown() bool {
 
 type AdHocUsageDataRequestAggregationParam struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Type of field
-	FieldType param.Field[AdHocUsageDataRequestAggregationsFieldType] `json:"fieldType,required"`
+	FieldType param.Field[AdHocUsageDataRequestAggregationsFieldType] `json:"fieldType" api:"required"`
 	// Aggregation function
-	Function param.Field[AdHocUsageDataRequestAggregationsFunction] `json:"function,required"`
+	Function param.Field[AdHocUsageDataRequestAggregationsFunction] `json:"function" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 }
 
 func (r AdHocUsageDataRequestAggregationParam) MarshalJSON() (data []byte, err error) {
@@ -301,11 +386,11 @@ func (r AdHocUsageDataRequestAggregationsFunction) IsKnown() bool {
 
 type AdHocUsageDataRequestDimensionFilterParam struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 	// Values to filter by
-	Values param.Field[[]string] `json:"values,required"`
+	Values param.Field[[]string] `json:"values" api:"required"`
 }
 
 func (r AdHocUsageDataRequestDimensionFilterParam) MarshalJSON() (data []byte, err error) {
@@ -361,9 +446,9 @@ func (r DataExplorerGroupParam) MarshalJSON() (data []byte, err error) {
 
 type DataExportNewAdhocParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Request representing an operational data export configuration.
-	Body DataExportNewAdhocParamsBodyUnion `json:"body,required"`
+	Body DataExportNewAdhocParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r DataExportNewAdhocParams) MarshalJSON() (data []byte, err error) {
@@ -373,7 +458,7 @@ func (r DataExportNewAdhocParams) MarshalJSON() (data []byte, err error) {
 // Request representing an operational data export configuration.
 type DataExportNewAdhocParamsBody struct {
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType       param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType,required"`
+	SourceType       param.Field[DataExportNewAdhocParamsBodySourceType] `json:"sourceType" api:"required"`
 	AccountIDs       param.Field[interface{}]                            `json:"accountIds"`
 	Aggregations     param.Field[interface{}]                            `json:"aggregations"`
 	DimensionFilters param.Field[interface{}]                            `json:"dimensionFilters"`

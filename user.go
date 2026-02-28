@@ -26,7 +26,28 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewUserService] method instead.
 type UserService struct {
-	Options     []option.RequestOption
+	Options []option.RequestOption
+	// Endpoints for creating and retrieving user invitations. Use invitations to
+	// invite other people to join your m3ter Organization.
+	//
+	// An invitation sends an email inviting someone to join your Organization. When
+	// you set up an invitation, you can:
+	//
+	//   - Assign the required permission policies to control what the invitee can do
+	//     when they accept the invite and join your Organization.
+	//   - Set a date for when the invitation will expire.
+	//   - Set a date for when the invited user's access will expire.
+	//
+	// When the invitee receives the invitation email:
+	//
+	//   - If the invitee is already a m3ter user and has a m3ter account, they can click
+	//     a link and use their credentials to log into your Organization.
+	//   - If the invitee is not a m3ter user and does not have a m3ter account, they'll
+	//     be invited to create a m3ter account before logging into your Organization.
+	//
+	// See
+	// [Inviting Users to your Organization](https://www.m3ter.com/docs/guides/organization-and-access-management/managing-users#inviting-users-to-your-organization)
+	// in our user documentation for more details.
 	Invitations *UserInvitationService
 }
 
@@ -239,7 +260,7 @@ func (r *UserService) ResendPassword(ctx context.Context, id string, body UserRe
 
 type UserResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.
@@ -338,7 +359,7 @@ func (r userMeResponseJSON) RawJSON() string {
 
 type UserMeResponseOrganization struct {
 	// The UUID of the entity.
-	ID                    string `json:"id,required"`
+	ID                    string `json:"id" api:"required"`
 	AddressLine1          string `json:"addressLine1"`
 	AddressLine2          string `json:"addressLine2"`
 	AddressLine3          string `json:"addressLine3"`
@@ -450,7 +471,7 @@ func (r UserMeResponseOrganizationType) IsKnown() bool {
 
 type UserMeResponseServiceUser struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this service user.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the service user was created.
@@ -494,7 +515,7 @@ func (r userMeResponseServiceUserJSON) RawJSON() string {
 
 type UserMeResponseUser struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The user's contact telephone number.
 	ContactNumber string `json:"contactNumber"`
 	// The user who created this user.
@@ -562,12 +583,12 @@ func (r userMeResponseUserJSON) RawJSON() string {
 
 type UserGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type UserUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The date and time _(in ISO 8601 format)_ when the user's access will end. Use
 	// this to set or update the expiration of the user's access.
 	DtEndAccess param.Field[time.Time] `json:"dtEndAccess" format:"date-time"`
@@ -594,7 +615,7 @@ func (r UserUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type UserListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// list of ids to retrieve
 	IDs param.Field[[]string] `query:"ids"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
@@ -614,7 +635,7 @@ func (r UserListParams) URLQuery() (v url.Values) {
 
 type UserGetPermissionsParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// Permission Policies in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`
@@ -633,7 +654,7 @@ func (r UserGetPermissionsParams) URLQuery() (v url.Values) {
 
 type UserGetUserGroupsParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// User Groups in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`
@@ -652,10 +673,10 @@ func (r UserGetUserGroupsParams) URLQuery() (v url.Values) {
 
 type UserMeParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type UserResendPasswordParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

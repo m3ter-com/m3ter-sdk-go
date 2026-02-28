@@ -21,6 +21,36 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating, updating, retrieving, or deleting Data Export schedules.
+// You can set up an Export Schedule to export one of two types of data from your
+// m3ter Organization - either _Usage data_ or _Operational data_ for entities.
+//
+// **NOTE:** You cannot create a single Export Schedule for exporting _both types
+// of data under a single Schedule_.
+//
+// **Export Destinations** When creating an Export Schedule:
+//
+//   - You can define one or more Export Destinations - see the
+//     [ExportDestination](https://www.m3ter.com/docs/api#tag/ExportDestination)
+//     section of this API Reference. When the export runs, the data is sent through
+//     to the sepecified Destination. However, the export file is also made available
+//     for you to download it locally.
+//   - You can set up and run Data Exports without defining a Destination. The data
+//     is not exported but the compiled export file is made available for downloading
+//     locally.
+//   - For details on downloading an export file, see the
+//     [Get Data Export File Download URL](https://www.m3ter.com/docs/api#tag/ExportDestination/operation/GenerateDataExportFileDownloadUrl)
+//     endpoint in this API Reference.
+//
+// **Preview Version!** The Data Export feature is currently available only in
+// Preview release version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Preview release definition. ExportSchedule endpoints will only be available
+// if Data Export has been enabled for your Organization. For more details see
+// [Data Export(Preview)](https://www.m3ter.com/docs/guides/data-exports) in our
+// main User documentation. If you're interested in previewing the Data Export
+// feature, please get in touch with m3ter Support or your m3ter contact.
+//
 // DataExportScheduleService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -234,9 +264,9 @@ func (r *DataExportScheduleService) Delete(ctx context.Context, id string, body 
 
 type OperationalDataExportScheduleRequestParam struct {
 	// A list of the entities whose operational data is included in the data export.
-	OperationalDataTypes param.Field[[]OperationalDataExportScheduleRequestOperationalDataType] `json:"operationalDataTypes,required"`
+	OperationalDataTypes param.Field[[]OperationalDataExportScheduleRequestOperationalDataType] `json:"operationalDataTypes" api:"required"`
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType param.Field[OperationalDataExportScheduleRequestSourceType] `json:"sourceType,required"`
+	SourceType param.Field[OperationalDataExportScheduleRequestSourceType] `json:"sourceType" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -307,7 +337,7 @@ func (r OperationalDataExportScheduleRequestSourceType) IsKnown() bool {
 
 type OperationalDataExportScheduleResponse struct {
 	// The id of the schedule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A list of the entities whose operational data is included in the data export.
 	OperationalDataTypes []OperationalDataExportScheduleResponseOperationalDataType `json:"operationalDataTypes"`
 	// The version number:
@@ -381,7 +411,7 @@ func (r OperationalDataExportScheduleResponseOperationalDataType) IsKnown() bool
 
 type UsageDataExportScheduleRequestParam struct {
 	// The type of data to export. Possible values are: USAGE
-	SourceType param.Field[UsageDataExportScheduleRequestSourceType] `json:"sourceType,required"`
+	SourceType param.Field[UsageDataExportScheduleRequestSourceType] `json:"sourceType" api:"required"`
 	// Define a time period to control the range of usage data you want the data export
 	// to contain when it runs:
 	//
@@ -414,7 +444,7 @@ type UsageDataExportScheduleRequestParam struct {
 	// For more details and examples, see the
 	// [Time Period](https://www.m3ter.com/docs/guides/data-exports/creating-export-schedules#time-period)
 	// section in our main User Documentation.
-	TimePeriod param.Field[UsageDataExportScheduleRequestTimePeriod] `json:"timePeriod,required"`
+	TimePeriod param.Field[UsageDataExportScheduleRequestTimePeriod] `json:"timePeriod" api:"required"`
 	// List of account IDs to export
 	AccountIDs param.Field[[]string] `json:"accountIds"`
 	// List of aggregations to apply
@@ -522,13 +552,13 @@ func (r UsageDataExportScheduleRequestTimePeriod) IsKnown() bool {
 
 type UsageDataExportScheduleRequestAggregationParam struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Type of field
-	FieldType param.Field[UsageDataExportScheduleRequestAggregationsFieldType] `json:"fieldType,required"`
+	FieldType param.Field[UsageDataExportScheduleRequestAggregationsFieldType] `json:"fieldType" api:"required"`
 	// Aggregation function
-	Function param.Field[UsageDataExportScheduleRequestAggregationsFunction] `json:"function,required"`
+	Function param.Field[UsageDataExportScheduleRequestAggregationsFunction] `json:"function" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 }
 
 func (r UsageDataExportScheduleRequestAggregationParam) MarshalJSON() (data []byte, err error) {
@@ -574,11 +604,11 @@ func (r UsageDataExportScheduleRequestAggregationsFunction) IsKnown() bool {
 
 type UsageDataExportScheduleRequestDimensionFilterParam struct {
 	// Field code
-	FieldCode param.Field[string] `json:"fieldCode,required"`
+	FieldCode param.Field[string] `json:"fieldCode" api:"required"`
 	// Meter ID
-	MeterID param.Field[string] `json:"meterId,required"`
+	MeterID param.Field[string] `json:"meterId" api:"required"`
 	// Values to filter by
-	Values param.Field[[]string] `json:"values,required"`
+	Values param.Field[[]string] `json:"values" api:"required"`
 }
 
 func (r UsageDataExportScheduleRequestDimensionFilterParam) MarshalJSON() (data []byte, err error) {
@@ -587,7 +617,7 @@ func (r UsageDataExportScheduleRequestDimensionFilterParam) MarshalJSON() (data 
 
 type UsageDataExportScheduleResponse struct {
 	// The id of the schedule configuration.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// List of account IDs for which the usage data will be exported.
 	AccountIDs []string `json:"accountIds"`
 	// List of aggregations to apply
@@ -674,13 +704,13 @@ func (r UsageDataExportScheduleResponse) implementsDataExportScheduleDeleteRespo
 
 type UsageDataExportScheduleResponseAggregation struct {
 	// Field code
-	FieldCode string `json:"fieldCode,required"`
+	FieldCode string `json:"fieldCode" api:"required"`
 	// Type of field
-	FieldType UsageDataExportScheduleResponseAggregationsFieldType `json:"fieldType,required"`
+	FieldType UsageDataExportScheduleResponseAggregationsFieldType `json:"fieldType" api:"required"`
 	// Aggregation function
-	Function UsageDataExportScheduleResponseAggregationsFunction `json:"function,required"`
+	Function UsageDataExportScheduleResponseAggregationsFunction `json:"function" api:"required"`
 	// Meter ID
-	MeterID string                                         `json:"meterId,required"`
+	MeterID string                                         `json:"meterId" api:"required"`
 	JSON    usageDataExportScheduleResponseAggregationJSON `json:"-"`
 }
 
@@ -742,11 +772,11 @@ func (r UsageDataExportScheduleResponseAggregationsFunction) IsKnown() bool {
 
 type UsageDataExportScheduleResponseDimensionFilter struct {
 	// Field code
-	FieldCode string `json:"fieldCode,required"`
+	FieldCode string `json:"fieldCode" api:"required"`
 	// Meter ID
-	MeterID string `json:"meterId,required"`
+	MeterID string `json:"meterId" api:"required"`
 	// Values to filter by
-	Values []string                                           `json:"values,required"`
+	Values []string                                           `json:"values" api:"required"`
 	JSON   usageDataExportScheduleResponseDimensionFilterJSON `json:"-"`
 }
 
@@ -832,7 +862,7 @@ func (r UsageDataExportScheduleResponseTimePeriod) IsKnown() bool {
 // Response representing an operational data export configuration.
 type DataExportScheduleNewResponse struct {
 	// The id of the schedule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -1017,7 +1047,7 @@ func (r DataExportScheduleNewResponseTimePeriod) IsKnown() bool {
 // Response representing an operational data export configuration.
 type DataExportScheduleGetResponse struct {
 	// The id of the schedule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -1202,7 +1232,7 @@ func (r DataExportScheduleGetResponseTimePeriod) IsKnown() bool {
 // Response representing an operational data export configuration.
 type DataExportScheduleUpdateResponse struct {
 	// The id of the schedule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -1386,7 +1416,7 @@ func (r DataExportScheduleUpdateResponseTimePeriod) IsKnown() bool {
 
 type DataExportScheduleListResponse struct {
 	// The id of the Data Export Schedule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Unique short code of the Data Export Schedule.
 	Code string `json:"code"`
 	// The id of the user who created this Schedule.
@@ -1504,7 +1534,7 @@ func (r DataExportScheduleListResponseSourceType) IsKnown() bool {
 // Response representing an operational data export configuration.
 type DataExportScheduleDeleteResponse struct {
 	// The id of the schedule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// This field can have the runtime type of [[]string].
 	AccountIDs interface{} `json:"accountIds"`
 	// This field can have the runtime type of
@@ -1688,9 +1718,9 @@ func (r DataExportScheduleDeleteResponseTimePeriod) IsKnown() bool {
 
 type DataExportScheduleNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Request representing an operational schedule configuration.
-	Body DataExportScheduleNewParamsBodyUnion `json:"body,required"`
+	Body DataExportScheduleNewParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r DataExportScheduleNewParams) MarshalJSON() (data []byte, err error) {
@@ -1700,7 +1730,7 @@ func (r DataExportScheduleNewParams) MarshalJSON() (data []byte, err error) {
 // Request representing an operational schedule configuration.
 type DataExportScheduleNewParamsBody struct {
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType           param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType,required"`
+	SourceType           param.Field[DataExportScheduleNewParamsBodySourceType] `json:"sourceType" api:"required"`
 	AccountIDs           param.Field[interface{}]                               `json:"accountIds"`
 	Aggregations         param.Field[interface{}]                               `json:"aggregations"`
 	DimensionFilters     param.Field[interface{}]                               `json:"dimensionFilters"`
@@ -1844,14 +1874,14 @@ func (r DataExportScheduleNewParamsBodyTimePeriod) IsKnown() bool {
 
 type DataExportScheduleGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type DataExportScheduleUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Request representing an operational schedule configuration.
-	Body DataExportScheduleUpdateParamsBodyUnion `json:"body,required"`
+	Body DataExportScheduleUpdateParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r DataExportScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -1861,7 +1891,7 @@ func (r DataExportScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
 // Request representing an operational schedule configuration.
 type DataExportScheduleUpdateParamsBody struct {
 	// The type of data to export. Possible values are: OPERATIONAL
-	SourceType           param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType,required"`
+	SourceType           param.Field[DataExportScheduleUpdateParamsBodySourceType] `json:"sourceType" api:"required"`
 	AccountIDs           param.Field[interface{}]                                  `json:"accountIds"`
 	Aggregations         param.Field[interface{}]                                  `json:"aggregations"`
 	DimensionFilters     param.Field[interface{}]                                  `json:"dimensionFilters"`
@@ -2005,7 +2035,7 @@ func (r DataExportScheduleUpdateParamsBodyTimePeriod) IsKnown() bool {
 
 type DataExportScheduleListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Data Export Schedule IDs to filter the returned list by.
 	IDs param.Field[[]string] `query:"ids"`
 	// `nextToken` for multi page retrievals
@@ -2025,5 +2055,5 @@ func (r DataExportScheduleListParams) URLQuery() (v url.Values) {
 
 type DataExportScheduleDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

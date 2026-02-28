@@ -19,6 +19,13 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for CreditReason operations such as creation, update, list, and
+// delete.
+//
+// You can create CreditReasons for your Organization, and then use them when
+// creating a credit line item on a bill, or applying a product credit to a bill.
+// CreditReasons provide contextual information as to why a credit was applied.
+//
 // CreditReasonService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -158,7 +165,7 @@ func (r *CreditReasonService) Delete(ctx context.Context, id string, body Credit
 
 type CreditReasonResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// TRUE / FALSE flag indicating whether the data entity is archived. An entity can
 	// be archived if it is obsolete.
 	Archived bool `json:"archived"`
@@ -210,9 +217,9 @@ func (r creditReasonResponseJSON) RawJSON() string {
 
 type CreditReasonNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the entity.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
 	// can be archived if it is obsolete.
 	//
@@ -238,14 +245,14 @@ func (r CreditReasonNewParams) MarshalJSON() (data []byte, err error) {
 
 type CreditReasonGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CreditReasonUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the entity.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
 	// can be archived if it is obsolete.
 	//
@@ -271,7 +278,7 @@ func (r CreditReasonUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type CreditReasonListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// TRUE / FALSE archived flag to filter the list. CreditReasons can be archived
 	// once they are obsolete.
 	//
@@ -298,5 +305,5 @@ func (r CreditReasonListParams) URLQuery() (v url.Values) {
 
 type CreditReasonDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

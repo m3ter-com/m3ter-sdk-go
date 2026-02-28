@@ -16,6 +16,18 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoints for updating and retreiving the Bill Configuration for an
+// Organization. The Organization represents your company as a direct customer of
+// the m3ter service.
+//
+// You can use the **Update BillConfig** endpoint to set a global lock date for
+// **all** Bills - any Bill with a service period end date on or before the set
+// date will be locked and cannot be updated.
+//
+// **Warning: Ensure all Bills are Approved!** If you try to set a global lock date
+// when there remains Bills in a _Pending_ state whose service period end date is
+// on or before the specified lock date, then you'll receive an error.
+//
 // BillConfigService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -75,7 +87,7 @@ func (r *BillConfigService) Update(ctx context.Context, params BillConfigUpdateP
 
 type BillConfigResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The global lock date _(in ISO 8601 format)_ when all Bills will be locked.
 	//
 	// For example: `"2024-03-01"`.
@@ -122,12 +134,12 @@ func (r billConfigResponseJSON) RawJSON() string {
 
 type BillConfigGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillConfigUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The global lock date when all Bills will be locked _(in ISO 8601 format)_.
 	//
 	// For example: `"2024-03-01"`.

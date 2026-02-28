@@ -19,6 +19,18 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting
+// CounterAdjustments.
+//
+// If you attach a Plan to an Account which is priced using a Counter to apply
+// unit-based pricing, you can then create CounterAdjustments for the Account using
+// that Counter to ensure the Account is billed according to the number of Counter
+// units the Account subscribes to in a given billing period.
+//
+// See
+// [Understanding and Creating Counter Adjustments for Accounts](https://www.m3ter.com/docs/guides/recurring-charges-counters/creating-counter-adjustments-for-accounts)
+// for more information.
+//
 // CounterAdjustmentService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -180,7 +192,7 @@ func (r *CounterAdjustmentService) Delete(ctx context.Context, id string, body C
 
 type CounterAdjustmentResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The Account ID the CounterAdjustment was created for.
 	AccountID string `json:"accountId"`
 	// The ID of the Counter that was used to make the CounterAdjustment on the
@@ -239,25 +251,25 @@ func (r counterAdjustmentResponseJSON) RawJSON() string {
 
 type CounterAdjustmentNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The Account ID the CounterAdjustment is created for.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The ID of the Counter used for the CounterAdjustment on the Account.
-	CounterID param.Field[string] `json:"counterId,required"`
+	CounterID param.Field[string] `json:"counterId" api:"required"`
 	// The date the CounterAdjustment is created for the Account _(in ISO-8601 date
 	// format)_.
 	//
 	// **Note:** CounterAdjustments on Accounts are supported down to a _specific day_
 	// of granularity - you cannot create more than one CounterAdjustment for any given
 	// day using the same Counter and you'll receive an error if you try to do this.
-	Date param.Field[string] `json:"date,required"`
+	Date param.Field[string] `json:"date" api:"required"`
 	// Integer Value of the Counter used for the CounterAdjustment.
 	//
 	// **Note:** Use the new absolute value for the Counter for the selected date - if
 	// it was 15 and has increased to 20, enter 20; if it was 15 and has decreased to
 	// 10, enter 10. _Do not enter_ the plus or minus value relative to the previous
 	// Counter value on the Account.
-	Value param.Field[int64] `json:"value,required"`
+	Value param.Field[int64] `json:"value" api:"required"`
 	// Purchase Order Number for the Counter Adjustment. _(Optional)_
 	PurchaseOrderNumber param.Field[string] `json:"purchaseOrderNumber"`
 	// The version number of the entity:
@@ -277,30 +289,30 @@ func (r CounterAdjustmentNewParams) MarshalJSON() (data []byte, err error) {
 
 type CounterAdjustmentGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CounterAdjustmentUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The Account ID the CounterAdjustment is created for.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The ID of the Counter used for the CounterAdjustment on the Account.
-	CounterID param.Field[string] `json:"counterId,required"`
+	CounterID param.Field[string] `json:"counterId" api:"required"`
 	// The date the CounterAdjustment is created for the Account _(in ISO-8601 date
 	// format)_.
 	//
 	// **Note:** CounterAdjustments on Accounts are supported down to a _specific day_
 	// of granularity - you cannot create more than one CounterAdjustment for any given
 	// day using the same Counter and you'll receive an error if you try to do this.
-	Date param.Field[string] `json:"date,required"`
+	Date param.Field[string] `json:"date" api:"required"`
 	// Integer Value of the Counter used for the CounterAdjustment.
 	//
 	// **Note:** Use the new absolute value for the Counter for the selected date - if
 	// it was 15 and has increased to 20, enter 20; if it was 15 and has decreased to
 	// 10, enter 10. _Do not enter_ the plus or minus value relative to the previous
 	// Counter value on the Account.
-	Value param.Field[int64] `json:"value,required"`
+	Value param.Field[int64] `json:"value" api:"required"`
 	// Purchase Order Number for the Counter Adjustment. _(Optional)_
 	PurchaseOrderNumber param.Field[string] `json:"purchaseOrderNumber"`
 	// The version number of the entity:
@@ -320,7 +332,7 @@ func (r CounterAdjustmentUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type CounterAdjustmentListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List CounterAdjustment items for the Account UUID.
 	AccountID param.Field[string] `query:"accountId"`
 	// List CounterAdjustment items for the Counter UUID.
@@ -352,5 +364,5 @@ func (r CounterAdjustmentListParams) URLQuery() (v url.Values) {
 
 type CounterAdjustmentDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

@@ -20,6 +20,17 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for creating, retrieving, listing, and cancelling Bill Jobs.
+//
+// Bill Jobs are critical components in billing management, providing asynchronous
+// mechanisms to calculate and handle bills.
+//
+// Bill Jobs give you the flexibiity to run Bills manually for Accounts to suit
+// different billing management purposes. For example, some historical usage data
+// has come in for an Account and you want to run a Bill for a specific date on
+// that Account to check that the Bill is showing correctly for the charges due on
+// the new usage data.
+//
 // BillJobService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -204,7 +215,7 @@ func (r *BillJobService) Recalculate(ctx context.Context, params BillJobRecalcul
 
 type BillJobResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// An array of UUIDs representing the end customer Accounts associated with the
 	// BillJob.
 	AccountIDs []string `json:"accountIds"`
@@ -426,7 +437,7 @@ func (r BillJobResponseType) IsKnown() bool {
 
 type BillJobNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// An array of UUIDs representing the end customer Accounts associated with the
 	// BillJob.
 	AccountIDs param.Field[[]string] `json:"accountIds"`
@@ -559,12 +570,12 @@ func (r BillJobNewParamsBillingFrequency) IsKnown() bool {
 
 type BillJobGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillJobListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Boolean filter to retrieve only active BillJobs and exclude completed or
 	// cancelled BillJobs from the results.
 	//
@@ -599,15 +610,15 @@ func (r BillJobListParams) URLQuery() (v url.Values) {
 
 type BillJobCancelParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillJobRecalculateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The array of unique identifiers (UUIDs) for the Bills which are to be
 	// recalculated.
-	BillIDs param.Field[[]string] `json:"billIds,required"`
+	BillIDs param.Field[[]string] `json:"billIds" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use

@@ -19,6 +19,58 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints that manage Commitments _(also known as Prepayments)_ in the context
+// of usage-based pricing and billing. A Commitment represents an agreement where
+// the end-customer has agreed to pay a fixed minimum amount throughout the
+// contract period. **_The commitment amount is payable regardless of the actual
+// usage by the customer of your service or product._**
+//
+// These endpoints enable the creation, updating, retrieval, and deletion of
+// Commitments. Use them to manage your customer's Commitments and ensure optimal
+// revenue recognition:
+//
+//   - Specify which type of charges can draw-down against a Commitment amount on an
+//     Account at billing: usage, minimum spend, standing charges, or recurring
+//     charges.
+//   - Define overage surcharge percentages, which are applied when the usage charges
+//     exceed the agreed Commitment amount within the contract duration.
+//
+// #### What is the difference between Balances and Commitments/Prepayments?
+//
+// To manage credit amounts for your end-customer Accounts, you can use Balances or
+// Commitments/Prepayments. However, these two kinds of credits for Accounts serve
+// different purposes.
+//
+// Commitments/Prepayments are used for amounts end-customers have agreed to pay
+// for consuming your product or services across a full contract term. A customer
+// might pay the entire or only part of the agreed amount upfront, but **_the
+// prepayment amount is payable regardless of the actual usage by the customer of
+// your service or product._**
+//
+// In contrast, a Balance - often referred to as a Top-Up or Prepaid draw-down - is
+// used when a customer wants to add a credit amount to their Account at any time
+// during the service period or when you as service provider want to add a credit
+// to a customer Account. This Balance credit can then be drawn-down against for
+// billing the Account for usage, minimum spend, standing charges, or recurring
+// charges due. Balances therefore serve payment use cases in a more flexible way,
+// for example to be used for a "Free Credit" sign-up scheme you offer to encourage
+// sales or to enhance customer satisfaction by adding credit to an Account to
+// compensate for service delivery issues.
+//
+// You can use Prepayments/Commitments and Balances together on Account, and define
+// at Organization or individual Account level the order in which any
+// Balance/Prepayment credit on an Account is drawn-down - Balance amounts first or
+// Prepayment amounts first.
+//
+// #### Billing for Commitments
+//
+// If not all of an agreed Commitment amount is paid at the start of an
+// end-customer contract period, you can choose one of two options for billing the
+// outstanding fees due on the customer Account:
+//
+// - Select a Product _Plan to bill with_.
+// - Define a _schedule of billing dates_.
+//
 // CommitmentService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -206,10 +258,10 @@ func (r *CommitmentService) Search(ctx context.Context, params CommitmentSearchP
 }
 
 type CommitmentFee struct {
-	Amount                 float64           `json:"amount,required"`
-	Date                   time.Time         `json:"date,required" format:"date"`
-	ServicePeriodEndDate   time.Time         `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate time.Time         `json:"servicePeriodStartDate,required" format:"date-time"`
+	Amount                 float64           `json:"amount" api:"required"`
+	Date                   time.Time         `json:"date" api:"required" format:"date"`
+	ServicePeriodEndDate   time.Time         `json:"servicePeriodEndDate" api:"required" format:"date-time"`
+	ServicePeriodStartDate time.Time         `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	JSON                   commitmentFeeJSON `json:"-"`
 }
 
@@ -232,10 +284,10 @@ func (r commitmentFeeJSON) RawJSON() string {
 }
 
 type CommitmentFeeParam struct {
-	Amount                 param.Field[float64]   `json:"amount,required"`
-	Date                   param.Field[time.Time] `json:"date,required" format:"date"`
-	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	Amount                 param.Field[float64]   `json:"amount" api:"required"`
+	Date                   param.Field[time.Time] `json:"date" api:"required" format:"date"`
+	ServicePeriodEndDate   param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 }
 
 func (r CommitmentFeeParam) MarshalJSON() (data []byte, err error) {
@@ -244,7 +296,7 @@ func (r CommitmentFeeParam) MarshalJSON() (data []byte, err error) {
 
 type CommitmentResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
 	AccountID string `json:"accountId"`
@@ -487,23 +539,23 @@ func (r commitmentSearchResponseJSON) RawJSON() string {
 
 type CommitmentNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The total amount that the customer has committed to pay.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The currency used for the Commitment. For example: USD.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The end date of the Commitment period in ISO-8601 format.
 	//
 	// **Note:** End date is exclusive - if you set an end date of June 1st 2022, then
 	// the Commitment ceases to be active for the Account at midnight on May 31st 2022,
 	// and any Prepayment fees due are calculated up to that point in time, NOT up to
 	// midnight on June 1st
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date"`
 	// The start date of the Commitment period in ISO-8601 format.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date"`
 	// The unique identifier (UUID) for the Product linked to the Commitment for
 	// accounting purposes. _(Optional)_
 	//
@@ -699,28 +751,28 @@ func (r CommitmentNewParamsLineItemType) IsKnown() bool {
 
 type CommitmentGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CommitmentUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the end customer Account the Commitment is
 	// added to.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The total amount that the customer has committed to pay.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The currency used for the Commitment. For example: USD.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The end date of the Commitment period in ISO-8601 format.
 	//
 	// **Note:** End date is exclusive - if you set an end date of June 1st 2022, then
 	// the Commitment ceases to be active for the Account at midnight on May 31st 2022,
 	// and any Prepayment fees due are calculated up to that point in time, NOT up to
 	// midnight on June 1st
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date"`
 	// The start date of the Commitment period in ISO-8601 format.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date"`
 	// The unique identifier (UUID) for the Product linked to the Commitment for
 	// accounting purposes. _(Optional)_
 	//
@@ -916,7 +968,7 @@ func (r CommitmentUpdateParamsLineItemType) IsKnown() bool {
 
 type CommitmentListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) for the Account. This parameter helps filter the
 	// Commitments related to a specific end-customer Account.
 	AccountID  param.Field[string] `query:"accountId"`
@@ -953,12 +1005,12 @@ func (r CommitmentListParams) URLQuery() (v url.Values) {
 
 type CommitmentDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CommitmentSearchParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
 	// Search Operator to be used while querying search.

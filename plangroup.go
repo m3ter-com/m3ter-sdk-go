@@ -22,6 +22,14 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for PlanGroup related operations such as creation, update, retrieve,
+// list and delete.
+//
+// PlanGroups are constructs that group multiple plans together. This enables a
+// unified approach to efficiently handle various uses cases across different
+// plans. For example applying a minimum spend amount at billing, across several of
+// your products or features that are each priced separately.
+//
 // PlanGroupService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -180,7 +188,7 @@ func (r *PlanGroupService) Delete(ctx context.Context, id string, body PlanGroup
 
 type PlanGroupResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Optional. This PlanGroup was created as bespoke for the associated Account with
 	// this Account ID.
 	AccountID string `json:"accountId"`
@@ -303,11 +311,11 @@ func init() {
 
 type PlanGroupNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Currency code for the PlanGroup (For example, USD).
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The name of the PlanGroup.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Optional. This PlanGroup is created as bespoke for the associated Account with
 	// this Account ID.
 	AccountID param.Field[string] `json:"accountId"`
@@ -374,16 +382,16 @@ type PlanGroupNewParamsCustomFieldsUnion interface {
 
 type PlanGroupGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PlanGroupUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Currency code for the PlanGroup (For example, USD).
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The name of the PlanGroup.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Optional. This PlanGroup is created as bespoke for the associated Account with
 	// this Account ID.
 	AccountID param.Field[string] `json:"accountId"`
@@ -450,7 +458,7 @@ type PlanGroupUpdateParamsCustomFieldsUnion interface {
 
 type PlanGroupListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Optional filter. The list of Account IDs to which the PlanGroups belong.
 	AccountID param.Field[[]string] `query:"accountId"`
 	// Optional filter. The list of PlanGroup IDs to retrieve.
@@ -472,5 +480,5 @@ func (r PlanGroupListParams) URLQuery() (v url.Values) {
 
 type PlanGroupDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

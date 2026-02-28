@@ -18,6 +18,13 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for creating/updating/deleting BalanceTransactionSchedules.
+//
+// **NOTE!** The BalanceTransactionSchedule feature is available in Beta release
+// version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Beta release definition.
+//
 // BalanceTransactionScheduleService contains methods and other services that help
 // with interacting with the m3ter API.
 //
@@ -194,8 +201,8 @@ func (r *BalanceTransactionScheduleService) Preview(ctx context.Context, balance
 
 type BalanceTransactionScheduleNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID           param.Field[string]  `path:"orgId,required"`
-	ScheduleRequest ScheduleRequestParam `json:"schedule_request,required"`
+	OrgID           param.Field[string]  `path:"orgId" api:"required"`
+	ScheduleRequest ScheduleRequestParam `json:"schedule_request" api:"required"`
 }
 
 func (r BalanceTransactionScheduleNewParams) MarshalJSON() (data []byte, err error) {
@@ -204,13 +211,13 @@ func (r BalanceTransactionScheduleNewParams) MarshalJSON() (data []byte, err err
 
 type BalanceTransactionScheduleGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BalanceTransactionScheduleUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID           param.Field[string]  `path:"orgId,required"`
-	ScheduleRequest ScheduleRequestParam `json:"schedule_request,required"`
+	OrgID           param.Field[string]  `path:"orgId" api:"required"`
+	ScheduleRequest ScheduleRequestParam `json:"schedule_request" api:"required"`
 }
 
 func (r BalanceTransactionScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -219,7 +226,7 @@ func (r BalanceTransactionScheduleUpdateParams) MarshalJSON() (data []byte, err 
 
 type BalanceTransactionScheduleListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string]   `path:"orgId,required"`
+	OrgID param.Field[string]   `path:"orgId" api:"required"`
 	IDs   param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
@@ -238,13 +245,13 @@ func (r BalanceTransactionScheduleListParams) URLQuery() (v url.Values) {
 
 type BalanceTransactionScheduleDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BalanceTransactionSchedulePreviewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID           param.Field[string]  `path:"orgId,required"`
-	ScheduleRequest ScheduleRequestParam `json:"schedule_request,required"`
+	OrgID           param.Field[string]  `path:"orgId" api:"required"`
+	ScheduleRequest ScheduleRequestParam `json:"schedule_request" api:"required"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of BalanceTransactions to retrieve per page

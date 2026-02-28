@@ -12,7 +12,7 @@ import (
 
 type Cursor[T any] struct {
 	Data      []T        `json:"data"`
-	NextToken string     `json:"nextToken,nullable"`
+	NextToken string     `json:"nextToken" api:"nullable"`
 	JSON      cursorJSON `json:"-"`
 	cfg       *requestconfig.RequestConfig
 	res       *http.Response

@@ -18,6 +18,34 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/option"
 )
 
+// Endpoints for creating/updating/deleting Data for specific Lookup Table
+// Revisions.
+//
+// When you've added fields to create a data schema for a Lookup Table Revision,
+// you can use upsert operations to create or update the data values for those
+// fields:
+//
+//   - Use
+//     [Upsert LookupTableRevisionData](https://www.m3ter.com/docs/api#tag/LookupTableRevisionData/operation/PutLookupTableRevisionData)
+//     to upsert some or all of a Revision's field data values.
+//   - Use
+//     [Upsert LookupTableRevisionData Entry](https://www.m3ter.com/docs/api#tag/LookupTableRevisionData/operation/PutLookupTableRevisionDataEntry)
+//     to upsert an individual Revision field's data value.
+//
+// **NOTES:**
+//
+// - You can only create or update field data values for DRAFT Revisions.
+// - You cannot change the field data values for PUBLISHED Revisions.
+//
+// **Beta Version!** The Lookup Table feature is currently available in Beta
+// release version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Beta release definition. Lookup Table Revision Data endpoints will only be
+// available if Lookup Tables have been enabled for your Organization. For more
+// details see
+// [Lookup Tables (Beta)](https://www.m3ter.com/docs/guides/lookup-tables) in our
+// main User documentation.
+//
 // LookupTableLookupTableRevisionDataService contains methods and other services
 // that help with interacting with the m3ter API.
 //
@@ -25,7 +53,34 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLookupTableLookupTableRevisionDataService] method instead.
 type LookupTableLookupTableRevisionDataService struct {
-	Options                     []option.RequestOption
+	Options []option.RequestOption
+	// Endpoints for creating/updating/deleting Data for specific Lookup Table
+	// Revisions.
+	//
+	// When you've added fields to create a data schema for a Lookup Table Revision,
+	// you can use upsert operations to create or update the data values for those
+	// fields:
+	//
+	//   - Use
+	//     [Upsert LookupTableRevisionData](https://www.m3ter.com/docs/api#tag/LookupTableRevisionData/operation/PutLookupTableRevisionData)
+	//     to upsert some or all of a Revision's field data values.
+	//   - Use
+	//     [Upsert LookupTableRevisionData Entry](https://www.m3ter.com/docs/api#tag/LookupTableRevisionData/operation/PutLookupTableRevisionDataEntry)
+	//     to upsert an individual Revision field's data value.
+	//
+	// **NOTES:**
+	//
+	// - You can only create or update field data values for DRAFT Revisions.
+	// - You cannot change the field data values for PUBLISHED Revisions.
+	//
+	// **Beta Version!** The Lookup Table feature is currently available in Beta
+	// release version. See
+	// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+	// for Beta release definition. Lookup Table Revision Data endpoints will only be
+	// available if Lookup Tables have been enabled for your Organization. For more
+	// details see
+	// [Lookup Tables (Beta)](https://www.m3ter.com/docs/guides/lookup-tables) in our
+	// main User documentation.
 	LookupTableRevisionDataJobs *LookupTableLookupTableRevisionDataLookupTableRevisionDataJobService
 }
 
@@ -342,7 +397,7 @@ func (r *LookupTableLookupTableRevisionDataService) UpdateKey(ctx context.Contex
 // Response containing data for a Lookup Table Revision
 type LookupTableLookupTableRevisionDataGetResponse struct {
 	// The Lookup Table Revision Data.
-	Items []map[string]interface{} `json:"items,required"`
+	Items []map[string]interface{} `json:"items" api:"required"`
 	// The id of the user who created the Lookup Table Revision Data.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Lookup Table Revision Data was created.
@@ -380,7 +435,7 @@ func (r lookupTableLookupTableRevisionDataGetResponseJSON) RawJSON() string {
 // Response containing data for a Lookup Table Revision
 type LookupTableLookupTableRevisionDataUpdateResponse struct {
 	// The Lookup Table Revision Data.
-	Items []map[string]interface{} `json:"items,required"`
+	Items []map[string]interface{} `json:"items" api:"required"`
 	// The id of the user who created the Lookup Table Revision Data.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Lookup Table Revision Data was created.
@@ -491,7 +546,7 @@ func (r lookupTableLookupTableRevisionDataCopyResponseJSON) RawJSON() string {
 // Response containing data for a Lookup Table Revision
 type LookupTableLookupTableRevisionDataDeleteKeyResponse struct {
 	// The Lookup Table Revision Data.
-	Items []map[string]interface{} `json:"items,required"`
+	Items []map[string]interface{} `json:"items" api:"required"`
 	// The id of the user who created the Lookup Table Revision Data.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Lookup Table Revision Data was created.
@@ -559,7 +614,7 @@ func (r lookupTableLookupTableRevisionDataGenerateDownloadURLResponseJSON) RawJS
 // Response containing data for a Lookup Table Revision
 type LookupTableLookupTableRevisionDataGetKeyResponse struct {
 	// The Lookup Table Revision Data.
-	Items []map[string]interface{} `json:"items,required"`
+	Items []map[string]interface{} `json:"items" api:"required"`
 	// The id of the user who created the Lookup Table Revision Data.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Lookup Table Revision Data was created.
@@ -597,7 +652,7 @@ func (r lookupTableLookupTableRevisionDataGetKeyResponseJSON) RawJSON() string {
 // Response containing data for a Lookup Table Revision
 type LookupTableLookupTableRevisionDataUpdateKeyResponse struct {
 	// The Lookup Table Revision Data.
-	Items []map[string]interface{} `json:"items,required"`
+	Items []map[string]interface{} `json:"items" api:"required"`
 	// The id of the user who created the Lookup Table Revision Data.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when the Lookup Table Revision Data was created.
@@ -634,7 +689,7 @@ func (r lookupTableLookupTableRevisionDataUpdateKeyResponseJSON) RawJSON() strin
 
 type LookupTableLookupTableRevisionDataGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional fields. For example, you can use
 	// `additional=lookupKey` to get the lookup key returned for each Data item. You
 	// can then use a lookup key for the Get/Upsert/Delete data entry endpoints in this
@@ -660,9 +715,9 @@ func (r LookupTableLookupTableRevisionDataGetParams) URLQuery() (v url.Values) {
 
 type LookupTableLookupTableRevisionDataUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The data for a lookup table revision
-	Items param.Field[[]map[string]interface{}] `json:"items,required"`
+	Items param.Field[[]map[string]interface{}] `json:"items" api:"required"`
 	// Comma separated list of additional fields. For example, you can use
 	// `additional=lookupKey` to get the lookup key returned for each Data item. You
 	// can then use a lookup key for the Get/Upsert/Delete data entry endpoints in this
@@ -687,14 +742,14 @@ func (r LookupTableLookupTableRevisionDataUpdateParams) URLQuery() (v url.Values
 
 type LookupTableLookupTableRevisionDataDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type LookupTableLookupTableRevisionDataArchieveParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The content type
-	ContentType param.Field[LookupTableLookupTableRevisionDataArchieveParamsContentType] `json:"contentType,required"`
+	ContentType param.Field[LookupTableLookupTableRevisionDataArchieveParamsContentType] `json:"contentType" api:"required"`
 }
 
 func (r LookupTableLookupTableRevisionDataArchieveParams) MarshalJSON() (data []byte, err error) {
@@ -719,7 +774,7 @@ func (r LookupTableLookupTableRevisionDataArchieveParamsContentType) IsKnown() b
 
 type LookupTableLookupTableRevisionDataCopyParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The target Revision id that the source Revision's data will be copied to.
 	// _(Optional)_
 	RevisionID param.Field[string] `json:"revisionId"`
@@ -731,7 +786,7 @@ func (r LookupTableLookupTableRevisionDataCopyParams) MarshalJSON() (data []byte
 
 type LookupTableLookupTableRevisionDataDeleteKeyParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The version of the Lookup Table Revision Data.
 	Version param.Field[int64] `json:"version"`
 }
@@ -742,14 +797,14 @@ func (r LookupTableLookupTableRevisionDataDeleteKeyParams) MarshalJSON() (data [
 
 type LookupTableLookupTableRevisionDataGenerateDownloadURLParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The size of the file body in bytes. For example: `"contentLength": 485`, where
 	// 485 is the size in bytes of the file to upload.
-	ContentLength param.Field[int64] `json:"contentLength,required"`
+	ContentLength param.Field[int64] `json:"contentLength" api:"required"`
 	// The content type
-	ContentType param.Field[LookupTableLookupTableRevisionDataGenerateDownloadURLParamsContentType] `json:"contentType,required"`
+	ContentType param.Field[LookupTableLookupTableRevisionDataGenerateDownloadURLParamsContentType] `json:"contentType" api:"required"`
 	// The name of the file to be uploaded.
-	FileName param.Field[string] `json:"fileName,required"`
+	FileName param.Field[string] `json:"fileName" api:"required"`
 	// Version of the Lookup Table Revision Data.
 	Version param.Field[int64] `json:"version"`
 }
@@ -776,14 +831,14 @@ func (r LookupTableLookupTableRevisionDataGenerateDownloadURLParamsContentType) 
 
 type LookupTableLookupTableRevisionDataGetKeyParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type LookupTableLookupTableRevisionDataUpdateKeyParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The item you want to upsert
-	Item param.Field[map[string]interface{}] `json:"item,required"`
+	Item param.Field[map[string]interface{}] `json:"item" api:"required"`
 	// Comma separated list of additional fields. For example, you can use
 	// `additional=lookupKey` to get the lookup key returned for the Data item.
 	Additional param.Field[[]string] `query:"additional"`

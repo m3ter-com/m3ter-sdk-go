@@ -22,6 +22,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating/updating/deleting BalanceChargeSchedules.
+//
+// **NOTE!** The BalanceChargeSchedule feature is available in Beta release
+// version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Beta release definition.
+//
 // BalanceChargeScheduleService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -198,10 +205,10 @@ func (r *BalanceChargeScheduleService) Preview(ctx context.Context, balanceID st
 
 type BalanceChargeScheduleNewResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription string `json:"chargeDescription,required"`
+	ChargeDescription string `json:"chargeDescription" api:"required"`
 	// The amount of each Charge created by the Balance Charge Schedule.
 	Amount float64 `json:"amount"`
 	// The unique identifier (UUID) for the Balance this Balance Charge Schedule was
@@ -358,10 +365,10 @@ func init() {
 
 type BalanceChargeScheduleGetResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription string `json:"chargeDescription,required"`
+	ChargeDescription string `json:"chargeDescription" api:"required"`
 	// The amount of each Charge created by the Balance Charge Schedule.
 	Amount float64 `json:"amount"`
 	// The unique identifier (UUID) for the Balance this Balance Charge Schedule was
@@ -518,10 +525,10 @@ func init() {
 
 type BalanceChargeScheduleUpdateResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription string `json:"chargeDescription,required"`
+	ChargeDescription string `json:"chargeDescription" api:"required"`
 	// The amount of each Charge created by the Balance Charge Schedule.
 	Amount float64 `json:"amount"`
 	// The unique identifier (UUID) for the Balance this Balance Charge Schedule was
@@ -678,10 +685,10 @@ func init() {
 
 type BalanceChargeScheduleListResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription string `json:"chargeDescription,required"`
+	ChargeDescription string `json:"chargeDescription" api:"required"`
 	// The amount of each Charge created by the Balance Charge Schedule.
 	Amount float64 `json:"amount"`
 	// The unique identifier (UUID) for the Balance this Balance Charge Schedule was
@@ -838,10 +845,10 @@ func init() {
 
 type BalanceChargeScheduleDeleteResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription string `json:"chargeDescription,required"`
+	ChargeDescription string `json:"chargeDescription" api:"required"`
 	// The amount of each Charge created by the Balance Charge Schedule.
 	Amount float64 `json:"amount"`
 	// The unique identifier (UUID) for the Balance this Balance Charge Schedule was
@@ -998,10 +1005,10 @@ func init() {
 
 type BalanceChargeSchedulePreviewResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription string `json:"chargeDescription,required"`
+	ChargeDescription string `json:"chargeDescription" api:"required"`
 	// The amount of each Charge created by the Balance Charge Schedule.
 	Amount float64 `json:"amount"`
 	// The unique identifier (UUID) for the Balance this Balance Charge Schedule was
@@ -1158,33 +1165,33 @@ func init() {
 
 type BalanceChargeScheduleNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Represents standard scheduling frequencies options for a job.
-	BillFrequency param.Field[BalanceChargeScheduleNewParamsBillFrequency] `json:"billFrequency,required"`
+	BillFrequency param.Field[BalanceChargeScheduleNewParamsBillFrequency] `json:"billFrequency" api:"required"`
 	// How often Bills are issued. For example, if billFrequency is `MONTHLY` and
 	// `billFrequencyInterval` is 3, Bills are issued every three months.
-	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval,required"`
+	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval" api:"required"`
 	// Used to specify how Charges created by the Balance Charge Schedule are billed -
 	// either in arrears or in advance:
 	//
 	// - Use `false` for billing in arrears.
 	// - Use `true` for billing in advance.
-	BillInAdvance param.Field[bool] `json:"billInAdvance,required"`
+	BillInAdvance param.Field[bool] `json:"billInAdvance" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription param.Field[string] `json:"chargeDescription,required"`
+	ChargeDescription param.Field[string] `json:"chargeDescription" api:"required"`
 	// Unique short code for the Balance Charge Schedule.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The currency of the Charges created by the Balance Charge Schedule.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The name of the Balance Charge Schedule.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The service period end date (_in ISO-8601 format_) of the Balance Charge
 	// Schedule.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date (_in ISO-8601 format)_ of the Balance Charge
 	// Schedule.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	// The amount of each Charge created by the Balance Charge Schedule. Must be
 	// omitted if `units` and `unitPrice` are provided.
 	Amount param.Field[float64] `json:"amount"`
@@ -1251,38 +1258,38 @@ type BalanceChargeScheduleNewParamsCustomFieldsUnion interface {
 
 type BalanceChargeScheduleGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BalanceChargeScheduleUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Represents standard scheduling frequencies options for a job.
-	BillFrequency param.Field[BalanceChargeScheduleUpdateParamsBillFrequency] `json:"billFrequency,required"`
+	BillFrequency param.Field[BalanceChargeScheduleUpdateParamsBillFrequency] `json:"billFrequency" api:"required"`
 	// How often Bills are issued. For example, if billFrequency is `MONTHLY` and
 	// `billFrequencyInterval` is 3, Bills are issued every three months.
-	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval,required"`
+	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval" api:"required"`
 	// Used to specify how Charges created by the Balance Charge Schedule are billed -
 	// either in arrears or in advance:
 	//
 	// - Use `false` for billing in arrears.
 	// - Use `true` for billing in advance.
-	BillInAdvance param.Field[bool] `json:"billInAdvance,required"`
+	BillInAdvance param.Field[bool] `json:"billInAdvance" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription param.Field[string] `json:"chargeDescription,required"`
+	ChargeDescription param.Field[string] `json:"chargeDescription" api:"required"`
 	// Unique short code for the Balance Charge Schedule.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The currency of the Charges created by the Balance Charge Schedule.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The name of the Balance Charge Schedule.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The service period end date (_in ISO-8601 format_) of the Balance Charge
 	// Schedule.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date (_in ISO-8601 format)_ of the Balance Charge
 	// Schedule.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	// The amount of each Charge created by the Balance Charge Schedule. Must be
 	// omitted if `units` and `unitPrice` are provided.
 	Amount param.Field[float64] `json:"amount"`
@@ -1349,7 +1356,7 @@ type BalanceChargeScheduleUpdateParamsCustomFieldsUnion interface {
 
 type BalanceChargeScheduleListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string]   `path:"orgId,required"`
+	OrgID param.Field[string]   `path:"orgId" api:"required"`
 	IDs   param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
@@ -1368,38 +1375,38 @@ func (r BalanceChargeScheduleListParams) URLQuery() (v url.Values) {
 
 type BalanceChargeScheduleDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BalanceChargeSchedulePreviewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Represents standard scheduling frequencies options for a job.
-	BillFrequency param.Field[BalanceChargeSchedulePreviewParamsBillFrequency] `json:"billFrequency,required"`
+	BillFrequency param.Field[BalanceChargeSchedulePreviewParamsBillFrequency] `json:"billFrequency" api:"required"`
 	// How often Bills are issued. For example, if billFrequency is `MONTHLY` and
 	// `billFrequencyInterval` is 3, Bills are issued every three months.
-	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval,required"`
+	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval" api:"required"`
 	// Used to specify how Charges created by the Balance Charge Schedule are billed -
 	// either in arrears or in advance:
 	//
 	// - Use `false` for billing in arrears.
 	// - Use `true` for billing in advance.
-	BillInAdvance param.Field[bool] `json:"billInAdvance,required"`
+	BillInAdvance param.Field[bool] `json:"billInAdvance" api:"required"`
 	// The description for Charges created by the Balance Charge Schedule. Used on
 	// Bills for Charge line items.
-	ChargeDescription param.Field[string] `json:"chargeDescription,required"`
+	ChargeDescription param.Field[string] `json:"chargeDescription" api:"required"`
 	// Unique short code for the Balance Charge Schedule.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The currency of the Charges created by the Balance Charge Schedule.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The name of the Balance Charge Schedule.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The service period end date (_in ISO-8601 format_) of the Balance Charge
 	// Schedule.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date (_in ISO-8601 format)_ of the Balance Charge
 	// Schedule.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	// nextToken for multi page retrievals
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of Charges to retrieve per page

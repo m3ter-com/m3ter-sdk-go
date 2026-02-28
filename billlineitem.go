@@ -19,6 +19,15 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for billing operations such as creating, updating,
+// listing,downloading, and deleting Bills.
+//
+// Bills are generated for an Account, and are calculated in accordance with the
+// usage-based pricing Plans applied for the Products the Account consumes. These
+// endpoints enable interaction with the billing system, allowing you to obtain
+// billing details and insights into the consumption patterns and charges of your
+// end-customer Accounts.
+//
 // BillLineItemService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -114,7 +123,7 @@ func (r *BillLineItemService) ListAutoPaging(ctx context.Context, billID string,
 
 type LineItemResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The code of the Accounting Product associated with this line item.
 	AccountingProductCode string `json:"accountingProductCode"`
 	// The unique identifier (UUID) for the associated Accounting Product.
@@ -364,7 +373,7 @@ func (r LineItemResponseLineItemType) IsKnown() bool {
 
 type BillLineItemGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional fields.
 	Additional param.Field[[]string] `query:"additional"`
 }
@@ -379,7 +388,7 @@ func (r BillLineItemGetParams) URLQuery() (v url.Values) {
 
 type BillLineItemListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional fields.
 	Additional param.Field[[]string] `query:"additional"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of

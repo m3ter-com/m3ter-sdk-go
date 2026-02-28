@@ -20,6 +20,16 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting
+// CounterPricing.
+//
+// Create the CounterPricing for a Plan/PlanTemplate using a Counter, and define a
+// unit-based pricing structure for charging end customer Accounts put on the Plan.
+//
+// See
+// [Creating Counters and Pricing Plans](https://www.m3ter.com/docs/guides/recurring-charges-counters/creating-counters)
+// for more information.
+//
 // CounterPricingService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -163,7 +173,7 @@ func (r *CounterPricingService) Delete(ctx context.Context, id string, body Coun
 
 type CounterPricingResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Optional Product ID this Pricing should be attributed to for accounting
 	// purposes.
 	AccountingProductID string `json:"accountingProductId"`
@@ -283,13 +293,13 @@ func (r counterPricingResponseJSON) RawJSON() string {
 
 type CounterPricingNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// UUID of the Counter used to create the pricing.
-	CounterID    param.Field[string]                    `json:"counterId,required"`
-	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
+	CounterID    param.Field[string]                    `json:"counterId" api:"required"`
+	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands" api:"required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Optional Product ID this Pricing should be attributed to for accounting purposes
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Unique short code for the Pricing.
@@ -376,18 +386,18 @@ func (r CounterPricingNewParams) MarshalJSON() (data []byte, err error) {
 
 type CounterPricingGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CounterPricingUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// UUID of the Counter used to create the pricing.
-	CounterID    param.Field[string]                    `json:"counterId,required"`
-	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands,required"`
+	CounterID    param.Field[string]                    `json:"counterId" api:"required"`
+	PricingBands param.Field[[]shared.PricingBandParam] `json:"pricingBands" api:"required"`
 	// The start date _(in ISO-8601 format)_ for when the Pricing starts to be active
 	// for the Plan of Plan Template._(Required)_
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date-time"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date-time"`
 	// Optional Product ID this Pricing should be attributed to for accounting purposes
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Unique short code for the Pricing.
@@ -474,7 +484,7 @@ func (r CounterPricingUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type CounterPricingListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Date on which to retrieve active CounterPricings.
 	Date param.Field[string] `query:"date"`
 	// List of CounterPricing IDs to retrieve.
@@ -500,5 +510,5 @@ func (r CounterPricingListParams) URLQuery() (v url.Values) {
 
 type CounterPricingDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

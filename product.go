@@ -22,6 +22,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting Products.
+//
+// A Product represents the products and services you offer to your end customers.
+// Products act as a container for the Meters, Aggregations, Pricing, and Plans
+// required to implement usage-based and other pricing models for your
+// Organization.
+//
 // ProductService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -181,7 +188,7 @@ func (r *ProductService) Delete(ctx context.Context, id string, body ProductDele
 
 type ProductResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
 	Code string `json:"code"`
@@ -261,12 +268,12 @@ func init() {
 
 type ProductNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Descriptive name for the Product providing context and information.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -300,17 +307,17 @@ type ProductNewParamsCustomFieldsUnion interface {
 
 type ProductGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ProductUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// A unique short code to identify the Product. It should not contain control
 	// chracters or spaces.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Descriptive name for the Product providing context and information.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -344,7 +351,7 @@ type ProductUpdateParamsCustomFieldsUnion interface {
 
 type ProductListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of specific Product UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
@@ -364,5 +371,5 @@ func (r ProductListParams) URLQuery() (v url.Values) {
 
 type ProductDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

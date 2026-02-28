@@ -19,6 +19,22 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for listing, creating, retrieving, updating, or deleting Counters.
+//
+// You can create Counters for your m3ter Organization, which can then be used as
+// pricing metrics to apply a unit-based
+// [CounterPricing](https://www.m3ter.com/docs/api#tag/CounterPricing) to Product
+// Plans or Plan Templates for recurring subscription charges on Accounts.
+//
+// Counters can then be used to post
+// [CounterAdjustments](https://www.m3ter.com/docs/api#tag/CounterAdjustments) on
+// your end-customer Accounts.
+//
+// Accounts are then billed in accordance with the CounterPricing on Plans attached
+// to the Accounts and for the actual Counter quantities Accounts subscribe to. See
+// [Recurring Charges: Counters](https://www.m3ter.com/docs/guides/recurring-charges-counters)
+// in our main user documentation for more details.
+//
 // CounterService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -154,7 +170,7 @@ func (r *CounterService) Delete(ctx context.Context, id string, body CounterDele
 
 type CounterResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Code of the Counter. A unique short code to identify the Counter.
 	Code string `json:"code"`
 	// The ID of the user who created this item.
@@ -210,12 +226,12 @@ func (r counterResponseJSON) RawJSON() string {
 
 type CounterNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Descriptive name for the Counter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined label for units shown on Bill line items, and indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Code for the Counter. A unique short code to identify the Counter.
 	Code param.Field[string] `json:"code"`
 	// UUID of the product the Counter belongs to. _(Optional)_ - if left blank, the
@@ -239,17 +255,17 @@ func (r CounterNewParams) MarshalJSON() (data []byte, err error) {
 
 type CounterGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CounterUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Descriptive name for the Counter.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined label for units shown on Bill line items, and indicating to your
 	// customers what they are being charged for.
-	Unit param.Field[string] `json:"unit,required"`
+	Unit param.Field[string] `json:"unit" api:"required"`
 	// Code for the Counter. A unique short code to identify the Counter.
 	Code param.Field[string] `json:"code"`
 	// UUID of the product the Counter belongs to. _(Optional)_ - if left blank, the
@@ -273,7 +289,7 @@ func (r CounterUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type CounterListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Counter codes to retrieve. These are unique short codes to identify each
 	// Counter.
 	Codes param.Field[[]string] `query:"codes"`
@@ -297,5 +313,5 @@ func (r CounterListParams) URLQuery() (v url.Values) {
 
 type CounterDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

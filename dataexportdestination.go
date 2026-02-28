@@ -21,6 +21,34 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating, updating, retrieving, or deleting Data Export
+// Destinations.
+//
+// Before you can configure and run either
+// [Export Schedules](https://www.m3ter.com/docs/api#tag/ExportSchedule) or
+// [Ad-Hoc Exports](https://www.m3ter.com/docs/api#tag/ExportAdHoc), you can set up
+// Export Destinations. Currently, two options for setting up Data Export
+// Destinations are available:
+//
+// - S3 buckets on your AWS account.
+// - Buckets in your Google Cloud Storage account.
+//
+// **NOTE: Exporting without a Destination?** When a Data Export runs, the data is
+// sent through to the specified Destination. However, the export file is also made
+// available for you to download it locally. You can set up and run Data Exports
+// without defining a Destination. The data is not exported but the compiled export
+// file is made available for downloading locally.
+//
+// **Preview Version!** The Data Export feature is currently available only in
+// Preview release version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Preview release definition. ExportDestination endpoints will only be
+// available if Data Export has been enabled for your Organization. For more
+// details see
+// [Data Export(Preview)](https://www.m3ter.com/docs/guides/data-exports) in our
+// main User documentation. If you're interested in previewing the Data Export
+// feature, please get in touch with m3ter Support or your m3ter contact.
+//
 // DataExportDestinationService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -191,13 +219,13 @@ func (r *DataExportDestinationService) Delete(ctx context.Context, id string, bo
 
 type DataExportDestinationGoogleCloudStorageRequestParam struct {
 	// The export destination bucket name.
-	BucketName param.Field[string] `json:"bucketName,required"`
+	BucketName param.Field[string] `json:"bucketName" api:"required"`
 	// The export destination Web Identity Federation poolId.
-	PoolID param.Field[string] `json:"poolId,required"`
+	PoolID param.Field[string] `json:"poolId" api:"required"`
 	// The export destination GCP projectNumber.
-	ProjectNumber param.Field[string] `json:"projectNumber,required"`
+	ProjectNumber param.Field[string] `json:"projectNumber" api:"required"`
 	// The export destination Web Identity Federation identity providerId.
-	ProviderID param.Field[string] `json:"providerId,required"`
+	ProviderID param.Field[string] `json:"providerId" api:"required"`
 	// The type of destination to create. Possible values are: GCS
 	DestinationType param.Field[DataExportDestinationGoogleCloudStorageRequestDestinationType] `json:"destinationType"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -288,7 +316,7 @@ func (r DataExportDestinationGoogleCloudStorageRequestPartitionOrder) IsKnown() 
 
 type DataExportDestinationResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The code of the data Export Destination.
 	Code string `json:"code"`
 	// The id of the user who created the Export Destination.
@@ -353,7 +381,7 @@ func (r DataExportDestinationResponseDestinationType) IsKnown() bool {
 
 type DataExportDestinationS3RequestParam struct {
 	// Name of the S3 bucket for the Export Destination.
-	BucketName param.Field[string] `json:"bucketName,required"`
+	BucketName param.Field[string] `json:"bucketName" api:"required"`
 	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
 	// assume an IAM role with PutObject permission for the specified `bucketName`.
 	// Create a suitable IAM role in your AWS account and enter ARN:
@@ -371,7 +399,7 @@ type DataExportDestinationS3RequestParam struct {
 	// Policies you can use to create the required IAM Role ARN, see
 	// [Creating Data Export Destinations](https://www.m3ter.com/docs/guides/data-exports/creating-data-export-destinations)
 	// in our main User documentation.
-	IamRoleArn param.Field[string] `json:"iamRoleArn,required"`
+	IamRoleArn param.Field[string] `json:"iamRoleArn" api:"required"`
 	// The type of destination to create. Possible values are: S3
 	DestinationType param.Field[DataExportDestinationS3RequestDestinationType] `json:"destinationType"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -461,7 +489,7 @@ func (r DataExportDestinationS3RequestPartitionOrder) IsKnown() bool {
 // destination.
 type DataExportDestinationNewResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -604,7 +632,7 @@ func init() {
 
 type DataExportDestinationNewResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -699,7 +727,7 @@ func (r DataExportDestinationNewResponseExportDestinationS3ResponsePartitionOrde
 // destination.
 type DataExportDestinationNewResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -846,7 +874,7 @@ func (r DataExportDestinationNewResponsePartitionOrder) IsKnown() bool {
 // destination.
 type DataExportDestinationGetResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -989,7 +1017,7 @@ func init() {
 
 type DataExportDestinationGetResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -1084,7 +1112,7 @@ func (r DataExportDestinationGetResponseExportDestinationS3ResponsePartitionOrde
 // destination.
 type DataExportDestinationGetResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -1231,7 +1259,7 @@ func (r DataExportDestinationGetResponsePartitionOrder) IsKnown() bool {
 // destination.
 type DataExportDestinationUpdateResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -1374,7 +1402,7 @@ func init() {
 
 type DataExportDestinationUpdateResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -1469,7 +1497,7 @@ func (r DataExportDestinationUpdateResponseExportDestinationS3ResponsePartitionO
 // destination.
 type DataExportDestinationUpdateResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -1616,7 +1644,7 @@ func (r DataExportDestinationUpdateResponsePartitionOrder) IsKnown() bool {
 // destination.
 type DataExportDestinationDeleteResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The code of the data Export Destination.
@@ -1759,7 +1787,7 @@ func init() {
 
 type DataExportDestinationDeleteResponseExportDestinationS3Response struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the S3 bucket for the Export Destination.
 	BucketName string `json:"bucketName"`
 	// The specified IAM role ARN with PutObject permission for the specified
@@ -1854,7 +1882,7 @@ func (r DataExportDestinationDeleteResponseExportDestinationS3ResponsePartitionO
 // destination.
 type DataExportDestinationDeleteResponseExportDestinationGoogleCloudStorageResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The bucket name.
 	BucketName string `json:"bucketName"`
 	// Specify how you want the file path to be structured in your bucket destination -
@@ -1999,8 +2027,8 @@ func (r DataExportDestinationDeleteResponsePartitionOrder) IsKnown() bool {
 
 type DataExportDestinationNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string]                     `path:"orgId,required"`
-	Body  DataExportDestinationNewParamsBodyUnion `json:"body,required"`
+	OrgID param.Field[string]                     `path:"orgId" api:"required"`
+	Body  DataExportDestinationNewParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r DataExportDestinationNewParams) MarshalJSON() (data []byte, err error) {
@@ -2009,7 +2037,7 @@ func (r DataExportDestinationNewParams) MarshalJSON() (data []byte, err error) {
 
 type DataExportDestinationNewParamsBody struct {
 	// Name of the S3 bucket for the Export Destination.
-	BucketName param.Field[string] `json:"bucketName,required"`
+	BucketName param.Field[string] `json:"bucketName" api:"required"`
 	// The type of destination to create. Possible values are: S3
 	DestinationType param.Field[DataExportDestinationNewParamsBodyDestinationType] `json:"destinationType"`
 	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
@@ -2129,13 +2157,13 @@ func (r DataExportDestinationNewParamsBodyPartitionOrder) IsKnown() bool {
 
 type DataExportDestinationGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type DataExportDestinationUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string]                        `path:"orgId,required"`
-	Body  DataExportDestinationUpdateParamsBodyUnion `json:"body,required"`
+	OrgID param.Field[string]                        `path:"orgId" api:"required"`
+	Body  DataExportDestinationUpdateParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r DataExportDestinationUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -2144,7 +2172,7 @@ func (r DataExportDestinationUpdateParams) MarshalJSON() (data []byte, err error
 
 type DataExportDestinationUpdateParamsBody struct {
 	// Name of the S3 bucket for the Export Destination.
-	BucketName param.Field[string] `json:"bucketName,required"`
+	BucketName param.Field[string] `json:"bucketName" api:"required"`
 	// The type of destination to create. Possible values are: S3
 	DestinationType param.Field[DataExportDestinationUpdateParamsBodyDestinationType] `json:"destinationType"`
 	// To enable m3ter to upload a Data Exports to your S3 bucket, the service has to
@@ -2265,7 +2293,7 @@ func (r DataExportDestinationUpdateParamsBodyPartitionOrder) IsKnown() bool {
 
 type DataExportDestinationListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of Export Destination UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
@@ -2285,5 +2313,5 @@ func (r DataExportDestinationListParams) URLQuery() (v url.Values) {
 
 type DataExportDestinationDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

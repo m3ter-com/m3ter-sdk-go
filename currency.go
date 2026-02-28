@@ -19,6 +19,24 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for Currency operations such as creation, update, list, and delete.
+// Currencies are stored for your Organization, and can then be used to specify
+// currencies on various entities such as plan groups and plan templates.
+//
+// **IMPORTANT!** The Currencies you want to use in your Organization must be
+// created first.
+//
+// The currency you select for your Organization determines the billing currency
+// and overrides any currency settings in your pricing Plans. For example, if the
+// Organization currency is set to USD and a pricing Plan used for an Account is
+// set to GBP, the bill for an Account using that Plan is calculated in GBP, and
+// then each bill line item converted to USD amounts.
+//
+// Currency conversion rates are setup in the _OrganizationConfig_. For more
+// details, see
+// [Creating and Managing Currencies](https://www.m3ter.com/docs/guides/organization-and-access-management/viewing-and-editing-organization#creating-and-managing-currencies)
+// in the m3ter Documentation.
+//
 // CurrencyService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -169,7 +187,7 @@ func (r *CurrencyService) Delete(ctx context.Context, id string, body CurrencyDe
 
 type CurrencyResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// TRUE / FALSE flag indicating whether the data entity is archived. An entity can
 	// be archived if it is obsolete.
 	Archived bool `json:"archived"`
@@ -247,9 +265,9 @@ func (r CurrencyResponseRoundingMode) IsKnown() bool {
 
 type CurrencyNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the entity.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
 	// can be archived if it is obsolete.
 	//
@@ -299,14 +317,14 @@ func (r CurrencyNewParamsRoundingMode) IsKnown() bool {
 
 type CurrencyGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type CurrencyUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the entity.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
 	// can be archived if it is obsolete.
 	//
@@ -356,7 +374,7 @@ func (r CurrencyUpdateParamsRoundingMode) IsKnown() bool {
 
 type CurrencyListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Filter by archived flag. A True / False flag indicating whether to return
 	// Currencies that are archived _(obsolete)_.
 	//
@@ -386,5 +404,5 @@ func (r CurrencyListParams) URLQuery() (v url.Values) {
 
 type CurrencyDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

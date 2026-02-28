@@ -19,6 +19,19 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for TransactionType operations such as creation, update, list,
+// retrieve, and delete.
+//
+// You can create TransactionTypes for your Organization, which can then be used
+// when creating and updating Balances. Example TransactionTypes: "Balance Amount"
+// or "Add Funds".
+//
+// For details on creating a Transaction amount for a Balance using a
+// TransactionType you've created for your Organization, see the
+// [Create Balance Transaction](https://www.m3ter.com/docs/api#tag/Balances/operation/PostBalanceTransaction)
+// call in the [Balances](https://www.m3ter.com/docs/api#tag/Balances) section of
+// this API Reference.
+//
 // TransactionTypeService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -160,7 +173,7 @@ func (r *TransactionTypeService) Delete(ctx context.Context, id string, body Tra
 
 type TransactionTypeResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// TRUE / FALSE flag indicating whether the data entity is archived. An entity can
 	// be archived if it is obsolete.
 	Archived bool `json:"archived"`
@@ -213,9 +226,9 @@ func (r transactionTypeResponseJSON) RawJSON() string {
 
 type TransactionTypeNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the entity.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
 	// can be archived if it is obsolete.
 	//
@@ -241,14 +254,14 @@ func (r TransactionTypeNewParams) MarshalJSON() (data []byte, err error) {
 
 type TransactionTypeGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type TransactionTypeUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the entity.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A Boolean TRUE / FALSE flag indicating whether the entity is archived. An entity
 	// can be archived if it is obsolete.
 	//
@@ -274,7 +287,7 @@ func (r TransactionTypeUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type TransactionTypeListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Filter with this Boolean flag whether to include TransactionTypes that are
 	// archived.
 	//
@@ -303,5 +316,5 @@ func (r TransactionTypeListParams) URLQuery() (v url.Values) {
 
 type TransactionTypeDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

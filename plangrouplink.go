@@ -19,6 +19,13 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for PlanGroupLink related operations such as creation, update, list
+// and delete.
+//
+// PlanGroupLinks are the intersection table between a PlanGroup and its associated
+// Plans. A PlanGroupLink is only created when at least 1 Plan is linked to a
+// PlanGroup.
+//
 // PlanGroupLinkService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -152,7 +159,7 @@ func (r *PlanGroupLinkService) Delete(ctx context.Context, id string, body PlanG
 
 type PlanGroupLinkResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The id of the user who created this plan group link.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime _(in ISO-8601 format)_ when the plan group link was created.
@@ -200,9 +207,9 @@ func (r planGroupLinkResponseJSON) RawJSON() string {
 
 type PlanGroupLinkNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PlanGroupID param.Field[string] `json:"planGroupId,required"`
-	PlanID      param.Field[string] `json:"planId,required"`
+	OrgID       param.Field[string] `path:"orgId" api:"required"`
+	PlanGroupID param.Field[string] `json:"planGroupId" api:"required"`
+	PlanID      param.Field[string] `json:"planId" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -220,14 +227,14 @@ func (r PlanGroupLinkNewParams) MarshalJSON() (data []byte, err error) {
 
 type PlanGroupLinkGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PlanGroupLinkUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID       param.Field[string] `path:"orgId,required"`
-	PlanGroupID param.Field[string] `json:"planGroupId,required"`
-	PlanID      param.Field[string] `json:"planId,required"`
+	OrgID       param.Field[string] `path:"orgId" api:"required"`
+	PlanGroupID param.Field[string] `json:"planGroupId" api:"required"`
+	PlanID      param.Field[string] `json:"planId" api:"required"`
 	// The version number of the entity:
 	//
 	//   - **Create entity:** Not valid for initial insertion of new entity - _do not use
@@ -245,7 +252,7 @@ func (r PlanGroupLinkUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type PlanGroupLinkListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// list of IDs to retrieve
 	IDs param.Field[[]string] `query:"ids"`
 	// nextToken for multi page retrievals
@@ -269,5 +276,5 @@ func (r PlanGroupLinkListParams) URLQuery() (v url.Values) {
 
 type PlanGroupLinkDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

@@ -19,6 +19,14 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for Credit line item related operations such as creation, update, list
+// and delete. These are line items on Bills that are specifically related to
+// Credits.
+//
+// You use the Credit Reasons created for your Organization when you create Credit
+// line items for Bills. See
+// [CreditReason](https://www.m3ter.com/docs/api#tag/CreditReason).
+//
 // BillCreditLineItemService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -176,7 +184,7 @@ func (r *BillCreditLineItemService) Delete(ctx context.Context, billID string, i
 
 type CreditLineItemResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The credit amount.
 	Amount float64 `json:"amount"`
 	// The ID of the user who created this line item.
@@ -270,23 +278,23 @@ func (r CreditLineItemResponseLineItemType) IsKnown() bool {
 
 type BillCreditLineItemNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID               param.Field[string] `path:"orgId,required"`
-	AccountingProductID param.Field[string] `json:"accountingProductId,required"`
+	OrgID               param.Field[string] `path:"orgId" api:"required"`
+	AccountingProductID param.Field[string] `json:"accountingProductId" api:"required"`
 	// The amount for the line item.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The description for the line item.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The UUID of the Product.
-	ProductID param.Field[string] `json:"productId,required"`
+	ProductID param.Field[string] `json:"productId" api:"required"`
 	// The UUID of the bill for the line item.
-	ReferencedBillID param.Field[string] `json:"referencedBillId,required"`
+	ReferencedBillID param.Field[string] `json:"referencedBillId" api:"required"`
 	// The UUID of the line item.
-	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId,required"`
+	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId" api:"required"`
 	// The service period end date in ISO-8601 format._(exclusive of the ending date)_.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The UUID of the credit reason.
 	CreditReasonID param.Field[string]                                  `json:"creditReasonId"`
@@ -342,28 +350,28 @@ func (r BillCreditLineItemNewParamsLineItemType) IsKnown() bool {
 
 type BillCreditLineItemGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillCreditLineItemUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID               param.Field[string] `path:"orgId,required"`
-	AccountingProductID param.Field[string] `json:"accountingProductId,required"`
+	OrgID               param.Field[string] `path:"orgId" api:"required"`
+	AccountingProductID param.Field[string] `json:"accountingProductId" api:"required"`
 	// The amount for the line item.
-	Amount param.Field[float64] `json:"amount,required"`
+	Amount param.Field[float64] `json:"amount" api:"required"`
 	// The description for the line item.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The UUID of the Product.
-	ProductID param.Field[string] `json:"productId,required"`
+	ProductID param.Field[string] `json:"productId" api:"required"`
 	// The UUID of the bill for the line item.
-	ReferencedBillID param.Field[string] `json:"referencedBillId,required"`
+	ReferencedBillID param.Field[string] `json:"referencedBillId" api:"required"`
 	// The UUID of the line item.
-	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId,required"`
+	ReferencedLineItemID param.Field[string] `json:"referencedLineItemId" api:"required"`
 	// The service period end date in ISO-8601 format._(exclusive of the ending date)_.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date in ISO-8601 format. _(inclusive of the starting
 	// date)_.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	AmountToApplyOnBill    param.Field[float64]   `json:"amountToApplyOnBill"`
 	// The UUID of the credit reason.
 	CreditReasonID param.Field[string]                                     `json:"creditReasonId"`
@@ -419,7 +427,7 @@ func (r BillCreditLineItemUpdateParamsLineItemType) IsKnown() bool {
 
 type BillCreditLineItemListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `nextToken` for multi page retrievals.
 	NextToken param.Field[string] `query:"nextToken"`
 	// Number of Line Items to retrieve per page.
@@ -437,5 +445,5 @@ func (r BillCreditLineItemListParams) URLQuery() (v url.Values) {
 
 type BillCreditLineItemDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

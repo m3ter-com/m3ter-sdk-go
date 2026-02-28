@@ -137,7 +137,7 @@ func (r *DataExportJobService) GetDownloadURL(ctx context.Context, jobID string,
 
 type DataExportJobResponse struct {
 	// The id of the Export Job.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When the data Export Job was created.
 	DateCreated time.Time `json:"dateCreated" format:"date-time"`
 	// The id of the data Export Schedule.
@@ -238,12 +238,12 @@ func (r dataExportJobGetDownloadURLResponseJSON) RawJSON() string {
 
 type DataExportJobGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type DataExportJobListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Include only Job entities created before this date. Format:
 	// yyyy-MM-dd'T'HH:mm:ss'Z'
 	DateCreatedEnd param.Field[string] `query:"dateCreatedEnd"`
@@ -291,5 +291,5 @@ func (r DataExportJobListParamsStatus) IsKnown() bool {
 
 type DataExportJobGetDownloadURLParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

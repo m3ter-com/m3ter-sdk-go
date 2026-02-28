@@ -20,6 +20,15 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for billing operations such as creating, updating,
+// listing,downloading, and deleting Bills.
+//
+// Bills are generated for an Account, and are calculated in accordance with the
+// usage-based pricing Plans applied for the Products the Account consumes. These
+// endpoints enable interaction with the billing system, allowing you to obtain
+// billing details and insights into the consumption patterns and charges of your
+// end-customer Accounts.
+//
 // BillService contains methods and other services that help with interacting with
 // the m3ter API.
 //
@@ -27,10 +36,33 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewBillService] method instead.
 type BillService struct {
-	Options         []option.RequestOption
+	Options []option.RequestOption
+	// Endpoints for Credit line item related operations such as creation, update, list
+	// and delete. These are line items on Bills that are specifically related to
+	// Credits.
+	//
+	// You use the Credit Reasons created for your Organization when you create Credit
+	// line items for Bills. See
+	// [CreditReason](https://www.m3ter.com/docs/api#tag/CreditReason).
 	CreditLineItems *BillCreditLineItemService
-	DebitLineItems  *BillDebitLineItemService
-	LineItems       *BillLineItemService
+	// Endpoints for Debit line item related operations such as creation, update, list
+	// and delete. These are line items on Bills that are specifically related to
+	// Debits.
+	//
+	// You use the Debit Reasons created for your Organization when you create Debit
+	// line items for Bills. See the
+	// [DebitReason](https://www.m3ter.com/docs/api#tag/DebitReason) section for calls
+	// you can use to create and manage Debit Reasons for your Organization.
+	DebitLineItems *BillDebitLineItemService
+	// Endpoints for billing operations such as creating, updating,
+	// listing,downloading, and deleting Bills.
+	//
+	// Bills are generated for an Account, and are calculated in accordance with the
+	// usage-based pricing Plans applied for the Products the Account consumes. These
+	// endpoints enable interaction with the billing system, allowing you to obtain
+	// billing details and insights into the consumption patterns and charges of your
+	// end-customer Accounts.
+	LineItems *BillLineItemService
 }
 
 // NewBillService generates a new service that applies the given options to each
@@ -270,7 +302,7 @@ func (r *BillService) UpdateStatus(ctx context.Context, id string, params BillUp
 
 type BillResponse struct {
 	// The UUID of the entity.
-	ID          string `json:"id,required"`
+	ID          string `json:"id" api:"required"`
 	AccountCode string `json:"accountCode"`
 	AccountID   string `json:"accountId"`
 	// The id of the user who approved this bill.
@@ -431,27 +463,27 @@ func (r BillResponseBillingFrequency) IsKnown() bool {
 
 type BillResponseLineItem struct {
 	// The average unit price across all tiers / pricing bands.
-	AverageUnitPrice float64 `json:"averageUnitPrice,required"`
+	AverageUnitPrice float64 `json:"averageUnitPrice" api:"required"`
 	// The currency conversion rate if currency conversion is required for the line
 	// item.
-	ConversionRate float64 `json:"conversionRate,required"`
+	ConversionRate float64 `json:"conversionRate" api:"required"`
 	// The converted subtotal amount if currency conversions have been used.
-	ConvertedSubtotal float64 `json:"convertedSubtotal,required"`
+	ConvertedSubtotal float64 `json:"convertedSubtotal" api:"required"`
 	// The currency code for the currency used in the line item. For example: USD, GBP,
 	// or EUR.
-	Currency string `json:"currency,required"`
+	Currency string `json:"currency" api:"required"`
 	// Line item description.
-	Description  string                            `json:"description,required"`
-	LineItemType BillResponseLineItemsLineItemType `json:"lineItemType,required"`
+	Description  string                            `json:"description" api:"required"`
+	LineItemType BillResponseLineItemsLineItemType `json:"lineItemType" api:"required"`
 	// The amount of usage for the line item.
-	Quantity float64 `json:"quantity,required"`
+	Quantity float64 `json:"quantity" api:"required"`
 	// The subtotal amount for the line item, before any currency conversions.
-	Subtotal float64 `json:"subtotal,required"`
+	Subtotal float64 `json:"subtotal" api:"required"`
 	// The unit for the usage data in thie line item. For example: **GB** of disk
 	// storage space.
-	Unit string `json:"unit,required"`
+	Unit string `json:"unit" api:"required"`
 	// The number of units used for the line item.
-	Units float64 `json:"units,required"`
+	Units float64 `json:"units" api:"required"`
 	// The UUID for the line item.
 	ID                    string                 `json:"id"`
 	AccountingProductCode string                 `json:"accountingProductCode"`
@@ -711,7 +743,7 @@ func (r billSearchResponseJSON) RawJSON() string {
 
 type BillGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional fields.
 	Additional param.Field[[]string] `query:"additional"`
 }
@@ -726,7 +758,7 @@ func (r BillGetParams) URLQuery() (v url.Values) {
 
 type BillListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Optional filter. An Account ID - returns the Bills for the single specified
 	// Account.
 	AccountID param.Field[string] `query:"accountId"`
@@ -791,14 +823,14 @@ func (r BillListParamsStatus) IsKnown() bool {
 
 type BillDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillApproveParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Use to specify a collection of Bills by their IDs for batch approval
-	BillIDs param.Field[[]string] `json:"billIds,required"`
+	BillIDs param.Field[[]string] `json:"billIds" api:"required"`
 	// List of Account IDs to filter Bills. This allows you to approve Bills for
 	// specific Accounts within the Organization.
 	AccountIDs param.Field[string] `query:"accountIds"`
@@ -824,7 +856,7 @@ func (r BillApproveParams) URLQuery() (v url.Values) {
 
 type BillLatestByAccountParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional fields.
 	Additional param.Field[[]string] `query:"additional"`
 }
@@ -840,12 +872,12 @@ func (r BillLatestByAccountParams) URLQuery() (v url.Values) {
 
 type BillLockParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type BillSearchParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// `fromDocument` for multi page retrievals.
 	FromDocument param.Field[int64] `query:"fromDocument"`
 	// Search Operator to be used while querying search.
@@ -923,10 +955,10 @@ func (r BillSearchParamsSortOrder) IsKnown() bool {
 
 type BillUpdateStatusParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The new status you want to assign to the Bill. Must be one "Pending" or
 	// "Approved".
-	Status param.Field[BillUpdateStatusParamsStatus] `json:"status,required"`
+	Status param.Field[BillUpdateStatusParamsStatus] `json:"status" api:"required"`
 }
 
 func (r BillUpdateStatusParams) MarshalJSON() (data []byte, err error) {

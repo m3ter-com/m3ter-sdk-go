@@ -22,6 +22,17 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for listing, creating, updating, retrieving, or deleting
+// PlanTemplates.
+//
+// Use PlanTemplates to define default values for Plans. These default values
+// control the billing operations you want applied to your products. PlanTemplates
+// avoid repetition in configuration work - many Plans will share settings for
+// billing operations and differ only in the details of their pricing structures.
+//
+// A PlanTemplate is linked to a Product, and each Plan is a child of a
+// PlanTemplate.
+//
 // PlanTemplateService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -182,7 +193,7 @@ func (r *PlanTemplateService) Delete(ctx context.Context, id string, body PlanTe
 
 type PlanTemplateResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Determines the frequency at which bills are generated.
 	//
 	//   - **Daily**. Starting at midnight each day, covering the twenty-four hour period
@@ -373,7 +384,7 @@ func init() {
 
 type PlanTemplateNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Determines the frequency at which bills are generated.
 	//
 	//   - **Daily**. Starting at midnight each day, covering the twenty-four hour period
@@ -387,7 +398,7 @@ type PlanTemplateNewParams struct {
 	//
 	//   - **Annually**. Starting at midnight on first day of each year covering the
 	//     entire calendar year following.
-	BillFrequency param.Field[PlanTemplateNewParamsBillFrequency] `json:"billFrequency,required"`
+	BillFrequency param.Field[PlanTemplateNewParamsBillFrequency] `json:"billFrequency" api:"required"`
 	// The ISO currency code for the currency used to charge end users - for example
 	// USD, GBP, EUR. This defines the _pricing currency_ and is inherited by any Plans
 	// based on the Plan Template.
@@ -405,14 +416,14 @@ type PlanTemplateNewParams struct {
 	//     `currencyConversions` request body parameter for the
 	//     [Update OrganizationConfig](https://www.m3ter.com/docs/api#tag/OrganizationConfig/operation/UpdateOrganizationConfig)
 	//     call.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// Descriptive name for the PlanTemplate.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The unique identifier (UUID) of the Product associated with this PlanTemplate.
-	ProductID param.Field[string] `json:"productId,required"`
+	ProductID param.Field[string] `json:"productId" api:"required"`
 	// The fixed charge _(standing charge)_ applied to customer bills. This charge is
 	// prorated and must be a non-negative number.
-	StandingCharge param.Field[float64] `json:"standingCharge,required"`
+	StandingCharge param.Field[float64] `json:"standingCharge" api:"required"`
 	// How often bills are issued. For example, if `billFrequency` is Monthly and
 	// `billFrequencyInterval` is 3, bills are issued every three months.
 	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval"`
@@ -522,12 +533,12 @@ type PlanTemplateNewParamsCustomFieldsUnion interface {
 
 type PlanTemplateGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type PlanTemplateUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Determines the frequency at which bills are generated.
 	//
 	//   - **Daily**. Starting at midnight each day, covering the twenty-four hour period
@@ -541,7 +552,7 @@ type PlanTemplateUpdateParams struct {
 	//
 	//   - **Annually**. Starting at midnight on first day of each year covering the
 	//     entire calendar year following.
-	BillFrequency param.Field[PlanTemplateUpdateParamsBillFrequency] `json:"billFrequency,required"`
+	BillFrequency param.Field[PlanTemplateUpdateParamsBillFrequency] `json:"billFrequency" api:"required"`
 	// The ISO currency code for the currency used to charge end users - for example
 	// USD, GBP, EUR. This defines the _pricing currency_ and is inherited by any Plans
 	// based on the Plan Template.
@@ -559,14 +570,14 @@ type PlanTemplateUpdateParams struct {
 	//     `currencyConversions` request body parameter for the
 	//     [Update OrganizationConfig](https://www.m3ter.com/docs/api#tag/OrganizationConfig/operation/UpdateOrganizationConfig)
 	//     call.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// Descriptive name for the PlanTemplate.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The unique identifier (UUID) of the Product associated with this PlanTemplate.
-	ProductID param.Field[string] `json:"productId,required"`
+	ProductID param.Field[string] `json:"productId" api:"required"`
 	// The fixed charge _(standing charge)_ applied to customer bills. This charge is
 	// prorated and must be a non-negative number.
-	StandingCharge param.Field[float64] `json:"standingCharge,required"`
+	StandingCharge param.Field[float64] `json:"standingCharge" api:"required"`
 	// How often bills are issued. For example, if `billFrequency` is Monthly and
 	// `billFrequencyInterval` is 3, bills are issued every three months.
 	BillFrequencyInterval param.Field[int64] `json:"billFrequencyInterval"`
@@ -676,7 +687,7 @@ type PlanTemplateUpdateParamsCustomFieldsUnion interface {
 
 type PlanTemplateListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List of specific PlanTemplate UUIDs to retrieve.
 	IDs param.Field[[]string] `query:"ids"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
@@ -699,5 +710,5 @@ func (r PlanTemplateListParams) URLQuery() (v url.Values) {
 
 type PlanTemplateDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

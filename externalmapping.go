@@ -19,6 +19,19 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for managing External Mapping related operations such as creation,
+// update, list and delete.
+//
+// When you integrate your 3rd-party systems with the m3ter platform, a mapping
+// between entities in the local system _(m3ter)_ and external systems is
+// constructed. This _External Mapping_ is crucial in scenarios where data from
+// external systems is consumed or where data from the local system is to be
+// synchronized with external systems.
+//
+// When you are working to set up your Integrations and want to test or
+// troubleshoot your implementation before going live, you might need to create
+// External Mappings manually and, at a later date, edit or delete them.
+//
 // ExternalMappingService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -271,18 +284,18 @@ func (r *ExternalMappingService) ListByM3terEntityAutoPaging(ctx context.Context
 
 type ExternalMappingResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) of the entity in the external system.
-	ExternalID string `json:"externalId,required"`
+	ExternalID string `json:"externalId" api:"required"`
 	// The name of the external system where the entity you are mapping resides.
-	ExternalSystem string `json:"externalSystem,required"`
+	ExternalSystem string `json:"externalSystem" api:"required"`
 	// The name of the table in the external system where the entity resides.
-	ExternalTable string `json:"externalTable,required"`
+	ExternalTable string `json:"externalTable" api:"required"`
 	// The name of the m3ter entity that is part of the External Mapping. For example,
 	// this could be "Account".
-	M3terEntity string `json:"m3terEntity,required"`
+	M3terEntity string `json:"m3terEntity" api:"required"`
 	// The unique identifier (UUID) of the m3ter entity.
-	M3terID string `json:"m3terId,required"`
+	M3terID string `json:"m3terId" api:"required"`
 	// The ID of the user who created this item.
 	CreatedBy string `json:"createdBy"`
 	// The DateTime when this item was created _(in ISO-8601 format)_.
@@ -332,19 +345,19 @@ func (r externalMappingResponseJSON) RawJSON() string {
 
 type ExternalMappingNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) of the entity in the external system. This UUID
 	// should already exist in the external system.
-	ExternalID param.Field[string] `json:"externalId,required"`
+	ExternalID param.Field[string] `json:"externalId" api:"required"`
 	// The name of the external system where the entity you are mapping resides.
-	ExternalSystem param.Field[string] `json:"externalSystem,required"`
+	ExternalSystem param.Field[string] `json:"externalSystem" api:"required"`
 	// The name of the table in ther external system where the entity resides.
-	ExternalTable param.Field[string] `json:"externalTable,required"`
+	ExternalTable param.Field[string] `json:"externalTable" api:"required"`
 	// The name of the m3ter entity that you are creating or modifying an External
 	// Mapping for. As an example, this could be an "Account".
-	M3terEntity param.Field[string] `json:"m3terEntity,required"`
+	M3terEntity param.Field[string] `json:"m3terEntity" api:"required"`
 	// The unique identifier (UUID) of the m3ter entity.
-	M3terID param.Field[string] `json:"m3terId,required"`
+	M3terID param.Field[string] `json:"m3terId" api:"required"`
 	// UUID of the integration config to link this mapping to
 	IntegrationConfigID param.Field[string] `json:"integrationConfigId"`
 	// The version number of the entity:
@@ -364,24 +377,24 @@ func (r ExternalMappingNewParams) MarshalJSON() (data []byte, err error) {
 
 type ExternalMappingGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ExternalMappingUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) of the entity in the external system. This UUID
 	// should already exist in the external system.
-	ExternalID param.Field[string] `json:"externalId,required"`
+	ExternalID param.Field[string] `json:"externalId" api:"required"`
 	// The name of the external system where the entity you are mapping resides.
-	ExternalSystem param.Field[string] `json:"externalSystem,required"`
+	ExternalSystem param.Field[string] `json:"externalSystem" api:"required"`
 	// The name of the table in ther external system where the entity resides.
-	ExternalTable param.Field[string] `json:"externalTable,required"`
+	ExternalTable param.Field[string] `json:"externalTable" api:"required"`
 	// The name of the m3ter entity that you are creating or modifying an External
 	// Mapping for. As an example, this could be an "Account".
-	M3terEntity param.Field[string] `json:"m3terEntity,required"`
+	M3terEntity param.Field[string] `json:"m3terEntity" api:"required"`
 	// The unique identifier (UUID) of the m3ter entity.
-	M3terID param.Field[string] `json:"m3terId,required"`
+	M3terID param.Field[string] `json:"m3terId" api:"required"`
 	// UUID of the integration config to link this mapping to
 	IntegrationConfigID param.Field[string] `json:"integrationConfigId"`
 	// The version number of the entity:
@@ -401,7 +414,7 @@ func (r ExternalMappingUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type ExternalMappingListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The name of the external system to use as a filter.
 	//
 	// For example, if you want to list only those external mappings created for your
@@ -431,12 +444,12 @@ func (r ExternalMappingListParams) URLQuery() (v url.Values) {
 
 type ExternalMappingDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ExternalMappingListByExternalEntityParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// External Mappings in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`
@@ -455,7 +468,7 @@ func (r ExternalMappingListByExternalEntityParams) URLQuery() (v url.Values) {
 
 type ExternalMappingListByM3terEntityParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The `nextToken` for multi-page retrievals. It is used to fetch the next page of
 	// External Mappings in a paginated list.
 	NextToken param.Field[string] `query:"nextToken"`

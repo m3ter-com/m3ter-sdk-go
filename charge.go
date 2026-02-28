@@ -19,6 +19,26 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/packages/pagination"
 )
 
+// Endpoints for creating/updating/deleting Charges.
+//
+// Create Charges for your end-customer Accounts to create ad-hoc line items for
+// Account billing. Charges are:
+//
+//   - Created for either debit or credit amounts.
+//   - Linked to a Product for accounting purposes.
+//   - Optionally linked to a Contract.
+//   - Given a specific date for billing. When a bill job has run for the specified
+//     Charge bill date, a Charge appears as an Ad-hoc line item on the Bill.
+//   - Assigned a service period.
+//   - Available in any currency defined for your Organization. See
+//     [Creating Charges for Accounts](https://www.m3ter.com/docs/guides/end-customer-accounts/creating-charges-for-accounts)
+//     in our main user documentation for more details.
+//
+// Alternatively, you can create a Charge for a Balance on an end-customer Account
+// to create balance fee line items for Account billing. See
+// [Creating Charges for Balances](https://www.m3ter.com/docs/guides/end-customer-accounts/creating-balances-for-accounts/creating-charges-for-balances)
+// in our main user documentation for more details.
+//
 // ChargeService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -167,7 +187,7 @@ func (r *ChargeService) Delete(ctx context.Context, id string, body ChargeDelete
 // Response containing a Charge entity
 type ChargeNewResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The ID of the Account the Charge was created for.
 	AccountID string `json:"accountId"`
 	// The Accounting Product ID assigned to the Charge.
@@ -309,7 +329,7 @@ func (r ChargeNewResponseLineItemType) IsKnown() bool {
 // Response containing a Charge entity
 type ChargeGetResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The ID of the Account the Charge was created for.
 	AccountID string `json:"accountId"`
 	// The Accounting Product ID assigned to the Charge.
@@ -451,7 +471,7 @@ func (r ChargeGetResponseLineItemType) IsKnown() bool {
 // Response containing a Charge entity
 type ChargeUpdateResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The ID of the Account the Charge was created for.
 	AccountID string `json:"accountId"`
 	// The Accounting Product ID assigned to the Charge.
@@ -592,7 +612,7 @@ func (r ChargeUpdateResponseLineItemType) IsKnown() bool {
 
 type ChargeListResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The ID of the Account the Charge was created for.
 	AccountID string `json:"accountId"`
 	// The Accounting Product ID assigned to the Charge.
@@ -734,7 +754,7 @@ func (r ChargeListResponseLineItemType) IsKnown() bool {
 // Response containing a Charge entity
 type ChargeDeleteResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The ID of the Account the Charge was created for.
 	AccountID string `json:"accountId"`
 	// The Accounting Product ID assigned to the Charge.
@@ -875,25 +895,25 @@ func (r ChargeDeleteResponseLineItemType) IsKnown() bool {
 
 type ChargeNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The ID of the Account the Charge is being created for.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// Unique short code for the Charge.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Charge currency.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The entity type the Charge has been created for.
-	EntityType param.Field[ChargeNewParamsEntityType] `json:"entityType,required"`
+	EntityType param.Field[ChargeNewParamsEntityType] `json:"entityType" api:"required"`
 	// Available line item types that can be used for billing a Charge.
-	LineItemType param.Field[ChargeNewParamsLineItemType] `json:"lineItemType,required"`
+	LineItemType param.Field[ChargeNewParamsLineItemType] `json:"lineItemType" api:"required"`
 	// Name of the Charge. Added to the Bill line item description for this Charge.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The service period end date (_in ISO-8601 format_)for the Charge.
 	//
 	// **NOTE:** End date is exclusive.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date (_in ISO-8601 format_) for the Charge.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	// The Accounting Product ID assigned to the Charge.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Amount of the Charge. If `amount` is provided, then `units` and `unitPrice` must
@@ -970,30 +990,30 @@ func (r ChargeNewParamsLineItemType) IsKnown() bool {
 
 type ChargeGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ChargeUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The ID of the Account the Charge is being created for.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// Unique short code for the Charge.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Charge currency.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// The entity type the Charge has been created for.
-	EntityType param.Field[ChargeUpdateParamsEntityType] `json:"entityType,required"`
+	EntityType param.Field[ChargeUpdateParamsEntityType] `json:"entityType" api:"required"`
 	// Available line item types that can be used for billing a Charge.
-	LineItemType param.Field[ChargeUpdateParamsLineItemType] `json:"lineItemType,required"`
+	LineItemType param.Field[ChargeUpdateParamsLineItemType] `json:"lineItemType" api:"required"`
 	// Name of the Charge. Added to the Bill line item description for this Charge.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The service period end date (_in ISO-8601 format_)for the Charge.
 	//
 	// **NOTE:** End date is exclusive.
-	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate,required" format:"date-time"`
+	ServicePeriodEndDate param.Field[time.Time] `json:"servicePeriodEndDate" api:"required" format:"date-time"`
 	// The service period start date (_in ISO-8601 format_) for the Charge.
-	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate,required" format:"date-time"`
+	ServicePeriodStartDate param.Field[time.Time] `json:"servicePeriodStartDate" api:"required" format:"date-time"`
 	// The Accounting Product ID assigned to the Charge.
 	AccountingProductID param.Field[string] `json:"accountingProductId"`
 	// Amount of the Charge. If `amount` is provided, then `units` and `unitPrice` must
@@ -1070,7 +1090,7 @@ func (r ChargeUpdateParamsLineItemType) IsKnown() bool {
 
 type ChargeListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// List Charge items for the Account UUID
 	AccountID param.Field[string] `query:"accountId"`
 	// List Charge items for the Bill Date
@@ -1115,5 +1135,5 @@ func (r ChargeListParamsEntityType) IsKnown() bool {
 
 type ChargeDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

@@ -22,6 +22,18 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for Contract related operations such as creation, update, list and
+// delete.
+//
+// Contracts are created for Accounts, which are your end-user customers. Contracts
+// can be used for:
+//
+//   - **Accounts Reporting**. To serve your general accounting operations and
+//     processes, you can report on total Contract values for an Account.
+//   - **Contract Billing**. Various billing entities associated with an Account can
+//     be linked to Contracts on the Account to meet your specific Contract billing
+//     use cases.
+//
 // ContractService contains methods and other services that help with interacting
 // with the m3ter API.
 //
@@ -211,7 +223,7 @@ func (r *ContractService) EndDateBillingEntities(ctx context.Context, id string,
 
 type ContractResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
 	AccountID string `json:"accountId"`
 	// For Contract billing, a boolean setting for restricting the charges billed to
@@ -330,9 +342,9 @@ func init() {
 
 // Filters that determine which usage records are included in contract billing
 type ContractResponseUsageFilter struct {
-	DimensionCode string                           `json:"dimensionCode,required"`
-	Mode          ContractResponseUsageFiltersMode `json:"mode,required"`
-	Value         string                           `json:"value,required"`
+	DimensionCode string                           `json:"dimensionCode" api:"required"`
+	Mode          ContractResponseUsageFiltersMode `json:"mode" api:"required"`
+	Value         string                           `json:"value" api:"required"`
 	JSON          contractResponseUsageFilterJSON  `json:"-"`
 }
 
@@ -463,17 +475,17 @@ func (r contractEndDateBillingEntitiesResponseUpdatedEntitiesJSON) RawJSON() str
 
 type ContractNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The exclusive end date of the Contract _(in ISO-8601 format)_. This means the
 	// Contract is active until midnight on the day **_before_** this date.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date"`
 	// The name of the Contract.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date"`
 	// For Contract billing, a boolean setting for restricting the charges billed to
 	// the period defined for the Contract:
 	//
@@ -542,9 +554,9 @@ type ContractNewParamsCustomFieldsUnion interface {
 
 // Filters that determine which usage records are included in contract billing
 type ContractNewParamsUsageFilter struct {
-	DimensionCode param.Field[string]                            `json:"dimensionCode,required"`
-	Mode          param.Field[ContractNewParamsUsageFiltersMode] `json:"mode,required"`
-	Value         param.Field[string]                            `json:"value,required"`
+	DimensionCode param.Field[string]                            `json:"dimensionCode" api:"required"`
+	Mode          param.Field[ContractNewParamsUsageFiltersMode] `json:"mode" api:"required"`
+	Value         param.Field[string]                            `json:"value" api:"required"`
 }
 
 func (r ContractNewParamsUsageFilter) MarshalJSON() (data []byte, err error) {
@@ -568,22 +580,22 @@ func (r ContractNewParamsUsageFiltersMode) IsKnown() bool {
 
 type ContractGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ContractUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// The unique identifier (UUID) of the Account associated with this Contract.
-	AccountID param.Field[string] `json:"accountId,required"`
+	AccountID param.Field[string] `json:"accountId" api:"required"`
 	// The exclusive end date of the Contract _(in ISO-8601 format)_. This means the
 	// Contract is active until midnight on the day **_before_** this date.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date"`
 	// The name of the Contract.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The start date for the Contract _(in ISO-8601 format)_. This date is inclusive,
 	// meaning the Contract is active from this date onward.
-	StartDate param.Field[time.Time] `json:"startDate,required" format:"date"`
+	StartDate param.Field[time.Time] `json:"startDate" api:"required" format:"date"`
 	// For Contract billing, a boolean setting for restricting the charges billed to
 	// the period defined for the Contract:
 	//
@@ -652,9 +664,9 @@ type ContractUpdateParamsCustomFieldsUnion interface {
 
 // Filters that determine which usage records are included in contract billing
 type ContractUpdateParamsUsageFilter struct {
-	DimensionCode param.Field[string]                               `json:"dimensionCode,required"`
-	Mode          param.Field[ContractUpdateParamsUsageFiltersMode] `json:"mode,required"`
-	Value         param.Field[string]                               `json:"value,required"`
+	DimensionCode param.Field[string]                               `json:"dimensionCode" api:"required"`
+	Mode          param.Field[ContractUpdateParamsUsageFiltersMode] `json:"mode" api:"required"`
+	Value         param.Field[string]                               `json:"value" api:"required"`
 }
 
 func (r ContractUpdateParamsUsageFilter) MarshalJSON() (data []byte, err error) {
@@ -678,7 +690,7 @@ func (r ContractUpdateParamsUsageFiltersMode) IsKnown() bool {
 
 type ContractListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID     param.Field[string] `path:"orgId,required"`
+	OrgID     param.Field[string] `path:"orgId" api:"required"`
 	AccountID param.Field[string] `query:"accountId"`
 	// An optional parameter to retrieve specific Contracts based on their short codes.
 	Codes param.Field[[]string] `query:"codes"`
@@ -702,20 +714,20 @@ func (r ContractListParams) URLQuery() (v url.Values) {
 
 type ContractDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type ContractEndDateBillingEntitiesParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Defines which billing entities associated with the Account will have the
 	// specified end-date applied. For example, if you want the specified end-date to
 	// be applied to all Prepayments/Commitments created for the Account use
 	// `"PREPAYMENT"`.
-	BillingEntities param.Field[[]ContractEndDateBillingEntitiesParamsBillingEntity] `json:"billingEntities,required"`
+	BillingEntities param.Field[[]ContractEndDateBillingEntitiesParamsBillingEntity] `json:"billingEntities" api:"required"`
 	// The end date and time applied to the specified billing entities _(in ISO 8601
 	// format)_.
-	EndDate param.Field[time.Time] `json:"endDate,required" format:"date-time"`
+	EndDate param.Field[time.Time] `json:"endDate" api:"required" format:"date-time"`
 	// A Boolean TRUE/FALSE flag. For Parent Accounts, set to TRUE if you want the
 	// specified end-date to be applied to any billing entities associated with Child
 	// Accounts. _(Optional)_

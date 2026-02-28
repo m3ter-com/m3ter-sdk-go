@@ -22,6 +22,21 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Endpoints for creating/updating/deleting Lookup Tables.
+//
+// Lookup Tables enable you to manage dynamic data mappings that your calculations
+// reference. Use them for currency conversion, pricing tiers, discount rates, and
+// similar scenarios where you require values to change operationally but for
+// calculation logic to remain constant.
+//
+// **Beta Version!** The Lookup Table feature is currently available in Beta
+// release version. See
+// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+// for Beta release definition. Lookup Table endpoints will only be available if
+// Lookup Tables have been enabled for your Organization. For more details see
+// [Lookup Tables (Beta)](https://www.m3ter.com/docs/guides/lookup-tables) in our
+// main User documentation.
+//
 // LookupTableService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -29,8 +44,59 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLookupTableService] method instead.
 type LookupTableService struct {
-	Options                 []option.RequestOption
-	LookupTableRevisions    *LookupTableLookupTableRevisionService
+	Options []option.RequestOption
+	// Endpoints for creating/updating/deleting Lookup Table Revisions.
+	//
+	// Lookup Tables utilize a "Table and Revision" model, which lets you update data
+	// cleanly, and extend the schema without modifying existing calculations:
+	//
+	//   - Create Revisions for a Lookup Table, which you can use to define data schema
+	//     and lookup keys.
+	//   - Populate draft Revisions with data values. You can create and edit multiple
+	//     draft Revisions, but only one can be published at any given time.
+	//   - Publish a Revision to activate it. When you use Lookup functions in your
+	//     calculations that reference the Lookup Table, the data values defined for the
+	//     published Revision are used.
+	//   - When you want different, updated data values to be used, publish the draft
+	//     Revision containing the required new values. The currently published Revision
+	//     is archived automatically.
+	//
+	// **Beta Version!** The Lookup Table feature is currently available in Beta
+	// release version. See
+	// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+	// for Beta release definition. Lookup Table Revision endpoints will only be
+	// available if Lookup Tables have been enabled for your Organization. For more
+	// details see
+	// [Lookup Tables (Beta)](https://www.m3ter.com/docs/guides/lookup-tables) in our
+	// main User documentation.
+	LookupTableRevisions *LookupTableLookupTableRevisionService
+	// Endpoints for creating/updating/deleting Data for specific Lookup Table
+	// Revisions.
+	//
+	// When you've added fields to create a data schema for a Lookup Table Revision,
+	// you can use upsert operations to create or update the data values for those
+	// fields:
+	//
+	//   - Use
+	//     [Upsert LookupTableRevisionData](https://www.m3ter.com/docs/api#tag/LookupTableRevisionData/operation/PutLookupTableRevisionData)
+	//     to upsert some or all of a Revision's field data values.
+	//   - Use
+	//     [Upsert LookupTableRevisionData Entry](https://www.m3ter.com/docs/api#tag/LookupTableRevisionData/operation/PutLookupTableRevisionDataEntry)
+	//     to upsert an individual Revision field's data value.
+	//
+	// **NOTES:**
+	//
+	// - You can only create or update field data values for DRAFT Revisions.
+	// - You cannot change the field data values for PUBLISHED Revisions.
+	//
+	// **Beta Version!** The Lookup Table feature is currently available in Beta
+	// release version. See
+	// [Feature Release Stages](https://www.m3ter.com/docs/guides/getting-started/feature-release-stages)
+	// for Beta release definition. Lookup Table Revision Data endpoints will only be
+	// available if Lookup Tables have been enabled for your Organization. For more
+	// details see
+	// [Lookup Tables (Beta)](https://www.m3ter.com/docs/guides/lookup-tables) in our
+	// main User documentation.
 	LookupTableRevisionData *LookupTableLookupTableRevisionDataService
 }
 
@@ -173,9 +239,9 @@ type LookupTableRequestParam struct {
 	// **NOTE:** Code has a maximum length of 80 characters and must not contain
 	// non-printable or whitespace characters (except space), and cannot start/end with
 	// whitespace.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// Descriptive name for the Lookup Table.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// User defined fields enabling you to attach custom data. The value for a custom
 	// field can be either a string or a number.
 	//
@@ -209,7 +275,7 @@ type LookupTableRequestCustomFieldsUnionParam interface {
 
 type LookupTableResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Response containing a LookupTableRevision entity
 	ActiveRevision LookupTableRevisionResponse `json:"activeRevision"`
 	// The code of the Lookup Table
@@ -292,8 +358,8 @@ func init() {
 
 type LookupTableNewParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID              param.Field[string]     `path:"orgId,required"`
-	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request,required"`
+	OrgID              param.Field[string]     `path:"orgId" api:"required"`
+	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request" api:"required"`
 }
 
 func (r LookupTableNewParams) MarshalJSON() (data []byte, err error) {
@@ -302,7 +368,7 @@ func (r LookupTableNewParams) MarshalJSON() (data []byte, err error) {
 
 type LookupTableGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional non-default fields to be included in the
 	// response. For example,if you want to include the active Revision for the Lookup
 	// Tables returned, set `additional=activeRevision` in the query.
@@ -319,8 +385,8 @@ func (r LookupTableGetParams) URLQuery() (v url.Values) {
 
 type LookupTableUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID              param.Field[string]     `path:"orgId,required"`
-	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request,required"`
+	OrgID              param.Field[string]     `path:"orgId" api:"required"`
+	LookupTableRequest LookupTableRequestParam `json:"lookup_table_request" api:"required"`
 }
 
 func (r LookupTableUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -329,7 +395,7 @@ func (r LookupTableUpdateParams) MarshalJSON() (data []byte, err error) {
 
 type LookupTableListParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 	// Comma separated list of additional non-default fields to be included in the
 	// response. For example,if you want to include the active Revision for each of the
 	// Lookup Tables returned, set `additional=activeRevision` in the query.
@@ -352,5 +418,5 @@ func (r LookupTableListParams) URLQuery() (v url.Values) {
 
 type LookupTableDeleteParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }

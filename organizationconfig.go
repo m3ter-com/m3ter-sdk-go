@@ -17,6 +17,31 @@ import (
 	"github.com/m3ter-com/m3ter-sdk-go/shared"
 )
 
+// Endpoints for retrieving or updating the Organization Config.
+//
+// Organization represents your company as a direct customer of m3ter. Use
+// Organization configuration to define _Organization-wide_ settings. For example:
+//
+// - Timezone.
+// - Currencies and currency conversions.
+// - Billing operations settings, such as:
+//   - Epoch dates to control first billing dates.
+//   - Whether to bill customer accounts in advance/in arrears for standing charge
+//     amounts, minimum spend amounts, and commitment fees.
+//
+// For other aspects of your Organization setup and configuration, see the
+// following sections in this API Reference:
+//
+// - [Custom Fields](https://www.m3ter.com/docs/api#tag/CustomField)
+// - [Currencies](https://www.m3ter.com/docs/api#tag/Currency)
+// - [Credit Reasons](https://www.m3ter.com/docs/api#tag/CreditReason)
+// - [Debit Reason](https://www.m3ter.com/docs/api#tag/DebitReason)
+// - [Transaction Types](https://www.m3ter.com/docs/api#tag/TransactionType)
+//
+// See also:
+//
+// - [Managing your Organization](https://www.m3ter.com/docs/guides/managing-organization-and-users/viewing-and-editing-organization).
+//
 // OrganizationConfigService contains methods and other services that help with
 // interacting with the m3ter API.
 //
@@ -84,7 +109,7 @@ type OrganizationConfigRequestParam struct {
 	// currency conversion rate from the pricing currency to the billing currency
 	// before you run billing for the Account, otherwise billing will fail. See below
 	// for the `currencyConversions` request parameter.
-	Currency param.Field[string] `json:"currency,required"`
+	Currency param.Field[string] `json:"currency" api:"required"`
 	// Optional setting that defines the billing cycle date for Accounts that are
 	// billed daily. Defines the date of the first Bill:
 	//
@@ -95,14 +120,14 @@ type OrganizationConfigRequestParam struct {
 	//     created for the Account each day following through to the end of the billing
 	//     service period.
 	//   - The date is in ISO-8601 format.
-	DayEpoch param.Field[string] `json:"dayEpoch,required"`
+	DayEpoch param.Field[string] `json:"dayEpoch" api:"required"`
 	// Enter the number of days after the Bill generation date that you want to show on
 	// Bills as the due date.
 	//
 	// **Note:** If you define `daysBeforeBillDue` at individual Account level, this
 	// will take precedence over any `daysBeforeBillDue` setting defined at
 	// Organization level.
-	DaysBeforeBillDue param.Field[int64] `json:"daysBeforeBillDue,required"`
+	DaysBeforeBillDue param.Field[int64] `json:"daysBeforeBillDue" api:"required"`
 	// Optional setting that defines the billing cycle date for Accounts that are
 	// billed monthly. Defines the date of the first Bill and then acts as reference
 	// for when subsequent Bills are created for the Account:
@@ -115,9 +140,9 @@ type OrganizationConfigRequestParam struct {
 	//     to the end of the billing service period - February 15th, March 15th, and so
 	//     on.
 	//   - The date is in ISO-8601 format.
-	MonthEpoch param.Field[string] `json:"monthEpoch,required"`
+	MonthEpoch param.Field[string] `json:"monthEpoch" api:"required"`
 	// Sets the timezone for the Organization.
-	Timezone param.Field[string] `json:"timezone,required"`
+	Timezone param.Field[string] `json:"timezone" api:"required"`
 	// Optional setting that defines the billing cycle date for Accounts that are
 	// billed weekly. Defines the date of the first Bill and then acts as reference for
 	// when subsequent Bills are created for the Account:
@@ -129,7 +154,7 @@ type OrganizationConfigRequestParam struct {
 	//     that date and subsequent Bills are created for the Account on Saturday of each
 	//     week following through to the end of the billing service period.
 	//   - The date is in ISO-8601 format.
-	WeekEpoch param.Field[string] `json:"weekEpoch,required"`
+	WeekEpoch param.Field[string] `json:"weekEpoch" api:"required"`
 	// Optional setting that defines the billing cycle date for Accounts that are
 	// billed yearly. Defines the date of the first Bill and then acts as reference for
 	// when subsequent Bills are created for the Account:
@@ -142,7 +167,7 @@ type OrganizationConfigRequestParam struct {
 	//     through to the end of the billing service period - January 1st, 2023, January
 	//     1st, 2024 and so on.
 	//   - The date is in ISO-8601 format.
-	YearEpoch param.Field[string] `json:"yearEpoch,required"`
+	YearEpoch param.Field[string] `json:"yearEpoch" api:"required"`
 	// Allow balance amounts to fall below zero. This feature is enabled on request.
 	// Please get in touch with m3ter Support or your m3ter contact if you would like
 	// it enabling for your organization(s).
@@ -339,7 +364,7 @@ func (r OrganizationConfigRequestCreditApplicationOrder) IsKnown() bool {
 
 type OrganizationConfigResponse struct {
 	// The UUID of the entity.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Allow balance amounts to fall below zero. This feature is enabled on request.
 	// Please get in touch with m3ter Support or your m3ter contact if you would like
 	// it enabling for your organization(s).
@@ -582,13 +607,13 @@ func (r OrganizationConfigResponseExternalInvoiceDate) IsKnown() bool {
 
 type OrganizationConfigGetParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID param.Field[string] `path:"orgId,required"`
+	OrgID param.Field[string] `path:"orgId" api:"required"`
 }
 
 type OrganizationConfigUpdateParams struct {
 	// Use [option.WithOrgID] on the client to set a global default for this field.
-	OrgID                     param.Field[string]            `path:"orgId,required"`
-	OrganizationConfigRequest OrganizationConfigRequestParam `json:"organization_config_request,required"`
+	OrgID                     param.Field[string]            `path:"orgId" api:"required"`
+	OrganizationConfigRequest OrganizationConfigRequestParam `json:"organization_config_request" api:"required"`
 }
 
 func (r OrganizationConfigUpdateParams) MarshalJSON() (data []byte, err error) {
